@@ -1,0 +1,67 @@
+Features: ['SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG', 'NORMALIZED_POSITION', 'CONTEXT']
+f1_score_micro
+------------------------------
+------------------------------
+DecisionTreeClassifier
+Best parameters set found on development set:
+{"criterion": "entropy", "max_depth": 5}
+Detailed classification report:
+The model is trained on the full development set.The scores are computed on the full evaluation set.
+cv_results :
+{'fit_time': array([7.16330957, 8.21761107, 7.19664598, 6.98115206, 7.17816281,
+       7.00495791, 7.39314365, 7.15403843, 6.84412599, 7.0617435 ]), 'score_time': array([0.01414561, 0.01026106, 0.01039958, 0.01119685, 0.01038241,
+       0.01126862, 0.01137114, 0.01016235, 0.01095843, 0.01176453]), 'test_accuracy': array([0.87640449, 0.83146067, 0.78651685, 0.82022472, 0.80898876,
+       0.75280899, 0.87640449, 0.83146067, 0.88636364, 0.88636364]), 'test_balanced_accuracy': array([0.73214286, 0.58073824, 0.51574166, 0.65629667, 0.54380289,
+       0.48376058, 0.6534694 , 0.63356562, 0.65306122, 0.77874564]), 'test_f1_micro': array([0.87640449, 0.83146067, 0.78651685, 0.82022472, 0.80898876,
+       0.75280899, 0.87640449, 0.83146067, 0.88636364, 0.88636364]), 'test_precision_micro': array([0.87640449, 0.83146067, 0.78651685, 0.82022472, 0.80898876,
+       0.75280899, 0.87640449, 0.83146067, 0.88636364, 0.88636364]), 'test_recall_micro': array([0.87640449, 0.83146067, 0.78651685, 0.82022472, 0.80898876,
+       0.75280899, 0.87640449, 0.83146067, 0.88636364, 0.88636364])}
+              precision    recall  f1-score   support
+
+           D       1.00      1.00      1.00         6
+           N       0.89      0.86      0.87       279
+          NM       0.85      0.95      0.90       410
+         NPL       0.94      0.76      0.84        67
+       OTHER       0.43      0.43      0.43         7
+           P       0.60      0.75      0.67        16
+         PRE       0.00      0.00      0.00        26
+           V       0.80      0.74      0.77        77
+
+    accuracy                           0.85       888
+   macro avg       0.69      0.69      0.68       888
+weighted avg       0.83      0.85      0.84       888
+
+balanced_accuracy_score :0.6865756212051144
+f1_score (macro) :0.684946259490144
+f1_score (micro) :0.8547297297297297
+matthews_corrcoef :0.780643661849092
+Features: ['SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG', 'NORMALIZED_POSITION', 'CONTEXT']
+f1_score_micro
+------------------------------
+------------------------------
+DecisionTreeClassifier
+Best parameters set found on development set:
+{"criterion": "entropy", "max_depth": 8}
+Detailed classification report:
+The model is trained on the full development set.The scores are computed on the full evaluation set.
+cv_results :
+{'fit_time': array([3.78755522, 4.14469576, 3.99566317, 3.62310863, 3.56916189]), 'score_time': array([0.01720381, 0.01318955, 0.01292992, 0.01317573, 0.01312089]), 'test_accuracy': array([0.85955056, 0.76966292, 0.8258427 , 0.81355932, 0.8079096 ]), 'test_balanced_accuracy': array([0.76323924, 0.59193829, 0.63289059, 0.58969198, 0.60494417]), 'test_f1_micro': array([0.85955056, 0.76966292, 0.8258427 , 0.81355932, 0.8079096 ]), 'test_precision_micro': array([0.85955056, 0.76966292, 0.8258427 , 0.81355932, 0.8079096 ]), 'test_recall_micro': array([0.85955056, 0.76966292, 0.8258427 , 0.81355932, 0.8079096 ])}
+              precision    recall  f1-score   support
+
+           D       1.00      1.00      1.00         6
+           N       0.81      0.86      0.84       294
+          NM       0.85      0.94      0.89       392
+         NPL       0.97      0.53      0.69        62
+       OTHER       0.33      0.20      0.25        10
+           P       0.80      0.80      0.80        25
+         PRE       0.57      0.32      0.41        25
+           V       0.77      0.55      0.65        74
+
+    accuracy                           0.83       888
+   macro avg       0.76      0.65      0.69       888
+weighted avg       0.82      0.83      0.82       888
+
+balanced_accuracy_score :0.6517669059777355
+f1_score (macro) :0.6903712799108177
+f1_score (micro) :0.8265765765765767
+matthews_corrcoef :0.7393727587127774
