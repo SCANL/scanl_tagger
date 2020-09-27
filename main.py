@@ -4,7 +4,7 @@ import time
 
 import numpy as np
 import pandas as pd
-import classifier_multiclass
+import classifier_training_set_generator
 
 start = time.time()
 
@@ -57,7 +57,7 @@ def main():
     results_text_file = open(filename, append_write)
 
     results_text_file.write("Features: %s" % independent_variables)
-    classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
+    classifier_training_set_generator.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
 
 
     end = time.time()
