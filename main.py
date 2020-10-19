@@ -4,12 +4,15 @@ import time
 
 import numpy as np
 import pandas as pd
-import classifier_training_set_generator
+import classifier_multiclass
 
 start = time.time()
 
-input_file = 'input/input2.sqlite'
-sql_statement = 'select * from combined_data_other order by random()';
+input_file = 'input/ensemble_test_db.db'
+sql_statement = 'select * from training_set_conj order by random()';
+#sql_statement = 'select * from training_set_conj_other order by random()';
+#sql_statement = 'select * from training_set_norm order by random()';
+#sql_statement = 'select * from training_set_norm_other order by random()';
 identifier_column = "ID"
 text_column = 'WORD'
 #independent_variables = ['WORD', 'POSITION', 'MAXPOSITION', 'NORMALIZED_POSITION', 'CONTEXT']
@@ -37,16 +40,7 @@ def main():
     df_input.set_index(identifier_column, inplace=True)
     df_features = df_input[independent_variables]
     df_class = df_input[[dependent_variable]]
-
-    for category_column in category_variables:
-        if category_column in df_features.columns:
-            df_features[category_column] = df_features[category_column].astype('category')
-            df_features[category_column] = df_features[category_column].cat.codes
-
-
-    print(" --  -- Distribution of labels in corpus --  -- ")
-    print(df_class[dependent_variable].value_counts())
-
+    
     if not os.path.exists('output'):
         os.makedirs('output')
     filename = 'output/results.txt'
@@ -56,13 +50,24 @@ def main():
         append_write = 'w'
     results_text_file = open(filename, append_write)
 
-    results_text_file.write("Features: %s" % independent_variables)
-    classifier_training_set_generator.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
+    for category_column in category_variables:
+        if category_column in df_features.columns:
+            df_features[category_column] = df_features[category_column].astype('category')
+            d = dict(enumerate(df_features[category_column].cat.categories))
+            results_text_file.write(str(category_column) + ":" + str(d)+"\n")
+            df_features[category_column] = df_features[category_column].cat.codes
+
+
+    print(" --  -- Distribution of labels in corpus --  -- ")
+    print(df_class[dependent_variable].value_counts())
+
+    results_text_file.write("SQL: %s\n" % sql_statement)
+    results_text_file.write("Features: %s\n" % independent_variables)
+    classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
 
 
     end = time.time()
     print("Process completed in " + str(end - start) + " seconds")
-
 
 
 

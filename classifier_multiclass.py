@@ -34,7 +34,7 @@ import utils
 
 
 def build_datasets(X, y, text_column, output_directory):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
     X_train_original = X_train.copy(deep=True)
     X_test_original = X_test.copy(deep=True)
 
