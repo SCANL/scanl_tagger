@@ -28,7 +28,6 @@ import scipy as sp
 from imblearn.over_sampling import SMOTE, ADASYN, BorderlineSMOTE
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.metrics import classification_report_imbalanced
-from xgboost import XGBClassifier
 
 import utils
 

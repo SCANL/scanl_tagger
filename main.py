@@ -9,10 +9,10 @@ import classifier_multiclass
 start = time.time()
 
 input_file = 'input/ensemble_test_db.db'
-sql_statement = 'select * from training_set_conj order by random()';
+#sql_statement = 'select * from training_set_conj order by random()';
 #sql_statement = 'select * from training_set_conj_other order by random()';
 #sql_statement = 'select * from training_set_norm order by random()';
-#sql_statement = 'select * from training_set_norm_other order by random()';
+sql_statement = 'select * from training_set_norm_other order by random()';
 identifier_column = "ID"
 text_column = 'WORD'
 #independent_variables = ['WORD', 'POSITION', 'MAXPOSITION', 'NORMALIZED_POSITION', 'CONTEXT']
