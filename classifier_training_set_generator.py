@@ -48,14 +48,14 @@ def perform_classification(X, y, text_column, results_text_file, output_director
     X_train, y_train = build_datasets(X, y, "", output_directory)
 
     param_randomforest = {
-        'n_estimators': [100, 150, 200, 250, 300, 350, 400, 450, 500],
-        'max_depth': range(30, 101),
+        'n_estimators': [350],
+        'max_depth': range(30, 100),
         'criterion': ['gini', 'entropy'],
-        'bootstrap': [True, False]
+        'bootstrap': [True]
     }
 
     param_decisiontree = {
-        'max_depth': range(1, 81),
+        'max_depth': range(1, 30),
         'criterion': ['gini', 'entropy']
     }
 
