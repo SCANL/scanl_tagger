@@ -4,17 +4,17 @@ import time
 from datetime import datetime
 import numpy as np
 import pandas as pd
-import classifier_training_set_generator
+import classifier_multiclass
 
-input_file = 'input/ensemble_train_db.db'
-sql_statement = 'select * from training_set_conj order by ID';
+input_file = 'input/revision_training_db.db'
+sql_statement = 'select * from training_set_cp_minor order by ID';
 #sql_statement = 'select * from training_set_conj_other order by random()';
 #sql_statement = 'select * from training_set_norm order by random()';
 #sql_statement = 'select * from training_set_norm_other order by random()';
 identifier_column = "ID"
 #independent_variables = ['WORD', 'POSITION', 'MAXPOSITION', 'NORMALIZED_POSITION', 'CONTEXT']
 #independent_variables = ['TYPE', 'WORD', 'SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG', 'NORMALIZED_POSITION', 'CONTEXT', 'ISPLURALLIST', 'ISBOOLVERB']
-independent_variables_base = ['SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG']
+independent_variables_base = ['NORMALIZED_POSITION', 'CONTEXT']
 dependent_variable = 'CORRECT_TAG'
 
 def read_input(sql, conn):
@@ -22,7 +22,7 @@ def read_input(sql, conn):
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
     return input_data
 #[],
-independent_variables_add = [['NORMALIZED_POSITION', 'CONTEXT']]
+independent_variables_add = [['HMM_TAG']]
 
 def main():
     count = 0
@@ -36,7 +36,7 @@ def main():
         print(" --  -- Completed: Reading Input --  -- ")
         # ###############################################################
         
-        category_variables = ['SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG']
+        category_variables = ['HMM_TAG']
         text_column = ""
 
         feature_list = independent_variables_base + feature_list
@@ -74,7 +74,7 @@ def main():
 
         results_text_file.write("SQL: %s\n" % sql_statement)
         results_text_file.write("Features: {number}. {features}\n".format(features=feature_list, number=count))
-        classifier_training_set_generator.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
+        classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
 
 
         end = time.time()
