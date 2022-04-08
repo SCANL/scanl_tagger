@@ -4,7 +4,8 @@ import time
 from datetime import datetime
 import numpy as np
 import pandas as pd
-import classifier_multiclass
+#import classifier_multiclass
+import classifier_training_set_generator
 
 input_file = 'input/revision_training_db.db'
 sql_statement = 'select * from training_set_cp_minor order by ID';
@@ -22,7 +23,7 @@ def read_input(sql, conn):
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
     return input_data
 #[],
-independent_variables_add = [['HMM_TAG']]
+independent_variables_add = [['STANFORD_TAG', 'SWUM_TAG']]
 
 def main():
     count = 0
@@ -36,7 +37,7 @@ def main():
         print(" --  -- Completed: Reading Input --  -- ")
         # ###############################################################
         
-        category_variables = ['HMM_TAG']
+        category_variables = ['STANFORD_TAG', 'SWUM_TAG']
         text_column = ""
 
         feature_list = independent_variables_base + feature_list
@@ -74,7 +75,7 @@ def main():
 
         results_text_file.write("SQL: %s\n" % sql_statement)
         results_text_file.write("Features: {number}. {features}\n".format(features=feature_list, number=count))
-        classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
+        classifier_training_set_generator.perform_classification(df_features, df_class, text_column, results_text_file, 'output')
 
 
         end = time.time()

@@ -33,8 +33,11 @@ from imblearn.over_sampling import RandomOverSampler
 from imblearn.metrics import classification_report_imbalanced
 import random
 import utils
-#10, 25, 500 (t), 300(t), 2704875
-RANDOM_TRAIN_SEED = 2704875
+#10, 25, 500 (t), 300(t), 2704875 484565 500 501
+#1269 5545 1269
+# RANDOM_TRAIN_SEED = 484565
+# RANDOM_CLASSIFIER_SEED = 5545
+RANDOM_TRAIN_SEED = 484565
 RANDOM_CLASSIFIER_SEED = 1269
 
 def build_datasets(X, y, text_column, output_directory):
@@ -74,14 +77,14 @@ def perform_classification(X, y, text_column, results_text_file, output_director
     #[100, 150, 200, 250, 300, 350, 400, 450, 500],
 
     param_randomforest = {
-        'n_estimators': [350],
+        'n_estimators': [350, 400, 450, 500],
         'max_depth': range(30, 100),
         'criterion': ['gini', 'entropy'],
         'bootstrap': [True]
     }
 
     param_decisiontree = {
-        'max_depth': range(1, 30),
+        'max_depth': range(1, 60),
         'criterion': ['gini', 'entropy']
     }
 
@@ -170,9 +173,10 @@ def perform_classification(X, y, text_column, results_text_file, output_director
         # 'recall_score_micro': make_scorer(recall_score, average='micro'),
         # 'recall_score_macro': make_scorer(recall_score, average='macro'),
         # 'accuracy_score': make_scorer(accuracy_score),
-        'f1_score_weighted': make_scorer(f1_score, average='weighted'),
+        # 'f1_score_weighted': make_scorer(f1_score, average='weighted'),
         # 'f1_score_macro': make_scorer(f1_score,  average='macro'),
         # 'hamming_loss': make_scorer(hamming_loss)
+        'f1_score_micro': make_scorer(f1_score, average='micro')
     }
 
     labels = np.unique(y_train, return_counts=False)
@@ -588,7 +592,7 @@ def perform_classification(X, y, text_column, results_text_file, output_director
             results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
         results_text_file.write("\n")
         y_true, y_pred = y_test, clf.predict(X_test)
-        # results_text_file.write(classification_report(y_true, y_pred))
+        results_text_file.write(classification_report(y_true, y_pred))
         # results_text_file.write("\n")
         # results_text_file.write('balanced_accuracy_score :')
         # results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
@@ -611,51 +615,51 @@ def perform_classification(X, y, text_column, results_text_file, output_director
         utils.print_cm(cm, labels, classifier='DecisionTreeClassifier', output_directory=output_directory)
         results_text_file.write("\n------------------------------------------------------\n")
 
-        results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
-        print("RandomForestClassifier")
-        clf = GridSearchCV(RandomForestClassifier(random_state=RANDOM_CLASSIFIER_SEED), param_randomforest, cv=5, scoring=scorers[key], n_jobs=-1,
-        error_score=0.0)
-        clf.fit(X_train, y_train)
+        # results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
+        # print("RandomForestClassifier")
+        # clf = GridSearchCV(RandomForestClassifier(random_state=RANDOM_CLASSIFIER_SEED), param_randomforest, cv=5, scoring=scorers[key], n_jobs=-1,
+        # error_score=0.0)
+        # clf.fit(X_train, y_train)
         
-        joblib.dump(clf, '%s/model_RandomForestClassifier.pkl' % output_directory)
-        results_text_file.write("Best parameters set found on development set:")
-        results_text_file.write("\n")
-        results_text_file.write(json.dumps(clf.best_params_))
-        results_text_file.write("\n")
-        pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_RandomForestClassifier.csv" % output_directory)
+        # joblib.dump(clf, '%s/model_RandomForestClassifier.pkl' % output_directory)
+        # results_text_file.write("Best parameters set found on development set:")
+        # results_text_file.write("\n")
+        # results_text_file.write(json.dumps(clf.best_params_))
+        # results_text_file.write("\n")
+        # pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_RandomForestClassifier.csv" % output_directory)
 
-        presult_f1 = permutation_importance(clf.best_estimator_, X, y, scoring='f1_weighted')
-        results_text_file.write("f1_weighted importances\n")
-        for feature, value in zip(X.columns, presult_f1.importances):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-        results_text_file.write("\n")
+        # presult_f1 = permutation_importance(clf.best_estimator_, X, y, scoring='f1_weighted')
+        # results_text_file.write("f1_weighted importances\n")
+        # for feature, value in zip(X.columns, presult_f1.importances):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+        # results_text_file.write("\n")
 
-        results_text_file.write("mean f1_weighted importances\n")
-        for feature, value in zip(X.columns, presult_f1.importances_mean):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-        results_text_file.write("\n")
+        # results_text_file.write("mean f1_weighted importances\n")
+        # for feature, value in zip(X.columns, presult_f1.importances_mean):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+        # results_text_file.write("\n")
 
-        presult_balanced = permutation_importance(clf.best_estimator_, X, y, scoring='balanced_accuracy')
-        results_text_file.write("balanced_accuracy importances\n")
-        for feature, value in zip(X.columns, presult_balanced.importances):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-        results_text_file.write("\n")
+        # presult_balanced = permutation_importance(clf.best_estimator_, X, y, scoring='balanced_accuracy')
+        # results_text_file.write("balanced_accuracy importances\n")
+        # for feature, value in zip(X.columns, presult_balanced.importances):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+        # results_text_file.write("\n")
 
-        results_text_file.write("mean balanced_accuracy importances\n")
-        for feature, value in zip(X.columns, presult_balanced.importances_mean):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-        results_text_file.write("\n")
+        # results_text_file.write("mean balanced_accuracy importances\n")
+        # for feature, value in zip(X.columns, presult_balanced.importances_mean):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+        # results_text_file.write("\n")
 
-        presult_accuracy = permutation_importance(clf.best_estimator_, X, y, scoring='accuracy')
-        results_text_file.write("accuracy importances\n")
-        for feature, value in zip(X.columns, presult_accuracy.importances):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-        results_text_file.write("\n")
+        # presult_accuracy = permutation_importance(clf.best_estimator_, X, y, scoring='accuracy')
+        # results_text_file.write("accuracy importances\n")
+        # for feature, value in zip(X.columns, presult_accuracy.importances):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+        # results_text_file.write("\n")
         
-        results_text_file.write("mean accuracy importances\n")
-        for feature, value in zip(X.columns, presult_accuracy.importances_mean):
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-        results_text_file.write("\n")
+        # results_text_file.write("mean accuracy importances\n")
+        # for feature, value in zip(X.columns, presult_accuracy.importances_mean):
+        #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+        # results_text_file.write("\n")
 
 
         # results_text_file.write("Detailed classification report:")
@@ -663,13 +667,19 @@ def perform_classification(X, y, text_column, results_text_file, output_director
         # results_text_file.write("The model is trained on the full development set.")
         # results_text_file.write("The scores are computed on the full evaluation set.")
         # results_text_file.write("\n")
-        cv_results = cross_validate(clf, X_test, y_test, cv=5, scoring=scoring)
-        results_text_file.write('cv_results :\n')
-        for metric, value in cv_results.items():
-            results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
-        results_text_file.write("\n")
-        y_true, y_pred = y_test, clf.predict(X_test)
+
+
+
+        # cv_results = cross_validate(clf, X_test, y_test, cv=5, scoring=scoring)
+        # results_text_file.write('cv_results :\n')
+        # for metric, value in cv_results.items():
+        #     results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
+        # results_text_file.write("\n")
+        # y_true, y_pred = y_test, clf.predict(X_test)
         # results_text_file.write(classification_report(y_true, y_pred))
+        
+        
+        
         # results_text_file.write("\n")
         # results_text_file.write('balanced_accuracy_score :')
         # results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))

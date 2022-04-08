@@ -31,6 +31,8 @@ from imblearn.metrics import classification_report_imbalanced
 
 import utils
 
+#RANDOM_CLASSIFIER_SEED = 5545
+RANDOM_CLASSIFIER_SEED = 1269
 
 def build_datasets(X, y, text_column, output_directory):
     # X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=1.0, test_size=0.25, random_state=42)
@@ -75,13 +77,13 @@ def perform_classification(X, y, text_column, results_text_file, output_director
 
         results_text_file.write("\nDecisionTreeClassifier\n")
         print("DecisionTreeClassifier")
-        clf = DecisionTreeClassifier(max_depth=9, criterion='entropy')
+        clf = DecisionTreeClassifier(random_state=RANDOM_CLASSIFIER_SEED, max_depth=9, criterion='entropy')
         clf.fit(X_train, y_train)
         joblib.dump(clf, '%s/model_DecisionTreeClassifier.pkl' % output_directory)
 
 
         results_text_file.write("\nRandomForestClassifier\n")
         print("RandomForestClassifier")
-        clf = RandomForestClassifier(n_estimators=250, criterion="gini", max_depth=83, bootstrap=True)
+        clf = RandomForestClassifier(random_state=RANDOM_CLASSIFIER_SEED, n_estimators=250, criterion="gini", max_depth=83, bootstrap=True)
         clf.fit(X_train, y_train)
         joblib.dump(clf, '%s/model_RandomForestClassifier.pkl' % output_directory)
