@@ -1,7 +1,11 @@
-NumPy
-pandas
-scikit-learn
+NumPy~=1.23.3
+pandas~=1.5.1
+scikit-learn~=1.1.2
 Matplotlib
 scikit-image
-SciPy
-imblearn
+SciPy~=1.9.1
+imblearn~=0.0
+gensim~=4.2.0
+joblib~=1.1.0
+nltk~=3.7
+sklearn~=0.0
