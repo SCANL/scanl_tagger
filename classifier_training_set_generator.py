@@ -1,35 +1,10 @@
-import json
-
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, VotingClassifier, BaggingClassifier, \
-    GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
 import joblib
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score, balanced_accuracy_score
 from sklearn.metrics import f1_score
-from sklearn.metrics import hamming_loss
-from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import make_scorer
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV, cross_validate
-from sklearn.model_selection import train_test_split
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC, LinearSVC
-from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
+from sklearn.tree import DecisionTreeClassifier
 import numpy as np
-import pandas as pd
-import scipy as sp
-from imblearn.over_sampling import SMOTE, ADASYN, BorderlineSMOTE
-from imblearn.over_sampling import RandomOverSampler
-from imblearn.metrics import classification_report_imbalanced
-
-import utils
 
 #RANDOM_CLASSIFIER_SEED = 5545
 RANDOM_CLASSIFIER_SEED = 1269

@@ -1,20 +1,11 @@
-import math
 import os
 import sqlite3
 import time
 from datetime import datetime
-import random
-
 import joblib
 import numpy as np
 import pandas as pd
-from gensim.models.word2vec_inner import REAL
-from pandas import DataFrame
-
 import classifier_multiclass
-from gensim.models import Word2Vec
-from nltk.tokenize import WordPunctTokenizer
-from numpy.linalg import norm
 import gensim.downloader as api
 
 # import classifier_training_set_generator
@@ -30,8 +21,13 @@ identifier_column = "ID"
 independent_variables_base = ['NORMALIZED_POSITION']
 dependent_variable = 'CORRECT_TAG'
 vector_size = 300
+
+#Conjunctions and determiners are closed set words, so we can soft-code them by doing a lookup on their
+#Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
+#while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
 conjunctions = ["for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
                 "if", "once", "since", "until", "unless", "when"]
+
 determiners = ["a", "all", "an", "another", "any", "anybody", "anyone", "anywhere",
                "each", "either", "enough", "everybody", "everyone", "everything", "everywhere",
                "every", "first", "few", "fewer", "fewest", "hers", "his", "last", "least",
@@ -49,21 +45,14 @@ def read_input(sql, conn):
 
 independent_variables_add = [[]]
 independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION',"DIGITS", 'POSITION']
-                                 # "DIGITS", 'POSITION', "DETERMINER", "CONJUNCTION", "FREQUENCY"]
-# 'WORD'
-
 
 for i in range(0, vector_size):
     independent_variables_add[0].append("VEC" + str(i))
-# "DETERMINER","CONJUNCTION","FREQUENCY", 'CONTEXT','WORD',
 
 def createFeatures(data):
-    print(data)
     startTime = time.time()
-    words = data["WORD"]
-    model = createModel(words, "output/gensimTrainingModel.pkl")
-    vectors = createWordVectorsFeature(model, data)
-    # createCosinesFeature(model, data, vectors)
+    model = createModel()
+    createWordVectorsFeature(model, data)
     createLetterFeature(data)
     createDigitFeature(data)
     createDeterminerFeature(data)
@@ -114,44 +103,19 @@ def createLetterFeature(data):
     lastLetters = np.array([ord(word[len(word) - 1].lower()) for word in data["WORD"]])
     data.insert(0, "LAST_LETTER", lastLetters)
 
-
-def getCosine(vectorA, vectorB):
-    cosine = np.dot(vectorA, vectorB) / (norm(vectorA, axis=0) * norm(vectorB))
-    if math.isnan(cosine):
-        return 0
-    else:
-        return cosine
-
-
-def createModel(words, pklFile=""):
+def createModel(pklFile=""):
     if pklFile != "":
         model = joblib.load(pklFile)
         return model
     modelGensim = api.load('fasttext-wiki-news-subwords-300')  # CJ, D, P, VM?
-    # for word in words[0:20]:
-    #     print(word, modelGensim.most_similar(word.lower()))
-    # modelWords = list(words) + list(modelGensim.index_to_key)
-    #
-    # # '/Users/gavinburris/gensim-data/conceptnet-numberbatch-17-06-300/conceptnet-numberbatch-17-06-300.gz
-    # # '/Users/gavinburris/gensim-data/glove-wiki-gigaword-300/glove-wiki-gigaword-300.gz
-    # # '/Users/gavinburris/gensim-data/glove-wiki-gigaword-50/glove-wiki-gigaword-50.gz'
-    # # '/Users/gavinburris/gensim-data/glove-twitter-200/glove-twitter-200.gz' Had 1.00 Recall for VM
-    # # '/Users/gavinburris/gensim-data/fasttext-wiki-news-subwords-300/fasttext-wiki-news-subwords-300.gz'
-    #
-    # tokenizer = WordPunctTokenizer()
-    # words_tok = [tokenizer.tokenize(word.lower()) for word in modelWords]
-    # model = Word2Vec(words_tok, vector_size=vector_size, min_count=1, workers=1).wv
-    # model.vectors_lockf = np.ones(len(model), dtype=REAL)
-    joblib.dump(modelGensim, "output/gensimTrainingModel.pkl")
-    # model.save("output/gensimTrainingModel.pkl")
 
-    # model.intersect_word2vec_format(
-    #     '/Users/gavinburris/gensim-data/conceptnet-numberbatch-17-06-300/conceptnet-numberbatch-17-06-300.gz')
-    # for word in words[0:20]:
-    #     print(word, model.most_similar(word.lower()))
+    if not os.path.exists("output"):
+        os.makedirs("output")
+    joblib.dump(modelGensim, "output/gensimTrainingModel.pkl")
+
     return modelGensim
 
-
+#Get word vectors for our closed set words
 def createWordVectorsFeature(model, data):
     words = data["WORD"]
     zeroVector = np.zeros_like(model.get_vector("and"))
@@ -161,47 +125,13 @@ def createWordVectorsFeature(model, data):
     return vectors
 
 
-def createCosinesFeature(model, data, vectors):
-    words = data["WORD"]
-    pos = data["CORRECT_TAG"]
-    # posDict = {"CJ": [], "D": [], "DT": [], "N": [], "NM": [], "NPL": [], "P": [], "PRE": [], "V": [], "VM": []}
-    digits = [digit for digit in range(0, 100)]
-    posDict = {"CJ": conjunctions, "D": digits, "DT": determiners, "P": [], "PRE": []}
-    cosinesCJ = []
-    cosinesD = []
-    cosinesDT = []
-
-    zeroVector = [0] * 300
-    # for i in range(len(words)):
-    #     posDict[pos[i]].append(words[i].lower())
-    # print(posDict["P"])
-    # print(posDict["PRE"])
-
-    for key in posDict.keys():
-        # if word in model.index_to_key else zeroVector
-        posDict[key] = np.array([model.get_vector(word) for word in
-                                 posDict[key]]).mean(axis=0)
-
-    for i in range(len(words)):
-        print(words[i], getCosine(vectors[i], posDict["CJ"]), getCosine(vectors[i], posDict["D"]), getCosine(vectors[i], posDict["DT"]))
-        cosinesCJ.append(getCosine(vectors[i], posDict["CJ"]))
-        cosinesD.append(getCosine(vectors[i], posDict["D"]))
-        cosinesDT.append(getCosine(vectors[i], posDict["DT"]))
-
-    print("COSINE_CJ", cosinesCJ)
-    print("COSINE_D", cosinesD)
-    print("COSINE_DT", cosinesDT)
-    data.insert(0, "COSINE_CJ", np.array(cosinesCJ))
-    data.insert(0, "COSINE_D", np.array(cosinesD))
-    data.insert(0, "COSINE_DT", np.array(cosinesDT))
-
-
 def main():
     count = 0
     for feature_list in independent_variables_add:
         count = count + 1
         start = time.time()
         intervalStart = start
+
         # ###############################################################
         print(" --  -- Started: Reading Database --  -- ")
         connection = sqlite3.connect(input_file)
@@ -272,17 +202,12 @@ def annotate_word(normalized_length, code_context, last_letter, max_position, di
             'DIGITS': [digits],
             'POSITION': [position],
             'CONTEXT': [code_context],
-            # 'DETERMINER': [determiner],
-            # 'CONJUNCTION': [conjunction],
-            # 'FREQUENCY': [frequency]
             }
     for i, vector in enumerate(vectors):
         data["VEC" + str(i)] = vector
 
     df_features = pd.DataFrame(data,
                                columns=independent_variables_base + independent_variables_add[0])
-    # df_features = pd.DataFrame(data,
-    #                            columns=['SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG', 'FLAIR_TAG', 'NORMALIZED_POSITION', 'CONTEXT'])
 
     clf = joblib.load(input_model)
     y_pred = clf.predict(df_features)
@@ -303,9 +228,8 @@ def read_from_database():
     print("IDENTIFIER,GRAMMAR_PATTERN,WORD,SWUM,STANFORD,CORRECT,PREDICTION,MATCH,SYSTEM,CONTEXT,IDENT",
           file=open(outputFile, "a"))
     createFeatures(df_input)
+    print(df_input.head())
     for i, row in df_input.iterrows():
-        print(i)
-        print(row)
         actual_word = row['WORD']
         actual_identifier = row['IDENTIFIER']
         actual_pattern = row['GRAMMAR_PATTERN']
@@ -315,7 +239,6 @@ def read_from_database():
         system = row['SYSTEM']
         ident = row['IDENTIFIER_CODE']
         last_letter = row['LAST_LETTER']
-        # word_type = row['TYPE']
         max_position = row['MAXPOSITION']
         digits = row['DIGITS']
         position = row['POSITION']
