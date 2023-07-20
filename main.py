@@ -21,7 +21,7 @@ identifier_column = "ID"
 independent_variables_base = ['NORMALIZED_POSITION']
 dependent_variable = 'CORRECT_TAG'
 vector_size = 300
-
+trainingSeed = 236373
 #Conjunctions and determiners are closed set words, so we can soft-code them by doing a lookup on their
 #Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
 #while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
@@ -39,7 +39,7 @@ determiners = ["a", "all", "an", "another", "any", "anybody", "anyone", "anywher
 def read_input(sql, conn):
     input_data = pd.read_sql_query(sql, conn)
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
-    createFeatures(input_data)
+    input_data = createFeatures(input_data)
     return input_data
 
 
@@ -52,20 +52,23 @@ for i in range(0, vector_size):
 def createFeatures(data):
     startTime = time.time()
     model = createModel()
-    createWordVectorsFeature(model, data)
-    createLetterFeature(data)
-    createDigitFeature(data)
-    createDeterminerFeature(data)
-    createConjunctionFeature(data)
-    createFrequencyFeature(data)
-    wordLength(data)
+    data = createWordVectorsFeature(model, data)
+    data = createLetterFeature(data)
+    data = createDigitFeature(data)
+    data = createDeterminerFeature(data)
+    data = createConjunctionFeature(data)
+    data = createFrequencyFeature(data)
+    data = wordLength(data)
     print("Total Feature Time: " + str((time.time() - startTime)))
+    return data
 
 
 def wordLength(data):
     words = data["WORD"]
-    wordLengths = [len(word) for word in words]
-    data.insert(0, "WORD_LENGTH", wordLengths)
+    wordLengths = pd.DataFrame([len(word) for word in words])
+    wordLengths.columns = ['WORD LENGTH']
+    data = pd.concat([data, wordLengths], axis=1)
+    return data
 
 
 def createFrequencyFeature(data):
@@ -77,31 +80,55 @@ def createFrequencyFeature(data):
             frequency[word] = frequency[word] + 1
         else:
             frequency[word] = 1
-    frequencyList = [frequency[word.lower()] for word in words]
-    data.insert(0, "FREQUENCY", frequencyList)
+    frequencyList = pd.DataFrame([frequency[word.lower()] for word in words])
+    frequencyList.columns = ['FREQUENCY']
+    data = pd.concat([data, frequencyList], axis=1)
+    return data
 
 
 def createConjunctionFeature(data):
     words = data["WORD"]
-    isConjunction = [1 if word in conjunctions else 0 for word in words]
-    data.insert(0, "CONJUNCTION", isConjunction)
+    isConjunction = pd.DataFrame([1 if word in conjunctions else 0 for word in words])
+    isConjunction.columns = ["CONJUNCTION"]
+    data = pd.concat([data, isConjunction], axis=1)
+    return data
 
 
 def createDeterminerFeature(data):
     words = data["WORD"]
-    isDeterminer = [1 if word in determiners else 0 for word in words]
-    data.insert(0, "DETERMINER", isDeterminer)
+    isDeterminer = pd.DataFrame([1 if word in determiners else 0 for word in words])
+    isDeterminer.columns = ["DETERMINER"]
+    data = pd.concat([data, isDeterminer], axis=1)
+    return data
 
 
 def createDigitFeature(data):
     words = data["WORD"]
-    isDigits = [1 if word.isdigit() else 0 for word in words]
-    data.insert(0, "DIGITS", isDigits)
+    isDigits = pd.DataFrame([1 if word.isdigit() else 0 for word in words])
+    isDigits.columns = ["DIGITS"]
+    data = pd.concat([data, isDigits], axis=1)
+    return data
 
 
 def createLetterFeature(data):
-    lastLetters = np.array([ord(word[len(word) - 1].lower()) for word in data["WORD"]])
-    data.insert(0, "LAST_LETTER", lastLetters)
+    lastLetters = pd.DataFrame(np.array([ord(word[len(word) - 1].lower()) for word in data["WORD"]]))
+    lastLetters.columns = ["LAST_LETTER"]
+    data = pd.concat([data, lastLetters], axis=1)
+    return data
+
+#Get word vectors for our closed set words
+def createWordVectorsFeature(model, data):
+    words = data["WORD"]
+    zeroVector = np.zeros_like(model.get_vector("and"))
+    vectors = [model.get_vector(word) if word in model.index_to_key else zeroVector for word in words]
+    cnames = [f'VEC{i}' for i in range(0, vector_size)]
+    df = pd.DataFrame()
+    for i in range(0, vector_size):
+        df = pd.concat([df, pd.DataFrame([vector[i] for vector in vectors])], axis=1)
+    df.columns = cnames
+
+    data = pd.concat([data, df], axis=1)
+    return data
 
 def createModel(pklFile=""):
     if pklFile != "":
@@ -114,16 +141,6 @@ def createModel(pklFile=""):
     joblib.dump(modelGensim, "output/gensimTrainingModel.pkl")
 
     return modelGensim
-
-#Get word vectors for our closed set words
-def createWordVectorsFeature(model, data):
-    words = data["WORD"]
-    zeroVector = np.zeros_like(model.get_vector("and"))
-    vectors = [model.get_vector(word) if word in model.index_to_key else zeroVector for word in words]
-    for i in range(0, vector_size):
-        data.insert(i, "VEC" + str(i), np.array([vector[i] for vector in vectors]))
-    return vectors
-
 
 def main():
     count = 0
@@ -178,8 +195,6 @@ def main():
         results_text_file.write("Features: {number}. {features}\n".format(features=feature_list, number=count))
         algorithms = [classifier_multiclass.Algorithm.DECISION_TREE]
         for index in range(1):
-            trainingSeed = 236373
-            # trainingSeed = round(random.random() * 1000000)
             classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file,
                                                          'output',
                                                          algorithms, trainingSeed)
@@ -191,6 +206,8 @@ def main():
         end = time.time()
         print("Process completed in " + str(end - start) + " seconds")
 
+
+############CURRENTLY NOT EXECUTED###############
 
 def annotate_word(normalized_length, code_context, last_letter, max_position, digits, position,
                   determiner, conjunction, frequency, vectors):
@@ -227,8 +244,10 @@ def read_from_database():
     print(" --  --  --  -- Read " + str(len(df_input)) + " input rows --  --  --  -- ")
     print("IDENTIFIER,GRAMMAR_PATTERN,WORD,SWUM,STANFORD,CORRECT,PREDICTION,MATCH,SYSTEM,CONTEXT,IDENT",
           file=open(outputFile, "a"))
-    createFeatures(df_input)
-    print(df_input.head())
+    df_input = createFeatures(df_input)
+    print("DF")
+    print(df_input)
+    print("DF END")
     for i, row in df_input.iterrows():
         actual_word = row['WORD']
         actual_identifier = row['IDENTIFIER']
@@ -248,7 +267,6 @@ def read_from_database():
         vectors = []
         for i in range(vector_size):
             vectors.append(row["VEC" + str(i)])
-
         result = annotate_word(normalized_length, code_context, last_letter, max_position, digits, position,
                                determiner, conjunction, frequency, vectors)
         print(
