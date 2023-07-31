@@ -18,7 +18,7 @@ import pandas as pd
 from imblearn.metrics import classification_report_imbalanced
 import print_utility_functions as utils
 from enum import Enum
-
+import random
 
 class Algorithm(Enum):
     RANDOM_FOREST = "RandomForest"
@@ -51,7 +51,7 @@ class AlgoData:
 
 # RANDOM_TRAIN_SEED = 484565
 RANDOM_CLASSIFIER_SEED = 1269
-
+print("Classifier seed: " + str(RANDOM_CLASSIFIER_SEED))
 
 def build_datasets(X, y, text_column, output_directory, trainingSeed):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=trainingSeed)
@@ -187,13 +187,14 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
 
 def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring, algoData):
     param_decisiontree = {
-        'max_depth': range(1, 100),
-        'criterion': ['gini', 'entropy']
+        'max_depth': range(1, 200),
+        'criterion': ['gini', 'entropy', 'log_loss'],
+        'splitter': ['best', 'random']
     }
 
     results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
     print("DecisionTreeClassifier")
-    clf = GridSearchCV(DecisionTreeClassifier(random_state=RANDOM_CLASSIFIER_SEED), param_decisiontree, cv=5,
+    clf = GridSearchCV(DecisionTreeClassifier(random_state=RANDOM_CLASSIFIER_SEED), param_decisiontree, cv=6,
                        scoring=scorersKey, n_jobs=-1,
                        error_score=0.0)
     clf.fit(algoData.X_train, algoData.y_train)
@@ -210,8 +211,8 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
 
     presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
     results_text_file.write("f1_weighted importances\n")
-    # for feature, value in zip(algoData.X.columns, presult_f1.importances):
-    #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean f1_weighted importances\n")
@@ -232,8 +233,8 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
 
     presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
     results_text_file.write("accuracy importances\n")
-    # for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
-    #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     vec_feature_sum = 0

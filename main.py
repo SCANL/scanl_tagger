@@ -7,11 +7,12 @@ import numpy as np
 import pandas as pd
 import classifier_multiclass
 import gensim.downloader as api
-
+import random
+import nltk
 # import classifier_training_set_generator
 
-input_file = 'input/revision_training_db.db'
-sql_statement = 'select * from training_set_cp_minor order by ID';
+input_file = 'input/det_conj_db.db'
+sql_statement = 'select * from base order by random()'
 # sql_statement = 'select * from training_set_conj_other order by random()';
 # sql_statement = 'select * from training_set_norm order by random()';
 # sql_statement = 'select * from training_set_norm_other order by random()';
@@ -26,25 +27,26 @@ trainingSeed = 236373
 #Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
 #while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
 conjunctions = ["for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
-                "if", "once", "since", "until", "unless", "when"]
+                "if", "once", "since", "until", "unless", "when", "as", "that", "though", "till", "while", "where", "after",
+                "although", "as", "as if", "as long as", "as much as", "as soon as", "as far as", "as though", "by the time",
+                "in as much as", "in as much", "in order to", "in order that", "in case", "lest", "though", "now that", "now since", 
+                "now when", "now", "even if", "even", "even though", "provided", "provided that", "else", "if then", "if when", "if only", 
+                "just as", "where", "wherever", "whereas", "where if", "whether", "since", "because", "whose", "whoever", "unless",
+                "while", "before", "why", "so that", "until", "how", "since", "than", "till", "whenever", "supposing", "when", 
+                "or not", "what", "also", "otherwise", "for", "neither nor", "and", "not only but also", "nor", "whether or", "but", 
+                "so that", "or", "such that", "yet", "as soon as", "so", "as well as", "also", "provided that", "as well as", "whoever", 
+                "yet", "while", "still", "until", "too", "unless", "only", "since", "however", "as if", "no less than", "no less than", 
+                "which", "otherwise", "where", "in order that", "who", "than", "after", "as", "because", "either or", "whoever", "nevertheless", 
+                "though", "else", "although", "if", "if", "while", "till", "no sooner than"]
 
-determiners = ["a", "all", "an", "another", "any", "anybody", "anyone", "anywhere",
-               "each", "either", "enough", "everybody", "everyone", "everything", "everywhere",
-               "every", "first", "few", "fewer", "fewest", "hers", "his", "last", "least",
-               "many", "much", "my", "neither", "next", "nobody", "none", "nothing", "nowhere", "once", "our",
-               "second", "some", "somebody", "something", "somewhere", "that", "the", "their", "these", "this", "those",
-               "various", "whatever", "which", "whichever", "whose", "your"]
-
-
-def read_input(sql, conn):
-    input_data = pd.read_sql_query(sql, conn)
-    print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
-    input_data = createFeatures(input_data)
-    return input_data
-
+determiners = ["a", "a few", "a little", "all", "an", "another", "any", "anybody", "anyone", "anything", "anywhere", "both", "certain", "each", 
+               "either", "enough", "every", "everybody", "everyone", "everything", "everywhere", "few", "fewer", "fewest", "last", "least", "less", 
+               "little", "many", "many a", "more", "most", "much", "neither", "next", "no", "no one", "nobody", "none", "nothing", "nowhere", "once", 
+               "said", "several", "some", "somebody", "something", "somewhere", "sufficient", "that", "the", "these", "this", "those", "us", 
+               "various", "we", "what", "whatever", "which", "whichever", "you"]
 
 independent_variables_add = [[]]
-independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION',"DIGITS", 'POSITION']
+independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'WORD LENGTH', 'MAXPOSITION', 'NLTK_POS']
 
 for i in range(0, vector_size):
     independent_variables_add[0].append("VEC" + str(i))
@@ -59,7 +61,16 @@ def createFeatures(data):
     data = createConjunctionFeature(data)
     data = createFrequencyFeature(data)
     data = wordLength(data)
+    data = maxPosition(data)
+    data = wordPosTag(data)
     print("Total Feature Time: " + str((time.time() - startTime)))
+    return data
+
+def wordPosTag(data):
+    words = data["WORD"]
+    pos_tags = pd.DataFrame([nltk.pos_tag([word])[-1][-1] for word in words])
+    pos_tags.columns = ['NLTK_POS']
+    data = pd.concat([data, pos_tags], axis=1)
     return data
 
 
@@ -70,6 +81,12 @@ def wordLength(data):
     data = pd.concat([data, wordLengths], axis=1)
     return data
 
+def maxPosition(data):
+    identifiers = data["IDENTIFIER"]
+    maxPosition = pd.DataFrame([len(identifier) for identifier in identifiers])
+    maxPosition.columns = ['MAXPOSITION']
+    data = pd.concat([data, maxPosition], axis=1)
+    return data
 
 def createFrequencyFeature(data):
     words = data["WORD"]
@@ -142,6 +159,12 @@ def createModel(pklFile=""):
 
     return modelGensim
 
+def read_input(sql, conn):
+    input_data = pd.read_sql_query(sql, conn)
+    print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
+    input_data = createFeatures(input_data)
+    return input_data
+
 def main():
     count = 0
     for feature_list in independent_variables_add:
@@ -162,9 +185,9 @@ def main():
         feature_list = independent_variables_base + feature_list
         df_input.set_index(identifier_column, inplace=True)
         df_features = df_input[feature_list]
-        if 'WORD' in feature_list:
-            category_variables.append('WORD')
-            df_features['WORD'] = df_features['WORD'].astype(str)
+        if 'NLTK_POS' in feature_list:
+            category_variables.append('NLTK_POS')
+            df_features['NLTK_POS'] = df_features['NLTK_POS'].astype(str)
         if 'TYPE' in feature_list:
             category_variables.append('TYPE')
             df_features['TYPE'] = df_features['TYPE'].astype(str)
@@ -192,7 +215,7 @@ def main():
         print(df_class[dependent_variable].value_counts())
 
         results_text_file.write("SQL: %s\n" % sql_statement)
-        results_text_file.write("Features: {number}. {features}\n".format(features=feature_list, number=count))
+        results_text_file.write("Features: {number}. {features}\n".format(features=df_features, number=count))
         algorithms = [classifier_multiclass.Algorithm.DECISION_TREE]
         for index in range(1):
             classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file,
@@ -232,8 +255,8 @@ def annotate_word(normalized_length, code_context, last_letter, max_position, di
 
 
 def read_from_database():
-    input_file = 'input/revision_testing_db.db'
-    sql_statement = "select * from testing_set_cp_minor"
+    input_file = 'input/conjunctiondb.db'
+    sql_statement = "select * from base"
     # sql_statement = "select * from testing_set_ca_minor"
     # sql_statement = "select * from testing_set_np_minor"
     # sql_statement = "select * from testing_set_na_minor"
