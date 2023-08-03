@@ -1,13 +1,21 @@
 import os
 import pandas as pd
 
-def print_prediction_results(inputs, predictions, labels, classifier, output_directory):
-    dfObj = pd.DataFrame(columns=['Id', 'PredictedLabel', 'ActualLabel'])
-    for input, prediction, label in zip(inputs, predictions, labels):
-        # if prediction != label:
-        dfObj = dfObj.from_dict({'Id': [input], 'PredictedLabel': [prediction], 'ActualLabel': [label]})
 
-    dfObj.to_csv("%s/prediction_results_%s.csv" % (output_directory, classifier))
+
+def print_prediction_results(inputs, predictions, labels, classifier, output_directory):
+    # Create an empty list to hold the data
+    data = []
+
+    for idx, (input_data, prediction, label) in enumerate(zip(inputs, predictions, labels)):
+        # Assuming inputs, predictions, and labels are lists or arrays of equal length.
+        data.append([idx, prediction, label])
+
+    # Create a DataFrame from the list of data
+    dfObj = pd.DataFrame(data, columns=['Id', 'PredictedLabel', 'ActualLabel'])
+
+    # Save the DataFrame to a CSV file
+    dfObj.to_csv("%s/prediction_results_%s.csv" % (output_directory, classifier), index=False)
 
 
 def print_cm(cm, labels, hide_zeroes=False, hide_diagonal=False, hide_threshold=None, classifier=None,

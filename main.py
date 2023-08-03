@@ -7,9 +7,15 @@ import numpy as np
 import pandas as pd
 import classifier_multiclass
 import gensim.downloader as api
+from gensim.models import KeyedVectors as word2vec
 import random
 import nltk
+
+from spellchecker import SpellChecker
+spell = SpellChecker()
+
 # import classifier_training_set_generator
+nltk.download('universal_tagset')
 
 input_file = 'input/det_conj_db.db'
 sql_statement = 'select * from base order by random()'
@@ -21,11 +27,13 @@ identifier_column = "ID"
 # independent_variables = ['TYPE', 'WORD', 'SWUM_TAG', 'POSSE_TAG', 'STANFORD_TAG', 'NORMALIZED_POSITION', 'CONTEXT']
 independent_variables_base = ['NORMALIZED_POSITION']
 dependent_variable = 'CORRECT_TAG'
-vector_size = 300
-trainingSeed = 236373
+vector_size = 128
+trainingSeed = random.randint(0, 4294967295)
+classifierSeed = random.randint(0, 4294967295)
 #Conjunctions and determiners are closed set words, so we can soft-code them by doing a lookup on their
 #Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
 #while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
+
 conjunctions = ["for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
                 "if", "once", "since", "until", "unless", "when", "as", "that", "though", "till", "while", "where", "after",
                 "although", "as", "as if", "as long as", "as much as", "as soon as", "as far as", "as though", "by the time",
@@ -45,30 +53,61 @@ determiners = ["a", "a few", "a little", "all", "an", "another", "any", "anybody
                "said", "several", "some", "somebody", "something", "somewhere", "sufficient", "that", "the", "these", "this", "those", "us", 
                "various", "we", "what", "whatever", "which", "whichever", "you"]
 
+prepositions = ["after", "although", "as", "at", "because", "before", "beside", "besides", "between", "by", "considering", "despite", "except", 
+                "for", "from", "given", "granted", "if", "into", "lest", "like", "notwithstanding", "now", "of", "on", "once", "provided", "providing",
+                "save", "seeing", "since", "so", "supposing", "than", "though", "till", "to", "unless", "until", "upon", "when", "whenever", "where",
+                "whereas", "wherever", "while", "whilst", "with", "without"]
+
 independent_variables_add = [[]]
-independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'WORD LENGTH', 'MAXPOSITION', 'NLTK_POS']
+independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'WORD LENGTH', 'MAXPOSITION', 'NLTK_POS', 'DIGITS', 'CONJUNCTION', 'DETERMINER', 'PREPOSITION', 'POSITION', 'FREQUENCY']
 
 for i in range(0, vector_size):
     independent_variables_add[0].append("VEC" + str(i))
+for i in range(0, vector_size):
+    independent_variables_add[0].append("MVEC" + str(i))
 
 def createFeatures(data):
     startTime = time.time()
-    model = createModel()
-    data = createWordVectorsFeature(model, data)
+    modelTokens, modelMethods = createModel()
+    data = createWordVectorsFeature(modelTokens, data)
+    data = createMethodWordVectorsFeature(modelMethods, data)
     data = createLetterFeature(data)
     data = createDigitFeature(data)
     data = createDeterminerFeature(data)
     data = createConjunctionFeature(data)
     data = createFrequencyFeature(data)
+    data = createPrepositionFeature(data)
     data = wordLength(data)
     data = maxPosition(data)
     data = wordPosTag(data)
+    #data = createVowelFeature(data)
     print("Total Feature Time: " + str((time.time() - startTime)))
     return data
 
+universal_to_custom = {
+    'VERB': 'VERB',
+    'NOUN': 'NOUN',
+    'PROPN': 'NOUN',
+    'ADJ': 'ADJ',
+    'ADV': 'ADV',
+    'ADP': 'ADP',
+    'CCONJ': 'CONJ',
+    'CONJ': 'CONJ',
+    'SCONJ' : 'CONJ',
+    'PRON' : 'DET',
+    'SYM' : 'NM',
+    'DET': 'DET',
+    'NUM': 'NUM',
+    'PRT': 'NM',
+    'INTJ' : 'NM',
+    'X': 'NM',
+    '.': '.',
+}
+
 def wordPosTag(data):
     words = data["WORD"]
-    pos_tags = pd.DataFrame([nltk.pos_tag([word])[-1][-1] for word in words])
+    word_tags = [universal_to_custom[nltk.pos_tag([word.lower()], tagset='universal')[-1][-1]] for word in words]
+    pos_tags = pd.DataFrame(word_tags)
     pos_tags.columns = ['NLTK_POS']
     data = pd.concat([data, pos_tags], axis=1)
     return data
@@ -81,9 +120,10 @@ def wordLength(data):
     data = pd.concat([data, wordLengths], axis=1)
     return data
 
+
 def maxPosition(data):
-    identifiers = data["IDENTIFIER"]
-    maxPosition = pd.DataFrame([len(identifier) for identifier in identifiers])
+    identifiers = data["GRAMMAR_PATTERN"]
+    maxPosition = pd.DataFrame([len(identifier.split()) for identifier in identifiers])
     maxPosition.columns = ['MAXPOSITION']
     data = pd.concat([data, maxPosition], axis=1)
     return data
@@ -102,10 +142,43 @@ def createFrequencyFeature(data):
     data = pd.concat([data, frequencyList], axis=1)
     return data
 
+def count_vowels(word):
+    # Convert the word to lowercase to make the function case-insensitive
+    word = word.lower()
+
+    # Define a set of vowels
+    vowels = {'a', 'e', 'i', 'o', 'u'}
+
+    # Initialize a variable to store the count of vowels
+    vowel_count = 0
+
+    word_size = len(word)
+
+    # Iterate through each character in the word
+    for char in word:
+        # Check if the character is a vowel
+        if char in vowels:
+            vowel_count += 1
+
+    return vowel_count
+
+def createVowelFeature(data):
+    words = data["WORD"]
+    isVowelorConsonant = pd.DataFrame([count_vowels(word) for word in words])
+    isVowelorConsonant.columns = ["VOWELCOUNT"]
+    data = pd.concat([data, isVowelorConsonant], axis=1)
+    return data
+
+def createPrepositionFeature(data):
+    words = data["WORD"]
+    isPreposition = pd.DataFrame([1 if word.lower() in prepositions else 0 for word in words])
+    isPreposition.columns = ["PREPOSITION"]
+    data = pd.concat([data, isPreposition], axis=1)
+    return data
 
 def createConjunctionFeature(data):
     words = data["WORD"]
-    isConjunction = pd.DataFrame([1 if word in conjunctions else 0 for word in words])
+    isConjunction = pd.DataFrame([1 if word.lower() in conjunctions else 0 for word in words])
     isConjunction.columns = ["CONJUNCTION"]
     data = pd.concat([data, isConjunction], axis=1)
     return data
@@ -113,7 +186,7 @@ def createConjunctionFeature(data):
 
 def createDeterminerFeature(data):
     words = data["WORD"]
-    isDeterminer = pd.DataFrame([1 if word in determiners else 0 for word in words])
+    isDeterminer = pd.DataFrame([1 if word.lower() in determiners else 0 for word in words])
     isDeterminer.columns = ["DETERMINER"]
     data = pd.concat([data, isDeterminer], axis=1)
     return data
@@ -133,11 +206,27 @@ def createLetterFeature(data):
     data = pd.concat([data, lastLetters], axis=1)
     return data
 
+def get_word_vector(word, model):
+    try:
+        # Try to get the word vector from the model
+        vector = model.get_vector(word)
+        return vector
+    except KeyError:
+        # If the word is not in the model, correct it using pyspellchecker
+        corrected_word = spell.correction(word)
+        
+        try:
+            # Try again to get the word vector for the corrected word
+            vector = model.get_vector(corrected_word)
+            return vector
+        except KeyError:
+            # If the corrected word is still not in the model, return a zero vector
+            return np.zeros(model.vector_size)
+
 #Get word vectors for our closed set words
 def createWordVectorsFeature(model, data):
     words = data["WORD"]
-    zeroVector = np.zeros_like(model.get_vector("and"))
-    vectors = [model.get_vector(word) if word in model.index_to_key else zeroVector for word in words]
+    vectors = [get_word_vector(word.lower(), model) for word in words]
     cnames = [f'VEC{i}' for i in range(0, vector_size)]
     df = pd.DataFrame()
     for i in range(0, vector_size):
@@ -147,17 +236,24 @@ def createWordVectorsFeature(model, data):
     data = pd.concat([data, df], axis=1)
     return data
 
+def createMethodWordVectorsFeature(model, data):
+    words = data["WORD"]
+    vectors = [get_word_vector(word.lower(), model) for word in words]
+    cnames = [f'MVEC{i}' for i in range(0, vector_size)]
+    df = pd.DataFrame()
+    for i in range(0, vector_size):
+        df = pd.concat([df, pd.DataFrame([vector[i] for vector in vectors])], axis=1)
+    df.columns = cnames
+
+    data = pd.concat([data, df], axis=1)
+    return data
+
 def createModel(pklFile=""):
-    if pklFile != "":
-        model = joblib.load(pklFile)
-        return model
-    modelGensim = api.load('fasttext-wiki-news-subwords-300')  # CJ, D, P, VM?
+    #modelGensim = api.load('../code2vec/token_vecs.txt', binary=False)  # CJ, D, P, VM?
+    modelGensimTokens = word2vec.load_word2vec_format('../code2vec/token_vecs.txt', binary=False)
+    modelGensimMethods = word2vec.load_word2vec_format('../code2vec/target_vecs.txt', binary=False)
 
-    if not os.path.exists("output"):
-        os.makedirs("output")
-    joblib.dump(modelGensim, "output/gensimTrainingModel.pkl")
-
-    return modelGensim
+    return modelGensimTokens, modelGensimMethods
 
 def read_input(sql, conn):
     input_data = pd.read_sql_query(sql, conn)
@@ -220,10 +316,11 @@ def main():
         for index in range(1):
             classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file,
                                                          'output',
-                                                         algorithms, trainingSeed)
+                                                         algorithms, trainingSeed, classifierSeed)
             print("Run #" + str(index))
             print("Time Stamp: " + str(time.time() - intervalStart))
             print("Training Seed: " + str(trainingSeed))
+            print("Classifier seed: " + str(classifierSeed))
             intervalStart = time.time()
 
         end = time.time()
