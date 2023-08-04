@@ -23,6 +23,8 @@ import random
 # Training Seed: 3285412837
 # Classifier seed: 3324435392
 
+# Training Seed: 2326645528
+# Classifier seed: 584803755
 class Algorithm(Enum):
     RANDOM_FOREST = "RandomForest"
     DECISION_TREE = "DecisionTree"
@@ -68,6 +70,7 @@ def build_datasets(X, y, text_column, output_directory, trainingSeed):
 def perform_classification(X, y, text_column, results_text_file, output_directory, algorithms_to_use, trainingSeed, classifierSeed):
     X_train, X_test, y_train, y_test, X_train_original, X_test_original = build_datasets(X, y, "", output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
+    print(labels)
 
     algoData = AlgoData(X, y, X_train, X_test, y_train, y_test, X_train_original, X_test_original, labels)
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
@@ -180,7 +183,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.flush()
     utils.print_prediction_results(algoData.X_test_original.index, y_pred, algoData.y_test, 'RandomForestClassifier',
                                    output_directory)
-    cm = confusion_matrix(y_true, y_pred, labels=algoData.labels)
+    cm = confusion_matrix(y_true, y_pred, labels=[algoData.labels])
     utils.print_cm(cm, algoData.labels, classifier='RandomForestClassifier', output_directory=output_directory)
     results_text_file.write("\n------------------------------------------------------\n")
 
@@ -238,14 +241,19 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("\n")
 
     vec_feature_sum = 0
+    mvec_feature_sum = 0
     results_text_file.write("mean accuracy importances\n")
     for feature, value in zip(algoData.X.columns, presult_accuracy.importances_mean):
         if feature.startswith("VEC"):
             vec_feature_sum += value
+        elif feature.startswith("MVEC"):
+            mvec_feature_sum += value
         else:
             results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("{feature},{value}\n".format(feature="VEC", value=vec_feature_sum))
+    results_text_file.write("{feature},{value}\n".format(feature="MVEC", value=mvec_feature_sum))
     results_text_file.write("\n")
+
 
     cv_results = cross_validate(clf, algoData.X_test, algoData.y_test, cv=5, scoring=scoring)
     results_text_file.write('cv_results:\n')
@@ -254,7 +262,9 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
         results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
     y_true, y_pred = algoData.y_test, clf.predict(algoData.X_test)
-    results_text_file.write(classification_report(y_true, y_pred))
+
+    results_text_file.write(classification_report(y_true, y_pred, labels=['CJ','D','DT','N','NM','NPL','P','V','VM']))
+    
     results_text_file.write('balanced_accuracy_score :')
     results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
 
