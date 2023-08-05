@@ -19,7 +19,7 @@ spell = SpellChecker()
 nltk.download('universal_tagset')
 
 input_file = 'input/det_conj_db.db'
-sql_statement = 'select * from base order by random()'
+sql_statement = 'select * from base'
 # sql_statement = 'select * from training_set_conj_other order by random()';
 # sql_statement = 'select * from training_set_norm order by random()';
 # sql_statement = 'select * from training_set_norm_other order by random()';
@@ -30,35 +30,43 @@ independent_variables_base = ['NORMALIZED_POSITION']
 dependent_variable = 'CORRECT_TAG'
 vector_size = 128
 vector_size_e = 300
-trainingSeed = 2326645528
-classifierSeed = 584803755
+
+# Training Seed: 2936160
+# Classifier seed: 1129175
+seed = 2214795
+print("SEED: " + str(seed))
+trainingSeed = 2936160 #random.randint(0, 4000000)
+classifierSeed = 1129175 #random.randint(0, 4000000)
+np.random.seed(1129175)
+random.seed(seed)
+
 #Conjunctions and determiners are closed set words, so we can soft-code them by doing a lookup on their
 #Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
 #while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
-
-conjunctions = ["for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
+#"as if", "as long as", "as much as", "as soon as", "as far as", "as though", "by the time", "in as much as", "in as much", "in order to", "in order that", "in case",
+#"now that" "now since", "now when" "even if" "even though" "provided that" "if then", "if when", "if only",
+# "just as" "where if" "or not" "neither nor" "not only but also",  "whether or" "provided that", "as well as"
+# "as well as"
+conjunctions = {"for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
                 "if", "once", "since", "until", "unless", "when", "as", "that", "though", "till", "while", "where", "after",
-                "although", "as", "as if", "as long as", "as much as", "as soon as", "as far as", "as though", "by the time",
-                "in as much as", "in as much", "in order to", "in order that", "in case", "lest", "though", "now that", "now since", 
-                "now when", "now", "even if", "even", "even though", "provided", "provided that", "else", "if then", "if when", "if only", 
-                "just as", "where", "wherever", "whereas", "where if", "whether", "since", "because", "whose", "whoever", "unless",
-                "while", "before", "why", "so that", "until", "how", "since", "than", "till", "whenever", "supposing", "when", 
-                "or not", "what", "also", "otherwise", "for", "neither nor", "and", "not only but also", "nor", "whether or", "but", 
-                "so that", "or", "such that", "yet", "as soon as", "so", "as well as", "also", "provided that", "as well as", "whoever", 
-                "yet", "while", "still", "until", "too", "unless", "only", "since", "however", "as if", "no less than", "no less than", 
-                "which", "otherwise", "where", "in order that", "who", "than", "after", "as", "because", "either or", "whoever", "nevertheless", 
-                "though", "else", "although", "if", "if", "while", "till", "no sooner than"]
-
-determiners = ["a", "a few", "a little", "all", "an", "another", "any", "anybody", "anyone", "anything", "anywhere", "both", "certain", "each", 
+                "although", "as", "lest", "though", "now", "even", "provided", "else", "where", "wherever", "whereas", 
+                "whether", "since", "because", "whose", "whoever", "unless", "while", "before", "why", "so that", "until", 
+                "how", "since", "than", "till", "whenever", "supposing", "when", "what", "also", "otherwise", "for", "and",  "nor", "but", 
+                "so that", "or", "such that", "yet", "as soon as", "so", "also", "whoever", "yet", "while", "still", "until", "too", "unless", 
+                "only", "since", "however", "as if", "no less than", "no less than", "which", "otherwise", "where", "in order that", 
+                "who", "than", "after", "as", "because", "either or", "whoever", "nevertheless", "though", "else", "although", "if", 
+                "while", "till"}
+#"a few", "a little" "many a"
+determiners = {"a", "all", "an", "another", "any", "anybody", "anyone", "anything", "anywhere", "both", "certain", "each", 
                "either", "enough", "every", "everybody", "everyone", "everything", "everywhere", "few", "fewer", "fewest", "last", "least", "less", 
-               "little", "many", "many a", "more", "most", "much", "neither", "next", "no", "no one", "nobody", "none", "nothing", "nowhere", "once", 
+               "little", "many", "more", "most", "much", "neither", "next", "no", "no one", "nobody", "none", "nothing", "nowhere", "once", 
                "said", "several", "some", "somebody", "something", "somewhere", "sufficient", "that", "the", "these", "this", "those", "us", 
-               "various", "we", "what", "whatever", "which", "whichever", "you"]
+               "various", "we", "what", "whatever", "which", "whichever", "you"}
 
-prepositions = ["after", "although", "as", "at", "because", "before", "beside", "besides", "between", "by", "considering", "despite", "except", 
+prepositions = {"after", "although", "as", "at", "because", "before", "beside", "besides", "between", "by", "considering", "despite", "except", 
                 "for", "from", "given", "granted", "if", "into", "lest", "like", "notwithstanding", "now", "of", "on", "once", "provided", "providing",
                 "save", "seeing", "since", "so", "supposing", "than", "though", "till", "to", "unless", "until", "upon", "when", "whenever", "where",
-                "whereas", "wherever", "while", "whilst", "with", "without"]
+                "whereas", "wherever", "while", "whilst", "with", "without"}
 verbs = {'be','have','do','say','get','make','go','see','know','take','think','come','give','look','use','find','want','tell','put','mean','become','leave','work','need','feel','seem',
         'ask','show','try','call','keep','provide','hold','turn','follow','begin','bring','like','going','help','start','run','write','set','move','play','pay','hear','include',
         'believe','allow','meet','lead','live','stand','happen','carry','talk','appear','produce','sit','offer','consider','expect','suggest','let','read','require','continue',
@@ -108,35 +116,38 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
         'supervise','term','time','toss','underline','abuse','accumulate','alert','arm','attain','boast','boil','carve','cheer','colour','compel','crawl','crush','curl','deposit','differentiate',
         'dip','dislike','divert','embody','exert','exhaust','fine','frighten','fuck','gasp','honour','inhibit','motivate','multiply','narrow','obey','penetrate','picture','presume','prevail',
         'pronounce','rate','renew','revise','rip','scan','scratch','shiver'}
-
+#["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION', 'DETERMINER', 'METHODV_SCORE', 'METHODN_SCORE']
 independent_variables_add = [[]]
-independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODV_SCORE', 'DETERMINER', 'POSITION', 'VERB_SCORE']
+independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE']
 #independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODN_SCORE', 'METHODV_SCORE', 'DETERMINER', 'POSITION', 'FREQUENCY', 'ENGLISHN_SCORE', 'ENGLISHV_SCORE', 'WORD LENGTH', 'TOKEN_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION']
 #["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODV_SCORE', 'DETERMINER', 'POSITION']
-for i in range(0, vector_size_e):
-    independent_variables_add[0].append("VEC" + str(i))
-for i in range(0, vector_size):
-    independent_variables_add[0].append("MVEC" + str(i))
+# for i in range(0, vector_size_e):
+#     independent_variables_add[0].append("VEC" + str(i))
+# for i in range(0, vector_size):
+#     independent_variables_add[0].append("MVEC" + str(i))
 
 def createFeatures(data):
     startTime = time.time()
     modelTokens, modelMethods, modelGensimEnglish = createModel()
     data = createVerbVectorFeature(data, modelGensimEnglish)
-    data = createWordVectorsFeature(modelGensimEnglish, data, "ENG")
-    data = createMethodWordVectorsFeature(modelMethods, data)
+    data = createDeterminerVectorFeature(data, modelGensimEnglish)
+    data = createConjunctionVectorFeature(data, modelGensimEnglish)
+    data = createPrepositionVectorFeature(data, modelGensimEnglish)
+    #data = createWordVectorsFeature(modelGensimEnglish, data, "ENG")
+    #data = createMethodWordVectorsFeature(modelMethods, data)
     data = createLetterFeature(data)
-    data = createDeterminerFeature(data)
     data = createFrequencyFeature(data)
     data = maxPosition(data)
     data = wordPosTag(data)
     data = createSimilarityToVerbFeature("METHODV", modelMethods, data)
-    # data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
-    # data = createSimilarityToVerbFeature("METHODN", modelMethods, data)
-    # data = createSimilarityToVerbFeature("ENGLISHN", modelGensimEnglish, data)
+    data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
+    data = createSimilarityToVerbFeature("METHODN", modelMethods, data)
+    data = createSimilarityToVerbFeature("ENGLISHN", modelGensimEnglish, data)
     # data = createVowelFeature(data)
-    # data = createDigitFeature(data)
-    # data = createConjunctionFeature(data)
-    # data = createPrepositionFeature(data)
+    data = createDeterminerFeature(data)
+    data = createDigitFeature(data)
+    data = createConjunctionFeature(data)
+    data = createPrepositionFeature(data)
     # data = wordLength(data)
     # data = createSimilarityToVerbFeature("TOKEN", modelTokens, data)
     print("Total Feature Time: " + str((time.time() - startTime)))
@@ -241,7 +252,7 @@ def average_word_vectors(word_set, word2vec_model):
 def compute_similarity(verb_vector, target_word, model):
     # Compute the cosine similarity between the two vectors
     try:
-        target_word_vector = model.get_vector(key=target_word)
+        target_word_vector = model.get_vector(key=target_word, norm=True)
         similarity = 1 - cosine(verb_vector, target_word_vector)
         return similarity
     except KeyError:
@@ -253,6 +264,33 @@ def createVerbVectorFeature(data, model):
     
     scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
     scores.columns = ['VERB_SCORE']
+    scores = pd.concat([data, scores], axis=1)
+    return scores
+
+def createDeterminerVectorFeature(data, model):
+    words = data["WORD"]
+    vector = average_word_vectors(conjunctions, model)
+    
+    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    scores.columns = ['DET_SCORE']
+    scores = pd.concat([data, scores], axis=1)
+    return scores
+
+def createPrepositionVectorFeature(data, model):
+    words = data["WORD"]
+    vector = average_word_vectors(prepositions, model)
+    
+    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    scores.columns = ['PREP_SCORE']
+    scores = pd.concat([data, scores], axis=1)
+    return scores
+
+def createConjunctionVectorFeature(data, model):
+    words = data["WORD"]
+    vector = average_word_vectors(conjunctions, model)
+    
+    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    scores.columns = ['CONJ_SCORE']
     scores = pd.concat([data, scores], axis=1)
     return scores
 
@@ -371,7 +409,13 @@ def createModel(pklFile=""):
 def read_input(sql, conn):
     input_data = pd.read_sql_query(sql, conn)
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
-    input_data = createFeatures(input_data)
+
+    input_data_copy = input_data.copy()
+    rows = input_data_copy.values.tolist()
+    random.shuffle(rows)
+    shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
+
+    input_data = createFeatures(shuffled_input_data)
     return input_data
 
 def main():

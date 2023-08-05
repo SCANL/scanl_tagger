@@ -55,7 +55,7 @@ class AlgoData:
         self.labels = labels
 
 def build_datasets(X, y, text_column, output_directory, trainingSeed):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=trainingSeed)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=trainingSeed, stratify=y)
     X_train_original = X_train.copy(deep=True)
     X_test_original = X_test.copy(deep=True)
 
@@ -92,8 +92,8 @@ def perform_classification(X, y, text_column, results_text_file, output_director
 
 def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed):
     param_randomforest = {
-        'n_estimators': [350, 400, 450, 500],
-        'max_depth': range(30, 100),
+        'n_estimators': [50, 100],
+        'max_depth': range(1, 20),
         'criterion': ['gini', 'entropy'],
         'bootstrap': [True]
     }
@@ -190,9 +190,9 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
 
 def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed):
     param_decisiontree = {
-        'max_depth': range(1, 200),
-        'criterion': ['gini', 'entropy', 'log_loss'],
-        'splitter': ['best', 'random']
+        'max_depth': range(1, 20),
+        'criterion': ['gini', 'entropy'],
+        'splitter': ['best'],
     }
 
     results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
@@ -263,7 +263,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("\n")
     y_true, y_pred = algoData.y_test, clf.predict(algoData.X_test)
 
-    results_text_file.write(classification_report(y_true, y_pred, labels=['CJ','D','DT','N','NM','NPL','P','V','VM']))
+    results_text_file.write(classification_report(y_true, y_pred)) #labels=['CJ','D','DT','N','NM','NPL','P','V','VM']
     
     results_text_file.write('balanced_accuracy_score :')
     results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
