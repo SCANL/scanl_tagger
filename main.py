@@ -35,7 +35,7 @@ vector_size_e = 300
 # Classifier seed: 1129175
 seed = 2214795
 print("SEED: " + str(seed))
-trainingSeed = 2936160 #random.randint(0, 4000000)
+trainingSeed = 672627 #random.randint(0, 4000000)
 classifierSeed = 1129175 #random.randint(0, 4000000)
 np.random.seed(1129175)
 random.seed(seed)
@@ -469,7 +469,7 @@ def main():
 
         results_text_file.write("SQL: %s\n" % sql_statement)
         results_text_file.write("Features: {number}. {features}\n".format(features=df_features, number=count))
-        algorithms = [classifier_multiclass.Algorithm.DECISION_TREE]
+        algorithms = [classifier_multiclass.Algorithm.RANDOM_FOREST]
         for index in range(1):
             classifier_multiclass.perform_classification(df_features, df_class, text_column, results_text_file,
                                                          'output',

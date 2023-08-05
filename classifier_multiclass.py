@@ -4,12 +4,12 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import balanced_accuracy_score
+from sklearn.metrics import make_scorer, accuracy_score, f1_score, balanced_accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import make_scorer
-from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV, cross_validate
+from sklearn.metrics import classification_report, precision_recall_fscore_support
+from sklearn.model_selection import GridSearchCV, cross_validate, StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.tree import DecisionTreeClassifier
@@ -77,20 +77,24 @@ def perform_classification(X, y, text_column, results_text_file, output_director
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
     scorers = {
-        'f1_score_micro': make_scorer(f1_score, average='micro')
+        # 'accuracy': make_scorer(accuracy_score),
+        # 'f1_macro': make_scorer(f1_score, average='macro'),
+        'f1_micro': make_scorer(f1_score, average='micro'),
+        # 'f1_weighted': make_scorer(f1_score, average='weighted'),
+        #'balanced_accuracy': make_scorer(balanced_accuracy_score)
     }
 
     # https://scikit-learn.org/stable/modules/model_evaluation.html
-    scoring = ('accuracy', 'balanced_accuracy', 'f1_weighted', 'precision_weighted', 'recall_weighted')
+    scoring = ('accuracy', 'balanced_accuracy', 'f1_macro', 'f1_micro', 'f1_weighted')
 
     for key in scorers:
         for algorithm in algorithms_to_use:
             if algorithm == Algorithm.RANDOM_FOREST:
-                analyzeRandomForest(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed)
+                analyzeRandomForest(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed, trainingSeed)
             if algorithm == Algorithm.DECISION_TREE:
-                analyzeDecisionTree(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed)
+                analyzeDecisionTree(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed, trainingSeed)
 
-def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed):
+def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed, trainingSeed):
     param_randomforest = {
         'n_estimators': [50, 100],
         'max_depth': range(1, 20),
@@ -188,7 +192,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("\n------------------------------------------------------\n")
 
 
-def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed):
+def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed, trainingSeed):
     param_decisiontree = {
         'max_depth': range(1, 20),
         'criterion': ['gini', 'entropy'],
@@ -197,7 +201,8 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
 
     results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
     print("DecisionTreeClassifier")
-    clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=6,
+    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
+    clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=stratified_kfold,
                        scoring=scorersKey, n_jobs=-1,
                        error_score=0.0)
     clf.fit(algoData.X_train, algoData.y_train)
@@ -254,16 +259,22 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("{feature},{value}\n".format(feature="MVEC", value=mvec_feature_sum))
     results_text_file.write("\n")
 
+    best_model = clf.best_estimator_
 
-    cv_results = cross_validate(clf, algoData.X_test, algoData.y_test, cv=5, scoring=scoring)
+    cv_results = cross_validate(best_model, algoData.X_test, algoData.y_test, cv=stratified_kfold, scoring=scoring)
     results_text_file.write('cv_results:\n')
     results_text_file.write(str(cv_results))
     for metric, value in cv_results.items():
         results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
-    y_true, y_pred = algoData.y_test, clf.predict(algoData.X_test)
+    y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
 
     results_text_file.write(classification_report(y_true, y_pred)) #labels=['CJ','D','DT','N','NM','NPL','P','V','VM']
+    
+    # Calculate precision, recall, f1, and support for each class
+    precision, recall, f1, support = precision_recall_fscore_support(y_true, y_pred, average='micro')
+
+    results_text_file.write(f'F1_micro: {f1}')
     
     results_text_file.write('balanced_accuracy_score :')
     results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
