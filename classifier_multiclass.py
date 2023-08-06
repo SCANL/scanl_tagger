@@ -25,6 +25,11 @@ import random
 
 # Training Seed: 2326645528
 # Classifier seed: 584803755
+
+#86% cv 5 RF
+# Training Seed: 1067414
+# Classifier seed: 891843
+
 class Algorithm(Enum):
     RANDOM_FOREST = "RandomForest"
     DECISION_TREE = "DecisionTree"
@@ -55,7 +60,7 @@ class AlgoData:
         self.labels = labels
 
 def build_datasets(X, y, text_column, output_directory, trainingSeed):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=trainingSeed, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
     X_train_original = X_train.copy(deep=True)
     X_test_original = X_test.copy(deep=True)
 
@@ -79,8 +84,8 @@ def perform_classification(X, y, text_column, results_text_file, output_director
     scorers = {
         # 'accuracy': make_scorer(accuracy_score),
         # 'f1_macro': make_scorer(f1_score, average='macro'),
-        'f1_micro': make_scorer(f1_score, average='micro'),
-        # 'f1_weighted': make_scorer(f1_score, average='weighted'),
+        #'f1_micro': make_scorer(f1_score, average='micro'),
+        'f1_weighted': make_scorer(f1_score, average='weighted'),
         #'balanced_accuracy': make_scorer(balanced_accuracy_score)
     }
 
@@ -96,15 +101,15 @@ def perform_classification(X, y, text_column, results_text_file, output_director
 
 def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed, trainingSeed):
     param_randomforest = {
-        'n_estimators': [50, 100],
-        'max_depth': range(1, 20),
+        'n_estimators': [140, 150, 160, 170, 180],
+        'max_depth': range(1, 25),
         'criterion': ['gini', 'entropy'],
         'bootstrap': [True]
     }
-
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
     results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
     print("RandomForestClassifier")
-    clf = GridSearchCV(RandomForestClassifier(random_state=classifierSeed), param_randomforest, cv=5,
+    clf = GridSearchCV(RandomForestClassifier(random_state=classifierSeed), param_randomforest, cv=stratified_kfold,
                        scoring=scorersKey, n_jobs=-1,
                        error_score=0.0)
     clf.fit(algoData.X_train, algoData.y_train)
@@ -160,12 +165,14 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("The scores are computed on the full evaluation set.")
     results_text_file.write("\n")
 
-    cv_results = cross_validate(clf, algoData.X_test, algoData.y_test, cv=5, scoring=scoring)
+    best_model = clf.best_estimator_
+
+    cv_results = cross_validate(best_model, algoData.X_test, algoData.y_test, cv=stratified_kfold, scoring=scoring)
     results_text_file.write('cv_results :\n')
     for metric, value in cv_results.items():
         results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
-    y_true, y_pred = algoData.y_test, clf.predict(algoData.X_test)
+    y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
     results_text_file.write(classification_report(y_true, y_pred))
 
     results_text_file.write("\n")
@@ -187,7 +194,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.flush()
     utils.print_prediction_results(algoData.X_test_original.index, y_pred, algoData.y_test, 'RandomForestClassifier',
                                    output_directory)
-    cm = confusion_matrix(y_true, y_pred, labels=[algoData.labels])
+    cm = confusion_matrix(y_true, y_pred, labels=algoData.labels)
     utils.print_cm(cm, algoData.labels, classifier='RandomForestClassifier', output_directory=output_directory)
     results_text_file.write("\n------------------------------------------------------\n")
 
@@ -201,7 +208,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
 
     results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
     print("DecisionTreeClassifier")
-    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
     clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=stratified_kfold,
                        scoring=scorersKey, n_jobs=-1,
                        error_score=0.0)

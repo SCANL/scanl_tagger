@@ -18,7 +18,7 @@ spell = SpellChecker()
 # import classifier_training_set_generator
 nltk.download('universal_tagset')
 
-input_file = 'input/det_conj_db.db'
+input_file = 'input/det_conj_db2.db'
 sql_statement = 'select * from base'
 # sql_statement = 'select * from training_set_conj_other order by random()';
 # sql_statement = 'select * from training_set_norm order by random()';
@@ -31,12 +31,18 @@ dependent_variable = 'CORRECT_TAG'
 vector_size = 128
 vector_size_e = 300
 
-# Training Seed: 2936160
-# Classifier seed: 1129175
-seed = 2214795
+# Training Seed: 2797879, 532479
+# Classifier seed: 1271197, 948572
+
+#db2
+# Training Seed: 2227339
+# Classifier Seed: 3801578
+# SEED: 1340345
+
+seed = 1340345
 print("SEED: " + str(seed))
-trainingSeed = 672627 #random.randint(0, 4000000)
-classifierSeed = 1129175 #random.randint(0, 4000000)
+trainingSeed = 2227339
+classifierSeed = 3801578
 np.random.seed(1129175)
 random.seed(seed)
 
@@ -116,9 +122,11 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
         'supervise','term','time','toss','underline','abuse','accumulate','alert','arm','attain','boast','boil','carve','cheer','colour','compel','crawl','crush','curl','deposit','differentiate',
         'dip','dislike','divert','embody','exert','exhaust','fine','frighten','fuck','gasp','honour','inhibit','motivate','multiply','narrow','obey','penetrate','picture','presume','prevail',
         'pronounce','rate','renew','revise','rip','scan','scratch','shiver'}
+
+hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 #["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION', 'DETERMINER', 'METHODV_SCORE', 'METHODN_SCORE']
 independent_variables_add = [[]]
-independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE']
+independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'FIRST WORD LENGTH', 'FIRST WORD CAPS'] # 'CONJUNCTION', 'DIGITS'
 #independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODN_SCORE', 'METHODV_SCORE', 'DETERMINER', 'POSITION', 'FREQUENCY', 'ENGLISHN_SCORE', 'ENGLISHV_SCORE', 'WORD LENGTH', 'TOKEN_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION']
 #["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODV_SCORE', 'DETERMINER', 'POSITION']
 # for i in range(0, vector_size_e):
@@ -133,23 +141,27 @@ def createFeatures(data):
     data = createDeterminerVectorFeature(data, modelGensimEnglish)
     data = createConjunctionVectorFeature(data, modelGensimEnglish)
     data = createPrepositionVectorFeature(data, modelGensimEnglish)
-    #data = createWordVectorsFeature(modelGensimEnglish, data, "ENG")
-    #data = createMethodWordVectorsFeature(modelMethods, data)
+    data = createPreambleVectorFeature("CODE", data, modelTokens)
+    data = createPreambleVectorFeature("METHOD", data, modelMethods)
+    data = createPreambleVectorFeature("ENGLISH", data, modelGensimEnglish)
     data = createLetterFeature(data)
-    data = createFrequencyFeature(data)
     data = maxPosition(data)
     data = wordPosTag(data)
     data = createSimilarityToVerbFeature("METHODV", modelMethods, data)
     data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
-    data = createSimilarityToVerbFeature("METHODN", modelMethods, data)
-    data = createSimilarityToVerbFeature("ENGLISHN", modelGensimEnglish, data)
-    # data = createVowelFeature(data)
+    data = createSimilarityToNounFeature("METHODN", modelMethods, data)
+    data = createSimilarityToNounFeature("ENGLISHN", modelGensimEnglish, data)
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
-    data = createConjunctionFeature(data)
+    #data = createConjunctionFeature(data)
     data = createPrepositionFeature(data)
-    # data = wordLength(data)
+    data = firstWordLength(data)
+    data = firstWordCaps(data)
     # data = createSimilarityToVerbFeature("TOKEN", modelTokens, data)
+    # data = createWordVectorsFeature(modelGensimEnglish, data, "ENG")
+    # data = createMethodWordVectorsFeature(modelMethods, data)
+    # data = createFrequencyFeature(data)
+    # data = createVowelFeature(data)
     print("Total Feature Time: " + str((time.time() - startTime)))
     return data
 
@@ -182,13 +194,59 @@ def wordPosTag(data):
     return data
 
 
-def wordLength(data):
-    words = data["WORD"]
-    wordLengths = pd.DataFrame([len(word) for word in words])
-    wordLengths.columns = ['WORD LENGTH']
-    data = pd.concat([data, wordLengths], axis=1)
+def firstWordLength(data):
+    words = data["IDENTIFIER"]
+    wordLengths = []
+
+    for identifier in words:
+        # Split the identifier into words using spaces as the delimiter
+        word_list = identifier.split()
+
+        if word_list:
+            # Get the first word from the split identifier
+            first_word = word_list[0]
+
+            # Count the number of letters in the first word
+            letters_count = sum(1 for char in first_word if char.isalnum())
+        else:
+            # Handle the case where the identifier is empty or doesn't contain any words
+            letters_count = 0
+
+        # Add the count to the wordLengths list
+        wordLengths.append(letters_count)
+
+    # Add the wordLengths list as a new column 'FIRST WORD LENGTH' to the 'data' DataFrame
+    data['FIRST WORD LENGTH'] = wordLengths
+
     return data
 
+
+def firstWordCaps(data):
+    words = data["IDENTIFIER"]
+    wordLengths = []
+
+    for identifier in words:
+        # Split the identifier into words using spaces as the delimiter
+        word_list = identifier.split()
+
+        if word_list:
+            # Get the first word from the split identifier
+            first_word = word_list[0]
+
+            # Count the number of capital letters in the first word
+            caps_count = sum(1 for char in first_word if char.isupper())
+            caps_count = caps_count/len(first_word)
+        else:
+            # Handle the case where the identifier is empty or doesn't contain any words
+            caps_count = 0
+
+        # Add the count to the wordLengths list
+        wordLengths.append(caps_count)
+
+    # Add the wordLengths list as a new column 'FIRST WORD CAPS' to the 'data' DataFrame
+    data['FIRST WORD CAPS'] = wordLengths
+
+    return data
 
 def maxPosition(data):
     identifiers = data["GRAMMAR_PATTERN"]
@@ -291,6 +349,15 @@ def createConjunctionVectorFeature(data, model):
     
     scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
     scores.columns = ['CONJ_SCORE']
+    scores = pd.concat([data, scores], axis=1)
+    return scores
+
+def createPreambleVectorFeature(name, data, model):
+    words = data["WORD"]
+    vector = average_word_vectors(hungarian, model)
+    
+    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    scores.columns = [name+'PRE_SCORE']
     scores = pd.concat([data, scores], axis=1)
     return scores
 
