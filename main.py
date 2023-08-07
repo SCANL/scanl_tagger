@@ -73,6 +73,7 @@ prepositions = {"after", "although", "as", "at", "because", "before", "beside", 
                 "for", "from", "given", "granted", "if", "into", "lest", "like", "notwithstanding", "now", "of", "on", "once", "provided", "providing",
                 "save", "seeing", "since", "so", "supposing", "than", "though", "till", "to", "unless", "until", "upon", "when", "whenever", "where",
                 "whereas", "wherever", "while", "whilst", "with", "without"}
+
 verbs = {'be','have','do','say','get','make','go','see','know','take','think','come','give','look','use','find','want','tell','put','mean','become','leave','work','need','feel','seem',
         'ask','show','try','call','keep','provide','hold','turn','follow','begin','bring','like','going','help','start','run','write','set','move','play','pay','hear','include',
         'believe','allow','meet','lead','live','stand','happen','carry','talk','appear','produce','sit','offer','consider','expect','suggest','let','read','require','continue',
@@ -126,7 +127,7 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 #["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION', 'DETERMINER', 'METHODV_SCORE', 'METHODN_SCORE']
 independent_variables_add = [[]]
-independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'FIRST WORD LENGTH', 'FIRST WORD CAPS'] # 'CONJUNCTION', 'DIGITS'
+independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'FIRST_WORD_LENGTH', 'FIRST_WORD_CAPS'] # 'CONJUNCTION', 'DIGITS'
 #independent_variables_add[0] += ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODN_SCORE', 'METHODV_SCORE', 'DETERMINER', 'POSITION', 'FREQUENCY', 'ENGLISHN_SCORE', 'ENGLISHV_SCORE', 'WORD LENGTH', 'TOKEN_SCORE','DIGITS', 'CONJUNCTION', 'PREPOSITION']
 #["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'METHODV_SCORE', 'DETERMINER', 'POSITION']
 # for i in range(0, vector_size_e):
@@ -216,7 +217,7 @@ def firstWordLength(data):
         wordLengths.append(letters_count)
 
     # Add the wordLengths list as a new column 'FIRST WORD LENGTH' to the 'data' DataFrame
-    data['FIRST WORD LENGTH'] = wordLengths
+    data['FIRST_WORD_LENGTH'] = wordLengths
 
     return data
 
@@ -244,7 +245,7 @@ def firstWordCaps(data):
         wordLengths.append(caps_count)
 
     # Add the wordLengths list as a new column 'FIRST WORD CAPS' to the 'data' DataFrame
-    data['FIRST WORD CAPS'] = wordLengths
+    data['FIRST_WORD_CAPS'] = wordLengths
 
     return data
 
@@ -553,22 +554,34 @@ def main():
 
 ############CURRENTLY NOT EXECUTED###############
 
-def annotate_word(normalized_length, code_context, last_letter, max_position, digits, position,
-                  determiner, conjunction, frequency, vectors):
-    input_model = 'output/model_DecisionTreeClassifier.pkl'
+def annotate_word(params):
+    input_model = 'output/model_RandomForestClassifier.pkl'
 
-    data = {'NORMALIZED_POSITION': [normalized_length],
-            'LAST_LETTER': [last_letter],
-            'MAXPOSITION': [max_position],
-            'DIGITS': [digits],
-            'POSITION': [position],
-            'CONTEXT': [code_context],
-            }
-    for i, vector in enumerate(vectors):
-        data["VEC" + str(i)] = vector
+    data = {
+        'NORMALIZED_POSITION': params['normalized_length'],
+        'LAST_LETTER': params['last_letter'],
+        'CONTEXT': params['code_context'],
+        'MAXPOSITION': params['max_position'],
+        'NLTK_POS': params['nltk_pos'],
+        'POSITION': params['position'],
+        'VERB_SCORE': params['verb_score'],
+        'DET_SCORE': params['det_score'],
+        'PREP_SCORE': params['prep_score'],
+        'CONJ_SCORE': params['conj_score'],
+        'PREPOSITION': params['prep'],
+        'DETERMINER': params['det'],
+        'ENGLISHV_SCORE': params['englishv_score'],
+        'ENGLISHN_SCORE': params['englishn_score'],
+        'METHODN_SCORE': params['methodn_score'],
+        'METHODV_SCORE': params['methodv_score'],
+        'CODEPRE_SCORE': params['codepre_score'],
+        'METHODPRE_SCORE': params['methodpre_score'],
+        'ENGLISHPRE_SCORE': params['englishpre_score'],
+        'FIRST_WORD_LENGTH': params['first_word_len'],
+        'FIRST_WORD_CAPS': params['first_word_caps'],
+    }
 
-    df_features = pd.DataFrame(data,
-                               columns=independent_variables_base + independent_variables_add[0])
+    df_features = pd.DataFrame(data, columns=independent_variables_base + independent_variables_add[0])
 
     clf = joblib.load(input_model)
     y_pred = clf.predict(df_features)
@@ -576,8 +589,8 @@ def annotate_word(normalized_length, code_context, last_letter, max_position, di
 
 
 def read_from_database():
-    input_file = 'input/conjunctiondb.db'
-    sql_statement = "select * from base"
+    input_file = 'input/revision_testing_db.db'
+    sql_statement = "select * from testing_set_cp_minor"
     # sql_statement = "select * from testing_set_ca_minor"
     # sql_statement = "select * from testing_set_np_minor"
     # sql_statement = "select * from testing_set_na_minor"
@@ -589,39 +602,79 @@ def read_from_database():
     print("IDENTIFIER,GRAMMAR_PATTERN,WORD,SWUM,STANFORD,CORRECT,PREDICTION,MATCH,SYSTEM,CONTEXT,IDENT",
           file=open(outputFile, "a"))
     df_input = createFeatures(df_input)
-    print("DF")
-    print(df_input)
-    print("DF END")
+    
+    category_variables = []
+    if 'NLTK_POS' in df_input:
+        category_variables.append('NLTK_POS')
+        df_input['NLTK_POS'] = df_input['NLTK_POS'].astype(str)
+    
+    for category_column in category_variables:
+        if category_column in df_input.columns:
+            df_input[category_column] = df_input[category_column].astype('category')
+            d = dict(enumerate(df_input[category_column].cat.categories))
+            df_input[category_column] = df_input[category_column].cat.codes
+    
+    results_list = []
+    start = time.time()
     for i, row in df_input.iterrows():
         actual_word = row['WORD']
         actual_identifier = row['IDENTIFIER']
         actual_pattern = row['GRAMMAR_PATTERN']
-        normalized_length = row['NORMALIZED_POSITION']
-        code_context = row['CONTEXT']
-        correct_tag = row['CORRECT_TAG']
-        system = row['SYSTEM']
-        ident = row['IDENTIFIER_CODE']
-        last_letter = row['LAST_LETTER']
-        max_position = row['MAXPOSITION']
-        digits = row['DIGITS']
-        position = row['POSITION']
-        determiner = row["DETERMINER"]
-        conjunction = row["CONJUNCTION"]
-        frequency = row["FREQUENCY"]
-        vectors = []
-        for i in range(vector_size):
-            vectors.append(row["VEC" + str(i)])
-        result = annotate_word(normalized_length, code_context, last_letter, max_position, digits, position,
-                               determiner, conjunction, frequency, vectors)
-        print(
-            "{identifier},{pattern},{word},{correct},{prediction},{agreement},{system_name},{context},{ident}"
-            .format(identifier=actual_identifier, word=actual_word, pattern=actual_pattern,
-                    correct=correct_tag, prediction=result, agreement=(correct_tag == result),
-                    system_name=system, context=code_context, ident=ident, last_letter=last_letter,
-                    max_position=max_position, digits=digits, position=position),
-            file=open(outputFile, "a"))
+        
+        params = {
+            'normalized_length': row['NORMALIZED_POSITION'],
+            'code_context': row['CONTEXT'],
+            'last_letter': row['LAST_LETTER'],
+            'max_position': row['MAXPOSITION'],
+            'position': row['POSITION'],
+            'determiner': row['DETERMINER'],
+            'nltk_pos' : row['NLTK_POS'],
+            #'conjunction': row['CONJUNCTION'],
+            'verb_score': row['VERB_SCORE'],
+            'det_score': row['DET_SCORE'],
+            'prep_score': row['PREP_SCORE'],
+            'conj_score': row['CONJ_SCORE'],
+            'prep': row['PREPOSITION'],
+            'det': row['DETERMINER'],
+            'englishv_score': row['ENGLISHV_SCORE'],
+            'englishn_score': row['ENGLISHN_SCORE'],
+            'methodn_score': row['METHODN_SCORE'],
+            'methodv_score': row['METHODV_SCORE'],
+            'codepre_score': row['CODEPRE_SCORE'],
+            'methodpre_score': row['METHODPRE_SCORE'],
+            'englishpre_score': row['ENGLISHPRE_SCORE'],
+            'first_word_len': row['FIRST_WORD_LENGTH'],
+            'first_word_caps': row['FIRST_WORD_CAPS']
+        }
+
+        
+        result = annotate_word(params)
+
+        # Append the results to the results_list
+        results_list.append({
+            'identifier': actual_identifier,
+            'pattern': actual_pattern,
+            'word': actual_word,
+            'correct': row['CORRECT_TAG'],
+            'prediction': result,
+            'agreement': (row['CORRECT_TAG'] == result),
+            'system_name': row['SYSTEM'],
+            'context': row['CONTEXT'],
+            'ident': row['IDENTIFIER_CODE'],
+            'last_letter': row['LAST_LETTER'],
+            'max_position': row['MAXPOSITION'],
+            'position': row['POSITION']
+        })
+
+    end = time.time()
+    print("Process completed in " + str(end - start) + " seconds")
+
+    results_df = pd.DataFrame(results_list)
+    output_file = "output/model_RandomForestClassifier_predictions.csv"
+    results_df.to_csv(output_file, index=False, mode='a')
+
 
 
 if __name__ == "__main__":
-    # read_from_database()
-    main()
+    read_from_database()
+    #main()
