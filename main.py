@@ -62,7 +62,7 @@ conjunctions = {"for", "and", "nor", "but", "or", "yet", "so", "although", "afte
                 "only", "since", "however", "as if", "no less than", "no less than", "which", "otherwise", "where", "in order that", 
                 "who", "than", "after", "as", "because", "either or", "whoever", "nevertheless", "though", "else", "although", "if", 
                 "while", "till"}
-#"a few", "a little" "many a"
+
 determiners = {"a", "all", "an", "another", "any", "anybody", "anyone", "anything", "anywhere", "both", "certain", "each", 
                "either", "enough", "every", "everybody", "everyone", "everything", "everywhere", "few", "fewer", "fewest", "last", "least", "less", 
                "little", "many", "more", "most", "much", "neither", "next", "no", "no one", "nobody", "none", "nothing", "nowhere", "once", 
@@ -676,5 +676,5 @@ def read_from_database():
 
 
 if __name__ == "__main__":
-    read_from_database()
-    #main()
+    #read_from_database()
+    main()

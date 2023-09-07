@@ -82,24 +82,18 @@ def perform_classification(X, y, text_column, results_text_file, output_director
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
     scorers = {
-        # 'accuracy': make_scorer(accuracy_score),
-        # 'f1_macro': make_scorer(f1_score, average='macro'),
-        #'f1_micro': make_scorer(f1_score, average='micro'),
-        'f1_weighted': make_scorer(f1_score, average='weighted'),
-        #'balanced_accuracy': make_scorer(balanced_accuracy_score)
+        'accuracy': make_scorer(accuracy_score),  # Accuracy
+        'weighted_f1': make_scorer(f1_score, average='weighted'),  # Weighted F1-score
+        'balanced_accuracy': make_scorer(balanced_accuracy_score)  # Balanced Accuracy
     }
 
-    # https://scikit-learn.org/stable/modules/model_evaluation.html
-    scoring = ('accuracy', 'balanced_accuracy', 'f1_macro', 'f1_micro', 'f1_weighted')
+    for algorithm in algorithms_to_use:
+        if algorithm == Algorithm.RANDOM_FOREST:
+            analyzeRandomForest(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
+        if algorithm == Algorithm.DECISION_TREE:
+            analyzeDecisionTree(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
 
-    for key in scorers:
-        for algorithm in algorithms_to_use:
-            if algorithm == Algorithm.RANDOM_FOREST:
-                analyzeRandomForest(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed, trainingSeed)
-            if algorithm == Algorithm.DECISION_TREE:
-                analyzeDecisionTree(results_text_file, output_directory, scorers[key], scoring, algoData, classifierSeed, trainingSeed)
-
-def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed, trainingSeed):
+def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
     param_randomforest = {
         'n_estimators': [140, 150, 160, 170, 180],
         'max_depth': range(1, 25),
@@ -110,7 +104,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
     print("RandomForestClassifier")
     clf = GridSearchCV(RandomForestClassifier(random_state=classifierSeed), param_randomforest, cv=stratified_kfold,
-                       scoring=scorersKey, n_jobs=-1,
+                       scoring=scorersKey, n_jobs=-1, refit='weighted_f1',
                        error_score=0.0)
     clf.fit(algoData.X_train, algoData.y_train)
 
@@ -162,20 +156,45 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("Detailed classification report:")
     results_text_file.write("\n")
     results_text_file.write("The model is trained on the full development set.")
+    results_text_file.write("\n")
     results_text_file.write("The scores are computed on the full evaluation set.")
     results_text_file.write("\n")
 
+    # Get the best estimator
     best_model = clf.best_estimator_
 
-    cv_results = cross_validate(best_model, algoData.X_test, algoData.y_test, cv=stratified_kfold, scoring=scoring)
-    results_text_file.write('cv_results :\n')
-    for metric, value in cv_results.items():
-        results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
+    # Perform cross-validation using cross_validate()
+    cross_val_results = cross_validate(best_model, algoData.X_train, algoData.y_train, cv=stratified_kfold, scoring=scorersKey)
+
+    # Access the cv_results_ specifically for the best estimator
+    best_estimator_cv_results = {key: value[clf.best_index_] for key, value in clf.cv_results_.items()}
+
+    # Write the best estimator's cv_results to a text file
+    results_text_file.write('--- Best Estimator CV Results ---\n')
+    for key, value in best_estimator_cv_results.items():
+        results_text_file.write(f'{key}: {value}\n')
     results_text_file.write("\n")
-    y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
-    results_text_file.write(classification_report(y_true, y_pred))
+
+    # Write cross-validation results to the text file
+    results_text_file.write('--- Cross-Validation Results ---\n')
+    results_text_file.write('Test Scores:\n')
+    for key, values in cross_val_results.items():
+        results_text_file.write(f'{key}: {values}\n')
+
+    # Calculate and write mean and std for each metric
+    for metric in scorersKey:
+        mean_score = cross_val_results[f'test_{metric}'].mean()
+        std_score = cross_val_results[f'test_{metric}'].std()
+        results_text_file.write(f'{metric} (mean): {mean_score}\n')
+        results_text_file.write(f'{metric} (std): {std_score}\n')
 
     results_text_file.write("\n")
+
+    y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
+    results_text_file.write('--- Classification Report ---\n')
+    results_text_file.write(classification_report(y_true, y_pred))
+    results_text_file.write("\n")
+
     results_text_file.write('balanced_accuracy_score :')
     results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
     results_text_file.write("\n")
@@ -199,7 +218,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, scoring
     results_text_file.write("\n------------------------------------------------------\n")
 
 
-def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring, algoData, classifierSeed, trainingSeed):
+def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
     param_decisiontree = {
         'max_depth': range(1, 20),
         'criterion': ['gini', 'entropy'],
@@ -210,7 +229,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
     print("DecisionTreeClassifier")
     stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
     clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=stratified_kfold,
-                       scoring=scorersKey, n_jobs=-1,
+                       scoring=scorersKey, n_jobs=-1, refit='weighted_f1',
                        error_score=0.0)
     clf.fit(algoData.X_train, algoData.y_train)
     # print("FEATURES:")
@@ -268,11 +287,16 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, scoring
 
     best_model = clf.best_estimator_
 
-    cv_results = cross_validate(best_model, algoData.X_test, algoData.y_test, cv=stratified_kfold, scoring=scoring)
-    results_text_file.write('cv_results:\n')
-    results_text_file.write(str(cv_results))
-    for metric, value in cv_results.items():
-        results_text_file.write("{metric},{value}\n".format(metric=metric, value=','.join(str(v) for v in value)))
+
+    # Get the index of the best estimator in cv_results_
+    best_index = clf.best_index_
+
+    # Access the cv_results_ specifically for the best estimator
+    best_estimator_cv_results = {key: value[best_index] for key, value in clf.cv_results_.items()}
+
+    # Write the best estimator's cv_results to a text file
+    results_text_file.write('cv_results for the best estimator:\n')
+    results_text_file.write(str(best_estimator_cv_results))
     results_text_file.write("\n")
     y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
 
