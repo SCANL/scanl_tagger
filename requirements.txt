@@ -9,4 +9,5 @@ imblearn
 gensim
 joblib
 nltk
-sklearn
+scikit-learn
+pyspellchecker
