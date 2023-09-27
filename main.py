@@ -469,8 +469,8 @@ def createMethodWordVectorsFeature(model, data):
 
 def createModel(pklFile=""):
     modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
-    modelGensimTokens = word2vec.load_word2vec_format('../code2vec/token_vecs.txt', binary=False)
-    modelGensimMethods = word2vec.load_word2vec_format('../code2vec/target_vecs.txt', binary=False)
+    modelGensimTokens = word2vec.load_word2vec_format('./code2vec/token_vecs.txt', binary=False)
+    modelGensimMethods = word2vec.load_word2vec_format('./code2vec/target_vecs.txt', binary=False)
 
     return modelGensimTokens, modelGensimMethods, modelGensimEnglish
 

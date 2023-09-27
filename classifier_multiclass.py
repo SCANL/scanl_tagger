@@ -48,36 +48,42 @@ class Algorithm(Enum):
 
 class AlgoData:
 
-    def __init__(self, X, y, X_train, X_test, y_train, y_test, X_train_original, X_test_original, labels):
+    def __init__(self, X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels):
         self.X = X
         self.y = y
         self.X_train = X_train
+        self.X_validation = X_validation
         self.X_test = X_test
         self.y_train = y_train
+        self.y_validation = y_validation
         self.y_test = y_test
         self.X_train_original = X_train_original
         self.X_test_original = X_test_original
         self.labels = labels
 
 def build_datasets(X, y, text_column, output_directory, trainingSeed):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
-    X_train_original = X_train.copy(deep=True)
-    X_test_original = X_test.copy(deep=True)
+    # Split the data into training (70%) and temporary (30%) sets
+    X_train_temp, X_temp, y_train_temp, y_temp = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
 
-    unique, counts = np.unique(y_train, return_counts=True)
-    print(" --  -- Distribution of labels in training --  -- ")
+    # Split the temporary set into validation (15%) and testing (15%) sets
+    X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=trainingSeed, stratify=y_temp)
+
+    X_train_original = X_train_temp.copy(deep=True)
+    X_test_original = X_temp.copy(deep=True)
+    
+    unique, counts = np.unique(y_train_temp, return_counts=True)
+    print(" -- Distribution of labels in training set -- ")
     print(dict(zip(unique, counts)))
 
-    # return X_train, X_test, y_train, y_test.values.ravel(), X_train_original, X_test_original
-    return X_train, X_test, y_train.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
-
+    # Return training, validation, and testing sets, as well as original training data
+    return X_train_temp, X_validation, X_test, y_train_temp.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 def perform_classification(X, y, text_column, results_text_file, output_directory, algorithms_to_use, trainingSeed, classifierSeed):
-    X_train, X_test, y_train, y_test, X_train_original, X_test_original = build_datasets(X, y, "", output_directory, trainingSeed)
+    X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, "", output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
     print(labels)
 
-    algoData = AlgoData(X, y, X_train, X_test, y_train, y_test, X_train_original, X_test_original, labels)
+    algoData = AlgoData(X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
@@ -162,6 +168,17 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
 
     # Get the best estimator
     best_model = clf.best_estimator_
+
+    y_validation_pred = best_model.predict(algoData.X_validation)
+    
+    validation_results = pd.DataFrame({
+        'Actual_label': algoData.y_validation,
+        'Predicted_Label': y_validation_pred
+        # You can add more columns if you want, e.g., 'True_Label': actual_labels
+    })
+
+    # Save the DataFrame to a CSV file
+    validation_results.to_csv('validation_results.csv', index=False)
 
     # Perform cross-validation using cross_validate()
     cross_val_results = cross_validate(best_model, algoData.X_train, algoData.y_train, cv=stratified_kfold, scoring=scorersKey)
