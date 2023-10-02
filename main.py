@@ -1,12 +1,9 @@
-import os, sqlite3, joblib, classifier_multiclass, random, nltk
+import os, sqlite3, classifier_multiclass, random, nltk
 from datetime import datetime
 import classifier_multiclass
-from spellchecker import SpellChecker
-from training_functions import *
+from feature_generator import *
 import pandas as pd
 import numpy as np
-
-spell = SpellChecker()
 
 # import classifier_training_set_generator
 nltk.download('universal_tagset')
@@ -22,7 +19,7 @@ identifier_column = "ID"
 independent_variables_base = ['NORMALIZED_POSITION']
 dependent_variable = 'CORRECT_TAG'
 vector_size = 128
-vector_size_e = 300
+#vector_size_e = 300
 
 # Training Seed: 2797879, 532479
 # Classifier seed: 1271197, 948572
@@ -122,40 +119,6 @@ def main():
 
 ############CURRENTLY NOT EXECUTED###############
 
-def annotate_word(params):
-    input_model = 'output/model_RandomForestClassifier.pkl'
-
-    data = {
-        'NORMALIZED_POSITION': params['normalized_length'],
-        'LAST_LETTER': params['last_letter'],
-        'CONTEXT': params['code_context'],
-        'MAXPOSITION': params['max_position'],
-        'NLTK_POS': params['nltk_pos'],
-        'POSITION': params['position'],
-        'VERB_SCORE': params['verb_score'],
-        'DET_SCORE': params['det_score'],
-        'PREP_SCORE': params['prep_score'],
-        'CONJ_SCORE': params['conj_score'],
-        'PREPOSITION': params['prep'],
-        'DETERMINER': params['det'],
-        'ENGLISHV_SCORE': params['englishv_score'],
-        'ENGLISHN_SCORE': params['englishn_score'],
-        'METHODN_SCORE': params['methodn_score'],
-        'METHODV_SCORE': params['methodv_score'],
-        'CODEPRE_SCORE': params['codepre_score'],
-        'METHODPRE_SCORE': params['methodpre_score'],
-        'ENGLISHPRE_SCORE': params['englishpre_score'],
-        'FIRST_WORD_LENGTH': params['first_word_len'],
-        'FIRST_WORD_CAPS': params['first_word_caps'],
-    }
-
-    df_features = pd.DataFrame(data, columns=independent_variables_base + independent_variables_add[0])
-
-    clf = joblib.load(input_model)
-    y_pred = clf.predict(df_features)
-    return y_pred[0]
-
-["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'FIRST_WORD_LENGTH', 'FIRST_WORD_CAPS']
 def read_from_database():
     input_file = 'input/revision_testing_db.db'
     sql_statement = "select * from testing_set_cp_minor"
@@ -214,7 +177,6 @@ def read_from_database():
             'first_word_len': row['FIRST_WORD_LENGTH'],
             'first_word_caps': row['FIRST_WORD_CAPS']
         }
-
         
         result = annotate_word(params)
 
