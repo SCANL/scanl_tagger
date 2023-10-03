@@ -14,9 +14,9 @@ print("Word vectors loaded!!")
 @app.route('/<identifier_type>/<identifier_name>/<identifier_context>')
 def listen(identifier_type, identifier_name, identifier_context):
     root_logger.info("INPUT: {ident_type} {ident_name} {ident_context}".format(ident_type=identifier_type, ident_name=identifier_name, ident_context=identifier_context))
+    
     words = ronin.split(identifier_name)
-    print(words)
-    maxpos = [len(words) for word in words]
+    maxpos = [len(words) for _ in words]
     word_data = pd.DataFrame(words, columns=['WORD'])
     pos_data = pd.DataFrame(maxpos, columns=['MAXPOS'])
     data = pd.concat([word_data, pos_data], axis=1)
@@ -28,7 +28,6 @@ def listen(identifier_type, identifier_name, identifier_context):
     data = createPreambleVectorFeature("METHOD", data, modelMethods)
     data = createPreambleVectorFeature("ENGLISH", data, modelGensimEnglish)
     data = createLetterFeature(data)
-    #data = maxPosition(data)
     data = wordPosTag(data)
     data = createSimilarityToVerbFeature("METHODV", modelMethods, data)
     data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
@@ -37,8 +36,11 @@ def listen(identifier_type, identifier_name, identifier_context):
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
-    # data = firstWordLength(data)
-    # data = firstWordCaps(data)
+
+    input_model = 'output/model_RandomForestClassifier.pkl'
+    clf = joblib.load(input_model)
+
+    annotate_word(clf, data)
     
 
 class MSG_COLORS:
@@ -52,38 +54,12 @@ class MSG_COLORS:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def annotate_word(params):
-    input_model = 'output/model_RandomForestClassifier.pkl'
+def annotate_word(clf, data):
+    independent_variables_add = ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
+    df_features = pd.DataFrame(data, columns=independent_variables_add)
 
-    data = {
-        'NORMALIZED_POSITION': params['normalized_length'],
-        'LAST_LETTER': params['last_letter'],
-        'CONTEXT': params['code_context'],
-        'MAXPOSITION': params['max_position'],
-        'NLTK_POS': params['nltk_pos'],
-        'POSITION': params['position'],
-        'VERB_SCORE': params['verb_score'],
-        'DET_SCORE': params['det_score'],
-        'PREP_SCORE': params['prep_score'],
-        'CONJ_SCORE': params['conj_score'],
-        'PREPOSITION': params['prep'],
-        'DETERMINER': params['det'],
-        'ENGLISHV_SCORE': params['englishv_score'],
-        'ENGLISHN_SCORE': params['englishn_score'],
-        'METHODN_SCORE': params['methodn_score'],
-        'METHODV_SCORE': params['methodv_score'],
-        'CODEPRE_SCORE': params['codepre_score'],
-        'METHODPRE_SCORE': params['methodpre_score'],
-        'ENGLISHPRE_SCORE': params['englishpre_score'],
-        'FIRST_WORD_LENGTH': params['first_word_len'],
-        'FIRST_WORD_CAPS': params['first_word_caps'],
-    }
-
-    # df_features = pd.DataFrame(data, columns=independent_variables_base + independent_variables_add[0])
-
-    # clf = joblib.load(input_model)
-    # y_pred = clf.predict(df_features)
-    # return y_pred[0]
+    y_pred = clf.predict(df_features)
+    return y_pred[0]
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
