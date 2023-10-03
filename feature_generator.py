@@ -106,8 +106,8 @@ def createFeatures(data):
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
-    data = firstWordLength(data)
-    data = firstWordCaps(data)
+    # data = firstWordLength(data)
+    # data = firstWordCaps(data)
     print("Total Feature Time: " + str((time.time() - startTime)))
     return data
 
