@@ -16,10 +16,14 @@ def listen(identifier_type, identifier_name, identifier_context):
     root_logger.info("INPUT: {ident_type} {ident_name} {ident_context}".format(ident_type=identifier_type, ident_name=identifier_name, ident_context=identifier_context))
     
     words = ronin.split(identifier_name)
-    maxpos = [len(words) for _ in words]
+    max_pos = [len(words) for _ in words]
+    normalized_pos = [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))]
     word_data = pd.DataFrame(words, columns=['WORD'])
-    pos_data = pd.DataFrame(maxpos, columns=['MAXPOS'])
-    data = pd.concat([word_data, pos_data], axis=1)
+    pos_data = pd.DataFrame(max_pos, columns=['MAXPOS'])
+    normalized_data = pd.DataFrame(normalized_pos, columns=['NORMALIZED_POSITION'])
+
+    data = pd.concat([word_data, pos_data, normalized_data], axis=1)
+    print(data)
     data = createVerbVectorFeature(data, modelGensimEnglish)
     data = createDeterminerVectorFeature(data, modelGensimEnglish)
     data = createConjunctionVectorFeature(data, modelGensimEnglish)
@@ -55,7 +59,7 @@ class MSG_COLORS:
     UNDERLINE = '\033[4m'
 
 def annotate_word(clf, data):
-    independent_variables_add = ["LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
+    independent_variables_add = ['NORMALIZED_POSITION', "LAST_LETTER", 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'ENGLISHN_SCORE','METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
     df_features = pd.DataFrame(data, columns=independent_variables_add)
 
     y_pred = clf.predict(df_features)
