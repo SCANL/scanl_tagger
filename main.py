@@ -26,10 +26,12 @@ def train():
     identifier_column = "ID"
     independent_variables_base = ['NORMALIZED_POSITION']
     dependent_variable = 'CORRECT_TAG'
-    vector_size = 128
+    
     seed = 1340345
+    
     trainingSeed = 2227339
     classifierSeed = 3801578
+    
     np.random.seed(1129175)
     random.seed(seed)
 
