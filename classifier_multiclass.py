@@ -47,7 +47,25 @@ class Algorithm(Enum):
 
 
 class AlgoData:
+    """
+    A class to encapsulate data for classification analysis.
 
+    Attributes:
+        X (pd.DataFrame): The feature data.
+        y (pd.Series): The target labels.
+        X_train (pd.DataFrame): The training feature data.
+        X_validation (pd.DataFrame): The validation feature data.
+        X_test (pd.DataFrame): The testing feature data.
+        y_train (pd.Series): The training target labels.
+        y_validation (pd.Series): The validation target labels.
+        y_test (pd.Series): The testing target labels.
+        X_train_original (pd.DataFrame): The original training feature data.
+        X_test_original (pd.DataFrame): The original testing feature data.
+        labels (array-like): An array of unique labels in the target.
+
+    Methods:
+        No specific methods are defined in this class.
+    """
     def __init__(self, X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels):
         self.X = X
         self.y = y
@@ -62,6 +80,30 @@ class AlgoData:
         self.labels = labels
 
 def build_datasets(X, y, text_column, output_directory, trainingSeed):
+    """
+    Split the data into training, validation, and testing sets.
+
+    This function splits the input data (features and labels) into training (70%), validation (15%), and testing (15%) sets.
+    It also returns the original training and testing data before any modifications.
+
+    Args:
+        X (pandas.DataFrame): The feature data (X).
+        y (numpy.ndarray): The label data (y).
+        text_column (str): The name of the text column.
+        output_directory (str): The directory where the output data will be saved.
+        trainingSeed (int): The random seed for data splitting.
+
+    Returns:
+        tuple: A tuple containing the following elements:
+            - X_train_temp (pandas.DataFrame): Training feature data (70%).
+            - X_validation (pandas.DataFrame): Validation feature data (15%).
+            - X_test (pandas.DataFrame): Testing feature data (15%).
+            - y_train_temp (numpy.ndarray): Training label data (70%).
+            - y_validation (numpy.ndarray): Validation label data (15%).
+            - y_test (numpy.ndarray): Testing label data (15%).
+            - X_train_original (pandas.DataFrame): Original training feature data before splitting.
+            - X_test_original (pandas.DataFrame): Original testing feature data before splitting.
+    """
     # Split the data into training (70%) and temporary (30%) sets
     X_train_temp, X_temp, y_train_temp, y_temp = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
 
@@ -79,6 +121,25 @@ def build_datasets(X, y, text_column, output_directory, trainingSeed):
     return X_train_temp, X_validation, X_test, y_train_temp.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 def perform_classification(X, y, text_column, results_text_file, output_directory, algorithms_to_use, trainingSeed, classifierSeed):
+    """
+    Perform classification using specified algorithms and report results.
+
+    This function performs classification on the input data using the specified machine learning algorithms and reports
+    various evaluation metrics to the results text file.
+
+    Args:
+        X (pandas.DataFrame): The feature data (X).
+        y (numpy.ndarray): The label data (y).
+        text_column (str): The name of the text column (not used in this function).
+        results_text_file (file): The file to write the results to.
+        output_directory (str): The directory where additional output files will be saved.
+        algorithms_to_use (list): A list of Algorithm enum values specifying the algorithms to use.
+        trainingSeed (int): The random seed for data splitting during training.
+        classifierSeed (int): The random seed for the classifier.
+
+    Returns:
+        None
+    """
     X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, "", output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
     print(labels)
@@ -100,6 +161,23 @@ def perform_classification(X, y, text_column, results_text_file, output_director
             analyzeDecisionTree(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
 
 def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
+    """
+    Analyze a RandomForestClassifier for classification and report results.
+
+    This function performs analysis on a RandomForestClassifier for classification and reports various evaluation metrics
+    to the results text file.
+
+    Args:
+        results_text_file (file): The file to write the results to.
+        output_directory (str): The directory where additional output files will be saved.
+        scorersKey (dict): A dictionary of scoring functions.
+        algoData (AlgoData): An object containing data for analysis.
+        classifierSeed (int): The random seed for the classifier.
+        trainingSeed (int): The random seed for data splitting during training.
+
+    Returns:
+        None
+    """
     param_randomforest = {
         'n_estimators': [140, 150, 160, 170, 180],
         'max_depth': range(1, 25),
@@ -236,6 +314,23 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
 
 
 def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
+    """
+    Analyze a DecisionTreeClassifier for classification and report results.
+
+    This function performs analysis on a DecisionTreeClassifier for classification and reports various evaluation metrics
+    to the results text file.
+
+    Args:
+        results_text_file (file): The file to write the results to.
+        output_directory (str): The directory where additional output files will be saved.
+        scorersKey (dict): A dictionary of scoring functions.
+        algoData (AlgoData): An object containing data for analysis.
+        classifierSeed (int): The random seed for the classifier.
+        trainingSeed (int): The random seed for data splitting during training.
+
+    Returns:
+        None
+    """
     param_decisiontree = {
         'max_depth': range(1, 20),
         'criterion': ['gini', 'entropy'],

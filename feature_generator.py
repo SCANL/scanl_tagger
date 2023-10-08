@@ -87,6 +87,18 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
 def createFeatures(data):
+    """
+    Create various features for the input data using pre-trained Word2Vec models and other techniques.
+
+    This function adds multiple features to the input DataFrame 'data' based on pre-trained Word2Vec models and other
+    techniques. These features include vector similarity scores, word embeddings, and linguistic properties.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column and other relevant columns.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with additional features added.
+    """
     startTime = time.time()
     modelTokens, modelMethods, modelGensimEnglish = createModel()
     data = createVerbVectorFeature(data, modelGensimEnglish)
@@ -106,8 +118,7 @@ def createFeatures(data):
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
-    # data = firstWordLength(data)
-    # data = firstWordCaps(data)
+
     print("Total Feature Time: " + str((time.time() - startTime)))
     return data
 
@@ -132,6 +143,19 @@ universal_to_custom = {
 }
 
 def wordPosTag(data):
+    """
+    Perform part-of-speech tagging on words in the 'WORD' column of the DataFrame.
+
+    This function uses NLTK's part-of-speech tagging to tag each word in the 'WORD' column of the input DataFrame with
+    custom POS tags (assuming a mapping from universal tags to custom tags). The tagged POS information is added as a new
+    column 'NLTK_POS' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'NLTK_POS' column containing custom POS tags.
+    """
     words = data["WORD"]
     word_tags = [universal_to_custom[nltk.pos_tag([word.lower()], tagset='universal')[-1][-1]] for word in words]
     pos_tags = pd.DataFrame(word_tags)
@@ -140,109 +164,39 @@ def wordPosTag(data):
     return data
 
 
-def firstWordLength(data):
-    words = data["IDENTIFIER"]
-    wordLengths = []
-
-    for identifier in words:
-        # Split the identifier into words using spaces as the delimiter
-        word_list = identifier.split()
-
-        if word_list:
-            # Get the first word from the split identifier
-            first_word = word_list[0]
-
-            # Count the number of letters in the first word
-            letters_count = sum(1 for char in first_word if char.isalnum())
-        else:
-            # Handle the case where the identifier is empty or doesn't contain any words
-            letters_count = 0
-
-        # Add the count to the wordLengths list
-        wordLengths.append(letters_count)
-
-    # Add the wordLengths list as a new column 'FIRST WORD LENGTH' to the 'data' DataFrame
-    data['FIRST_WORD_LENGTH'] = wordLengths
-
-    return data
-
-
-def firstWordCaps(data):
-    words = data["IDENTIFIER"]
-    wordLengths = []
-
-    for identifier in words:
-        # Split the identifier into words using spaces as the delimiter
-        word_list = identifier.split()
-
-        if word_list:
-            # Get the first word from the split identifier
-            first_word = word_list[0]
-
-            # Count the number of capital letters in the first word
-            caps_count = sum(1 for char in first_word if char.isupper())
-            caps_count = caps_count/len(first_word)
-        else:
-            # Handle the case where the identifier is empty or doesn't contain any words
-            caps_count = 0
-
-        # Add the count to the wordLengths list
-        wordLengths.append(caps_count)
-
-    # Add the wordLengths list as a new column 'FIRST WORD CAPS' to the 'data' DataFrame
-    data['FIRST_WORD_CAPS'] = wordLengths
-
-    return data
-
 def maxPosition(data):
+    """
+    Calculate and add a 'MAXPOSITION' column to the DataFrame indicating the maximum number of words in each identifier.
+
+    This function calculates the maximum number of words (based on spaces as delimiters) in each identifier in the 'IDENTIFIER'
+    column of the input DataFrame and adds this information as a new column 'MAXPOSITION' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing an 'IDENTIFIER' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'MAXPOSITION' column.
+    """
     identifiers = data["IDENTIFIER"]
     maxPosition = pd.DataFrame([len(identifier.split()) for identifier in identifiers])
     maxPosition.columns = ['MAXPOSITION']
     data = pd.concat([data, maxPosition], axis=1)
     return data
 
-def createFrequencyFeature(data):
-    words = data["WORD"]
-    frequency = {}
-    for word in words:
-        word = word.lower()
-        if word in frequency:
-            frequency[word] = frequency[word] + 1
-        else:
-            frequency[word] = 1
-    frequencyList = pd.DataFrame([frequency[word.lower()] for word in words])
-    frequencyList.columns = ['FREQUENCY']
-    data = pd.concat([data, frequencyList], axis=1)
-    return data
-
-def count_vowels(word):
-    # Convert the word to lowercase to make the function case-insensitive
-    word = word.lower()
-
-    # Define a set of vowels
-    vowels = {'a', 'e', 'i', 'o', 'u'}
-
-    # Initialize a variable to store the count of vowels
-    vowel_count = 0
-
-    word_size = len(word)
-
-    # Iterate through each character in the word
-    for char in word:
-        # Check if the character is a vowel
-        if char in vowels:
-            vowel_count += 1
-
-    return vowel_count
-
-def createVowelFeature(data):
-    words = data["WORD"]
-    isVowelorConsonant = pd.DataFrame([count_vowels(word) for word in words])
-    isVowelorConsonant.columns = ["VOWELCOUNT"]
-    data = pd.concat([data, isVowelorConsonant], axis=1)
-    return data
-
 def average_word_vectors(word_set, word2vec_model):
+    """
+    Calculate the average word vector for a set of words using a Word2Vec model.
+
+    Args:
+        word_set (set): A set of words for which to calculate the average vector.
+        word2vec_model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        numpy.ndarray: The average word vector for the input set of words.
+    
+    Raises:
+        ValueError: If none of the words in the set exist in the Word2Vec model.
+    """
     word_vectors = []
     for word in word_set:
         if word in word2vec_model.index_to_key:
@@ -254,7 +208,17 @@ def average_word_vectors(word_set, word2vec_model):
     return np.mean(word_vectors, axis=0)
 
 def compute_similarity(verb_vector, target_word, model):
-    # Compute the cosine similarity between the two vectors
+    """
+    Compute the cosine similarity between a verb vector and a target word vector in a word embedding model.
+
+    Args:
+        verb_vector (numpy.ndarray): The vector representation of a verb.
+        target_word (str): The target word for which similarity is calculated.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        float: The cosine similarity between the verb vector and the target word vector, or 0.0 if the target word is not in the model.
+    """
     try:
         target_word_vector = model.get_vector(key=target_word, norm=True)
         similarity = 1 - cosine(verb_vector, target_word_vector)
@@ -263,6 +227,20 @@ def compute_similarity(verb_vector, target_word, model):
         return 0.0
 
 def createVerbVectorFeature(data, model):
+    """
+    Calculate and add a 'VERB_SCORE' column to the DataFrame indicating the similarity of each word to a verb vector.
+
+    This function calculates the average vector of a set of verbs and then computes the cosine similarity between each
+    word in the 'WORD' column of the input DataFrame and the verb vector. The similarity scores are added as a new column
+    'VERB_SCORE' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'VERB_SCORE' column.
+    """
     words = data["WORD"]
     vector = average_word_vectors(verbs, model)
     
@@ -272,6 +250,20 @@ def createVerbVectorFeature(data, model):
     return scores
 
 def createDeterminerVectorFeature(data, model):
+    """
+    Calculate and add a 'DET_SCORE' column to the DataFrame indicating the similarity of each word to a determiner vector.
+
+    This function calculates the average vector of a set of determiners and then computes the cosine similarity between
+    each word in the 'WORD' column of the input DataFrame and the determiner vector. The similarity scores are added as
+    a new column 'DET_SCORE' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'DET_SCORE' column.
+    """
     words = data["WORD"]
     vector = average_word_vectors(conjunctions, model)
     
@@ -281,6 +273,20 @@ def createDeterminerVectorFeature(data, model):
     return scores
 
 def createPrepositionVectorFeature(data, model):
+    """
+    Calculate and add a 'PREP_SCORE' column to the DataFrame indicating the similarity of each word to a preposition vector.
+
+    This function calculates the average vector of a set of prepositions and then computes the cosine similarity between
+    each word in the 'WORD' column of the input DataFrame and the preposition vector. The similarity scores are added as
+    a new column 'PREP_SCORE' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'PREP_SCORE' column.
+    """
     words = data["WORD"]
     vector = average_word_vectors(prepositions, model)
     
@@ -290,6 +296,20 @@ def createPrepositionVectorFeature(data, model):
     return scores
 
 def createConjunctionVectorFeature(data, model):
+    """
+    Calculate and add a 'CONJ_SCORE' column to the DataFrame indicating the similarity of each word to a conjunction vector.
+
+    This function calculates the average vector of a set of conjunctions and then computes the cosine similarity between
+    each word in the 'WORD' column of the input DataFrame and the conjunction vector. The similarity scores are added as
+    a new column 'CONJ_SCORE' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'CONJ_SCORE' column.
+    """
     words = data["WORD"]
     vector = average_word_vectors(conjunctions, model)
     
@@ -299,6 +319,24 @@ def createConjunctionVectorFeature(data, model):
     return scores
 
 def createPreambleVectorFeature(name, data, model):
+    """
+    Calculate and add a custom-named preamble similarity score column to the DataFrame.
+
+    This function calculates the similarity between each word in the 'WORD' column of the input DataFrame and a vector
+    representation specific to the given 'name' (e.g., 'CODE', 'METHOD', 'ENGLISH'). The similarity scores are added as
+    a new column with the provided 'name' and 'PRE_SCORE' appended in the DataFrame.
+
+    Args:
+        name (str): The name to use for the custom-named preamble similarity score column.
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional custom-named preamble similarity score column.
+
+    Note:
+        The actual name of the new column will be 'name'+'PRE_SCORE' (e.g., 'CODEPRE_SCORE', 'METHODPRE_SCORE').
+    """
     words = data["WORD"]
     vector = average_word_vectors(hungarian, model)
     
@@ -308,6 +346,18 @@ def createPreambleVectorFeature(name, data, model):
     return scores
 
 def createPrepositionFeature(data):
+    """
+    Calculate and add a 'PREPOSITION' column to the DataFrame indicating whether each word is a preposition.
+
+    This function checks if each word in the 'WORD' column of the input DataFrame is a preposition and adds a binary
+    'PREPOSITION' column (1 for prepositions, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'PREPOSITION' column.
+    """
     words = data["WORD"]
     isPreposition = pd.DataFrame([1 if word.lower() in prepositions else 0 for word in words])
     isPreposition.columns = ["PREPOSITION"]
@@ -315,6 +365,18 @@ def createPrepositionFeature(data):
     return data
 
 def createConjunctionFeature(data):
+    """
+    Calculate and add a 'CONJUNCTION' column to the DataFrame indicating whether each word is a conjunction.
+
+    This function checks if each word in the 'WORD' column of the input DataFrame is a conjunction and adds a binary
+    'CONJUNCTION' column (1 for conjunctions, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'CONJUNCTION' column.
+    """
     words = data["WORD"]
     isConjunction = pd.DataFrame([1 if word.lower() in conjunctions else 0 for word in words])
     isConjunction.columns = ["CONJUNCTION"]
@@ -323,6 +385,18 @@ def createConjunctionFeature(data):
 
 
 def createDeterminerFeature(data):
+    """
+    Calculate and add a 'DETERMINER' column to the DataFrame indicating whether each word is a determiner.
+
+    This function checks if each word in the 'WORD' column of the input DataFrame is a determiner and adds a binary
+    'DETERMINER' column (1 for determiners, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'DETERMINER' column.
+    """
     words = data["WORD"]
     isDeterminer = pd.DataFrame([1 if word.lower() in determiners else 0 for word in words])
     isDeterminer.columns = ["DETERMINER"]
@@ -331,6 +405,18 @@ def createDeterminerFeature(data):
 
 
 def createDigitFeature(data):
+    """
+    Calculate and add a 'DIGITS' column to the DataFrame indicating whether each word consists of digits.
+
+    This function checks if each word in the 'WORD' column of the input DataFrame consists of digits and adds a binary
+    'DIGITS' column (1 for words consisting of digits, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'DIGITS' column.
+    """
     words = data["WORD"]
     isDigits = pd.DataFrame([1 if word.isdigit() else 0 for word in words])
     isDigits.columns = ["DIGITS"]
@@ -339,6 +425,18 @@ def createDigitFeature(data):
 
 
 def createLetterFeature(data):
+    """
+    Calculate and add a 'LAST_LETTER' column to the DataFrame indicating the ASCII value of the last letter in each word.
+
+    This function calculates the ASCII value of the last letter (converted to lowercase) in each word in the 'WORD' column
+    of the input DataFrame and adds this information as a new column 'LAST_LETTER' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'LAST_LETTER' column.
+    """
     lastLetters = pd.DataFrame(np.array([ord(word[len(word) - 1].lower()) for word in data["WORD"]]))
     lastLetters.columns = ["LAST_LETTER"]
     data = pd.concat([data, lastLetters], axis=1)
@@ -363,6 +461,22 @@ def get_word_vector(word, model, vector_size):
 
 #Get word vectors for our closed set words
 def createWordVectorsFeature(model, data, name="DEFAULT"):
+    """
+    Calculate and add word vector features to the DataFrame.
+
+    This function calculates word vector features for each word in the 'WORD' column of the input DataFrame using the provided
+    word embedding model. The word vectors are added as new columns with names 'VEC0', 'VEC1', ... 'VEC(n-1)', where 'n' is
+    the dimensionality of the word vectors.
+
+    Args:
+        model (Word2Vec): The Word2Vec word embedding model.
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        name (str): A name to indicate the type of word vectors (e.g., 'DEFAULT', 'ENG'). Different names may result in
+                    different vector dimensions.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with additional word vector feature columns.
+    """
     words = data["WORD"]
     vectors = None
     if name == "ENG":
@@ -379,6 +493,20 @@ def createWordVectorsFeature(model, data, name="DEFAULT"):
     return data
 
 def get_word_similarity(word, word2, model):
+    """
+    Calculate the similarity between two words using a Word2Vec model.
+
+    This function computes the similarity between two words using a Word2Vec model. If both words are present in the model's
+    vocabulary, it returns their cosine similarity; otherwise, it returns 0.
+
+    Args:
+        word (str): The first word for similarity comparison.
+        word2 (str): The second word for similarity comparison.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        float: The cosine similarity between the two words, or 0 if either word is not in the model's vocabulary.
+    """
     try:
         # Try to get the word vector from the model
         vector = model.similarity(word, word2)
@@ -387,6 +515,24 @@ def get_word_similarity(word, word2, model):
         return 0
 
 def createSimilarityToVerbFeature(name, model, data):
+    """
+    Calculate and add a custom-named similarity score column to the DataFrame indicating the similarity of each word to the word "verb."
+
+    This function calculates the similarity between each word in the 'WORD' column of the input DataFrame and the word "verb"
+    using a Word2Vec model. The similarity scores are added as a new column with the provided 'name' and '_SCORE' appended
+    in the DataFrame.
+
+    Args:
+        name (str): The name to use for the custom-named similarity score column.
+        model (Word2Vec): The Word2Vec word embedding model.
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional custom-named similarity score column.
+
+    Note:
+        The actual name of the new column will be 'name'+'_SCORE' (e.g., 'METHOD_SCORE', 'ENGLISH_SCORE').
+    """
     words = data["WORD"]
     scores = pd.DataFrame([get_word_similarity("verb", word.lower(), model) for word in words])
     scores.columns = [name+'_SCORE']
@@ -394,6 +540,24 @@ def createSimilarityToVerbFeature(name, model, data):
     return scores
 
 def createSimilarityToNounFeature(name, model, data):
+    """
+    Calculate and add a custom-named similarity score column to the DataFrame indicating the similarity of each word to the word "noun."
+
+    This function calculates the similarity between each word in the 'WORD' column of the input DataFrame and the word "noun"
+    using a Word2Vec model. The similarity scores are added as a new column with the provided 'name' and '_SCORE' appended
+    in the DataFrame.
+
+    Args:
+        name (str): The name to use for the custom-named similarity score column.
+        model (Word2Vec): The Word2Vec word embedding model.
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional custom-named similarity score column.
+
+    Note:
+        The actual name of the new column will be 'name'+'_SCORE' (e.g., 'METHOD_SCORE', 'ENGLISH_SCORE').
+    """
     words = data["WORD"]
     scores = pd.DataFrame([get_word_similarity("noun", word.lower(), model) for word in words])
     scores.columns = [name+'_SCORE']
@@ -401,6 +565,20 @@ def createSimilarityToNounFeature(name, model, data):
     return scores
 
 def createMethodWordVectorsFeature(model, data):
+    """
+    Calculate and add method-specific word vector features to the DataFrame.
+
+    This function calculates method-specific word vector features for each word in the 'WORD' column of the input DataFrame
+    using the provided word embedding model. The word vectors are added as new columns with names 'MVEC0', 'MVEC1', ... 'MVEC(n-1)',
+    where 'n' is the dimensionality of the word vectors.
+
+    Args:
+        model (Word2Vec): The Word2Vec word embedding model.
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with additional method-specific word vector feature columns.
+    """
     words = data["WORD"]
     vectors = [get_word_vector(word.lower(), model, 128) for word in words]
     cnames = [f'MVEC{i}' for i in range(0, vector_size)]
@@ -413,6 +591,18 @@ def createMethodWordVectorsFeature(model, data):
     return data
 
 def createModel(pklFile=""):
+    """
+    Create and load Word2Vec models for tokens, methods, and English text.
+
+    This function loads pre-trained Word2Vec models for tokens, methods, and English text. The models are used for various
+    natural language processing tasks.
+
+    Args:
+        pklFile (str, optional): The path to a pickle file. Defaults to an empty string.
+
+    Returns:
+        tuple: A tuple containing three Word2Vec models: (modelGensimTokens, modelGensimMethods, modelGensimEnglish).
+    """
     modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
     modelGensimTokens = word2vec.load_word2vec_format('../code2vec/token_vecs.txt', binary=False)
     modelGensimMethods = word2vec.load_word2vec_format('../code2vec/target_vecs.txt', binary=False)

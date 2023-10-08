@@ -7,6 +7,19 @@ import numpy as np
 from tag_identifier import start_server
 
 def read_input(sql, conn):
+    """
+    Read input data from an SQLite database and preprocess it.
+
+    This function reads data from the specified SQL query and database connection, shuffles the rows, and then applies
+    a preprocessing function called 'createFeatures' to create additional features.
+
+    Args:
+        sql (str): The SQL query to fetch data from the database.
+        conn (sqlite3.Connection): The SQLite database connection.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the preprocessed input data.
+    """
     input_data = pd.read_sql_query(sql, conn)
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
 
@@ -19,7 +32,17 @@ def read_input(sql, conn):
     return input_data
 
 def train():
-    # import classifier_training_set_generator
+    """
+    Train a part of speech tagger model using specified features and a training dataset.
+
+    This function reads data from an SQLite database, preprocesses it, and performs classification using a specified set
+    of features. The results are written to an output file, including information about the training process and the
+    distribution of labels in the training data.
+
+    Returns:
+        None
+    """
+
     nltk.download('universal_tagset')
     input_file = 'input/det_conj_db2.db'
     sql_statement = 'select * from base'
@@ -102,19 +125,38 @@ def train():
         print("Process completed in " + str(end - start) + " seconds")
 
 if __name__ == "__main__":
-  parser = argparse.ArgumentParser()
+    """
+    This script defines command-line arguments using the argparse library and performs various actions based on the provided arguments.
 
-  parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
-  parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
-  parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
+    Usage:
+    - To check the application version, use: -v or --version.
+    - To start a server for part-of-speech tagging requests, use: -r or --run.
+    - To run a training set and retrain the model, use: -t or --train.
 
-  args = parser.parse_args()
+    Example Usage:
+    python script.py -v  # Display the application version.
+    python script.py -r  # Start the server for tagging requests.
+    python script.py -t  # Run the training set to retrain the model.
 
-  if args.version:
-    print("App version 1.0")
-  elif args.run:
-    start_server()
-  elif args.train:
-    train()
-  else:
-    parser.print_usage()
+    Note:
+    If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
+
+    Author: Christian Newman
+    Version: ???
+    """
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
+    parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
+    parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
+
+    args = parser.parse_args()
+
+    if args.version:
+        print("App version ???")
+    elif args.run:
+        start_server()
+    elif args.train:
+        train()
+    else:
+        parser.print_usage()
