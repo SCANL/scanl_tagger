@@ -20,17 +20,7 @@ import print_utility_functions as utils
 from enum import Enum
 import random
 
-# Training Seed: 3285412837
-# Classifier seed: 3324435392
-
-# Training Seed: 2326645528
-# Classifier seed: 584803755
-
-#86% cv 5 RF
-# Training Seed: 1067414
-# Classifier seed: 891843
-
-class Algorithm(Enum):
+class TrainingAlgorithm(Enum):
     RANDOM_FOREST = "RandomForest"
     DECISION_TREE = "DecisionTree"
     XGBOOST = "XGBoost"
@@ -46,7 +36,7 @@ class Algorithm(Enum):
     K_NEIGHBORS = "KNeighbors"
 
 
-class AlgoData:
+class TrainTestvalidationData:
     """
     A class to encapsulate data for classification analysis.
 
@@ -79,7 +69,7 @@ class AlgoData:
         self.X_test_original = X_test_original
         self.labels = labels
 
-def build_datasets(X, y, text_column, output_directory, trainingSeed):
+def build_datasets(X, y, output_directory, trainingSeed):
     """
     Split the data into training, validation, and testing sets.
 
@@ -89,7 +79,6 @@ def build_datasets(X, y, text_column, output_directory, trainingSeed):
     Args:
         X (pandas.DataFrame): The feature data (X).
         y (numpy.ndarray): The label data (y).
-        text_column (str): The name of the text column.
         output_directory (str): The directory where the output data will be saved.
         trainingSeed (int): The random seed for data splitting.
 
@@ -120,31 +109,29 @@ def build_datasets(X, y, text_column, output_directory, trainingSeed):
     # Return training, validation, and testing sets, as well as original training data
     return X_train_temp, X_validation, X_test, y_train_temp.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
-def perform_classification(X, y, text_column, results_text_file, output_directory, algorithms_to_use, trainingSeed, classifierSeed):
+def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed):
     """
-    Perform classification using specified algorithms and report results.
+    Perform classification using specified TrainingAlgorithms and report results.
 
-    This function performs classification on the input data using the specified machine learning algorithms and reports
+    This function performs classification on the input data using the specified machine learning TrainingAlgorithms and reports
     various evaluation metrics to the results text file.
 
     Args:
         X (pandas.DataFrame): The feature data (X).
         y (numpy.ndarray): The label data (y).
-        text_column (str): The name of the text column (not used in this function).
         results_text_file (file): The file to write the results to.
         output_directory (str): The directory where additional output files will be saved.
-        algorithms_to_use (list): A list of Algorithm enum values specifying the algorithms to use.
+        TrainingAlgorithms (list): A list of TrainingAlgorithm enum values specifying the TrainingAlgorithms to use.
         trainingSeed (int): The random seed for data splitting during training.
         classifierSeed (int): The random seed for the classifier.
 
     Returns:
         None
     """
-    X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, "", output_directory, trainingSeed)
+    X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
-    print(labels)
 
-    algoData = AlgoData(X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
+    algoData = TrainTestvalidationData(X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
@@ -154,10 +141,10 @@ def perform_classification(X, y, text_column, results_text_file, output_director
         'balanced_accuracy': make_scorer(balanced_accuracy_score)  # Balanced Accuracy
     }
 
-    for algorithm in algorithms_to_use:
-        if algorithm == Algorithm.RANDOM_FOREST:
+    for TrainingAlgorithm in TrainingAlgorithms:
+        if TrainingAlgorithm == TrainingAlgorithm.RANDOM_FOREST:
             analyzeRandomForest(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
-        if algorithm == Algorithm.DECISION_TREE:
+        if TrainingAlgorithm == TrainingAlgorithm.DECISION_TREE:
             analyzeDecisionTree(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
 
 def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
@@ -171,7 +158,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
         results_text_file (file): The file to write the results to.
         output_directory (str): The directory where additional output files will be saved.
         scorersKey (dict): A dictionary of scoring functions.
-        algoData (AlgoData): An object containing data for analysis.
+        algoData (TrainTestvalidationData): An object containing data for analysis.
         classifierSeed (int): The random seed for the classifier.
         trainingSeed (int): The random seed for data splitting during training.
 
@@ -225,16 +212,6 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
     results_text_file.write("accuracy importances\n")
     for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-    results_text_file.write("\n")
-
-    vec_feature_sum = 0
-    results_text_file.write("mean accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances_mean):
-        if feature.startswith("VEC"):
-            vec_feature_sum += value
-        else:
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-    results_text_file.write("{feature},{value}\n".format(feature="VEC", value=vec_feature_sum))
     results_text_file.write("\n")
 
     results_text_file.write("Detailed classification report:")
@@ -324,7 +301,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoDat
         results_text_file (file): The file to write the results to.
         output_directory (str): The directory where additional output files will be saved.
         scorersKey (dict): A dictionary of scoring functions.
-        algoData (AlgoData): An object containing data for analysis.
+        algoData (TrainTestvalidationData): An object containing data for analysis.
         classifierSeed (int): The random seed for the classifier.
         trainingSeed (int): The random seed for data splitting during training.
 
@@ -383,22 +360,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoDat
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
-    vec_feature_sum = 0
-    mvec_feature_sum = 0
-    results_text_file.write("mean accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances_mean):
-        if feature.startswith("VEC"):
-            vec_feature_sum += value
-        elif feature.startswith("MVEC"):
-            mvec_feature_sum += value
-        else:
-            results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-    results_text_file.write("{feature},{value}\n".format(feature="VEC", value=vec_feature_sum))
-    results_text_file.write("{feature},{value}\n".format(feature="MVEC", value=mvec_feature_sum))
-    results_text_file.write("\n")
-
     best_model = clf.best_estimator_
-
 
     # Get the index of the best estimator in cv_results_
     best_index = clf.best_index_
@@ -412,7 +374,7 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoDat
     results_text_file.write("\n")
     y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
 
-    results_text_file.write(classification_report(y_true, y_pred)) #labels=['CJ','D','DT','N','NM','NPL','P','V','VM']
+    results_text_file.write(classification_report(y_true, y_pred))
     
     # Calculate precision, recall, f1, and support for each class
     precision, recall, f1, support = precision_recall_fscore_support(y_true, y_pred, average='micro')
