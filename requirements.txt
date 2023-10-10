@@ -11,3 +11,4 @@ joblib
 nltk
 scikit-learn
 pyspellchecker
+requests

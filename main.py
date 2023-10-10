@@ -5,6 +5,7 @@ from feature_generator import *
 import pandas as pd
 import numpy as np
 from tag_identifier import start_server
+from download_code2vec_vectors import *
 
 def read_input(sql, conn):
     """
@@ -130,7 +131,7 @@ if __name__ == "__main__":
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
 
     Author: Christian Newman
-    Version: ???
+    Version: 1.5.0
     """
     parser = argparse.ArgumentParser()
 
@@ -143,8 +144,10 @@ if __name__ == "__main__":
     if args.version:
         print("SCANL Tagger version 1.5.0")
     elif args.run:
+        download_files()
         start_server()
     elif args.train:
+        download_files()
         # Define a configuration dictionary and pass it to the train function
         config = {
             'input_file': 'input/det_conj_db2.db',
