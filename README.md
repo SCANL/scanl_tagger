@@ -45,12 +45,17 @@ Tag an class: ``http://127.0.0.1:5000/class/PersonRecord/CLASS``
 
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 
+## Training the tagger
+You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This is will potentially change in the future.
+
 ## Errors?
 Please make an issue if you run into errors
 
 # Please Cite the Paper!
 
-1. No paper for now however the current tagger is based on our previous, so you could cite the previous one for now: Christian  D.  Newman,  Michael  J.  Decker,  Reem  S.  AlSuhaibani,  Anthony  Peruma,  Satyajit  Mohapatra,  Tejal  Vishnoi, Marcos Zampieri, Mohamed W. Mkaouer, Timothy J. Sheldon, and Emily Hill, "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags," in IEEE Transactions on Software Engineering, doi: 10.1109/TSE.2021.3098242.
+No paper for now however the current tagger is based on our previous, so you could cite the previous one for now: 
+
+Christian  D.  Newman,  Michael  J.  Decker,  Reem  S.  AlSuhaibani,  Anthony  Peruma,  Satyajit  Mohapatra,  Tejal  Vishnoi, Marcos Zampieri, Mohamed W. Mkaouer, Timothy J. Sheldon, and Emily Hill, "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags," in IEEE Transactions on Software Engineering, doi: 10.1109/TSE.2021.3098242.
 
 # Training set
 Most of the data used to train this tagger can be found here: https://github.com/SCANL/datasets/tree/master/ensemble_tagger_training_data -- some of it is not there yet.
