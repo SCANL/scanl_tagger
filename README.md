@@ -39,7 +39,7 @@ For example:
 
 Tag a declaration: ``http://127.0.0.1:5000/int/numberArray/DECLARATION``
 
-Tag a function: ``http://127.0.0.1:5000/int/GetNumberArray(int* begin, int* end)/FUNCTION``
+Tag a function: ``http://127.0.0.1:5000/int/GetNumberArray/FUNCTION``
 
 Tag an class: ``http://127.0.0.1:5000/class/PersonRecord/CLASS``
 
