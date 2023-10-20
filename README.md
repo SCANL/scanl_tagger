@@ -37,7 +37,7 @@ Where "code context" is one of:
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:5000/int/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:5000/numberArray/DECLARATION``
 
 Tag a function: ``http://127.0.0.1:5000/GetNumberArray/FUNCTION``
 
