@@ -41,7 +41,7 @@ Tag a declaration: ``http://127.0.0.1:5000/int/numberArray/DECLARATION``
 
 Tag a function: ``http://127.0.0.1:5000/int/GetNumberArray/FUNCTION``
 
-Tag an class: ``http://127.0.0.1:5000/class/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:5000/PersonRecord/CLASS``
 
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 

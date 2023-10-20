@@ -50,24 +50,23 @@ def start_server():
     print("Starting server!!")
     app.run(host='0.0.0.0')
 
-@app.route('/<identifier_type>/<identifier_name>/<identifier_context>')
-def listen(identifier_type, identifier_name, identifier_context):
+@app.route('/<identifier_name>/<identifier_context>')
+def listen(identifier_name, identifier_context):
     """
     Process a web request to analyze an identifier within a specific context.
 
-    This route function takes three URL parameters (identifier_type, identifier_name, and identifier_context) from an
+    This route function takes two URL parameters (identifier_name, and identifier_context) from an
     incoming HTTP request and performs several data preprocessing and feature extraction steps on the identifier_name.
     It then uses a trained classifier to annotate the identifier with part-of-speech tags and other linguistic features.
 
     Args:
-        identifier_type (str): The type of the identifier.
         identifier_name (str): The name of the identifier to be analyzed.
         identifier_context (str): The context in which the identifier appears.
 
     Returns:
         list: A list of annotations for the identifier, including part-of-speech tags and other linguistic features.
     """
-    print("INPUT: {ident_type} {ident_name} {ident_context}".format(ident_type=identifier_type, ident_name=identifier_name, ident_context=identifier_context))
+    print("INPUT: {ident_name} {ident_context}".format(ident_name=identifier_name, ident_context=identifier_context))
     
     words = ronin.split(identifier_name)
     max_pos = [len(words) for word in words]
