@@ -26,7 +26,7 @@ python main.py -t  # Run the training set to retrain the model.
 
 `python main.py -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:5000/{identifier_type}/{identifier_name}/{code_context}
+http://127.0.0.1:5000/{identifier_name}/{code_context}
 
 Where "code context" is one of:
 - FUNCTION
