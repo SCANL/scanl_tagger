@@ -2,6 +2,7 @@ import os, joblib
 import pandas as pd
 from feature_generator import *
 from flask import Flask
+from waitress import serve
 from spiral import ronin
 
 app = Flask(__name__)
@@ -48,7 +49,8 @@ def start_server():
     """
     initialize_model()
     print("Starting server!!")
-    app.run(host='0.0.0.0')
+    #app.run(host='0.0.0.0')
+    serve(app, host='127.0.0.1', port=5000)
 
 @app.route('/<identifier_name>/<identifier_context>')
 def listen(identifier_name, identifier_context):
