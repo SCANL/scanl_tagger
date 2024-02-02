@@ -12,3 +12,4 @@ nltk
 scikit-learn
 pyspellchecker
 requests
+waitress
