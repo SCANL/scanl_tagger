@@ -68,42 +68,50 @@ def listen(identifier_name, identifier_context):
     """
     print("INPUT: {ident_name} {ident_context}".format(ident_name=identifier_name, ident_context=identifier_context))
     
+    data = pd.DataFrame({'WORD': ronin.split(identifier_name), 'IDENTIFIER':identifier_name})
+    
     words = ronin.split(identifier_name)
     max_pos = [len(words) for word in words]
     position = [pos for pos in range(len(words))]
     context_type = [identifier_context for _ in range(len(words))]
     normalized_pos = [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))]
-    
-    word_data = pd.DataFrame(words, columns=['WORD'])
+
     pos_data = pd.DataFrame(max_pos, columns=['MAXPOSITION'])
     normalized_data = pd.DataFrame(normalized_pos, columns=['NORMALIZED_POSITION'])
     position_data = pd.DataFrame(position, columns=['POSITION'])
     context_data = pd.DataFrame(context_type, columns=['CONTEXT'])
     
     context_data['CONTEXT'] = context_data['CONTEXT'].apply(context_to_number)
-    data = pd.concat([word_data, pos_data, normalized_data, context_data, position_data], axis=1)
+    data = pd.concat([data, pos_data, normalized_data, context_data, position_data], axis=1)
     
-    data = createVerbVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createDeterminerVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createConjunctionVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createPrepositionVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createPreambleVectorFeature("CODE", data, app.model_data.ModelTokens)
-    data = createPreambleVectorFeature("METHOD", data, app.model_data.ModelMethods)
-    data = createPreambleVectorFeature("ENGLISH", data, app.model_data.ModelGensimEnglish)
+    data = createVerbFeature(data)
+    data = createIdentifierDigitFeature(data)
+    data = createIdentifierClosedSetFeature(data)
+    data = createIdentifierContainsVerbFeature(data)
+
     data = createLetterFeature(data)
     data = wordPosTag(data)
     
+    data['NLTK_POS'] = data['NLTK_POS'].astype(str)
     data['NLTK_POS'] = data['NLTK_POS'].astype('category')
     data['NLTK_POS'] = data['NLTK_POS'].cat.codes
+    
+    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].astype(str)
+    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].astype('category')
+    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].cat.codes
 
     data = createSimilarityToVerbFeature("METHODV", app.model_data.ModelMethods, data)
     data = createSimilarityToVerbFeature("ENGLISHV", app.model_data.ModelGensimEnglish, data)
     data = createSimilarityToNounFeature("METHODN", app.model_data.ModelMethods, data)
     data = createSimilarityToNounFeature("ENGLISHN", app.model_data.ModelGensimEnglish, data)
+    
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
-    data = createPrepositionFeature(data)
-
+    
+    data = createDeterminerVectorFeature(data, app.model_data.ModelGensimEnglish)
+    data = createConjunctionVectorFeature(data, app.model_data.ModelGensimEnglish)
+    data = createPrepositionVectorFeature(data, app.model_data.ModelGensimEnglish)
+    
     input_model = 'output/model_RandomForestClassifier.pkl'
     clf = joblib.load(input_model)
 
@@ -160,10 +168,10 @@ def annotate_identifier(clf, data):
         predictions = annotate_identifier(clf, data)
     """
     
-    independent_variables_add = ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT', 'MAXPOSITION', 'NLTK_POS', 'POSITION',
-                                 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE', 'CONJ_SCORE', 'PREPOSITION', 'DETERMINER',
-                                 'ENGLISHV_SCORE', 'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
-                                 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
+    independent_variables_add = ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT', 'MAXPOSITION',
+                                'NLTK_POS', 'POSITION', 'DETERMINER', 'ENGLISHV_SCORE',
+                                'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'DIGITS', 'CONTAINSLISTVERB',
+                                'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'CONTAINSVERB', 'DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE']
     
     df_features = pd.DataFrame(data, columns=independent_variables_add)
     y_pred = clf.predict(df_features)

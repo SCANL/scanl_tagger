@@ -78,6 +78,9 @@ def train(config):
     if 'NLTK_POS' in feature_list:
         category_variables.append('NLTK_POS')
         df_features['NLTK_POS'] = df_features['NLTK_POS'].astype(str)
+    if 'PREVIOUS_NLTK_POS' in feature_list:
+        category_variables.append('PREVIOUS_NLTK_POS')
+        df_features['PREVIOUS_NLTK_POS'] = df_features['PREVIOUS_NLTK_POS'].astype(str)
     if 'TYPE' in feature_list:
         category_variables.append('TYPE')
         df_features['TYPE'] = df_features['TYPE'].astype(str)
@@ -150,19 +153,18 @@ if __name__ == "__main__":
         download_files()
         # Define a configuration dictionary and pass it to the train function
         config = {
-            'input_file': 'input/det_conj_db2.db',
-            'sql_statement': 'select * from base',
+            'input_file': 'input/scanl_tagger_training_db_1_9_2024.db',
+            'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',
-            'pyrandom_seed': 1340345,
-            'trainingSeed': 2227339,
-            'classifierSeed': 3801578,
-            'npseed': 1129175,
+            'pyrandom_seed': 55, # 55
+            'trainingSeed': 19, # 19
+            'classifierSeed': 91, # 91
+            'npseed': 80, # 80
             'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT', 'MAXPOSITION',
-                                      'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
-                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
-                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
+                                      'NLTK_POS', 'POSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'NOUN_SCORE', 'SECOND_LAST_LETTER',
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CONTAINSLISTVERB', 'VERB_SCORE',
+                                      'CONTAINSDIGIT', 'CONTAINSCLOSEDSET','DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE']
         }
         train(config)
     else:

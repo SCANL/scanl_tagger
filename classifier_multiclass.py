@@ -9,7 +9,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import make_scorer
 from sklearn.metrics import classification_report, precision_recall_fscore_support
-from sklearn.model_selection import GridSearchCV, cross_validate, StratifiedKFold
+from sklearn.model_selection import GridSearchCV, cross_validate, StratifiedKFold, cross_val_predict
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.tree import DecisionTreeClassifier
@@ -19,6 +19,7 @@ from imblearn.metrics import classification_report_imbalanced
 import print_utility_functions as utils
 from enum import Enum
 import random
+from feature_generator import *
 
 class TrainingAlgorithm(Enum):
     RANDOM_FOREST = "RandomForest"
@@ -130,7 +131,7 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
     """
     X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
-
+    
     algoData = TrainTestvalidationData(X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
@@ -166,12 +167,14 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
         None
     """
     param_randomforest = {
-        'n_estimators': [140, 150, 160, 170, 180],
-        'max_depth': range(1, 25),
+        'n_estimators': [120, 140, 150, 160, 170, 180, 200],
+        'max_depth': range(1, 30),
         'criterion': ['gini', 'entropy'],
-        'bootstrap': [True]
+        'bootstrap': [True],
+        'class_weight':["balanced", "balanced_subsample"],
+        #'warm_start':[True]
     }
-    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
     results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
     print("RandomForestClassifier")
     clf = GridSearchCV(RandomForestClassifier(random_state=classifierSeed), param_randomforest, cv=stratified_kfold,
@@ -223,13 +226,143 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
 
     # Get the best estimator
     best_model = clf.best_estimator_
+    
+    y_validation_pred = best_model.predict(algoData.X_validation)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(algoData.y_validation, y_validation_pred)
+
+    # Create DataFrame with actual and predicted labels
+    validation_results = pd.DataFrame({
+        'Actual_label': algoData.y_validation,
+        'Predicted_Label': y_validation_pred,
+        'Accuracy': [accuracy] * len(algoData.y_validation)
+    })
+
+    # Save the DataFrame to a CSV file
+    validation_results.to_csv('validation_results.csv', index=False)
+
+    # Perform cross-validation and obtain predictions
+    y_pred_cv = cross_val_predict(best_model, algoData.X_train, algoData.y_train, cv=stratified_kfold)
+
+    results_text_file.write('--- Cross-Validation Classification Report ---\n')
+    results_text_file.write(classification_report(algoData.y_train, y_pred_cv))
+    results_text_file.write("\n")
+
+    results_text_file.write('balanced_accuracy_score (CV) :')
+    results_text_file.write(str(balanced_accuracy_score(algoData.y_train, y_pred_cv)))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (macro, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='macro')))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (micro, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='micro')))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (weighted, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='weighted')))
+    results_text_file.write("\n")
+    results_text_file.write('matthews_corrcoef (CV) :')
+    results_text_file.write(str(matthews_corrcoef(algoData.y_train, y_pred_cv)))
+    results_text_file.write("\n")
+    results_text_file.flush()
+    utils.print_prediction_results(algoData.X_train.index, y_pred_cv, algoData.y_train, 'RandomForestClassifier',
+                                output_directory)
+    cm_cv = confusion_matrix(algoData.y_train, y_pred_cv, labels=algoData.labels)
+    utils.print_cm(cm_cv, algoData.labels, classifier='RandomForestClassifier', output_directory=output_directory)
+    results_text_file.write("\n------------------------------------------------------\n")
+
+
+def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
+    """
+    Analyze a DecisionTreeClassifier for classification and report results.
+
+    This function performs analysis on a DecisionTreeClassifier for classification and reports various evaluation metrics
+    to the results text file.
+
+    Args:
+        results_text_file (file): The file to write the results to.
+        output_directory (str): The directory where additional output files will be saved.
+        scorersKey (dict): A dictionary of scoring functions.
+        algoData (TrainTestvalidationData): An object containing data for analysis.
+        classifierSeed (int): The random seed for the classifier.
+        trainingSeed (int): The random seed for data splitting during training.
+
+    Returns:
+        None
+    """
+    param_decisiontree = {
+        'max_depth': range(1, 30),
+        'criterion': ['gini', 'entropy'],
+        'splitter': ['best', 'random'],
+        'class_weight':['balanced', 'balanced_subsample']
+    }
+
+    results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
+    print("DecisionTreeClassifier")
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
+    clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=stratified_kfold,
+                       scoring=scorersKey, n_jobs=-1, refit='weighted_f1',
+                       error_score=0.0)
+    clf.fit(algoData.X_train, algoData.y_train)
+    # print("FEATURES:")
+    # for i,v, in enumerate(clf.best_estimator_.feature_importances_):
+    #     print('Feature: %0d, Score: %.5f' % (i,v))
+
+    joblib.dump(clf, '%s/model_DecisionTreeClassifier.pkl' % output_directory)
+    results_text_file.write("Best parameters set found on development set:")
+    results_text_file.write("\n")
+    results_text_file.write(json.dumps(clf.best_params_))
+    results_text_file.write("\n")
+    pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_DecisionTreeClassifier.csv" % output_directory)
+
+    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
+    results_text_file.write("f1_weighted importances\n")
+    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("mean f1_weighted importances\n")
+    for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+    results_text_file.write("\n")
+
+    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
+    results_text_file.write("balanced_accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_balanced.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("mean balanced_accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+    results_text_file.write("\n")
+
+    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
+    results_text_file.write("accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("Detailed classification report:")
+    results_text_file.write("\n")
+    results_text_file.write("The model is trained on the full development set.")
+    results_text_file.write("\n")
+    results_text_file.write("The scores are computed on the full evaluation set.")
+    results_text_file.write("\n")
+
+    # Get the best estimator
+    best_model = clf.best_estimator_
 
     y_validation_pred = best_model.predict(algoData.X_validation)
     
+    # Calculate accuracy
+    accuracy = accuracy_score(algoData.y_validation, y_validation_pred)
+
+    # Create DataFrame with actual and predicted labels
     validation_results = pd.DataFrame({
         'Actual_label': algoData.y_validation,
-        'Predicted_Label': y_validation_pred
-        # You can add more columns if you want, e.g., 'True_Label': actual_labels
+        'Predicted_Label': y_validation_pred,
+        'Accuracy': [accuracy] * len(algoData.y_validation)
     })
 
     # Save the DataFrame to a CSV file
@@ -282,108 +415,6 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
     results_text_file.write('matthews_corrcoef :')
     results_text_file.write(str(matthews_corrcoef(y_true, y_pred)))
     results_text_file.write("\n")
-    results_text_file.flush()
-    utils.print_prediction_results(algoData.X_test_original.index, y_pred, algoData.y_test, 'RandomForestClassifier',
-                                   output_directory)
-    cm = confusion_matrix(y_true, y_pred, labels=algoData.labels)
-    utils.print_cm(cm, algoData.labels, classifier='RandomForestClassifier', output_directory=output_directory)
-    results_text_file.write("\n------------------------------------------------------\n")
-
-
-def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
-    """
-    Analyze a DecisionTreeClassifier for classification and report results.
-
-    This function performs analysis on a DecisionTreeClassifier for classification and reports various evaluation metrics
-    to the results text file.
-
-    Args:
-        results_text_file (file): The file to write the results to.
-        output_directory (str): The directory where additional output files will be saved.
-        scorersKey (dict): A dictionary of scoring functions.
-        algoData (TrainTestvalidationData): An object containing data for analysis.
-        classifierSeed (int): The random seed for the classifier.
-        trainingSeed (int): The random seed for data splitting during training.
-
-    Returns:
-        None
-    """
-    param_decisiontree = {
-        'max_depth': range(1, 20),
-        'criterion': ['gini', 'entropy'],
-        'splitter': ['best'],
-    }
-
-    results_text_file.write("\n---------------------------DecisionTreeClassifier---------------------------\n")
-    print("DecisionTreeClassifier")
-    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
-    clf = GridSearchCV(DecisionTreeClassifier(random_state=classifierSeed), param_decisiontree, cv=stratified_kfold,
-                       scoring=scorersKey, n_jobs=-1, refit='weighted_f1',
-                       error_score=0.0)
-    clf.fit(algoData.X_train, algoData.y_train)
-    # print("FEATURES:")
-    # for i,v, in enumerate(clf.best_estimator_.feature_importances_):
-    #     print('Feature: %0d, Score: %.5f' % (i,v))
-
-    joblib.dump(clf, '%s/model_DecisionTreeClassifier.pkl' % output_directory)
-    results_text_file.write("Best parameters set found on development set:")
-    results_text_file.write("\n")
-    results_text_file.write(json.dumps(clf.best_params_))
-    results_text_file.write("\n")
-    pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_DecisionTreeClassifier.csv" % output_directory)
-
-    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
-    results_text_file.write("f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances):
-        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-    results_text_file.write("\n")
-
-    results_text_file.write("mean f1_weighted importances\n")
-    # for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
-    #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-    results_text_file.write("\n")
-
-    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
-    results_text_file.write("balanced_accuracy importances\n")
-    # for feature, value in zip(algoData.X.columns, presult_balanced.importances):
-    #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-    results_text_file.write("\n")
-
-    results_text_file.write("mean balanced_accuracy importances\n")
-    # for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
-    #     results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
-    results_text_file.write("\n")
-
-    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
-    results_text_file.write("accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
-        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
-    results_text_file.write("\n")
-
-    best_model = clf.best_estimator_
-
-    # Get the index of the best estimator in cv_results_
-    best_index = clf.best_index_
-
-    # Access the cv_results_ specifically for the best estimator
-    best_estimator_cv_results = {key: value[best_index] for key, value in clf.cv_results_.items()}
-
-    # Write the best estimator's cv_results to a text file
-    results_text_file.write('cv_results for the best estimator:\n')
-    results_text_file.write(str(best_estimator_cv_results))
-    results_text_file.write("\n")
-    y_true, y_pred = algoData.y_test, best_model.predict(algoData.X_test)
-
-    results_text_file.write(classification_report(y_true, y_pred))
-    
-    # Calculate precision, recall, f1, and support for each class
-    precision, recall, f1, support = precision_recall_fscore_support(y_true, y_pred, average='micro')
-
-    results_text_file.write(f'F1_micro: {f1}')
-    
-    results_text_file.write('balanced_accuracy_score :')
-    results_text_file.write(str(balanced_accuracy_score(y_true, y_pred)))
-
     results_text_file.flush()
     utils.print_prediction_results(algoData.X_test_original.index, y_pred, algoData.y_test, 'DecisionTreeClassifier',
                                    output_directory)

@@ -13,6 +13,80 @@ vector_size = 128
 #Conjunctions and determiners are closed set words, so we can soft-code them by doing a lookup on their
 #Word embeddings. This avoids the problem with hard-coding (i.e., assuming the word is always a closet set word)
 #while still giving our approach the ability to determine if we're in the most-likely context of them being a closed set word
+# https://www.talkenglish.com/vocabulary/top-1500-nouns.aspx
+nouns = {'people','history','way','art','world','information','map','two','family','government','health','system','computer','meat',
+         'year','thanks','music','person','reading','method','data','food','understanding','theory','law','bird','literature','problem',
+         'software','control','knowledge','power','ability','economics','love','internet','television','science','library','nature','fact',
+         'product','idea','temperature','investment','area','society','activity','story','industry','media','thing','oven','community',
+         'definition','safety','quality','development','language','management','player','variety','video','week','security','country',
+         'exam','movie','organization','equipment','physics','analysis','policy','series','thought','basis','boyfriend','direction','strategy',
+         'technology','army','camera','freedom','paper','environment','child','instance','month','truth','marketing','university','writing',
+         'article','department','difference','goal','news','audience','fishing','growth','income','marriage','user','combination','failure',
+         'meaning','medicine','philosophy','teacher','communication','night','chemistry','disease','disk','energy','nation','road','role',
+         'soup','advertising','location','success','addition','apartment','education','math','moment','painting','politics','attention',
+         'decision','event','property','shopping','student','wood','competition','distribution','entertainment','office','population',
+         'president','unit','category','cigarette','context','introduction','opportunity','performance','driver','flight','length',
+         'magazine','newspaper','relationship','teaching','cell','dealer','finding','lake','member','message','phone','scene','appearance',
+         'association','concept','customer','death','discussion','housing','inflation','insurance','mood','woman','advice','blood','effort',
+         'expression','importance','opinion','payment','reality','responsibility','situation','skill','statement','wealth','application','city',
+         'county','depth','estate','foundation','grandmother','heart','perspective','photo','recipe','studio','topic','collection','depression','imagination',
+         'passion','percentage','resource','setting','ad','agency','college','connection','criticism','debt','description','memory','patience','secretary','solution',
+         'administration','aspect','attitude','director','personality','psychology','recommendation','response','selection','storage','version','alcohol','argument',
+         'complaint','contract','emphasis','highway','loss','membership','possession','preparation','steak','union','agreement','cancer','currency','employment',
+         'engineering','entry','interaction','mixture','preference','region','republic','tradition','virus','actor','classroom','delivery','device',
+         'difficulty','drama','election','engine','football','guidance','hotel','owner','priority','protection','suggestion','tension','variation',
+         'anxiety','atmosphere','awareness','bath','bread','candidate','climate','comparison','confusion','construction','elevator','emotion','employee',
+         'employer','guest','height','leadership','mall','manager','operation','recording','sample','transportation','charity','cousin','disaster',
+         'editor','efficiency','excitement','extent','feedback','guitar','homework','leader','mom','outcome','permission','presentation','promotion','reflection',
+         'refrigerator','resolution','revenue','session','singer','tennis','basket','bonus','cabinet','childhood','church','clothes','coffee','dinner','drawing',
+         'hair','hearing','initiative','judgment','lab','measurement','mode','mud','orange','poetry','police','possibility','procedure','queen','ratio','relation',
+         'restaurant','satisfaction','sector','signature','significance','song','tooth','town','vehicle','volume','wife','accident','airport','appointment','arrival',
+         'assumption','baseball','chapter','committee','conversation','database','enthusiasm','error','explanation','farmer','gate','girl','hall','historian',
+         'hospital','injury','instruction','maintenance','manufacturer','meal','perception','pie','poem','presence','proposal','reception','replacement',
+         'revolution','river','son','speech','tea','village','warning','winner','worker','writer','assistance','breath','buyer','chest','chocolate','conclusion',
+         'contribution','cookie','courage','dad','desk','drawer','establishment','examination','garbage','grocery','honey','impression','improvement',
+         'independence','insect','inspection','inspector','king','ladder','menu','penalty','piano','potato','profession','professor','quantity','reaction',
+         'requirement','salad','sister','supermarket','tongue','weakness','wedding','affair','ambition','analyst','apple','assignment','assistant','bathroom',
+         'bedroom','beer','birthday','celebration','championship','cheek','client','consequence','departure','diamond','dirt','ear','fortune','friendship','funeral',
+         'gene','girlfriend','hat','indication','intention','lady','midnight','negotiation','obligation','passenger','pizza','platform','poet','pollution','recognition',
+         'reputation','shirt','sir','speaker','stranger','surgery','sympathy','tale','throat','trainer','uncle','youth','time','work','film','water','money','example','while',
+         'business','study','game','life','form','air','day','place','number','part','field','fish','back','process','heat','hand','experience','job','book','end','point',
+         'type','home','economy','value','body','market','guide','interest','state','radio','course','company','price','size','card','list','mind','trade','line','care','group',
+         'risk','word','fat','force','key','light','training','name','school','top','amount','level','order','practice','research','sense','service','piece',
+         'web','boss','sport','fun','house','page','term','test','answer','sound','focus','matter','kind','soil','board','oil','picture','access','garden',
+         'range','rate','reason','future','site','demand','exercise','image','case','cause','coast','action','age','bad','boat','record','result','section',
+         'building','mouse','cash','class','nothing','period','plan','store','tax','side','subject','space','rule','stock','weather','chance','figure','man',
+         'model','source','beginning','earth','program','chicken','design','feature','head','material','purpose','question','rock','salt','act','birth','car',
+         'dog','object','scale','sun','note','profit','rent','speed','style','war','bank','craft','half','inside','outside','standard','bus','exchange','eye',
+         'fire','position','pressure','stress','advantage','benefit','box','frame','issue','step','cycle','face','item','metal','paint','review','room','screen',
+         'structure','view','account','ball','discipline','medium','share','balance','bit','black','bottom','choice','gift','impact','machine','shape','tool',
+         'wind','address','average','career','culture','morning','pot','sign','table','task','condition','contact','credit','egg','hope','ice','network','north',
+         'square','attempt','date','effect','link','post','star','voice','capital','challenge','friend','self','shot','brush','couple','debate','exit','front',
+         'function','lack','living','plant','plastic','spot','summer','taste','theme','track','wing','brain','button','click','desire','foot','gas','influence',
+         'notice','rain','wall','base','damage','distance','feeling','pair','savings','staff','sugar','target','text','animal','author','budget','discount','file',
+         'ground','lesson','minute','officer','phase','reference','register','sky','stage','stick','title','trouble','bowl','bridge','campaign','character','club',
+         'edge','evidence','fan','letter','lock','maximum','novel','option','pack','park','plenty','quarter','skin','sort','weight','baby','background','carry','dish',
+         'factor','fruit','glass','joint','master','muscle','red','strength','traffic','trip','vegetable','appeal','chart','gear','ideal','kitchen','land','log',
+         'mother','net','party','principle','relative','sale','season','signal','spirit','street','tree','wave','belt','bench','commission','copy','drop','minimum',
+         'path','progress','project','sea','south','status','stuff','ticket','tour','angle','blue','breakfast','confidence','daughter','degree','doctor','dot','dream',
+         'duty','essay','father','fee','finance','hour','juice','limit','luck','milk','mouth','peace','pipe','seat','stable','storm','substance','team','trick',
+         'afternoon','bat','beach','blank','catch','chain','consideration','cream','crew','detail','gold','interview','kid','mark','match','mission','pain','pleasure',
+         'score','screw','sex','shop','shower','suit','tone','window','agent','band','block','bone','calendar','cap','coat','contest','corner','court','cup',
+         'district','door','east','finger','garage','guarantee','hole','hook','implement','layer','lecture','lie','manner','meeting','nose','parking','partner',
+         'profile','respect','rice','routine','schedule','swimming','telephone','tip','winter','airline','bag','battle','bed','bill','bother','cake','code','curve',
+         'designer','dimension','dress','ease','emergency','evening','extension','farm','fight','gap','grade','holiday','horror','horse','host','husband','loan',
+         'mistake','mountain','nail','noise','occasion','package','patient','pause','phrase','proof','race','relief','sand','sentence','shoulder','smoke','stomach',
+         'string','tourist','towel','vacation','west','wheel','wine','arm','aside','associate','bet','blow','border','branch','breast','brother','buddy','bunch',
+         'chip','coach','cross','document','draft','dust','expert','floor','god','golf','habit','iron','judge','knife','landscape','league','mail','mess','native',
+         'opening','parent','pattern','pin','pool','pound','request','salary','shame','shelter','shoe','silver','tackle','tank','trust','assist','bake','bar',
+         'bell','bike','blame','boy','brick','chair','closet','clue','collar','comment','conference','devil','diet','fear','fuel','glove','jacket','lunch',
+         'monitor','mortgage','nurse','pace','panic','peak','plane','reward','row','sandwich','shock','spite','spray','surprise','till','transition','weekend',
+         'welcome','yard','alarm','bend','bicycle','bite','blind','bottle','cable','candle','clerk','cloud','concert','counter','flower','grandfather','harm',
+         'knee','lawyer','leather','load','mirror','neck','pension','plate','purple','ruin','ship','skirt','slice','snow','specialist','stroke','switch','trash',
+         'tune','zone','anger','award','bid','bitter','boot','bug','camp','candy','carpet','cat','champion','channel','clock','comfort','cow','crack','engineer',
+         'entrance','fault','grass','guy','hell','highlight','incident','island','joke','jury','leg','lip','mate','motor','nerve','passage','pen','pride',
+         'priest','prize','promise','resident','resort','ring','roof','rope','sail','scheme','script','sock','station','toe','tower','truck','witness'}
+#https://7esl.com/conjunctions-list/
 conjunctions = {"for", "and", "nor", "but", "or", "yet", "so", "although", "after", "before", "because", "how",
                 "if", "once", "since", "until", "unless", "when", "as", "that", "though", "till", "while", "where", "after",
                 "although", "as", "lest", "though", "now", "even", "provided", "else", "where", "wherever", "whereas", 
@@ -22,17 +96,20 @@ conjunctions = {"for", "and", "nor", "but", "or", "yet", "so", "although", "afte
                 "only", "since", "however", "as if", "no less than", "no less than", "which", "otherwise", "where", "in order that", 
                 "who", "than", "after", "as", "because", "either or", "whoever", "nevertheless", "though", "else", "although", "if", 
                 "while", "till"}
-
+#https://en.wikipedia.org/wiki/List_of_English_determiners
 determiners = {"a", "all", "an", "another", "any", "anybody", "anyone", "anything", "anywhere", "both", "certain", "each", 
                "either", "enough", "every", "everybody", "everyone", "everything", "everywhere", "few", "fewer", "fewest", "last", "least", "less", 
                "little", "many", "more", "most", "much", "neither", "next", "no", "no one", "nobody", "none", "nothing", "nowhere", "once", 
                "said", "several", "some", "somebody", "something", "somewhere", "sufficient", "that", "the", "these", "this", "those", "us", 
                "various", "we", "what", "whatever", "which", "whichever", "you"}
 
-prepositions = {"after", "although", "as", "at", "because", "before", "beside", "besides", "between", "by", "considering", "despite", "except", 
-                "for", "from", "given", "granted", "if", "into", "lest", "like", "notwithstanding", "now", "of", "on", "once", "provided", "providing",
-                "save", "seeing", "since", "so", "supposing", "than", "though", "till", "to", "unless", "until", "upon", "when", "whenever", "where",
-                "whereas", "wherever", "while", "whilst", "with", "without"}
+#https://en.wikipedia.org/wiki/List_of_English_prepositions
+#https://www.englishclub.com/grammar/prepositions-list.php
+prepositions = {"aboard", "about", "above", "across", "after", "against", "along", "amid", "among", "anti", "around", "as", "at", "before", "behind", 
+                "below", "beneath", "beside", "besides", "between", "beyond", "but", "by", "concerning", "considering", "despite", "down", "during", 
+                "except", "excepting", "excluding", "following", "for", "from", "in", "inside", "into", "like", "minus", "near", "of", "off", "on", 
+                "onto", "opposite", "outside", "over", "past", "per", "plus", "regarding", "round", "save", "since", "than", "through", "to", "toward", 
+                "towards", "under", "underneath", "unlike", "until", "up", "upon", "versus", "via", "with", "within", "without", "out", "till"}
 
 verbs = {'be','have','do','say','get','make','go','see','know','take','think','come','give','look','use','find','want','tell','put','mean','become','leave','work','need','feel','seem',
         'ask','show','try','call','keep','provide','hold','turn','follow','begin','bring','like','going','help','start','run','write','set','move','play','pay','hear','include',
@@ -101,7 +178,12 @@ def createFeatures(data):
     """
     startTime = time.time()
     modelTokens, modelMethods, modelGensimEnglish = createModel()
+    data = createVerbFeature(data)
+    data = createIdentifierDigitFeature(data)
+    data = createIdentifierClosedSetFeature(data)
+    data = createIdentifierContainsVerbFeature(data)
     data = createVerbVectorFeature(data, modelGensimEnglish)
+    data = createNounVectorFeature(data, modelGensimEnglish)
     data = createDeterminerVectorFeature(data, modelGensimEnglish)
     data = createConjunctionVectorFeature(data, modelGensimEnglish)
     data = createPrepositionVectorFeature(data, modelGensimEnglish)
@@ -109,12 +191,14 @@ def createFeatures(data):
     data = createPreambleVectorFeature("METHOD", data, modelMethods)
     data = createPreambleVectorFeature("ENGLISH", data, modelGensimEnglish)
     data = createLetterFeature(data)
+    data = createLastTwoLettersFeature(data)
     data = maxPosition(data)
     data = wordPosTag(data)
     data = createSimilarityToVerbFeature("METHODV", modelMethods, data)
     data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
     data = createSimilarityToNounFeature("METHODN", modelMethods, data)
     data = createSimilarityToNounFeature("ENGLISHN", modelGensimEnglish, data)
+    data = createConjunctionFeature(data)
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
@@ -157,10 +241,15 @@ def wordPosTag(data):
         pandas.DataFrame: The input DataFrame with an additional 'NLTK_POS' column containing custom POS tags.
     """
     words = data["WORD"]
-    word_tags = [universal_to_custom[nltk.pos_tag([word.lower()], tagset='universal')[-1][-1]] for word in words]
-    pos_tags = pd.DataFrame(word_tags)
-    pos_tags.columns = ['NLTK_POS']
+    word_tags = [nltk.pos_tag([word.lower()])[-1][-1] for word in words]
+    pos_tags = pd.DataFrame(word_tags, columns=['NLTK_POS'])
+    
+    # Create 'Previous_NLTK_POS' column by shifting 'NLTK_POS' down and adding a special START tag
+    # pos_tags['PREVIOUS_NLTK_POS'] = pos_tags['NLTK_POS'].shift(1)
+    # pos_tags['PREVIOUS_NLTK_POS'].iloc[0] = 'START'
+    
     data = pd.concat([data, pos_tags], axis=1)
+    
     return data
 
 
@@ -249,6 +338,29 @@ def createVerbVectorFeature(data, model):
     scores = pd.concat([data, scores], axis=1)
     return scores
 
+def createNounVectorFeature(data, model):
+    """
+    Calculate and add a 'NOUN_SCORE' column to the DataFrame indicating the similarity of each word to a verb vector.
+
+    This function calculates the average vector of a set of verbs and then computes the cosine similarity between each
+    word in the 'WORD' column of the input DataFrame and the verb vector. The similarity scores are added as a new column
+    'NOUN_SCORE' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+        model (Word2Vec): The Word2Vec word embedding model.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'NOUN_SCORE' column.
+    """
+    words = data["WORD"]
+    vector = average_word_vectors(nouns, model)
+    
+    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    scores.columns = ['NOUN_SCORE']
+    scores = pd.concat([data, scores], axis=1)
+    return scores
+
 def createDeterminerVectorFeature(data, model):
     """
     Calculate and add a 'DET_SCORE' column to the DataFrame indicating the similarity of each word to a determiner vector.
@@ -267,10 +379,13 @@ def createDeterminerVectorFeature(data, model):
     words = data["WORD"]
     vector = average_word_vectors(conjunctions, model)
     
+    data = data.reset_index(drop=True)  # Reset index to avoid duplicates
     scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
     scores.columns = ['DET_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+
+    data = pd.concat([data, scores], axis=1)
+
+    return data
 
 def createPrepositionVectorFeature(data, model):
     """
@@ -344,6 +459,25 @@ def createPreambleVectorFeature(name, data, model):
     scores.columns = [name+'PRE_SCORE']
     scores = pd.concat([data, scores], axis=1)
     return scores
+
+def createVerbFeature(data):
+    """
+    Calculate and add a 'VERB' column to the DataFrame indicating whether each word is a preposition.
+
+    This function checks if each word in the 'WORD' column of the input DataFrame is a preposition and adds a binary
+    'VERB' column (1 for verbs, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'VERB' column.
+    """
+    words = data["WORD"]
+    isVerb = pd.DataFrame([1 if word.lower() in verbs else 0 for word in words])
+    isVerb.columns = ["CONTAINSLISTVERB"]
+    data = pd.concat([data, isVerb], axis=1)
+    return data
 
 def createPrepositionFeature(data):
     """
@@ -423,6 +557,80 @@ def createDigitFeature(data):
     data = pd.concat([data, isDigits], axis=1)
     return data
 
+def createIdentifierDigitFeature(data):
+    """
+    Calculate and add a 'CONTAINSDIGITS' column to the DataFrame indicating whether each word consists of digits.
+
+    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame consists of digits and adds a binary
+    'CONTAINSDIGITS' column (1 for identifiers with words consisting of digits, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSDIGITS' column.
+    """
+    identifiers = data["IDENTIFIER"]
+    column = []
+    for index, row in data.iterrows():
+        words = row["IDENTIFIER"].split()
+        contains_digit = any(word.isdigit() for word in words)
+        column.append(contains_digit)
+    containsDigit = pd.DataFrame(column)
+    containsDigit.columns = ["CONTAINSDIGIT"]
+    data = pd.concat([data, containsDigit], axis=1)
+    return data
+
+def word_in_any_list(word, *lists):
+    return any(word in lst for lst in lists)
+
+def createIdentifierClosedSetFeature(data):
+    """
+    Calculate and add a 'CONTAINSCLOSEDSET' column to the DataFrame indicating whether each word consists of digits.
+
+    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame contains a potentially closed-set word and adds a
+    'CONTAINSCLOSEDSET' column (1 for identifiers with words that look like closed set, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSCLOSEDSET' column.
+    """
+    column = []
+    for index, row in data.iterrows():
+        words = row["IDENTIFIER"].split()
+        for word in words:
+            contains_closed_set_word = word_in_any_list(word, conjunctions, determiners, prepositions)
+        column.append(contains_closed_set_word)
+    containsClosedSet = pd.DataFrame(column)
+    containsClosedSet.columns = ["CONTAINSCLOSEDSET"]
+    data = pd.concat([data, containsClosedSet], axis=1)
+    return data
+
+def createIdentifierContainsVerbFeature(data):
+    """
+    Calculate and add a 'CONTAINSVERB' column to the DataFrame indicating whether each word consists of digits.
+
+    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame contains a potentially closed-set word and adds a
+    'CONTAINSVERB' column (1 for identifiers with words that look like closed set, 0 otherwise) in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSVERB' column.
+    """
+    column = []
+    for index, row in data.iterrows():
+        words = row["IDENTIFIER"].split()
+        for word in words:
+            contains_verb = word_in_any_list(word, verbs)
+        column.append(contains_verb)
+    containsVerb = pd.DataFrame(column)
+    containsVerb.columns = ["CONTAINSVERB"]
+    data = pd.concat([data, containsVerb], axis=1)
+    return data
 
 def createLetterFeature(data):
     """
@@ -440,6 +648,24 @@ def createLetterFeature(data):
     lastLetters = pd.DataFrame(np.array([ord(word[len(word) - 1].lower()) for word in data["WORD"]]))
     lastLetters.columns = ["LAST_LETTER"]
     data = pd.concat([data, lastLetters], axis=1)
+    return data
+
+def createLastTwoLettersFeature(data):
+    """
+    Calculate and add a 'SECOND_LAST_LETTER' column to the DataFrame indicating the concatenated ASCII values of the last two letters in each word.
+
+    This function calculates the ASCII values of the last two letters (converted to lowercase) in each word in the 'WORD' column
+    of the input DataFrame and adds this information as a new column 'SECOND_LAST_LETTER' in the DataFrame.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'SECOND_LAST_LETTER' column.
+    """
+    lastTwoLetters = pd.DataFrame(np.array([ord(word[-2:].lower()[0]) if len(word) > 1 else ord(word.lower()) for word in data["WORD"]]))
+    lastTwoLetters.columns = ["SECOND_LAST_LETTER"]
+    data = pd.concat([data, lastTwoLetters], axis=1)
     return data
 
 def get_word_vector(word, model, vector_size):
