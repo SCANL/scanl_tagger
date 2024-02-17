@@ -4,6 +4,7 @@ from feature_generator import *
 from flask import Flask
 from waitress import serve
 from spiral import ronin
+import json
 
 app = Flask(__name__)
 
@@ -42,15 +43,23 @@ def start_server():
     Initialize the model and start the server.
 
     This function first initializes the model by calling the 'initialize_model' function. Then, it starts the server using
-    the Flask 'app.run' method, allowing incoming HTTP requests to be handled.
+    the waitress `serve` method, allowing incoming HTTP requests to be handled.
+
+    The arguments to waitress serve are read from the configuration file `serve.json`. The default option is to 
+    listen for HTTP requests on all interfaces (ip address 0.0.0.0, port 5000). 
 
     Returns:
         None
     """
+    print('initializing model...')
     initialize_model()
-    print("Starting server!!")
-    #app.run(host='0.0.0.0')
-    serve(app, host='127.0.0.1', port=5000)
+
+    print('retrieving server configuration...')
+    open('serve.json') as data
+    config = json.load(data)
+    print("Starting server...")
+    serve(app, host=config.host, port=config.port, url_scheme=config.protocol)
+    data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')
 def listen(identifier_name, identifier_context):

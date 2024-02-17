@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from tag_identifier import start_server
 from download_code2vec_vectors import *
+import json
 
 def read_input(sql, conn):
     """
@@ -121,11 +122,13 @@ if __name__ == "__main__":
     - To check the application version, use: -v or --version.
     - To start a server for part-of-speech tagging requests, use: -r or --run.
     - To run a training set and retrain the model, use: -t or --train.
+    - To update server configuration, use -c or --config
 
     Example Usage:
-    python script.py -v  # Display the application version.
-    python script.py -r  # Start the server for tagging requests.
-    python script.py -t  # Run the training set to retrain the model.
+    python script.py -v                          # Display the application version.
+    python script.py -r                          # Start the server for tagging requests.
+    python script.py -t                          # Run the training set to retrain the model.
+    python script.py [host] [port] [protocol] -c # update the server configuration file
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
@@ -135,9 +138,11 @@ if __name__ == "__main__":
     """
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("configOptions", metavar='N', nargs='3', help="arguments for server configuration")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
+    parser.add_argument("-c", "--config", action="store_true", help="configure address and port of server")
 
     args = parser.parse_args()
 
@@ -165,5 +170,15 @@ if __name__ == "__main__":
                                       'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
         }
         train(config)
+    elif args.config:
+        # open configuration file, overwrite with new arguments
+        open('serve.json', 'w') as data
+        config = {
+            "host": configOptions[0],
+            "port": configOptions[1],
+            "protocol": configOptions[2]
+        }
+        json.dump(config, data)
+        data.close()
     else:
         parser.print_usage()
