@@ -128,7 +128,7 @@ if __name__ == "__main__":
     python script.py -v                          # Display the application version.
     python script.py -r                          # Start the server for tagging requests.
     python script.py -t                          # Run the training set to retrain the model.
-    python script.py [host] [port] [protocol] -c # update the server configuration file
+    python script.py -c [host] [port] [protocol] # update the server configuration file
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
@@ -138,11 +138,10 @@ if __name__ == "__main__":
     """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("configOptions", metavar='N', nargs='3', help="arguments for server configuration")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
-    parser.add_argument("-c", "--config", action="store_true", help="configure address and port of server")
+    parser.add_argument("-c", "--config", action="store", nargs=3, metavar = ('host', 'port', 'protocol'), help="configure address and port of server")
 
     args = parser.parse_args()
 
@@ -172,13 +171,13 @@ if __name__ == "__main__":
         train(config)
     elif args.config:
         # open configuration file, overwrite with new arguments
-        open('serve.json', 'w') as data
-        config = {
-            "host": configOptions[0],
-            "port": configOptions[1],
-            "protocol": configOptions[2]
+        data = open('serve.json', 'w')
+        configuration = {
+            "host": args.config[0],
+            "port": args.config[1],
+            "protocol": args.config[2]
         }
-        json.dump(config, data)
+        json.dump(configuration, data)
         data.close()
     else:
         parser.print_usage()

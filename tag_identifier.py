@@ -55,10 +55,11 @@ def start_server():
     initialize_model()
 
     print('retrieving server configuration...')
-    open('serve.json') as data
+    data = open('serve.json')
     config = json.load(data)
+    print(config)
     print("Starting server...")
-    serve(app, host=config.host, port=config.port, url_scheme=config.protocol)
+    serve(app, host=config['host'], port=config['port'], url_scheme=config['protocol'])
     data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')
