@@ -2,7 +2,9 @@ import os, joblib
 import pandas as pd
 from feature_generator import *
 from flask import Flask
+from waitress import serve
 from spiral import ronin
+import json
 
 app = Flask(__name__)
 
@@ -36,19 +38,33 @@ def initialize_model():
 
     app.model_data = ModelData(ModelTokens, ModelMethods, ModelGensimEnglish)
 
-def start_server():
+def start_server(temp_config = {}):
     """
     Initialize the model and start the server.
 
     This function first initializes the model by calling the 'initialize_model' function. Then, it starts the server using
-    the Flask 'app.run' method, allowing incoming HTTP requests to be handled.
+    the waitress `serve` method, allowing incoming HTTP requests to be handled.
+
+    The arguments to waitress serve are read from the configuration file `serve.json`. The default option is to 
+    listen for HTTP requests on all interfaces (ip address 0.0.0.0, port 5000). 
 
     Returns:
         None
     """
+    print('initializing model...')
     initialize_model()
-    print("Starting server!!")
-    app.run(host='0.0.0.0')
+
+    print('retrieving server configuration...')
+    data = open('serve.json')
+    config = json.load(data)
+
+    server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
+    server_port = temp_config["port"] if "port" in temp_config.keys() else config['port']
+    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config["protocol"]
+
+    print("Starting server...")
+    serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
+    data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')
 def listen(identifier_name, identifier_context):

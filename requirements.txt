@@ -12,3 +12,6 @@ nltk
 scikit-learn
 pyspellchecker
 requests
+waitress
+flask
+spiral
