@@ -38,7 +38,7 @@ def initialize_model():
 
     app.model_data = ModelData(ModelTokens, ModelMethods, ModelGensimEnglish)
 
-def start_server():
+def start_server(temp_config = {}):
     """
     Initialize the model and start the server.
 
@@ -57,9 +57,13 @@ def start_server():
     print('retrieving server configuration...')
     data = open('serve.json')
     config = json.load(data)
-    print(config)
+
+    server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
+    server_port = temp_config["port"] if "port" in temp_config.keys() else config['port']
+    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config["protocol"]
+
     print("Starting server...")
-    serve(app, host=config['host'], port=config['port'], url_scheme=config['protocol'])
+    serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')

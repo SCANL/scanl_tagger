@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os, sqlite3, classifier_multiclass, random, nltk, argparse
 from datetime import datetime
 import classifier_multiclass
@@ -128,7 +130,9 @@ if __name__ == "__main__":
     python script.py -v                          # Display the application version.
     python script.py -r                          # Start the server for tagging requests.
     python script.py -t                          # Run the training set to retrain the model.
-    python script.py -c [host] [port] [protocol] # update the server configuration file
+    python script.py -a --address [host]         # Run the tagger on a specific IP address
+    python script.py --port [port]               # Run the tagger on a specific port
+    python script.py --protocol [http/https]     # Specify use of http or https
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
@@ -141,7 +145,9 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
-    parser.add_argument("-c", "--config", action="store", nargs=3, metavar = ('host', 'port', 'protocol'), help="configure address and port of server")
+    parser.add_argument("-a", "--address", nargs=1, action="store", help="configure server address", )
+    parser.add_argument("--port", nargs=1, action="store", help="configure server port")
+    parser.add_argument("--protocol", nargs=1, action="store", help="configure whether the server uses http or https")
 
     args = parser.parse_args()
 
@@ -149,7 +155,12 @@ if __name__ == "__main__":
         print("SCANL Tagger version 1.5.0")
     elif args.run:
         download_files()
-        start_server()
+        temp_config = {}
+        print(args)
+        if args.address != None: temp_config["address"] = args.address[0]
+        if args.port != None: temp_config["port"] = args.port[0]
+        if args.protocol != None: temp_config["protocol"] = args.protocol[0]
+        start_server(temp_config)
     elif args.train:
         download_files()
         # Define a configuration dictionary and pass it to the train function
@@ -169,15 +180,5 @@ if __name__ == "__main__":
                                       'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
         }
         train(config)
-    elif args.config:
-        # open configuration file, overwrite with new arguments
-        data = open('serve.json', 'w')
-        configuration = {
-            "host": args.config[0],
-            "port": args.config[1],
-            "protocol": args.config[2]
-        }
-        json.dump(configuration, data)
-        data.close()
     else:
         parser.print_usage()
