@@ -80,6 +80,6 @@ with open('test.csv') as f:
 finalfreq = 0
 for prefix, freq in finalpatterns.items():
     finalfreq+=freq
-    print(f'Prefix: {prefix} ({freq} patterns)')
+    print(f'{prefix},{freq}')
 
 print(finalfreq)

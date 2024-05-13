@@ -9,7 +9,7 @@ def process_row(row, row_id):
     context = row['CONTEXT']
     
     # Map context to a number based on the rules
-    context_number = 1
+    context_number = 0
     if context == "ATTRIBUTE":
         context_number = 1
     elif context == "CLASS":
