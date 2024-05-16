@@ -24,18 +24,19 @@ def process_row(row, row_id):
     new_rows = []
     for i, (word, correct_tag) in enumerate(zip(split_identifier, grammar_pattern)):
         new_row = row.copy()
-        new_row['ID'] = row_id
+        new_row['IDENTIFIER'] = row['NAME']
+        new_row['IDENT_ID'] = row_id
         new_row['POSITION'] = i
         new_row['WORD'] = word
-        new_row['CORRECT TAG'] = correct_tag
-        new_row['CONTEXT NUMBER'] = context_number
+        new_row['CORRECT_TAG'] = correct_tag
+        new_row['CONTEXT_NUMBER'] = context_number
 
         if i == 0:
-            new_row['NORMALIZED POSITION'] = 0
+            new_row['NORMALIZED_POSITION'] = 0
         elif i == num_words - 1:
-            new_row['NORMALIZED POSITION'] = 2
+            new_row['NORMALIZED_POSITION'] = 2
         else:
-            new_row['NORMALIZED POSITION'] = 1
+            new_row['NORMALIZED_POSITION'] = 1
 
         new_rows.append(new_row)
     return new_rows
@@ -43,11 +44,12 @@ def process_row(row, row_id):
 def main(input_file):
     with open(input_file, 'r', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        fieldnames = reader.fieldnames + ['ID', 'POSITION', 'NORMALIZED POSITION', 'CONTEXT NUMBER', 'WORD', 'CORRECT TAG']
+        fieldnames = reader.fieldnames + ['IDENTIFIER', 'IDENT_ID', 'POSITION', 'NORMALIZED_POSITION', 'CONTEXT_NUMBER', 'WORD', 'CORRECT_TAG']
         rows = []
         for idx, row in enumerate(reader):
             new_rows = process_row(row, row_id=idx)
             rows.extend(new_rows)
+        
 
     writer = csv.DictWriter(sys.stdout, fieldnames=fieldnames)
     writer.writeheader()

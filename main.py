@@ -152,19 +152,20 @@ if __name__ == "__main__":
     elif args.train:
         download_files()
         # Define a configuration dictionary and pass it to the train function
+        # 'CONJUNCTION'
         config = {
-            'input_file': 'input/scanl_tagger_training_db_1_9_2024.db',
+            'input_file': 'input/closed_set_tagger_db_5_13_2024',
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',
-            'pyrandom_seed': 55, # 55
-            'trainingSeed': 19, # 19
-            'classifierSeed': 91, # 91
-            'npseed': 80, # 80
-            'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT', 'MAXPOSITION',
+            'pyrandom_seed': 1550, # 55
+            'trainingSeed': 28, # 19
+            'classifierSeed': 4561, # 91
+            'npseed': 120, # 80
+            'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'PREPOSITION', 'DIGITS',
                                       'NLTK_POS', 'POSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'NOUN_SCORE', 'SECOND_LAST_LETTER',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CONTAINSLISTVERB', 'VERB_SCORE',
-                                      'CONTAINSDIGIT', 'CONTAINSCLOSEDSET','DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE']
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'VERB_SCORE', 'ENGLISHN_SCORE',
+                                      'CONTAINSCLOSEDSET','DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE']
         }
         train(config)
     else:
