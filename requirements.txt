@@ -14,4 +14,4 @@ pyspellchecker
 requests
 waitress
 flask
-spiral
+git+https://github.com/cnewman/spiral.git
