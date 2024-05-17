@@ -1,0 +1,11 @@
+services:
+
+  tagger:
+    image: srcml/scanl_tagger
+    build:
+      context: ./
+      tags:
+        - "srcml/scanl_tagger"
+      platforms:
+        - "linux/amd64"
+        - "linux/arm64"
