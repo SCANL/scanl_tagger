@@ -4,7 +4,7 @@ pandas
 scikit-learn
 Matplotlib
 scikit-image
-SciPy
+SciPy==1.10.1
 imblearn
 gensim
 joblib
