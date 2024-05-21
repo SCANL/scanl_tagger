@@ -2,7 +2,7 @@
 This the official release of the SCANL part-of-speech tagger.
 
 ## Setup and Run
-You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
+You will need `python3.10` installed. We will explicitly use the `python3.10` command below but, of course, if your environment is configured to use python3.10 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
 
 You'll need to install `pip3`
 
@@ -19,9 +19,13 @@ Finally, we require the `token` and `target` vectors from [code2vec](https://git
 ## Usage
 
 ```bash
-python main.py -v  # Display the application version.
-python main.py -r  # Start the server for tagging requests.
-python main.py -t  # Run the training set to retrain the model.
+python3.10 main.py -h                     # Display command options.
+python3.10 main.py -v                     # Display the application version.
+python3.10 main.py -r                     # Start the server for tagging requests.
+python3.10 main.py -t                     # Run the training set to retrain the model.
+python3.10 main.py -a [address]           # configure the server address.
+python3.10 main.py --port [port]          # configure the server port.
+python3.10 main.py --protocol [protocol]  # configure use of http or https
 ```
 
 `python main.py -r` will start the server, which will listen for identifier names sent via HTTP over the route:
@@ -46,7 +50,7 @@ Tag an class: ``http://127.0.0.1:5000/PersonRecord/CLASS``
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 
 ## Training the tagger
-You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This is will potentially change in the future.
+You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This will potentially change in the future.
 
 ## Errors?
 Please make an issue if you run into errors
