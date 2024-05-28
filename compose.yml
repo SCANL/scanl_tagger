@@ -1,11 +1,16 @@
+volumes:
+  vectors:
+
 services:
 
   tagger:
     image: srcml/scanl_tagger
     build:
       context: ./
-      tags:
-        - "srcml/scanl_tagger"
       platforms:
-        - "linux/amd64"
         - "linux/arm64"
+        - "linux/amd64"
+    volumes:
+      - vectors:/code2vec
+    ports:
+      - "8080:5000"

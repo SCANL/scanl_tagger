@@ -1,46 +1,67 @@
-FROM python:3.10-alpine3.19
+FROM python:3.10-slim
 
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
-ENV INSTALLED_PACKAGES="build-base \
-    gfortran \
-    pkgconf \
-    py3-scipy \
-    openblas-dev \
-    linux-headers"
-ENV OTHER_PACKAGES="libstdc++ openblas libgomp git"
-RUN apk update && \
-    apk upgrade && \
-    apk add $INSTALLED_PACKAGES && \
-    apk add     $OTHER_PACKAGES && \
-    pip install -r requirements.txt
-    # apk del $INSTALLED_PACKAGES
+RUN apt-get update && \
+    apt-get install -y git wget && \
+    pip install -r requirements.txt && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install flask
-RUN pip3 install git+https://github.com/cnewman/spiral.git
-RUN pip3 install nltk
+# ntlk downloads
 RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger');nltk.download('universal_tagset')"
 
+# Pythong scripts and data
 COPY classifier_multiclass.py \
      download_code2vec_vectors.py \
      feature_generator.py \
      print_utility_functions.py \
      tag_identifier.py \
      serve.json \
-     main.py \
+     main \
      /.
 COPY input/det_conj_db2.db /input/.
 
+RUN apt-get update && apt-get install -y curl
+
+# Download vectores, train, run
+# CMD date; \
+#     echo "Download..."; \
+#     curl -z /code2vec/target_vecs.txt -o /code2vec/target_vecs.txt http://131.123.42.41/target_vecs.txt; \
+#     curl -z /code2vec/token_vecs.txt -o /code2vec/token_vecs.txt http://131.123.42.41/token_vecs.txt; \
+#     date; \
+#     echo "Training..."; \
+#     /main -t; \
+#     date; \
+#     echo "Running..."; \
+#     /main -r
+
 CMD date; \
     echo "Download..."; \
-    mkdir /code2vec; \
-    wget -o /code2vec/target_vecs.txt http://131.123.42.41/target_vecs.txt; \
-    wget -o /code2vec/token_vecs.txt http://131.123.42.41/token_vecs.txt; \
+    remote_target_date=$(curl -sI http://131.123.42.41/target_vecs.txt | grep -i "Last-Modified" | cut -d' ' -f2-); \
+    remote_token_date=$(curl -sI http://131.123.42.41/token_vecs.txt | grep -i "Last-Modified" | cut -d' ' -f2-); \
+    if [ -n "$remote_target_date" ] && [ -n "$remote_token_date" ]; then \
+        remote_target_timestamp=$(date -d "$remote_target_date" +%s); \
+        remote_token_timestamp=$(date -d "$remote_token_date" +%s); \
+        if [ ! -f /code2vec/target_vecs.txt ] || [ $remote_target_timestamp -gt $(date -r /code2vec/target_vecs.txt +%s) ]; then \
+            curl -s -o /code2vec/target_vecs.txt http://131.123.42.41/target_vecs.txt; \
+            echo "target_vecs.txt updated"; \
+        else \
+            echo "target_vecs.txt not updated"; \
+        fi; \
+        if [ ! -f /code2vec/token_vecs.txt ] || [ $remote_token_timestamp -gt $(date -r /code2vec/token_vecs.txt +%s) ]; then \
+            curl -s -o /code2vec/token_vecs.txt http://131.123.42.41/token_vecs.txt; \
+            echo "token_vecs.txt updated"; \
+        else \
+            echo "token_vecs.txt not updated"; \
+        fi; \
+    else \
+        echo "Failed to retrieve Last-Modified headers"; \
+    fi; \
     date; \
     echo "Training..."; \
-    python3 /main.py -t; \
+    /main -t; \
     date; \
     echo "Running..."; \
-    python3 /main.py -r
+    /main -r
 
 ENV TZ=US/Michigan
