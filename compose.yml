@@ -1,5 +1,6 @@
 volumes:
   vectors:
+  gensim:
 
 services:
 
@@ -12,5 +13,6 @@ services:
         - "linux/amd64"
     volumes:
       - vectors:/code2vec
+      - gensim:/root/gensim-data
     ports:
       - "8080:5000"

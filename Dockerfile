@@ -3,7 +3,7 @@ FROM python:3.10-slim
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
 RUN apt-get update && \
-    apt-get install -y git wget && \
+    apt-get install -y git curl && \
     pip install -r requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
@@ -20,20 +20,6 @@ COPY classifier_multiclass.py \
      main \
      /.
 COPY input/det_conj_db2.db /input/.
-
-RUN apt-get update && apt-get install -y curl
-
-# Download vectores, train, run
-# CMD date; \
-#     echo "Download..."; \
-#     curl -z /code2vec/target_vecs.txt -o /code2vec/target_vecs.txt http://131.123.42.41/target_vecs.txt; \
-#     curl -z /code2vec/token_vecs.txt -o /code2vec/token_vecs.txt http://131.123.42.41/token_vecs.txt; \
-#     date; \
-#     echo "Training..."; \
-#     /main -t; \
-#     date; \
-#     echo "Running..."; \
-#     /main -r
 
 CMD date; \
     echo "Download..."; \
