@@ -2,7 +2,7 @@
 This the official release of the SCANL part-of-speech tagger.
 
 ## Setup and Run
-You will need `python3.10` installed. We will explicitly use the `python3.10` command below but, of course, if your environment is configured to use python3.10 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
+You will need `python3.10` installed. 
 
 You'll need to install `pip3`
 
@@ -19,16 +19,16 @@ Finally, we require the `token` and `target` vectors from [code2vec](https://git
 ## Usage
 
 ```bash
-python3.10 main.py -h                     # Display command options.
-python3.10 main.py -v                     # Display the application version.
-python3.10 main.py -r                     # Start the server for tagging requests.
-python3.10 main.py -t                     # Run the training set to retrain the model.
-python3.10 main.py -a [address]           # configure the server address.
-python3.10 main.py --port [port]          # configure the server port.
-python3.10 main.py --protocol [protocol]  # configure use of http or https
+./main -h                     # Display command options.
+./main -v                     # Display the application version.
+./main -r                     # Start the server for tagging requests.
+./main -t                     # Run the training set to retrain the model.
+./main -a [address]           # configure the server address.
+./main --port [port]          # configure the server port.
+./main --protocol [protocol]  # configure use of http or https
 ```
 
-`python main.py -r` will start the server, which will listen for identifier names sent via HTTP over the route:
+`./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
 http://127.0.0.1:5000/{identifier_name}/{code_context}
 
