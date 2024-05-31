@@ -15,4 +15,4 @@ services:
       - vectors:/code2vec
       - gensim:/root/gensim-data
     ports:
-      - "8080:5000"
+      - "${PORT-8080}:5000"
