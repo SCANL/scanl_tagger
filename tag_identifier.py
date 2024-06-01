@@ -123,7 +123,10 @@ def listen(identifier_name, identifier_context):
     input_model = 'output/model_RandomForestClassifier.pkl'
     clf = joblib.load(input_model)
 
-    return list(annotate_identifier(clf, data))
+    return {
+        "tags" : list(annotate_identifier(clf, data)),
+        "words" : words
+    }
     
 def context_to_number(context):
     """
