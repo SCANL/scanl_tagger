@@ -14,3 +14,4 @@ requests==2.31.0
 waitress==2.1.2
 flask==3.0.0
 git+https://github.com/cnewman/spiral.git
+Flask-Caching==2.3.0

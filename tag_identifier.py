@@ -1,12 +1,15 @@
-import os, joblib
+import os
+import joblib
 import pandas as pd
 from feature_generator import *
 from flask import Flask
+from flask_caching import Cache
 from waitress import serve
 from spiral import ronin
 import json
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 class ModelData:
     def __init__(self, ModelTokens, ModelMethods, ModelGensimEnglish) -> None:
@@ -45,8 +48,8 @@ def start_server(temp_config = {}):
     This function first initializes the model by calling the 'initialize_model' function. Then, it starts the server using
     the waitress `serve` method, allowing incoming HTTP requests to be handled.
 
-    The arguments to waitress serve are read from the configuration file `serve.json`. The default option is to 
-    listen for HTTP requests on all interfaces (ip address 0.0.0.0, port 5000). 
+    The arguments to waitress serve are read from the configuration file `serve.json`. The default option is to
+    listen for HTTP requests on all interfaces (ip address 0.0.0.0, port 5000).
 
     Returns:
         None
@@ -67,6 +70,7 @@ def start_server(temp_config = {}):
     data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')
+@cache.cached(timeout=300, query_string=True)
 def listen(identifier_name, identifier_context):
     """
     Process a web request to analyze an identifier within a specific context.
