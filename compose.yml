@@ -9,8 +9,8 @@ services:
     build:
       context: ./
       platforms:
-        - "linux/arm64"
-        - "linux/amd64"
+        - ${BUILD_PLATFORM:-linux/arm64}
+        - ${BUILD_PLATFORM:-linux/amd64}
     volumes:
       - vectors:/code2vec
       - gensim:/root/gensim-data
