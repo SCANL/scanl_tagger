@@ -9,7 +9,8 @@ from spiral import ronin
 import json
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+cache = Cache(app, config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': 'cache'})
+#cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 class ModelData:
     def __init__(self, ModelTokens, ModelMethods, ModelGensimEnglish) -> None:
