@@ -59,6 +59,13 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
+    print('checking for existing cache...')
+    if not os.path.isfile("cache/cache.json"): 
+        os.mkdir("cache")
+        cache = open("cache/cache.json", 'w')
+        json.dump({}, cache)
+        cache.close()
+
     print('retrieving server configuration...')
     data = open('serve.json')
     config = json.load(data)
