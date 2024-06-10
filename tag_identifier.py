@@ -9,7 +9,8 @@ from spiral import ronin
 import json
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': 'cache'})
+#cache = Cache(app, config=('CACHE_TYPE': app.persistentCache))
+#cache = Cache(app, config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': 'cache'})
 #cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 class ModelData:
@@ -71,8 +72,13 @@ def start_server(temp_config = {}):
     data.close()
 
 @app.route('/<identifier_name>/<identifier_context>')
-@cache.cached(timeout=300, query_string=True)
+#@cache.cached(timeout=300, query_string=True)
 def listen(identifier_name, identifier_context):
+    #check if identifier name has already been used
+    cache = {}
+    with open("cache/cache.json", 'r') as cacheJSON: cache = json.load(cacheJSON)
+    if (identifier_name in cache.keys()): return cache[identifier_name]
+
     """
     Process a web request to analyze an identifier within a specific context.
 
@@ -128,10 +134,17 @@ def listen(identifier_name, identifier_context):
     input_model = 'output/model_RandomForestClassifier.pkl'
     clf = joblib.load(input_model)
 
-    return {
+    result = {
         "tags" : list(annotate_identifier(clf, data)),
         "words" : words
     }
+
+    # load cache, append result and dump JSON to cache
+    with open("cache/cache.json", 'r') as cacheJSON: cache = json.load(cacheJSON)
+    cache.update({identifier_name : result})
+    with open("cache/cache.json", 'w') as cacheJSON: json.dump(cache, cacheJSON)
+
+    return result
     
 def context_to_number(context):
     """
