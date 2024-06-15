@@ -3,15 +3,11 @@ import joblib
 import pandas as pd
 from feature_generator import *
 from flask import Flask
-from flask_caching import Cache
 from waitress import serve
 from spiral import ronin
 import json
 
 app = Flask(__name__)
-#cache = Cache(app, config=('CACHE_TYPE': app.persistentCache))
-#cache = Cache(app, config={'CACHE_TYPE': 'FileSystemCache', 'CACHE_DIR': 'cache'})
-#cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 class ModelData:
     def __init__(self, ModelTokens, ModelMethods, ModelGensimEnglish) -> None:
@@ -26,6 +22,31 @@ class ModelData:
         self.ModelTokens = ModelTokens
         self.ModelMethods = ModelMethods
         self.ModelGensimEnglish = ModelGensimEnglish
+
+class AppCache:
+    def __init__(self, Path) -> None:
+        self.Cache = {}
+        self.Path = Path
+
+    def load(self): 
+        if not os.path.isdir(self.Path): 
+            raise Exception("Cannot load path: "+self.Path)
+        else:
+            if not os.path.isfile(self.Path+"/cache.json"):
+                JSONcache = open(self.Path+"/cache.json", 'w')
+                json.dump({}, JSONcache)
+                JSONcache.close()
+            JSONcache = open(self.Path+"/cache.json", 'r')
+            self.Cache = json.load(JSONcache)
+            JSONcache.close()
+
+    def update(self, entry):
+        self.Cache.update(entry)
+
+    def save(self):
+        JSONcache = open(self.Path+"/cache.json", 'w')
+        json.dump(self.Cache, JSONcache)
+        JSONcache.close()
 
 def initialize_model():
     """
@@ -59,12 +80,10 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
-    print('checking for existing cache...')
-    if not os.path.isfile("cache/cache.json"): 
-        if not os.path.isdir("cache"): os.mkdir("cache")
-        cache = open("cache/cache.json", 'w')
-        json.dump({}, cache)
-        cache.close()
+    print("loading cache...")
+    if not os.path.isdir("cache"): os.mkdir("cache")
+    app.cache = AppCache("cache")
+    app.cache.load()
 
     print('retrieving server configuration...')
     data = open('serve.json')
@@ -78,13 +97,16 @@ def start_server(temp_config = {}):
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
 
+#TODO: this is not an intuitive way to save cache
+@app.route('/')
+def save():
+    app.cache.save()
+    return "successfully saved cache"
+
 @app.route('/<identifier_name>/<identifier_context>')
-#@cache.cached(timeout=300, query_string=True)
 def listen(identifier_name, identifier_context):
     #check if identifier name has already been used
-    cache = {}
-    with open("cache/cache.json", 'r') as cacheJSON: cache = json.load(cacheJSON)
-    if (identifier_name in cache.keys()): return cache[identifier_name]
+    if (identifier_name in app.cache.Cache.keys()): return app.cache.Cache[identifier_name]
 
     """
     Process a web request to analyze an identifier within a specific context.
@@ -146,10 +168,8 @@ def listen(identifier_name, identifier_context):
         "words" : words
     }
 
-    # load cache, append result and dump JSON to cache
-    with open("cache/cache.json", 'r') as cacheJSON: cache = json.load(cacheJSON)
-    cache.update({identifier_name : result})
-    with open("cache/cache.json", 'w') as cacheJSON: json.dump(cache, cacheJSON)
+    # append result to cache
+    app.cache.update({identifier_name : result})
 
     return result
     
