@@ -22,6 +22,7 @@ class ModelData:
         self.ModelTokens = ModelTokens
         self.ModelMethods = ModelMethods
         self.ModelGensimEnglish = ModelGensimEnglish
+        self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
     def __init__(self, Path) -> None:
@@ -160,11 +161,11 @@ def listen(identifier_name, identifier_context):
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
 
-    input_model = 'output/model_RandomForestClassifier.pkl'
-    clf = joblib.load(input_model)
+    # input_model = 'output/model_RandomForestClassifier.pkl'
+    # clf = joblib.load(input_model)
 
     result = {
-        "tags" : list(annotate_identifier(clf, data)),
+        "tags" : list(annotate_identifier(app.model_data.ModelClassifier, data)),
         "words" : words
     }
 
