@@ -1,4 +1,5 @@
 import os
+import time
 import joblib
 import pandas as pd
 from feature_generator import *
@@ -41,8 +42,16 @@ class AppCache:
             self.Cache = json.load(JSONcache)
             JSONcache.close()
 
-    def update(self, entry):
-        self.Cache.update(entry)
+    def add(self, identifier, result):
+        info = result
+        info.update({"firstEncounter": time.time()})
+        info.update({"lastEncounter": time.time()})
+        info.update({"count": 1})
+        self.Cache.update({identifier : info})
+
+    def encounter(self, identifier):
+        self.Cache[identifier].update({"lastEncounter": time.time()})
+        self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
 
     def save(self):
         JSONcache = open(self.Path+"/cache.json", 'w')
@@ -107,7 +116,9 @@ def save():
 @app.route('/<identifier_name>/<identifier_context>')
 def listen(identifier_name, identifier_context):
     #check if identifier name has already been used
-    if (identifier_name in app.cache.Cache.keys()): return app.cache.Cache[identifier_name]
+    if (identifier_name in app.cache.Cache.keys()): 
+        app.cache.encounter(identifier_name)
+        return app.cache.Cache[identifier_name]
 
     """
     Process a web request to analyze an identifier within a specific context.
@@ -169,8 +180,9 @@ def listen(identifier_name, identifier_context):
         "words" : words
     }
 
-    # append result to cache
-    app.cache.update({identifier_name : result})
+    # append result to cache TODO: add cache data to result before updating
+    #app.cache.update({identifier_name : result})
+    app.cache.add(identifier_name, result)
 
     return result
     
