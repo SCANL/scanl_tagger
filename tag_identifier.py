@@ -1,15 +1,14 @@
 import os
+import time
 import joblib
 import pandas as pd
 from feature_generator import *
 from flask import Flask
-from flask_caching import Cache
 from waitress import serve
 from spiral import ronin
 import json
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 class ModelData:
     def __init__(self, ModelTokens, ModelMethods, ModelGensimEnglish) -> None:
@@ -24,6 +23,40 @@ class ModelData:
         self.ModelTokens = ModelTokens
         self.ModelMethods = ModelMethods
         self.ModelGensimEnglish = ModelGensimEnglish
+        self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
+
+class AppCache:
+    def __init__(self, Path) -> None:
+        self.Cache = {}
+        self.Path = Path
+
+    def load(self): 
+        if not os.path.isdir(self.Path): 
+            raise Exception("Cannot load path: "+self.Path)
+        else:
+            if not os.path.isfile(self.Path+"/cache.json"):
+                JSONcache = open(self.Path+"/cache.json", 'w')
+                json.dump({}, JSONcache)
+                JSONcache.close()
+            JSONcache = open(self.Path+"/cache.json", 'r')
+            self.Cache = json.load(JSONcache)
+            JSONcache.close()
+
+    def add(self, identifier, result):
+        info = result
+        info.update({"firstEncounter": time.time()})
+        info.update({"lastEncounter": time.time()})
+        info.update({"count": 1})
+        self.Cache.update({identifier : info})
+
+    def encounter(self, identifier):
+        self.Cache[identifier].update({"lastEncounter": time.time()})
+        self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
+
+    def save(self):
+        JSONcache = open(self.Path+"/cache.json", 'w')
+        json.dump(self.Cache, JSONcache)
+        JSONcache.close()
 
 def initialize_model():
     """
@@ -57,6 +90,11 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
+    print("loading cache...")
+    if not os.path.isdir("cache"): os.mkdir("cache")
+    app.cache = AppCache("cache")
+    app.cache.load()
+
     print('retrieving server configuration...')
     data = open('serve.json')
     config = json.load(data)
@@ -69,9 +107,19 @@ def start_server(temp_config = {}):
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
 
+#TODO: this is not an intuitive way to save cache
+@app.route('/')
+def save():
+    app.cache.save()
+    return "successfully saved cache"
+
 @app.route('/<identifier_name>/<identifier_context>')
-@cache.cached(timeout=300, query_string=True)
 def listen(identifier_name, identifier_context):
+    #check if identifier name has already been used
+    if (identifier_name in app.cache.Cache.keys()): 
+        app.cache.encounter(identifier_name)
+        return app.cache.Cache[identifier_name]
+
     """
     Process a web request to analyze an identifier within a specific context.
 
@@ -124,13 +172,19 @@ def listen(identifier_name, identifier_context):
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
 
-    input_model = 'output/model_RandomForestClassifier.pkl'
-    clf = joblib.load(input_model)
+    # input_model = 'output/model_RandomForestClassifier.pkl'
+    # clf = joblib.load(input_model)
 
-    return {
-        "tags" : list(annotate_identifier(clf, data)),
+    result = {
+        "tags" : list(annotate_identifier(app.model_data.ModelClassifier, data)),
         "words" : words
     }
+
+    # append result to cache TODO: add cache data to result before updating
+    #app.cache.update({identifier_name : result})
+    app.cache.add(identifier_name, result)
+
+    return result
     
 def context_to_number(context):
     """
