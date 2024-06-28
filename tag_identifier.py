@@ -53,7 +53,7 @@ class AppCache:
     def encounter(self, identifier):
         self.Cache[identifier].update({"lastEncounter": time.time()})
         self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
-        self.Cache[identifier].update({"verion": "SCANL 1.0"})
+        self.Cache[identifier].update({"version": "SCANL 1.0"})
 
     def save(self):
         JSONcache = open(self.Path+"/cache.json", 'w')
