@@ -99,6 +99,7 @@ def start_server(temp_config = {}):
     app.cache.load()
 
     print("loading dictionary...")
+    nltk.download("words")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
 
     print('retrieving server configuration...')
@@ -115,7 +116,7 @@ def start_server(temp_config = {}):
 
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
-    return word in app.english_words
+    return word.lower() in app.english_words
 
 #TODO: add functions here to look for abbreviations and slang
 
@@ -194,14 +195,16 @@ def listen(identifier_name, identifier_context):
 
     # create response JSON
     tags = list(annotate_identifier(app.model_data.ModelClassifier, data))
-    results = []
+    result = {
+        "words" : []
+    }
 
     for i in range(len(words)):
         #check dictionary
         dictionary = "UC" #uncategorized
-        if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
+        if (dictionary_lookup(words[i])): dictionary = "DW" #dictionary word
         #append result
-        results.append(
+        result["words"].append(
             {
                 words[i] : {
                     "tag" : tags[i],
