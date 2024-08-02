@@ -1,6 +1,7 @@
 import os
 import time
 import joblib
+import nltk
 import pandas as pd
 from feature_generator import *
 from flask import Flask
@@ -97,6 +98,10 @@ def start_server(temp_config = {}):
     app.cache = AppCache("cache")
     app.cache.load()
 
+    print("loading dictionary...")
+    nltk.download("words")
+    app.english_words = set(w.lower() for w in nltk.corpus.words.words())
+
     print('retrieving server configuration...')
     data = open('serve.json')
     config = json.load(data)
@@ -108,6 +113,12 @@ def start_server(temp_config = {}):
     print("Starting server...")
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
+
+def dictionary_lookup(word):
+    #return true if the word exists in the dictionary (the nltk words corpus)
+    return word.lower() in app.english_words
+
+#TODO: add functions here to look for abbreviations and slang
 
 #TODO: this is not an intuitive way to save cache
 @app.route('/')
@@ -177,13 +188,32 @@ def listen(identifier_name, identifier_context):
     # input_model = 'output/model_RandomForestClassifier.pkl'
     # clf = joblib.load(input_model)
 
+    # result = {
+    #     "tags" : list(annotate_identifier(app.model_data.ModelClassifier, data)),
+    #     "words" : words
+    # }
+
+    # create response JSON
+    tags = list(annotate_identifier(app.model_data.ModelClassifier, data))
     result = {
-        "tags" : list(annotate_identifier(app.model_data.ModelClassifier, data)),
-        "words" : words
+        "words" : []
     }
 
-    # append result to cache TODO: add cache data to result before updating
-    #app.cache.update({identifier_name : result})
+    for i in range(len(words)):
+        #check dictionary
+        dictionary = "UC" #uncategorized
+        if (dictionary_lookup(words[i])): dictionary = "DW" #dictionary word
+        #append result
+        result["words"].append(
+            {
+                words[i] : {
+                    "tag" : tags[i],
+                    "dictionary" : dictionary
+                }
+            }
+        )
+
+    # append result to cache
     app.cache.add(identifier_name, result)
 
     return result
