@@ -27,19 +27,20 @@ class ModelData:
         self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
-    def __init__(self, Path) -> None:
+    def __init__(self, Path, Filename) -> None:
         self.Cache = {}
         self.Path = Path
+        self.Filename = Filename
 
     def load(self): 
         if not os.path.isdir(self.Path): 
             raise Exception("Cannot load path: "+self.Path)
         else:
-            if not os.path.isfile(self.Path+"/cache.json"):
-                JSONcache = open(self.Path+"/cache.json", 'w')
+            if not os.path.isfile(self.Path+"/"+self.Filename):
+                JSONcache = open(self.Path+"/"+self.Filename, 'w')
                 json.dump({}, JSONcache)
                 JSONcache.close()
-            JSONcache = open(self.Path+"/cache.json", 'r')
+            JSONcache = open(self.Path+"/"+self.Filename, 'r')
             self.Cache = json.load(JSONcache)
             JSONcache.close()
 
@@ -57,7 +58,7 @@ class AppCache:
         self.Cache[identifier].update({"version": "SCANL 1.0"})
 
     def save(self):
-        JSONcache = open(self.Path+"/cache.json", 'w')
+        JSONcache = open(self.Path+"/"+self.Filename, 'w')
         json.dump(self.Cache, JSONcache)
         JSONcache.close()
 
@@ -95,7 +96,8 @@ def start_server(temp_config = {}):
 
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
-    app.cache = AppCache("cache")
+    app.cache = AppCache("cache", "cache.json")
+    app.studentCache = AppCache("cache", "student_cache.json")
     app.cache.load()
 
     print("loading dictionary...")
@@ -124,14 +126,22 @@ def dictionary_lookup(word):
 @app.route('/')
 def save():
     app.cache.save()
+    app.studentCache.save()
     return "successfully saved cache"
 
-@app.route('/<identifier_name>/<identifier_context>')
-def listen(identifier_name, identifier_context):
+@app.route('/<student>/<identifier_name>/<identifier_context>')
+def listen(student, identifier_name, identifier_context):
     #check if identifier name has already been used
-    if (identifier_name in app.cache.Cache.keys()): 
-        app.cache.encounter(identifier_name)
-        return app.cache.Cache[identifier_name]
+    cache = None;
+
+    if (student == "student"):
+        cache = app.studentCache
+    else: 
+        cache = app.cache
+
+    if (identifier_name in cache.Cache.keys()): 
+        cache.encounter(identifier_name)
+        return cache.Cache[identifier_name]
 
     """
     Process a web request to analyze an identifier within a specific context.
@@ -214,7 +224,7 @@ def listen(identifier_name, identifier_context):
         )
 
     # append result to cache
-    app.cache.add(identifier_name, result)
+    cache.add(identifier_name, result)
 
     return result
     
