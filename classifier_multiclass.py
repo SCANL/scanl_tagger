@@ -167,7 +167,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
         None
     """
     param_randomforest = {
-        'n_estimators': [120, 140, 150, 160, 170, 180, 200],
+        'n_estimators': [120, 140, 160, 180, 200],
         'max_depth': range(1, 30),
         'criterion': ['gini', 'entropy'],
         'bootstrap': [True],

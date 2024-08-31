@@ -3,8 +3,8 @@ import argparse
 import sys
 
 def process_row(row, row_id):
-    split_identifier = row['SPLIT IDENTIFIER'].split()
-    grammar_pattern = row['GRAMMAR PATTERN'].split()
+    split_identifier = row['SPLIT_IDENTIFIER'].lower().split()
+    grammar_pattern = row['GRAMMAR_PATTERN'].split()
     num_words = len(split_identifier)
     context = row['CONTEXT']
     
@@ -24,8 +24,7 @@ def process_row(row, row_id):
     new_rows = []
     for i, (word, correct_tag) in enumerate(zip(split_identifier, grammar_pattern)):
         new_row = row.copy()
-        new_row['IDENTIFIER'] = row['NAME']
-        new_row['IDENT_ID'] = row_id
+        new_row['IDENTIFIER_ID'] = row_id
         new_row['POSITION'] = i
         new_row['WORD'] = word
         new_row['CORRECT_TAG'] = correct_tag
@@ -44,7 +43,7 @@ def process_row(row, row_id):
 def main(input_file):
     with open(input_file, 'r', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
-        fieldnames = reader.fieldnames + ['IDENTIFIER', 'IDENT_ID', 'POSITION', 'NORMALIZED_POSITION', 'CONTEXT_NUMBER', 'WORD', 'CORRECT_TAG']
+        fieldnames = reader.fieldnames + ['IDENTIFIER_ID', 'POSITION', 'NORMALIZED_POSITION', 'CONTEXT_NUMBER', 'WORD', 'CORRECT_TAG']
         rows = []
         for idx, row in enumerate(reader):
             new_rows = process_row(row, row_id=idx)
