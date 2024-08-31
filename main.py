@@ -35,19 +35,16 @@ def read_input(sql, conn):
 def train(config):
     """
     Train a part of speech tagger model using specified features and a training dataset.
-
     This function reads data from an SQLite database, preprocesses it, and performs classification using a specified set
     of features. The results are written to an output file, including information about the training process and the
     distribution of labels in the training data.
-
     Args:
         config (dict): A dictionary containing configuration data.
-
     Returns:
         None
     """
     nltk.download('universal_tagset')
-    
+   
     # Extract configuration values from the 'config' dictionary
     input_file = config['input_file']
     sql_statement = config['sql_statement']
@@ -56,23 +53,18 @@ def train(config):
     pyrandom_seed = config['pyrandom_seed']
     trainingSeed = config['trainingSeed']
     classifierSeed = config['classifierSeed']
-    
+   
     np.random.seed(config['npseed'])
     random.seed(pyrandom_seed)
-
     independent_variables = config['independent_variables']
-
     # ###############################################################
     print(" --  -- Started: Reading Database --  -- ")
     connection = sqlite3.connect(input_file)
     df_input = read_input(sql_statement, connection)
     print(" --  -- Completed: Reading Input --  -- ")
     # ###############################################################
-
     category_variables = []
-
     feature_list = independent_variables
-
     df_input.set_index(identifier_column, inplace=True)
     df_features = df_input[feature_list]
     if 'NLTK_POS' in feature_list:
@@ -84,37 +76,37 @@ def train(config):
     if 'TYPE' in feature_list:
         category_variables.append('TYPE')
         df_features['TYPE'] = df_features['TYPE'].astype(str)
-
     df_class = df_input[[dependent_variable]]
-
     if not os.path.exists('output'):
         os.makedirs('output')
     filename = 'output/results.txt'
-    if os.path.exists(filename):
-        append_write = 'a'
-    else:
-        append_write = 'w'
-
-    results_text_file = open(filename, append_write)
-    results_text_file.write(datetime.now().strftime("%H:%M:%S") + "\n")
-    for category_column in category_variables:
-        if category_column in df_features.columns:
-            df_features[category_column] = df_features[category_column].astype('category')
-            d = dict(enumerate(df_features[category_column].cat.categories))
-            results_text_file.write(str(category_column) + ":" + str(d) + "\n")
-            df_features[category_column] = df_features[category_column].cat.codes
-
-    print(" --  -- Distribution of labels in corpus --  -- ")
-    print(df_class[dependent_variable].value_counts())
-
-    results_text_file.write("SQL: %s\n" % sql_statement)
-    results_text_file.write("Features: {features}\n".format(features=df_features))
-    algorithms = [classifier_multiclass.TrainingAlgorithm.RANDOM_FOREST]
-    classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
-                                                    'output', algorithms, trainingSeed, 
+    mode = 'a' if os.path.exists(filename) else 'w'
+    
+    with open(filename, mode) as results_text_file:
+        results_text_file.write(datetime.now().strftime("%H:%M:%S") + "\n")
+        
+        # Print config in a readable fashion
+        results_text_file.write("Configuration:\n")
+        for key, value in config.items():
+            results_text_file.write(f"{key}: {value}\n")
+        results_text_file.write("\n")
+        
+        for category_column in category_variables:
+            if category_column in df_features.columns:
+                df_features[category_column] = df_features[category_column].astype('category')
+                d = dict(enumerate(df_features[category_column].cat.categories))
+                results_text_file.write(f"{category_column}: {d}\n")
+                df_features[category_column] = df_features[category_column].cat.codes
+        
+        print(" --  -- Distribution of labels in corpus --  -- ")
+        print(df_class[dependent_variable].value_counts())
+        results_text_file.write(f"SQL: {sql_statement}\n")
+        results_text_file.write(f"Features: {df_features}\n")
+        
+        algorithms = [classifier_multiclass.TrainingAlgorithm.RANDOM_FOREST]
+        classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
+                                                    'output', algorithms, trainingSeed,
                                                     classifierSeed)
-    print("Training Seed: " + str(trainingSeed))
-    print("Classifier seed: " + str(classifierSeed))
 
 if __name__ == "__main__":
     """
@@ -154,18 +146,19 @@ if __name__ == "__main__":
         # Define a configuration dictionary and pass it to the train function
         # 'CONJUNCTION'
         config = {
-            'input_file': 'input/closed_set_tagger_db_5_13_2024',
+            'input_file': 'input/scanl_tagger_training_db_8_29_2024.db',
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',
-            'pyrandom_seed': 1550, # 55
-            'trainingSeed': 28, # 19
-            'classifierSeed': 4561, # 91
-            'npseed': 120, # 80
-            'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'PREPOSITION', 'DIGITS',
-                                      'NLTK_POS', 'POSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'NOUN_SCORE', 'SECOND_LAST_LETTER',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'VERB_SCORE', 'ENGLISHN_SCORE',
-                                      'CONTAINSCLOSEDSET','DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE', 'CODEPRE_SCORE', 'METHODPRE_SCORE']
+            'pyrandom_seed': random.randint(0, 2**32 - 1),
+            'trainingSeed': random.randint(0, 2**32 - 1),
+            'classifierSeed': random.randint(0, 2**32 - 1),
+            'npseed': random.randint(0, 2**32 - 1),
+            'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
+                                      'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
+                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE',
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
+                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
         }
         train(config)
     else:

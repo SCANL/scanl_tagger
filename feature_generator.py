@@ -266,7 +266,7 @@ def maxPosition(data):
     Returns:
         pandas.DataFrame: The input DataFrame with an additional 'MAXPOSITION' column.
     """
-    identifiers = data["IDENTIFIER"]
+    identifiers = data["SPLIT_IDENTIFIER"]
     maxPosition = pd.DataFrame([len(identifier.split()) for identifier in identifiers])
     maxPosition.columns = ['MAXPOSITION']
     data = pd.concat([data, maxPosition], axis=1)
