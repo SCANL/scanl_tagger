@@ -570,10 +570,10 @@ def createIdentifierDigitFeature(data):
     Returns:
         pandas.DataFrame: The input DataFrame with an additional 'CONTAINSDIGITS' column.
     """
-    identifiers = data["IDENTIFIER"]
+    identifiers = data["SPLIT_IDENTIFIER"]
     column = []
     for index, row in data.iterrows():
-        words = row["IDENTIFIER"].split()
+        words = row["SPLIT_IDENTIFIER"].split()
         contains_digit = any(word.isdigit() for word in words)
         column.append(contains_digit)
     containsDigit = pd.DataFrame(column)
@@ -599,7 +599,7 @@ def createIdentifierClosedSetFeature(data):
     """
     column = []
     for index, row in data.iterrows():
-        words = row["IDENTIFIER"].split()
+        words = row["SPLIT_IDENTIFIER"].split()
         for word in words:
             contains_closed_set_word = word_in_any_list(word, conjunctions, determiners, prepositions)
         column.append(contains_closed_set_word)
@@ -623,7 +623,7 @@ def createIdentifierContainsVerbFeature(data):
     """
     column = []
     for index, row in data.iterrows():
-        words = row["IDENTIFIER"].split()
+        words = row["SPLIT_IDENTIFIER"].split()
         for word in words:
             contains_verb = word_in_any_list(word, verbs)
         column.append(contains_verb)
