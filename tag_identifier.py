@@ -120,8 +120,6 @@ def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
     return word.lower() in app.english_words
 
-#TODO: add functions here to look for abbreviations and slang
-
 #TODO: this is not an intuitive way to save cache
 @app.route('/')
 def save():
@@ -212,7 +210,9 @@ def listen(student, identifier_name, identifier_context):
     for i in range(len(words)):
         #check dictionary
         dictionary = "UC" #uncategorized
-        if (dictionary_lookup(words[i])): dictionary = "DW" #dictionary word
+        word = words[i]
+        if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
+        if (word.isnumeric()): dictionary = "DD" #digit
         #append result
         result["words"].append(
             {
