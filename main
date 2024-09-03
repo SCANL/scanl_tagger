@@ -133,6 +133,7 @@ if __name__ == "__main__":
     python script.py -a --address [host]         # Run the tagger on a specific IP address
     python script.py --port [port]               # Run the tagger on a specific port
     python script.py --protocol [http/https]     # Specify use of http or https
+    python script.py --words [path]              # Specify path of word list
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
@@ -148,6 +149,7 @@ if __name__ == "__main__":
     parser.add_argument("-a", "--address", nargs=1, action="store", help="configure server address", )
     parser.add_argument("--port", nargs=1, action="store", help="configure server port")
     parser.add_argument("--protocol", nargs=1, action="store", help="configure whether the server uses http or https")
+    parser.add_argument("--words", nargs=1, action="store", help="provide path to a list of acceptable abbreviations")
 
     args = parser.parse_args()
 
@@ -160,6 +162,7 @@ if __name__ == "__main__":
         if args.address != None: temp_config["address"] = args.address[0]
         if args.port != None: temp_config["port"] = args.port[0]
         if args.protocol != None: temp_config["protocol"] = args.protocol[0]
+        if args.words != None: temp_config["words"] = args.words[0]
         start_server(temp_config)
     elif args.train:
         download_files()
