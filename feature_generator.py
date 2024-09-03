@@ -1,10 +1,11 @@
-import time, nltk
+import time, nltk, sys
 import gensim.downloader as api
 from gensim.models import KeyedVectors as word2vec
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cosine
 from spellchecker import SpellChecker
+import json
 
 spell = SpellChecker()
 
@@ -163,6 +164,25 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
+def load_word_count(input_file):
+    """
+    Loads the word_count dictionary from a JSON file.
+
+    Parameters:
+        input_file (str): The path to the input JSON file.
+
+    Returns:
+        dict: The loaded word_count dictionary.
+    """
+    try:
+        with open(input_file, 'r') as f:
+            word_count = json.load(f)
+        print(f"Word counts successfully loaded from {input_file}")
+        return word_count
+    except Exception as e:
+        print(f"Failed to load word counts: {e}")
+        return {}
+
 def createFeatures(data):
     """
     Create various features for the input data using pre-trained Word2Vec models and other techniques.
@@ -177,6 +197,7 @@ def createFeatures(data):
         pandas.DataFrame: The input DataFrame with additional features added.
     """
     startTime = time.time()
+    wordCount = load_word_count('input/word_count.json')
     modelTokens, modelMethods, modelGensimEnglish = createModel()
     data = createVerbFeature(data)
     data = createIdentifierDigitFeature(data)
@@ -202,6 +223,7 @@ def createFeatures(data):
     data = createDeterminerFeature(data)
     data = createDigitFeature(data)
     data = createPrepositionFeature(data)
+    data = createWordCountFeature(data, wordCount)
 
     print("Total Feature Time: " + str((time.time() - startTime)))
     return data
@@ -225,6 +247,13 @@ universal_to_custom = {
     'X': 'NM',
     '.': '.',
 }
+
+def createWordCountFeature(data, word_count):
+    words = data["WORD"]
+    word_counts = [word_count.get(word.lower(), 1) for word in words]  # Use `get` with a default value of 1
+    word_counts_df = pd.DataFrame(word_counts, columns=['WORD_COUNT'])
+    data = pd.concat([data, word_counts_df], axis=1)
+    return data
 
 def wordPosTag(data):
     """

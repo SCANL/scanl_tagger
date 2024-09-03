@@ -158,7 +158,7 @@ if __name__ == "__main__":
                                       'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
                                       'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE',
                                       'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
-                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE']
+                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER', 'NOUN_SCORE']
         }
         train(config)
     else:
