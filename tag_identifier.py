@@ -62,6 +62,22 @@ class AppCache:
         json.dump(self.Cache, JSONcache)
         JSONcache.close()
 
+class WordList:
+    def __init__(self, Path):
+        self.Words = set()
+        self.Path = Path
+    
+    def load(self):
+        if not os.path.isfile(self.Path):
+            print("Could not find word list file!")
+            return
+        with open(self.Path) as file:
+            for line in file:
+                self.Words.add(line[:-1])
+    
+    def find(self, item):
+        return item in self.Words
+
 def initialize_model():
     """
     Initialize and load word vectors for the application.
@@ -112,15 +128,21 @@ def start_server(temp_config = {}):
     server_port = temp_config["port"] if "port" in temp_config.keys() else config['port']
     server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config["protocol"]
 
+    print("loading word list...")
+    wordListPath = temp_config["words"] if "words" in temp_config.keys() else config["words"]
+    app.words = WordList(wordListPath)
+    app.words.load()
+
     print("Starting server...")
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
 
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
-    return word.lower() in app.english_words
-
-#TODO: add functions here to look for abbreviations and slang
+    #or if the word is in the list of approved words
+    dictionary = word.lower() in app.english_words
+    acceptable = app.words.find(word)
+    return dictionary or acceptable
 
 #TODO: this is not an intuitive way to save cache
 @app.route('/')
@@ -212,7 +234,9 @@ def listen(student, identifier_name, identifier_context):
     for i in range(len(words)):
         #check dictionary
         dictionary = "UC" #uncategorized
-        if (dictionary_lookup(words[i])): dictionary = "DW" #dictionary word
+        word = words[i]
+        if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
+        if (word.isnumeric()): dictionary = "DD" #digit
         #append result
         result["words"].append(
             {
