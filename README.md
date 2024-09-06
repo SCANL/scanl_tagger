@@ -18,14 +18,20 @@ Finally, we require the `token` and `target` vectors from [code2vec](https://git
 
 ## Usage
 
-```bash
-./main -h                     # Display command options.
-./main -v                     # Display the application version.
-./main -r                     # Start the server for tagging requests.
-./main -t                     # Run the training set to retrain the model.
-./main -a [address]           # configure the server address.
-./main --port [port]          # configure the server port.
-./main --protocol [protocol]  # configure use of http or https
+```
+usage: main [-h] [-v] [-r] [-t] [-a ADDRESS] [--port PORT] [--protocol PROTOCOL]
+            [--words WORDS]
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         print tagger application version
+  -r, --run             run server for part of speech tagging requests
+  -t, --train           run training set to retrain the model
+  -a ADDRESS, --address ADDRESS
+                        configure server address
+  --port PORT           configure server port
+  --protocol PROTOCOL   configure whether the server uses http or https
+  --words WORDS         provide path to a list of acceptable abbreviations
 ```
 
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
@@ -47,6 +53,9 @@ Tag a function: ``http://127.0.0.1:5000/GetNumberArray/FUNCTION``
 
 Tag an class: ``http://127.0.0.1:5000/PersonRecord/CLASS``
 
+#### Note
+Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 
+
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 
 ## Training the tagger
@@ -66,3 +75,9 @@ Most of the data used to train this tagger can be found here: https://github.com
 
 # Interested in our other work?
 Find our other research [at our webpage](https://www.scanl.org/) and check out the [Identifier Name Structure Catalogue](https://github.com/SCANL/identifier_name_structure_catalogue)
+
+# WordNet
+This project uses WordNet to perform a dictionary lookup on the individual words in each identifier:
+
+Princeton University "About WordNet." [WordNet](https://wordnet.princeton.edu/). Princeton University. 2010
+
