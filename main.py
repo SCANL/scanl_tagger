@@ -103,7 +103,7 @@ def train(config):
         results_text_file.write(f"SQL: {sql_statement}\n")
         results_text_file.write(f"Features: {df_features}\n")
         
-        algorithms = [classifier_multiclass.TrainingAlgorithm.RANDOM_FOREST]
+        algorithms = [classifier_multiclass.TrainingAlgorithm.XGBOOST]
         classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
                                                     'output', algorithms, trainingSeed,
                                                     classifierSeed)
@@ -157,8 +157,8 @@ if __name__ == "__main__":
             'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
                                       'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
                                       'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
-                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER', 'NOUN_SCORE']
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT',
+                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
         }
         train(config)
     else:

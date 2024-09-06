@@ -1,6 +1,7 @@
 import json
 
 import numpy as np
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 from sklearn.metrics import confusion_matrix
@@ -85,7 +86,7 @@ def build_datasets(X, y, output_directory, trainingSeed):
 
     Returns:
         tuple: A tuple containing the following elements:
-            - X_train_temp (pandas.DataFrame): Training feature data (70%).
+            - X_train (pandas.DataFrame): Training feature data (70%).
             - X_validation (pandas.DataFrame): Validation feature data (15%).
             - X_test (pandas.DataFrame): Testing feature data (15%).
             - y_train_temp (numpy.ndarray): Training label data (70%).
@@ -95,20 +96,23 @@ def build_datasets(X, y, output_directory, trainingSeed):
             - X_test_original (pandas.DataFrame): Original testing feature data before splitting.
     """
     # Split the data into training (70%) and temporary (30%) sets
-    X_train_temp, X_temp, y_train_temp, y_temp = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.20, random_state=trainingSeed, stratify=y)
 
     # Split the temporary set into validation (15%) and testing (15%) sets
     X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=trainingSeed, stratify=y_temp)
 
-    X_train_original = X_train_temp.copy(deep=True)
+    X_train_original = X_train.copy(deep=True)
     X_test_original = X_temp.copy(deep=True)
     
-    unique, counts = np.unique(y_train_temp, return_counts=True)
-    print(" -- Distribution of labels in training set -- ")
-    print(dict(zip(unique, counts)))
+    # Print distribution of labels in all sets
+    for name, labels in [("Training", y_train), ("Validation", y_validation), ("Test", y_test)]:
+        unique, counts = np.unique(labels, return_counts=True)
+        print(f" -- Distribution of labels in {name} set -- ")
+        print(dict(zip(unique, counts)))
+        print()
 
     # Return training, validation, and testing sets, as well as original training data
-    return X_train_temp, X_validation, X_test, y_train_temp.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
+    return X_train, X_validation, X_test, y_train.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed):
     """
@@ -147,6 +151,8 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
             analyzeRandomForest(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
         if TrainingAlgorithm == TrainingAlgorithm.DECISION_TREE:
             analyzeDecisionTree(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
+        if TrainingAlgorithm == TrainingAlgorithm.XGBOOST:
+            analyzeGradientBoost(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
 
 def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
     """
@@ -167,11 +173,12 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
         None
     """
     param_randomforest = {
-        'n_estimators': [120, 140, 160, 180, 200],
+        'n_estimators': [200, 220, 240, 260],
         'max_depth': range(1, 30),
         'criterion': ['gini', 'entropy'],
         'bootstrap': [True],
         'class_weight':["balanced", "balanced_subsample"],
+        'max_features':["sqrt", "log2"],
         #'warm_start':[True]
     }
     stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
@@ -271,6 +278,127 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
     utils.print_cm(cm_cv, algoData.labels, classifier='RandomForestClassifier', output_directory=output_directory)
     results_text_file.write("\n------------------------------------------------------\n")
 
+def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
+    """
+    Analyze a GradientBoostingClassifier for classification and report results.
+
+    This function performs analysis on a GradientBoostingClassifier for classification and reports various evaluation metrics
+    to the results text file.
+
+    Args:
+        results_text_file (file): The file to write the results to.
+        output_directory (str): The directory where additional output files will be saved.
+        scorersKey (dict): A dictionary of scoring functions.
+        algoData (TrainTestvalidationData): An object containing data for analysis.
+        classifierSeed (int): The random seed for the classifier.
+        trainingSeed (int): The random seed for data splitting during training.
+
+    Returns:
+        None
+    """
+    param_gradientboost = {
+        'n_estimators': [100, 200, 250],
+        'learning_rate': [0.1, 0.2],
+        'max_depth': [5, 6],
+        'subsample': [0.9, 1.0],
+        'max_features': ['sqrt'],
+    }
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
+    results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
+    print("GradientBoostingClassifier")
+    clf = GridSearchCV(GradientBoostingClassifier(random_state=classifierSeed), param_gradientboost, cv=stratified_kfold,
+                       scoring=scorersKey, n_jobs=-1, refit='weighted_f1',
+                       error_score=0.0)
+    clf.fit(algoData.X_train, algoData.y_train)
+
+    joblib.dump(clf, '%s/model_GradientBoostingClassifier.pkl' % output_directory)
+    results_text_file.write("Best parameters set found on development set:")
+    results_text_file.write("\n")
+    results_text_file.write(json.dumps(clf.best_params_))
+    results_text_file.write("\n")
+    pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_GradientBoostingClassifier.csv" % output_directory)
+
+    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
+    results_text_file.write("f1_weighted importances\n")
+    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("mean f1_weighted importances\n")
+    for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+    results_text_file.write("\n")
+
+    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
+    results_text_file.write("balanced_accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_balanced.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("mean balanced_accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
+    results_text_file.write("\n")
+
+    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
+    results_text_file.write("accuracy importances\n")
+    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+        results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
+    results_text_file.write("\n")
+
+    results_text_file.write("Detailed classification report:")
+    results_text_file.write("\n")
+    results_text_file.write("The model is trained on the full development set.")
+    results_text_file.write("\n")
+    results_text_file.write("The scores are computed on the full evaluation set.")
+    results_text_file.write("\n")
+
+    # Get the best estimator
+    best_model = clf.best_estimator_
+    
+    y_validation_pred = best_model.predict(algoData.X_validation)
+    
+    # Calculate accuracy
+    accuracy = accuracy_score(algoData.y_validation, y_validation_pred)
+
+    # Create DataFrame with actual and predicted labels
+    validation_results = pd.DataFrame({
+        'Actual_label': algoData.y_validation,
+        'Predicted_Label': y_validation_pred,
+        'Accuracy': [accuracy] * len(algoData.y_validation)
+    })
+
+    # Save the DataFrame to a CSV file
+    validation_results.to_csv('validation_results.csv', index=False)
+
+    # Perform cross-validation and obtain predictions
+    y_pred_cv = cross_val_predict(best_model, algoData.X_train, algoData.y_train, cv=stratified_kfold)
+
+    results_text_file.write('--- Cross-Validation Classification Report ---\n')
+    results_text_file.write(classification_report(algoData.y_train, y_pred_cv))
+    results_text_file.write("\n")
+
+    results_text_file.write('balanced_accuracy_score (CV) :')
+    results_text_file.write(str(balanced_accuracy_score(algoData.y_train, y_pred_cv)))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (macro, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='macro')))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (micro, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='micro')))
+    results_text_file.write("\n")
+    results_text_file.write('f1_score (weighted, CV) :')
+    results_text_file.write(str(f1_score(algoData.y_train, y_pred_cv, average='weighted')))
+    results_text_file.write("\n")
+    results_text_file.write('matthews_corrcoef (CV) :')
+    results_text_file.write(str(matthews_corrcoef(algoData.y_train, y_pred_cv)))
+    results_text_file.write("\n")
+    results_text_file.flush()
+    utils.print_prediction_results(algoData.X_train.index, y_pred_cv, algoData.y_train, 'GradientBoostingClassifier',
+                                output_directory)
+    cm_cv = confusion_matrix(algoData.y_train, y_pred_cv, labels=algoData.labels)
+    utils.print_cm(cm_cv, algoData.labels, classifier='GradientBoostingClassifier', output_directory=output_directory)
+    results_text_file.write("\n------------------------------------------------------\n")
 
 def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
     """
