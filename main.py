@@ -76,6 +76,9 @@ def train(config):
     if 'TYPE' in feature_list:
         category_variables.append('TYPE')
         df_features['TYPE'] = df_features['TYPE'].astype(str)
+    if 'LANGUAGE' in feature_list:
+        category_variables.append('LANGUAGE')
+        df_features['LANGUAGE'] = df_features['LANGUAGE'].astype(str)
     df_class = df_input[[dependent_variable]]
     if not os.path.exists('output'):
         os.makedirs('output')
@@ -156,8 +159,8 @@ if __name__ == "__main__":
             'npseed': random.randint(0, 2**32 - 1),
             'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
                                       'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
-                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT',
+                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
                                       'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
         }
         train(config)

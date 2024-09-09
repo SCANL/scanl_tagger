@@ -96,7 +96,7 @@ def build_datasets(X, y, output_directory, trainingSeed):
             - X_test_original (pandas.DataFrame): Original testing feature data before splitting.
     """
     # Split the data into training (70%) and temporary (30%) sets
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.20, random_state=trainingSeed, stratify=y)
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
 
     # Split the temporary set into validation (15%) and testing (15%) sets
     X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=trainingSeed, stratify=y_temp)
@@ -303,7 +303,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         'subsample': [0.9, 1.0],
         'max_features': ['sqrt'],
     }
-    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
     results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
     print("GradientBoostingClassifier")
     clf = GridSearchCV(GradientBoostingClassifier(random_state=classifierSeed), param_gradientboost, cv=stratified_kfold,
