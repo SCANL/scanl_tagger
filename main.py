@@ -6,8 +6,9 @@ import pandas as pd
 import numpy as np
 from tag_identifier import start_server
 from download_code2vec_vectors import *
+from create_models import createModel
 
-def read_input(sql, conn):
+def read_input(sql, features, conn):
     """
     Read input data from an SQLite database and preprocess it.
 
@@ -28,8 +29,8 @@ def read_input(sql, conn):
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-
-    input_data = createFeatures(shuffled_input_data)
+    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel()
+    input_data = createFeatures(shuffled_input_data, features, wordCount, modelTokens, modelMethods, modelGensimEnglish)
     return input_data
 
 def train(config):
@@ -60,7 +61,7 @@ def train(config):
     # ###############################################################
     print(" --  -- Started: Reading Database --  -- ")
     connection = sqlite3.connect(input_file)
-    df_input = read_input(sql_statement, connection)
+    df_input = read_input(sql_statement, independent_variables, connection)
     print(" --  -- Completed: Reading Input --  -- ")
     # ###############################################################
     category_variables = []
@@ -149,7 +150,7 @@ if __name__ == "__main__":
         # Define a configuration dictionary and pass it to the train function
         # 'CONJUNCTION'
         config = {
-            'input_file': 'input/scanl_tagger_training_db_8_29_2024.db',
+            'input_file': 'input/closed_set_tagger_db_5_13_2024.db',
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',

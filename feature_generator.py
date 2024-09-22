@@ -1,11 +1,9 @@
 import time, nltk, sys
-import gensim.downloader as api
-from gensim.models import KeyedVectors as word2vec
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cosine
 from spellchecker import SpellChecker
-import json
+from typing import List, Callable
 
 spell = SpellChecker()
 
@@ -164,68 +162,56 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
-def load_word_count(input_file):
+def createFeatures(data: pd.DataFrame, feature_list: List[str], wordCount = None, modelTokens = None, modelMethods = None, modelGensimEnglish = None) -> pd.DataFrame:
     """
-    Loads the word_count dictionary from a JSON file.
-
-    Parameters:
-        input_file (str): The path to the input JSON file.
-
-    Returns:
-        dict: The loaded word_count dictionary.
-    """
-    try:
-        with open(input_file, 'r') as f:
-            word_count = json.load(f)
-        print(f"Word counts successfully loaded from {input_file}")
-        return word_count
-    except Exception as e:
-        print(f"Failed to load word counts: {e}")
-        return {}
-
-def createFeatures(data):
-    """
-    Create various features for the input data using pre-trained Word2Vec models and other techniques.
-
-    This function adds multiple features to the input DataFrame 'data' based on pre-trained Word2Vec models and other
-    techniques. These features include vector similarity scores, word embeddings, and linguistic properties.
+    Create various features for the input data based on the provided feature list.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column and other relevant columns.
+        data (pandas.DataFrame): The input DataFrame containing necessary columns.
+        feature_list (List[str]): A list of features to be created.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with additional features added.
+        pandas.DataFrame: The input DataFrame with additional features added based on the feature list.
     """
     startTime = time.time()
-    wordCount = load_word_count('input/word_count.json')
-    modelTokens, modelMethods, modelGensimEnglish = createModel()
-    data = createVerbFeature(data)
-    data = createIdentifierDigitFeature(data)
-    data = createIdentifierClosedSetFeature(data)
-    data = createIdentifierContainsVerbFeature(data)
-    data = createVerbVectorFeature(data, modelGensimEnglish)
-    data = createNounVectorFeature(data, modelGensimEnglish)
-    data = createDeterminerVectorFeature(data, modelGensimEnglish)
-    data = createConjunctionVectorFeature(data, modelGensimEnglish)
-    data = createPrepositionVectorFeature(data, modelGensimEnglish)
-    data = createPreambleVectorFeature("CODE", data, modelTokens)
-    data = createPreambleVectorFeature("METHOD", data, modelMethods)
-    data = createPreambleVectorFeature("ENGLISH", data, modelGensimEnglish)
-    data = createLetterFeature(data)
-    data = createLastTwoLettersFeature(data)
-    data = maxPosition(data)
-    data = wordPosTag(data)
-    data = createSimilarityToVerbFeature("METHODV", modelMethods, data)
-    data = createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, data)
-    data = createSimilarityToNounFeature("METHODN", modelMethods, data)
-    data = createSimilarityToNounFeature("ENGLISHN", modelGensimEnglish, data)
-    data = createConjunctionFeature(data)
-    data = createDeterminerFeature(data)
-    data = createDigitFeature(data)
-    data = createPrepositionFeature(data)
-    data = createWordCountFeature(data, wordCount)
 
-    print("Total Feature Time: " + str((time.time() - startTime)))
+    # Define a mapping of features to their corresponding functions
+    feature_function_map: dict[str, Callable[[pd.DataFrame], pd.DataFrame]] = {
+        'WORD_COUNT': lambda df: createWordCountFeature(df, wordCount),
+        'NLTK_POS': wordPosTag,
+        'MAXPOSITION': maxPosition,
+        'VERB_SCORE': lambda df: createVerbVectorFeature(df, modelGensimEnglish),
+        'NOUN_SCORE': lambda df: createNounVectorFeature(df, modelGensimEnglish),
+        'DET_SCORE': lambda df: createDeterminerVectorFeature(df, modelGensimEnglish),
+        'PREP_SCORE': lambda df: createPrepositionVectorFeature(df, modelGensimEnglish),
+        'CONJ_SCORE': lambda df: createConjunctionVectorFeature(df, modelGensimEnglish),
+        'CODEPRE_SCORE': lambda df: createPreambleVectorFeature("CODE", df, modelTokens),
+        'METHODPRE_SCORE': lambda df: createPreambleVectorFeature("METHOD", df, modelMethods),
+        'ENGLISHPRE_SCORE': lambda df: createPreambleVectorFeature("ENGLISH", df, modelGensimEnglish),
+        'CONTAINSLISTVERB': createVerbFeature,
+        'PREPOSITION': createPrepositionFeature,
+        'CONJUNCTION': createConjunctionFeature,
+        'DETERMINER': createDeterminerFeature,
+        'DIGITS': createDigitFeature,
+        'CONTAINSDIGIT': createIdentifierDigitFeature,
+        'CONTAINSCLOSEDSET': createIdentifierClosedSetFeature,
+        'CONTAINSVERB': createIdentifierContainsVerbFeature,
+        'LAST_LETTER': createLetterFeature,
+        'SECOND_LAST_LETTER': createLastTwoLettersFeature,
+        'METHODV_SCORE': lambda df: createSimilarityToVerbFeature("METHODV", modelMethods, df),
+        'ENGLISHV_SCORE': lambda df: createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, df),
+        'METHODN_SCORE': lambda df: createSimilarityToNounFeature("METHODN", modelMethods, df),
+        'ENGLISHN_SCORE': lambda df: createSimilarityToNounFeature("ENGLISHN", modelGensimEnglish, df),
+    }
+
+    # Apply functions based on the feature list
+    for feature in feature_list:
+        if feature in feature_function_map:
+            data = feature_function_map[feature](data)
+        else:
+            print(f"Warning: Feature '{feature}' not found in the feature function map.")
+
+    print(f"Total Feature Time: {time.time() - startTime}")
     return data
 
 universal_to_custom = {
@@ -844,22 +830,3 @@ def createMethodWordVectorsFeature(model, data):
 
     data = pd.concat([data, df], axis=1)
     return data
-
-def createModel(pklFile=""):
-    """
-    Create and load Word2Vec models for tokens, methods, and English text.
-
-    This function loads pre-trained Word2Vec models for tokens, methods, and English text. The models are used for various
-    natural language processing tasks.
-
-    Args:
-        pklFile (str, optional): The path to a pickle file. Defaults to an empty string.
-
-    Returns:
-        tuple: A tuple containing three Word2Vec models: (modelGensimTokens, modelGensimMethods, modelGensimEnglish).
-    """
-    modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
-    modelGensimTokens = word2vec.load_word2vec_format('./code2vec/token_vecs.txt', binary=False)
-    modelGensimMethods = word2vec.load_word2vec_format('./code2vec/target_vecs.txt', binary=False)
-
-    return modelGensimTokens, modelGensimMethods, modelGensimEnglish

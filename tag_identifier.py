@@ -3,11 +3,11 @@ import pandas as pd
 from feature_generator import *
 from flask import Flask
 from spiral import ronin
-
+from create_models import createModel
 app = Flask(__name__)
 
 class ModelData:
-    def __init__(self, ModelTokens, ModelMethods, ModelGensimEnglish) -> None:
+    def __init__(self, wordCount, modelTokens, modelMethods, modelGensimEnglish) -> None:
         """
         Initialize an instance of the ModelData class with word vector models.
 
@@ -16,9 +16,10 @@ class ModelData:
             ModelMethods: Word vectors model for methods.
             ModelGensimEnglish: Word vectors model for general English words.
         """
-        self.ModelTokens = ModelTokens
-        self.ModelMethods = ModelMethods
-        self.ModelGensimEnglish = ModelGensimEnglish
+        self.wordCount = wordCount
+        self.modelTokens = modelTokens
+        self.modelMethods = modelMethods
+        self.modelGensimEnglish = modelGensimEnglish
 
 def initialize_model():
     """
@@ -31,10 +32,10 @@ def initialize_model():
         None
     """
     print("Loading word vectors!!")
-    ModelTokens, ModelMethods, ModelGensimEnglish = createModel()
+    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel()
     print("Word vectors loaded!!")
 
-    app.model_data = ModelData(ModelTokens, ModelMethods, ModelGensimEnglish)
+    app.model_data = ModelData(wordCount, modelTokens, modelMethods, modelGensimEnglish)
 
 def start_server():
     """
@@ -50,13 +51,14 @@ def start_server():
     print("Starting server!!")
     app.run(host='0.0.0.0')
 
+
 @app.route('/<identifier_name>/<identifier_context>')
-def listen(identifier_name, identifier_context):
+def listen(identifier_name: str, identifier_context: str) -> List:
     """
     Process a web request to analyze an identifier within a specific context.
 
     This route function takes two URL parameters (identifier_name, and identifier_context) from an
-    incoming HTTP request and performs several data preprocessing and feature extraction steps on the identifier_name.
+    incoming HTTP request and performs data preprocessing and feature extraction on the identifier_name.
     It then uses a trained classifier to annotate the identifier with part-of-speech tags and other linguistic features.
 
     Args:
@@ -64,57 +66,40 @@ def listen(identifier_name, identifier_context):
         identifier_context (str): The context in which the identifier appears.
 
     Returns:
-        list: A list of annotations for the identifier, including part-of-speech tags and other linguistic features.
+        List: A list of annotations for the identifier, including part-of-speech tags and other linguistic features.
     """
-    print("INPUT: {ident_name} {ident_context}".format(ident_name=identifier_name, ident_context=identifier_context))
-    
-    data = pd.DataFrame({'WORD': ronin.split(identifier_name), 'IDENTIFIER':identifier_name})
-    
+    print(f"INPUT: {identifier_name} {identifier_context}")
+   
     words = ronin.split(identifier_name)
-    max_pos = [len(words) for word in words]
-    position = [pos for pos in range(len(words))]
-    context_type = [identifier_context for _ in range(len(words))]
-    normalized_pos = [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))]
+    data = pd.DataFrame({
+        'WORD': words,
+        'IDENTIFIER': identifier_name,
+        'SPLIT_IDENTIFIER': ' '.join(words),
+        'MAXPOSITION': [len(words)] * len(words),
+        'NORMALIZED_POSITION': [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))],
+        'POSITION': range(len(words)),
+        'CONTEXT_NUMBER': identifier_context,
+        'LANGUAGE': 'C++'
+    })
+    
+    data['CONTEXT_NUMBER'] = data['CONTEXT_NUMBER'].apply(context_to_number)
 
-    pos_data = pd.DataFrame(max_pos, columns=['MAXPOSITION'])
-    normalized_data = pd.DataFrame(normalized_pos, columns=['NORMALIZED_POSITION'])
-    position_data = pd.DataFrame(position, columns=['POSITION'])
-    context_data = pd.DataFrame(context_type, columns=['CONTEXT'])
-    
-    context_data['CONTEXT'] = context_data['CONTEXT'].apply(context_to_number)
-    data = pd.concat([data, pos_data, normalized_data, context_data, position_data], axis=1)
-    
-    data = createVerbFeature(data)
-    data = createIdentifierDigitFeature(data)
-    data = createIdentifierClosedSetFeature(data)
-    data = createIdentifierContainsVerbFeature(data)
+    feature_list = ['LAST_LETTER', 'NLTK_POS', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
+                    'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
+                    'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
+                    'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
 
-    data = createLetterFeature(data)
-    data = wordPosTag(data)
-    
-    data['NLTK_POS'] = data['NLTK_POS'].astype(str)
-    data['NLTK_POS'] = data['NLTK_POS'].astype('category')
-    data['NLTK_POS'] = data['NLTK_POS'].cat.codes
-    
-    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].astype(str)
-    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].astype('category')
-    data['PREVIOUS_NLTK_POS'] = data['PREVIOUS_NLTK_POS'].cat.codes
 
-    data = createSimilarityToVerbFeature("METHODV", app.model_data.ModelMethods, data)
-    data = createSimilarityToVerbFeature("ENGLISHV", app.model_data.ModelGensimEnglish, data)
-    data = createSimilarityToNounFeature("METHODN", app.model_data.ModelMethods, data)
-    data = createSimilarityToNounFeature("ENGLISHN", app.model_data.ModelGensimEnglish, data)
-    
-    data = createDeterminerFeature(data)
-    data = createDigitFeature(data)
-    
-    data = createDeterminerVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createConjunctionVectorFeature(data, app.model_data.ModelGensimEnglish)
-    data = createPrepositionVectorFeature(data, app.model_data.ModelGensimEnglish)
-    
-    input_model = 'output/model_RandomForestClassifier.pkl'
-    clf = joblib.load(input_model)
+    data = createFeatures(data, feature_list, app.model_data.wordCount, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
 
+    # Convert categorical variables to numeric
+    categorical_features = ['NLTK_POS', 'LANGUAGE']
+    for feature in categorical_features:
+        if feature in data.columns:
+            data[feature] = data[feature].astype('category').cat.codes
+
+    # Load and apply the classifier
+    clf = joblib.load('output/model_GradientBoostingClassifier.pkl')
     return list(annotate_identifier(clf, data))
     
 def context_to_number(context):
@@ -168,10 +153,11 @@ def annotate_identifier(clf, data):
         predictions = annotate_identifier(clf, data)
     """
     
-    independent_variables_add = ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT', 'MAXPOSITION',
-                                'NLTK_POS', 'POSITION', 'DETERMINER', 'ENGLISHV_SCORE',
-                                'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'DIGITS', 'CONTAINSLISTVERB',
-                                'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'CONTAINSVERB', 'DET_SCORE', 'CONJ_SCORE', 'PREP_SCORE']
+    independent_variables_add = ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
+                                      'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
+                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
+                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
+                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
     
     df_features = pd.DataFrame(data, columns=independent_variables_add)
     y_pred = clf.predict(df_features)
