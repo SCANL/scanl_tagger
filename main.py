@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from tag_identifier import start_server
 from download_code2vec_vectors import *
-from create_models import createModel
+from create_models import createModel, stable_features, mutable_feature_list
 
 def read_input(sql, features, conn):
     """
@@ -158,11 +158,7 @@ if __name__ == "__main__":
             'trainingSeed': random.randint(0, 2**32 - 1),
             'classifierSeed': random.randint(0, 2**32 - 1),
             'npseed': random.randint(0, 2**32 - 1),
-            'independent_variables': ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
-                                      'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
-                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
-                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
+            'independent_variables': stable_features + mutable_feature_list
         }
         train(config)
     else:

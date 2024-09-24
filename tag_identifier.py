@@ -3,7 +3,7 @@ import pandas as pd
 from feature_generator import *
 from flask import Flask
 from spiral import ronin
-from create_models import createModel
+from create_models import createModel, stable_features, mutable_feature_list
 app = Flask(__name__)
 
 class ModelData:
@@ -84,13 +84,7 @@ def listen(identifier_name: str, identifier_context: str) -> List:
     
     data['CONTEXT_NUMBER'] = data['CONTEXT_NUMBER'].apply(context_to_number)
 
-    feature_list = ['LAST_LETTER', 'NLTK_POS', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
-                    'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
-                    'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
-                    'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
-
-
-    data = createFeatures(data, feature_list, app.model_data.wordCount, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
+    data = createFeatures(data, mutable_feature_list, app.model_data.wordCount, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
 
     # Convert categorical variables to numeric
     categorical_features = ['NLTK_POS', 'LANGUAGE']
@@ -152,12 +146,7 @@ def annotate_identifier(clf, data):
         data = pd.DataFrame(...)  # Create a DataFrame with feature data.
         predictions = annotate_identifier(clf, data)
     """
-    
-    independent_variables_add = ['NORMALIZED_POSITION', 'LAST_LETTER', 'CONTEXT_NUMBER', 'MAXPOSITION',
-                                      'NLTK_POS', 'POSITION', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
-                                      'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
-                                      'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT', 'LANGUAGE',
-                                      'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
+    independent_variables_add = stable_features + mutable_feature_list
     
     df_features = pd.DataFrame(data, columns=independent_variables_add)
     y_pred = clf.predict(df_features)

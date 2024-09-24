@@ -2,6 +2,12 @@ import gensim.downloader as api
 from gensim.models import KeyedVectors as word2vec
 import json
 
+stable_features = ['NORMALIZED_POSITION', 'MAXPOSITION', 'CONTEXT_NUMBER', 'POSITION', 'LANGUAGE']
+mutable_feature_list = ['LAST_LETTER', 'NLTK_POS', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
+                        'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
+                        'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT',
+                        'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
+
 def load_word_count(input_file):
     """
     Loads the word_count dictionary from a JSON file.
