@@ -1,0 +1,14 @@
+utils
+NumPy
+pandas
+scikit-learn
+Matplotlib
+scikit-image
+SciPy
+imblearn
+gensim
+joblib
+nltk
+scikit-learn
+pyspellchecker
+requests
