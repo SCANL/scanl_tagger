@@ -32,7 +32,7 @@ def read_input(sql, features, conn):
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel()
+    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
     input_data = createFeatures(shuffled_input_data, features, wordCount, modelTokens, modelMethods, modelGensimEnglish)
     return input_data
 
@@ -156,7 +156,7 @@ if __name__ == "__main__":
         download_files()
         # Define a configuration dictionary and pass it to the train function
         config = {
-            'input_file': os.path.join('input', 'closed_set_tagger_db_5_13_2024.db'),
+            'input_file': os.path.join(SCRIPT_DIR, 'input', 'closed_set_tagger_db_5_13_2024.db'),
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',
