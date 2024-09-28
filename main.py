@@ -8,6 +8,9 @@ from tag_identifier import start_server
 from download_code2vec_vectors import *
 from create_models import createModel, stable_features, mutable_feature_list
 
+# Get the directory of the current script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def read_input(sql, features, conn):
     """
     Read input data from an SQLite database and preprocess it.
@@ -83,7 +86,11 @@ def train(config):
     df_class = df_input[[dependent_variable]]
     if not os.path.exists('output'):
         os.makedirs('output')
-    filename = 'output/results.txt'
+    
+    output_dir = os.path.join(SCRIPT_DIR, 'output')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    filename = os.path.join(output_dir, 'results.txt')
     mode = 'a' if os.path.exists(filename) else 'w'
     
     with open(filename, mode) as results_text_file:
@@ -109,7 +116,7 @@ def train(config):
         
         algorithms = [classifier_multiclass.TrainingAlgorithm.XGBOOST]
         classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
-                                                    'output', algorithms, trainingSeed,
+                                                    output_dir, algorithms, trainingSeed,
                                                     classifierSeed)
 
 if __name__ == "__main__":
@@ -148,9 +155,8 @@ if __name__ == "__main__":
     elif args.train:
         download_files()
         # Define a configuration dictionary and pass it to the train function
-        # 'CONJUNCTION'
         config = {
-            'input_file': 'input/closed_set_tagger_db_5_13_2024.db',
+            'input_file': os.path.join('input', 'closed_set_tagger_db_5_13_2024.db'),
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',
