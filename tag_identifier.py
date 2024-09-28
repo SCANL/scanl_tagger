@@ -6,6 +6,7 @@ from spiral import ronin
 from create_models import createModel, stable_features, mutable_feature_list
 app = Flask(__name__)
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 class ModelData:
     def __init__(self, wordCount, modelTokens, modelMethods, modelGensimEnglish) -> None:
         """
@@ -32,7 +33,7 @@ def initialize_model():
         None
     """
     print("Loading word vectors!!")
-    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel()
+    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
     print("Word vectors loaded!!")
 
     app.model_data = ModelData(wordCount, modelTokens, modelMethods, modelGensimEnglish)
