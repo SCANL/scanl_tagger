@@ -119,6 +119,13 @@ def start_server(temp_config = {}):
     print("loading dictionary...")
     nltk.download("words")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
+    #insert english words from words/en.txt
+    if not os.path.exists("words/en.txt"):
+        print("could not find English words, using WordNet only!")
+    else:
+        with open("words/en.txt") as words:
+            for word in words:
+                app.english_words.add(word[:-1])
 
     print('retrieving server configuration...')
     data = open('serve.json')
