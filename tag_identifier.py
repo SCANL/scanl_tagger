@@ -94,7 +94,8 @@ def listen(identifier_name: str, identifier_context: str) -> List:
             data[feature] = data[feature].astype('category').cat.codes
 
     # Load and apply the classifier
-    clf = joblib.load('output/model_GradientBoostingClassifier.pkl')
+    clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
+    
     return list(annotate_identifier(clf, data))
     
 def context_to_number(context):
