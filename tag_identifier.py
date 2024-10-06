@@ -71,9 +71,9 @@ class WordList:
         if not os.path.isfile(self.Path):
             print("Could not find word list file!")
             return
-        with open(self.Path) as file:
+        with open(self.Path) as file: 
             for line in file:
-                self.Words.add(line[:-1])
+                self.Words.add(line[:line.find(',')]) #stop at comma
     
     def find(self, item):
         return item in self.Words
