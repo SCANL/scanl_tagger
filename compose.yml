@@ -2,6 +2,7 @@ volumes:
   vectors:
   gensim:
   cache:
+  words:
 
 services:
 
@@ -16,5 +17,6 @@ services:
       - vectors:/code2vec
       - gensim:/root/gensim-data
       - cache:/cache
+      - words:/words
     ports:
       - "${PORT-8080}:5000"
