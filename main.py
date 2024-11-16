@@ -32,8 +32,8 @@ def read_input(sql, features, conn):
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    input_data = createFeatures(shuffled_input_data, features, wordCount, modelTokens, modelMethods, modelGensimEnglish)
+    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    input_data = createFeatures(shuffled_input_data, features, modelTokens, modelMethods, modelGensimEnglish)
     return input_data
 
 def train(config):

@@ -2,10 +2,10 @@ import gensim.downloader as api
 from gensim.models import KeyedVectors as word2vec
 import json, os
 
-stable_features = ['NORMALIZED_POSITION', 'MAXPOSITION', 'CONTEXT_NUMBER', 'POSITION', 'LANGUAGE']
+stable_features = ['WORD', 'NORMALIZED_POSITION', 'MAXPOSITION', 'CONTEXT_NUMBER', 'POSITION', 'LANGUAGE']
 mutable_feature_list = ['LAST_LETTER', 'NLTK_POS', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
                         'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
-                        'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'WORD_COUNT',
+                        'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
                         'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONTAINSDIGIT', 'CONTAINSCLOSEDSET', 'SECOND_LAST_LETTER']
 
 def load_word_count(input_file):
@@ -43,6 +43,6 @@ def createModel(pklFile="", rootDir=""):
     modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
     modelGensimTokens = word2vec.load_word2vec_format(os.path.join(rootDir, 'code2vec', 'token_vecs.txt'), binary=False)
     modelGensimMethods = word2vec.load_word2vec_format(os.path.join(rootDir, 'code2vec', 'target_vecs.txt'), binary=False)
-    wordCount = load_word_count(os.path.join(rootDir, 'input', 'word_count.json'))
+    # wordCount = load_word_count(os.path.join(rootDir, 'input', 'word_count.json'))
     
-    return wordCount, modelGensimTokens, modelGensimMethods, modelGensimEnglish
+    return modelGensimTokens, modelGensimMethods, modelGensimEnglish

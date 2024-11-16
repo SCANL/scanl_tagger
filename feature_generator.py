@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.spatial.distance import cosine
 from spellchecker import SpellChecker
 from typing import List, Callable
+from collections import Counter
 
 spell = SpellChecker()
 
@@ -162,7 +163,7 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
-def createFeatures(data: pd.DataFrame, feature_list: List[str], wordCount = None, modelTokens = None, modelMethods = None, modelGensimEnglish = None) -> pd.DataFrame:
+def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = None, modelMethods = None, modelGensimEnglish = None) -> pd.DataFrame:
     """
     Create various features for the input data based on the provided feature list.
 
@@ -177,7 +178,6 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], wordCount = None
 
     # Define a mapping of features to their corresponding functions
     feature_function_map: dict[str, Callable[[pd.DataFrame], pd.DataFrame]] = {
-        'WORD_COUNT': lambda df: createWordCountFeature(df, wordCount),
         'NLTK_POS': wordPosTag,
         'MAXPOSITION': maxPosition,
         'VERB_SCORE': lambda df: createVerbVectorFeature(df, modelGensimEnglish),
@@ -234,12 +234,41 @@ universal_to_custom = {
     '.': '.',
 }
 
-def createWordCountFeature(data, word_count):
-    words = data["WORD"]
-    word_counts = [word_count.get(word.lower(), 1) for word in words]  # Use `get` with a default value of 1
-    word_counts_df = pd.DataFrame(word_counts, columns=['WORD_COUNT'])
-    data = pd.concat([data, word_counts_df], axis=1)
-    return data
+
+def calculate_word_frequencies(words):
+    """
+    Calculate word frequencies from a series of words
+    
+    Parameters:
+    words (pd.Series): Series containing words
+    
+    Returns:
+    dict: Dictionary of word frequencies
+    """
+    # Convert all words to lowercase for consistent counting
+    words = words.str.lower()
+    return Counter(words)
+
+def apply_word_counts(data, word_frequencies):
+    """
+    Apply pre-calculated word frequencies to create WORD_COUNT feature
+    
+    Parameters:
+    data (pd.DataFrame): DataFrame containing 'WORD' column
+    word_frequencies (Counter): Pre-calculated word frequencies
+    
+    Returns:
+    pd.DataFrame: DataFrame with WORD_COUNT instead of WORD
+    """
+    result = data.copy()
+    # Convert words to lowercase to match frequencies
+    words = result["WORD"].str.lower()
+    # Map the pre-calculated frequencies
+    result['WORD_COUNT'] = words.map(word_frequencies)
+    print(result['WORD_COUNT'])
+    result = result.drop('WORD', axis=1)
+    return result
+
 
 def wordPosTag(data):
     """

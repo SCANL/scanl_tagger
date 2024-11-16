@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 class ModelData:
-    def __init__(self, wordCount, modelTokens, modelMethods, modelGensimEnglish) -> None:
+    def __init__(self, modelTokens, modelMethods, modelGensimEnglish) -> None:
         """
         Initialize an instance of the ModelData class with word vector models.
 
@@ -17,7 +17,6 @@ class ModelData:
             ModelMethods: Word vectors model for methods.
             ModelGensimEnglish: Word vectors model for general English words.
         """
-        self.wordCount = wordCount
         self.modelTokens = modelTokens
         self.modelMethods = modelMethods
         self.modelGensimEnglish = modelGensimEnglish
@@ -33,10 +32,10 @@ def initialize_model():
         None
     """
     print("Loading word vectors!!")
-    wordCount, modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
     print("Word vectors loaded!!")
 
-    app.model_data = ModelData(wordCount, modelTokens, modelMethods, modelGensimEnglish)
+    app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish)
 
 def start_server():
     """
@@ -85,7 +84,7 @@ def listen(identifier_name: str, identifier_context: str) -> List:
     
     data['CONTEXT_NUMBER'] = data['CONTEXT_NUMBER'].apply(context_to_number)
 
-    data = createFeatures(data, mutable_feature_list, app.model_data.wordCount, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
+    data = createFeatures(data, mutable_feature_list, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
 
     # Convert categorical variables to numeric
     categorical_features = ['NLTK_POS', 'LANGUAGE']

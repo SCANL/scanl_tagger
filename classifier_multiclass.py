@@ -58,9 +58,7 @@ class TrainTestvalidationData:
     Methods:
         No specific methods are defined in this class.
     """
-    def __init__(self, X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels):
-        self.X = X
-        self.y = y
+    def __init__(self, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels):
         self.X_train = X_train
         self.X_validation = X_validation
         self.X_test = X_test
@@ -72,37 +70,29 @@ class TrainTestvalidationData:
         self.labels = labels
 
 def build_datasets(X, y, output_directory, trainingSeed):
-    """
-    Split the data into training, validation, and testing sets.
-
-    This function splits the input data (features and labels) into training (70%), validation (15%), and testing (15%) sets.
-    It also returns the original training and testing data before any modifications.
-
-    Args:
-        X (pandas.DataFrame): The feature data (X).
-        y (numpy.ndarray): The label data (y).
-        output_directory (str): The directory where the output data will be saved.
-        trainingSeed (int): The random seed for data splitting.
-
-    Returns:
-        tuple: A tuple containing the following elements:
-            - X_train (pandas.DataFrame): Training feature data (70%).
-            - X_validation (pandas.DataFrame): Validation feature data (15%).
-            - X_test (pandas.DataFrame): Testing feature data (15%).
-            - y_train_temp (numpy.ndarray): Training label data (70%).
-            - y_validation (numpy.ndarray): Validation label data (15%).
-            - y_test (numpy.ndarray): Testing label data (15%).
-            - X_train_original (pandas.DataFrame): Original training feature data before splitting.
-            - X_test_original (pandas.DataFrame): Original testing feature data before splitting.
-    """
     # Split the data into training (70%) and temporary (30%) sets
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, random_state=trainingSeed, stratify=y)
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, 
+                                                       random_state=trainingSeed, 
+                                                       stratify=y)
 
     # Split the temporary set into validation (15%) and testing (15%) sets
-    X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=trainingSeed, stratify=y_temp)
-
+    X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, 
+                                                                 test_size=0.50, 
+                                                                 random_state=trainingSeed, 
+                                                                 stratify=y_temp)
+    
+    # Store original copies before feature creation
     X_train_original = X_train.copy(deep=True)
     X_test_original = X_temp.copy(deep=True)
+    
+    if 'WORD' in X_train.columns:
+        # Calculate word frequencies from training data only
+        word_frequencies = calculate_word_frequencies(X_train['WORD'])
+        
+        # Apply the word frequencies to all sets
+        X_train = apply_word_counts(X_train, word_frequencies)
+        X_validation = apply_word_counts(X_validation, word_frequencies)
+        X_test = apply_word_counts(X_test, word_frequencies)
     
     # Print distribution of labels in all sets
     for name, labels in [("Training", y_train), ("Validation", y_validation), ("Test", y_test)]:
@@ -111,7 +101,6 @@ def build_datasets(X, y, output_directory, trainingSeed):
         print(dict(zip(unique, counts)))
         print()
 
-    # Return training, validation, and testing sets, as well as original training data
     return X_train, X_validation, X_test, y_train.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed):
@@ -136,7 +125,7 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
     X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original = build_datasets(X, y, output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
     
-    algoData = TrainTestvalidationData(X, y, X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
+    algoData = TrainTestvalidationData(X_train, X_validation, X_test, y_train, y_validation, y_test, X_train_original, X_test_original, labels)
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
@@ -196,31 +185,31 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
     results_text_file.write("\n")
     pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_RandomForestClassifier.csv" % output_directory)
 
-    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
+    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='f1_weighted')
     results_text_file.write("f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
+    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='balanced_accuracy')
     results_text_file.write("balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
+    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='accuracy')
     results_text_file.write("accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_accuracy.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
@@ -318,31 +307,31 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
     results_text_file.write("\n")
     pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_GradientBoostingClassifier.csv" % output_directory)
 
-    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
+    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='f1_weighted')
     results_text_file.write("f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
+    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='balanced_accuracy')
     results_text_file.write("balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
+    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='accuracy')
     results_text_file.write("accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_accuracy.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
@@ -443,31 +432,31 @@ def analyzeDecisionTree(results_text_file, output_directory, scorersKey, algoDat
     results_text_file.write("\n")
     pd.DataFrame(clf.cv_results_).to_csv("%s/cv_results_DecisionTreeClassifier.csv" % output_directory)
 
-    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='f1_weighted')
+    presult_f1 = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='f1_weighted')
     results_text_file.write("f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean f1_weighted importances\n")
-    for feature, value in zip(algoData.X.columns, presult_f1.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_f1.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='balanced_accuracy')
+    presult_balanced = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='balanced_accuracy')
     results_text_file.write("balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
     results_text_file.write("mean balanced_accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_balanced.importances_mean):
+    for feature, value in zip(algoData.X_train.columns, presult_balanced.importances_mean):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=value))
     results_text_file.write("\n")
 
-    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X, algoData.y, scoring='accuracy')
+    presult_accuracy = permutation_importance(clf.best_estimator_, algoData.X_train, algoData.y_train, scoring='accuracy')
     results_text_file.write("accuracy importances\n")
-    for feature, value in zip(algoData.X.columns, presult_accuracy.importances):
+    for feature, value in zip(algoData.X_train.columns, presult_accuracy.importances):
         results_text_file.write("{feature},{value}\n".format(feature=feature, value=','.join(str(v) for v in value)))
     results_text_file.write("\n")
 
