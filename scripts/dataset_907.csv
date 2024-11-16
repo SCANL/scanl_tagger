@@ -376,7 +376,6 @@ string,log_on_wait,PARAMETER,C++,cloned_repositories/caffe.git/include/caffe/uti
 NetParameter,param_upgraded_pad,PARAMETER,C++,cloned_repositories/caffe.git/include/caffe/util/upgrade_proto.hpp,35,param upgraded pad,N V N
 mxArray*,ptr_to_handle,FUNCTION,C++,cloned_repositories/caffe.git/matlab/+caffe/private/caffe_.cpp,166,ptr to handle,N P N
 void,Net_before_backward,FUNCTION,C++,cloned_repositories/caffe.git/python/caffe/_caffe.cpp,326,Net before backward,PRE P N
-object,on_start_,ATTRIBUTE,C++,cloned_repositories/caffe.git/python/caffe/_caffe.cpp,276,on start,P N
 map,blob_name_to_last_top_idx,DECLARATION,C++,cloned_repositories/caffe.git/src/caffe/util/insert_splits.cpp,16,blob name to last top idx,NM N P DT NM N
 vector,forward_time_per_layer,DECLARATION,C++,cloned_repositories/caffe.git/tools/caffe.cpp,372,forward time per layer,NM N P N
 int,size_in_datum,DECLARATION,C++,cloned_repositories/caffe.git/tools/compute_image_mean.cpp,66,size in datum,N P N
@@ -505,7 +504,6 @@ IDAT,idat,ATTRIBUTE,C,cloned_repositories/mgba.git/src/third-party/libpng/contri
 IDAT,idat_var,PARAMETER,C,cloned_repositories/mgba.git/src/third-party/libpng/contrib/tools/pngfix.c,1771,id at var,N P N
 png_uint_32,y_pixels_per_unit,ATTRIBUTE,C,cloned_repositories/mgba.git/src/third-party/libpng/pnginfo.h,184,y pixels per unit,D NPL P N
 png_uint_32,x_pixels_per_unit,ATTRIBUTE,C,cloned_repositories/mgba.git/src/third-party/libpng/pnginfo.h,183,x pixels per unit,NM NPL P N
-int,convert_to_8bit,PARAMETER,C,cloned_repositories/mgba.git/src/third-party/libpng/pngwrite.c,2213,convert to 8 bit,V P D N
 SizeT,inSize,DECLARATION,C,cloned_repositories/mgba.git/src/third-party/lzma/Lzma2Dec.c,178,in Size,NM N
 gboolean*,propagate_when_not_up,FUNCTION,C,cloned_repositories/naemon-core.git/src/naemon/checks_host.c,669,propagate when not up,V CJ VM P
 gboolean,cb_service_in_hostgroup_each_host,FUNCTION,C,cloned_repositories/naemon-core.git/src/naemon/commands.c,1731,cb service in host group each host,NM N P NM N DT N
@@ -615,7 +613,6 @@ off_t,behind_start,PARAMETER,C++,cloned_repositories/s3fs-fuse.git/src/fdcache_e
 off_t,behind_size,PARAMETER,C++,cloned_repositories/s3fs-fuse.git/src/fdcache_entity.cpp,2568,behind size,P N
 off_t,behind_rem_start,DECLARATION,C++,cloned_repositories/s3fs-fuse.git/src/fdcache_fdinfo.cpp,600,behind rem start,P NM N
 int,md5outlen,DECLARATION,C++,cloned_repositories/s3fs-fuse.git/src/nss_auth.cpp,159,md5 out len,NM NM N
-char,_from,PARAMETER,C++,cloned_repositories/s3fs-fuse.git/src/s3fs.cpp,1415,from,P
 int,underProvisionedRequests,PARAMETER,Java,cloned_repositories/Singularity.git/SingularityBase/src/main/java/com/hubspot/singularity/SingularityState.java,198,under Provisioned Requests,P V NPL
 boolean,fromDockerConfig,ATTRIBUTE,Java,cloned_repositories/Singularity.git/SingularityExecutor/src/main/java/com/hubspot/singularity/executor/config/SingularityExecutorDockerAuthConfig.java,4,from Docker Config,P NM N
 void,saveMailRecord,FUNCTION,Java,cloned_repositories/Singularity.git/SingularityService/src/main/java/com/hubspot/singularity/data/MetadataManager.java,79,save Mail Record,V NM N
@@ -650,7 +647,6 @@ png_size_t,save_buffer_max,ATTRIBUTE,C,cloned_repositories/toggldesktop.git/thir
 int,out_audio_samples,DECLARATION,C,cloned_repositories/toxcore.git/toxav/group.c,283,out audio samples,NM NM NPL
 uint8_t,from_id,PARAMETER,C,cloned_repositories/toxcore.git/toxcore/DHT.c,1570,from id,P N
 int*,friend_in_close,FUNCTION,C,cloned_repositories/toxcore.git/toxcore/group.c,1326,friend in close,N P N
-uint32_t,out_list,PARAMETER,C,cloned_repositories/toxcore.git/toxcore/Messenger.c,2789,out list,NM N
 size_t,savedata_length,ATTRIBUTE,C,cloned_repositories/toxcore.git/toxcore/tox.h,491,save data length,NM NM N
 char,ptr_inbuf,DECLARATION,C,cloned_repositories/weechat.git/src/core/wee-string.c,2974,ptr in buf,N P N
 int,add_temp_to_args,DECLARATION,C,cloned_repositories/weechat.git/src/core/wee-string.c,2507,add temp to args,V N P NPL
@@ -718,7 +714,6 @@ boolean,supportsJoinPushdown,ATTRIBUTE,Java,drill.git/exec/java-exec/src/main/ja
 boolean,beforeFirst,ATTRIBUTE,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/store/sys/MemoryIterator.java,34,before First,P DT
 boolean,outOfMemory,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/work/batch/SpoolingRawBatchBuffer.java,470,out Of Memory,P P N
 RuntimeFilterWritable,toAggregate,DECLARATION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/work/filter/RuntimeFilterSink.java,232,to Aggregate,P V
-FileMetaData,toMerge,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/parquet/hadoop/ParquetFileWriter.java,1492,to Merge,P V
 MaterializedField,withPathAndType,FUNCTION,Java,drill.git/exec/vector/src/main/java/org/apache/drill/exec/record/MaterializedField.java,143,with Path And Type,P N CJ N
 List,toFieldList,FUNCTION,Java,drill.git/exec/vector/src/main/java/org/apache/drill/exec/record/metadata/TupleSchema.java,183,to Field List,P NM N
 int,until,DECLARATION,Java,drill.git/exec/vector/src/main/java/org/apache/drill/exec/vector/complex/RepeatedListVector.java,65,until,P
@@ -727,7 +722,6 @@ Map,toFilterConditions,FUNCTION,Java,drill.git/metastore/iceberg-metastore/src/m
 Delete,toDelete,FUNCTION,Java,drill.git/metastore/iceberg-metastore/src/main/java/org/apache/drill/metastore/iceberg/transform/OperationTransformer.java,66,to Delete,P V
 MinorType,forNumber,FUNCTION,Java,drill.git/protocol/src/main/java/org/apache/drill/common/types/TypeProtos.java,667,for Number,P N
 int,last_layer_index_,ATTRIBUTE,C++,cloned_repositories/caffe.git/include/caffe/layers/recurrent_layer.hpp,169,last layer index,DT NM N
-map,blob_name_to_last_top_idx,DECLARATION,C++,cloned_repositories/caffe.git/src/caffe/util/insert_splits.cpp,16,blob name to last top idx,NM N P DT NM N
 Dtype,caffe_nextafter,FUNCTION,C++,cloned_repositories/caffe.git/src/caffe/util/math_functions.cpp,244,caffe next after,PRE DT P
 int,nolockLock,FUNCTION,C,cloned_repositories/ccv.git/lib/3rdparty/sqlite3/sqlite3.c,37647,no lock Lock,DT NM N
 void,storeLastErrno,FUNCTION,C,cloned_repositories/ccv.git/lib/3rdparty/sqlite3/sqlite3.c,36763,store Last Err no,V DT NM N
@@ -772,7 +766,6 @@ u64,last_time_ms,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/clie
 u64,last_time,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/game.cpp,639,last time,DT N
 float,nodig_delay_timer,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/game.cpp,676,no dig delay timer,DT NM NM N
 bool,no_output,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/game.cpp,657,no output,DT N
-float,time_from_last_punch,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/game.cpp,681,time from last punch,N P DT N
 u16,m_last_used_id,ATTRIBUTE,C++,cloned_repositories/freeminer.git/src/client/sound_openal.cpp,328,m last used id,PRE DT NM N
 u32,block_count_all,DECLARATION,C++,cloned_repositories/freeminer.git/src/fm_map.cpp,378,block count all,NM N DT
 bool,no_random,PARAMETER,C++,cloned_repositories/freeminer.git/src/fm_map.cpp,211,no random,DT N
@@ -961,7 +954,6 @@ char,ptr_next,DECLARATION,C,cloned_repositories/weechat.git/src/core/wee-string.
 int,some_data_not_displayed,DECLARATION,C,cloned_repositories/weechat.git/src/gui/curses/gui-curses-bar-window.c,547,some data not displayed,DT NM VM V
 t_gui_bar,next_bar,ATTRIBUTE,C,cloned_repositories/weechat.git/src/gui/gui-bar.h,105,next bar,DT N
 void*,gui_buffer_local_var_remove_all,FUNCTION,C,cloned_repositories/weechat.git/src/gui/gui-buffer.c,285,gui buffer local var remove all,PRE PRE NM N V DT
-void,gui_buffer_set_time_for_each_line,FUNCTION,C,cloned_repositories/weechat.git/src/gui/gui-buffer.c,1557,gui buffer set time for each line,PRE PRE V N P DT N
 void*,gui_input_search_next,FUNCTION,C,cloned_repositories/weechat.git/src/gui/gui-input.c,699,gui input search next,PRE PRE V DT
 int*,gui_line_has_tag_no_filter,FUNCTION,C,cloned_repositories/weechat.git/src/gui/gui-line.c,734,gui line has tag no filter,PRE PRE V N DT N
 void*,gui_line_mixed_free_all,FUNCTION,C,cloned_repositories/weechat.git/src/gui/gui-line.c,1342,gui line mixed free all,PRE PRE NM V DT
@@ -1056,18 +1048,13 @@ ObjectFile,soFile,PARAMETER,C++,cloned_repositories/cling.git/lib/Interpreter/Dy
 ASTNodeInfo,elseInfo,DECLARATION,C++,cloned_repositories/cling.git/lib/Interpreter/DynamicLookup.cpp,338,else Info,NM N
 Stmt,elseReplacement,DECLARATION,C++,cloned_repositories/cling.git/lib/Interpreter/DynamicLookup.cpp,340,else Replacement,NM N
 bool,ifUnique,PARAMETER,C++,cloned_repositories/cling.git/lib/Interpreter/Interpreter.cpp,1294,if Unique,CJ NM
-PushTransactionRAII,TforDeser,DECLARATION,C++,cloned_repositories/cling.git/lib/Interpreter/LookupHelper.cpp,1942,T for Deser,N P N
-request,after_handle,DECLARATION,C,cloned_repositories/crow.git/include/crow/middleware.h,96,after handle,P N
 bool,all_space_after,DECLARATION,C,cloned_repositories/crow.git/include/crow/mustache.h,468,all space after,DT N P
 bool,all_space_before,DECLARATION,C,cloned_repositories/crow.git/include/crow/mustache.h,454,all space before,DT N P
 boolean,forBackprop,PARAMETER,Java,cloned_repositories/deeplearning4j.git/deeplearning4j/deeplearning4j-nn/src/main/java/org/deeplearning4j/nn/layers/variational/VariationalAutoencoder.java,738,for Backprop,P N
 int,parallel_for,FUNCTION,C++,cloned_repositories/deeplearning4j.git/libnd4j/include/execution/impl/Threads.cpp,564,parallel for,NM N
-int,index_as_child,ATTRIBUTE,C++,cloned_repositories/deeplearning4j.git/libnd4j/include/ops/declarable/helpers/impl/ctcBeam.cpp,274,index as child,V P N
 int,index_as_parent,ATTRIBUTE,C++,cloned_repositories/deeplearning4j.git/libnd4j/include/ops/declarable/helpers/impl/ctcBeam.cpp,275,index as parent,V P N
-OpListType,forNumber,FUNCTION,Java,cloned_repositories/deeplearning4j.git/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/java/org/nd4j/ir/MapperNamespace.java,105,for Number,P N
 set,provided,DECLARATION,C++,cloned_repositories/deeplearning4j.git/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/protobuf/tf/google/protobuf/compiler/js/js_generator.cc,3425,provided,V
 bool,null_or_empty,FUNCTION,C++,cloned_repositories/deeplearning4j.git/nd4j/nd4j-backends/nd4j-api-parent/nd4j-api/src/main/protobuf/tf/google/protobuf/stubs/io_win32.cc,93,null or empty,NM CJ NM
-ForWhat,m_forWhat,ATTRIBUTE,C++,cloned_repositories/freeminer.git/lib/catch2/catch.hpp,6246,m for What,PRE P DT
 char*,asCString,FUNCTION,C++,cloned_repositories/freeminer.git/lib/jsoncpp/jsoncpp.cpp,3001,as C String,P NM N
 int,endfor,DECLARATION,C,cloned_repositories/freeminer.git/lib/lua/src/lparser.c,1050,end for,V N
 void*,fornum,FUNCTION,C,cloned_repositories/freeminer.git/lib/lua/src/lparser.c,1067,for num,NM N
@@ -1118,7 +1105,6 @@ char,text_only,PARAMETER,C,cloned_repositories/libxo.git/libxo/xo.h,667,text onl
 T,value_or,FUNCTION,C++,cloned_repositories/meta.git/include/meta/util/optional.tcc,153,value or,N CJ
 bool,replace_if_exists,FUNCTION,C++,cloned_repositories/meta.git/src/analyzers/filters/porter2_stemmer.cpp,49,replace if exists,V CJ V
 auto,after1,DECLARATION,C++,cloned_repositories/meta.git/src/analyzers/filters/ptb_normalizer.cpp,163,after 1,P D
-auto,after2,DECLARATION,C++,cloned_repositories/meta.git/src/analyzers/filters/ptb_normalizer.cpp,164,after 2,P D
 bool,even_split,PARAMETER,C++,cloned_repositories/meta.git/src/classify/classifier/classifier.cpp,30,even split,NM N
 auto,even,DECLARATION,C++,cloned_repositories/meta.git/src/classify/tools/classify.cpp,96,even,NM
 double,term_and_class,FUNCTION,C++,cloned_repositories/meta.git/src/features/feature_selector.cpp,236,term and class,N CJ N
@@ -1131,7 +1117,6 @@ void,outhow,PARAMETER,C,cloned_repositories/mgba.git/src/third-party/zlib/contri
 void,check_for_host_flapping,FUNCTION,C,cloned_repositories/naemon-core.git/src/naemon/flapping.c,118,check for host flapping,V P N V
 int*,is_valid_escalation_for_service_notification,FUNCTION,C,cloned_repositories/naemon-core.git/src/naemon/notifications.c,1045,is valid escalation for service notification,V NM N P NM N
 objectlist*,xodtemplate_expand_hostgroups_and_hosts,FUNCTION,C,cloned_repositories/naemon-core.git/src/naemon/xodtemplate.c,1718,xodtemplate expand host groups and hosts,PRE V NM NPL CJ NPL
-boolean,afterEquals,DECLARATION,Java,cloned_repositories/Openfire.git/xmppserver/src/main/java/org/jivesoftware/database/ProfiledConnection.java,411,after Equals,P N
 Instant,now,DECLARATION,Java,cloned_repositories/Openfire.git/xmppserver/src/main/java/org/jivesoftware/openfire/archive/Archiver.java,219,now,VM
 String,providedPassword,PARAMETER,Java,cloned_repositories/Openfire.git/xmppserver/src/main/java/org/jivesoftware/openfire/muc/MUCRoom.java,994,provided Password,V N
 void,afterJoinSendHistory,FUNCTION,Java,cloned_repositories/Openfire.git/xmppserver/src/main/java/org/jivesoftware/openfire/muc/spi/FMUCHandler.java,1356,after Join Send History,P V V N
@@ -1173,8 +1158,6 @@ PandaNode*,dupe_for_flatten,FUNCTION,C++,cloned_repositories/panda3d.git/panda/s
 int,flag_true_if_should_convert,PARAMETER,C,cloned_repositories/panda3d.git/panda/src/pnmimagetypes/stb_image.h,434,flag true if should convert,N NM CJ V V
 double,as_of,PARAMETER,C,cloned_repositories/panda3d.git/panda/src/pstatclient/pStatCollector.h,89,as of,P P
 int,_before_major,ATTRIBUTE,C++,cloned_repositories/panda3d.git/panda/src/putil/bamWriter.cxx,31,before major,P N
-int,_before_minor,ATTRIBUTE,C++,cloned_repositories/panda3d.git/panda/src/putil/bamWriter.cxx,32,before minor,P N
-int,whichButton,DECLARATION,C++,cloned_repositories/panda3d.git/panda/src/windisplay/winGraphicsWindow.cxx,1803,which Button,DT N
 void*,scan_for_sliders,FUNCTION,C++,cloned_repositories/panda3d.git/pandatool/src/eggcharbase/eggCharacterCollection.cxx,340,scan for sliders,V P NPL
 igraph_bool_t,only_indices,PARAMETER,C,cloned_repositories/rigraph.git/src/include/igraph_structural.h,75,only indices,VM NPL
 SEXP*,R_igraph_0orvector_bool_to_SEXP,FUNCTION,C,cloned_repositories/rigraph.git/src/rinterface_extra.c,2624,R igraph 0 or vector bool to SEXP,PRE PRE D CJ NM N P N
@@ -1190,7 +1173,6 @@ List,asSortedEntryList,FUNCTION,Java,cloned_repositories/Singularity.git/Singula
 String,pathNameforLogs,PARAMETER,Java,cloned_repositories/Singularity.git/SingularityService/src/main/java/com/hubspot/singularity/data/CuratorAsyncManager.java,212,path Name for Logs,NM N P NPL
 boolean,tooOld,DECLARATION,Java,cloned_repositories/Singularity.git/SingularityService/src/main/java/com/hubspot/singularity/scheduler/SingularityCleaner.java,189,too Old,VM NM
 boolean,tooManyShufflingTasks,DECLARATION,Java,cloned_repositories/Singularity.git/SingularityService/src/main/java/com/hubspot/singularity/scheduler/SingularityTaskShuffler.java,180,too Many Shuffling Tasks,VM NM V NPL
-ProxyInfo,forSocks4Proxy,FUNCTION,Java,cloned_repositories/Smack.git/smack-core/src/main/java/org/jivesoftware/smack/proxy/ProxyInfo.java,63,for Socks4 Proxy,P NM N
 boolean,onlyDone,ATTRIBUTE,Java,cloned_repositories/Smack.git/smack-experimental/src/main/java/org/jivesoftware/smackx/iot/data/filter/IoTFieldsExtensionFilter.java,27,only Done,VM NM
 Date,since,ATTRIBUTE,Java,cloned_repositories/Smack.git/smack-extensions/src/main/java/org/jivesoftware/smackx/last_interaction/element/IdleElement.java,35,since,VM
 boolean,stillWaiting,DECLARATION,Java,cloned_repositories/Smack.git/smack-im/src/main/java/org/jivesoftware/smack/roster/RosterUtil.java,72,still Waiting,VM V
@@ -1201,9 +1183,7 @@ JLabel,_lookandfeelLabel,ATTRIBUTE,Java,cloned_repositories/Spark.git/core/src/m
 JLabel,getLookandfeelLabel,FUNCTION,Java,cloned_repositories/Spark.git/core/src/main/java/org/jivesoftware/spark/ui/themes/ThemePanel.java,531,get Look and feel Label,V NM CJ NM N
 NativeLong,til_or_since,ATTRIBUTE,Java,cloned_repositories/Spark.git/core/src/main/java/org/jivesoftware/sparkimpl/plugin/idle/linux/LinuxIdleTime.java,31,til or since,P CJ P
 JPanel,treeandInfo,ATTRIBUTE,Java,cloned_repositories/Spark.git/core/src/main/java/org/jivesoftware/sparkimpl/plugin/privacy/ui/PrivacyListTree.java,58,tree and Info,N CJ N
-String,showStringforAdd,DECLARATION,Java,cloned_repositories/Spark.git/core/src/main/java/org/jivesoftware/sparkimpl/plugin/privacy/ui/PrivacyListTree.java,216,show String for Add,NM N P N
 int,onlyuser,ATTRIBUTE,C,cloned_repositories/toggldesktop.git/third_party/openssl/include/openssl/x509v3.h,299,only user,VM N
-string,m_what,ATTRIBUTE,C++,cloned_repositories/toggldesktop.git/third_party/plcrashreporter/Dependencies/Catch/catch.hpp,348,m what,PRE DT
 bool,is_even,PARAMETER,C++,cloned_repositories/toggldesktop.git/third_party/poco/Foundation/src/bignum-dtoa.cc,66,is even,V NM
 uint64_t,significand,ATTRIBUTE,C++,cloned_repositories/toggldesktop.git/third_party/poco/Foundation/src/cached-powers.cc,39,significand,N
 size_t,wherelen,PARAMETER,C,cloned_repositories/toggldesktop.git/third_party/poco/openssl/build/include/openssl/bio.h,633,where len,NM N
@@ -1240,7 +1220,6 @@ AndNode,andNode,PARAMETER,Java,drill.git/contrib/storage-googlesheets/src/main/j
 IfExpression,ifExpr,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/compile/sig/ConstantExpressionIdentifier.java,122,if Expr,NM N
 IfElseWidthExpr,ifElseWidthExpr,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/AbstractExecExprVisitor.java,50,if Else Width Expr,NM NM NM N
 LogicalExpression,ifCondition,DECLARATION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/CloneVisitor.java,81,if Condition,NM N
-LogicalExpression,thatExpr,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/EqualityVisitor.java,324,that Expr,DT N
 JBlock,ifNoVal,DECLARATION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/EvaluationVisitor.java,695,if No Val,CJ DT N
 JBlock,ifFound,DECLARATION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/EvaluationVisitor.java,822,if Found,CJ V
 MinorType,elseType,DECLARATION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/expr/ExpressionTreeMaterializer.java,692,else Type,NM N
@@ -1258,7 +1237,6 @@ TypeDescriptor ,forClass,FUNCTION,Java,drill.git/common/src/main/java/org/apache
 MapWriter,asMap,FUNCTION,Java,drill.git/exec/vector/src/main/codegen/templates/UnionWriter.java,93,as Map,P N
 ByteBuf,asReadOnly,FUNCTION,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/record/DeadBuf.java,915,as Read Only,P NM VM
 boolean,onlyImpersonationEnabled,ATTRIBUTE,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/server/rest/profile/ProfileWrapper.java,67,only Impersonation Enabled,VM N V
-boolean,forUnknownSchema,PARAMETER,Java,drill.git/exec/java-exec/src/main/java/org/apache/drill/exec/store/easy/json/loader/FieldDefn.java,118,for Unknown Schema,P NM N
 double[],asDouble,FUNCTION,Java,cloned_repositories/deeplearning4j.git/nd4j/nd4j-backends/nd4j-backend-impls/nd4j-cuda/src/main/java/org/nd4j/linalg/jcublas/buffer/CudaUInt32DataBuffer.java,204,as Double,P N
 boolean,afterFirstBatch,ATTRIBUTE,Java,drill.git/exec/jdbc/src/main/java/org/apache/drill/jdbc/impl/DrillCursor.java,79,after First Batch,P NM N
 boolean,afterLastRow,ATTRIBUTE,Java,drill.git/exec/jdbc/src/main/java/org/apache/drill/jdbc/impl/DrillCursor.java,98,after Last Row,P NM N
@@ -2236,7 +2214,6 @@ string,of To Binary,FUNCTION,C++,{'calligra.srcml.xml_identifiers'},,of To Binar
 void,on Group Call Key Sent,FUNCTION,Java,{'antlr4.srcml.xml_identifiers'},,on Group Call Key Sent,P NM NM N NM
 Void,on Implies,FUNCTION,C++,{'grpc.srcml.xml_identifiers'},,on Implies,P V
 bool,optimize Identity Cast Composition,FUNCTION,Java,{'okhttp.srcml.xml_identifiers'},,optimize Identity Cast Composition,V NM NM N
-Request,order With,FUNCTION,C++,{'calligra.srcml.xml_identifiers'},,order With,V P
 bool,palette poll,FUNCTION,C++,{'QuantLib.srcml.xml_identifiers'},,palette poll,N V
 List,parent Pairs,FUNCTION,C++,{'irrlicht.srcml.xml_identifiers'},,parent Pairs,NM NPL
 Attribute,parse Attribute Def,FUNCTION,C,{'grpc.srcml.xml_identifiers'},,parse Attribute Def,V NM N
@@ -2331,7 +2308,6 @@ void,verification Started,FUNCTION,C++,{'bullet3.srcml.xml_identifiers'},,verifi
 emailkeymapping,verifier get mapping,FUNCTION,C++,{'blender.srcml.xml_identifiers'},,verifier get mapping,N V N
 void,visit SIL Argument,FUNCTION,C,{'gimp.srcml.xml_identifiers'},,visit SIL Argument,V NM N
 void,widget Destroyed,FUNCTION,C,{'Telegram.srcml.xml_identifiers'},,widget Destroyed,N V
-Challenge,with Charset,FUNCTION,C++,{'QuantLib.srcml.xml_identifiers'},,with Charset,P N
 MakeCms,with Cms Leg Rule,FUNCTION,C++,{'calligra.srcml.xml_identifiers'},,with Cms Leg Rule,P NM NM N
 ModelSettings,with Market Rate Accuracy,FUNCTION,Java,{'antlr4.srcml.xml_identifiers'},,with Market Rate Accuracy,P NM NM N
 Settings,with Rate Bound,FUNCTION,Java,{'jenkins.srcml.xml_identifiers'},,with Rate Bound,P NM N
@@ -2382,7 +2358,6 @@ Runnable,child Statement,PARAMETER,Java,{'junit4.srcml.xml_identifiers'},,child 
 byte[],classfile Buffer,PARAMETER,Java,{'mockito.srcml.xml_identifiers'},,classfile Buffer,NM N
 String,cmd Str,PARAMETER,Java,{'corenlp.srcml.xml_identifiers'},,cmd Str,NM N
 int,code Point To,PARAMETER,Java,{'antlr4.srcml.xml_identifiers'},,code Point To,NM N P
-QMap,color Map,PARAMETER,C++,{'calligra.srcml.xml_identifiers'},,color Map,NM N
 TValue,comparison Value,PARAMETER,C#,{'antlr4.srcml.xml_identifiers'},,comparison Value,NM N
 List,concrete Follower Indices,PARAMETER,Java,{'elasticsearch.srcml.xml_identifiers'},,concrete Follower Indices,NM NM NPL
 serverconnectionstate,connection state,PARAMETER,C++,{'grpc.srcml.xml_identifiers'},,connection state,NM N
@@ -2408,7 +2383,6 @@ Real,discount Factor,PARAMETER,C++,{'QuantLib.srcml.xml_identifiers'},,discount 
 DisposeType,dispose,PARAMETER,C,{'gimp.srcml.xml_identifiers'},,dispose,N
 bool,do Caps,PARAMETER,C++,{'QuantLib.srcml.xml_identifiers'},,do Caps,V NPL
 DockWidgetArea,docking Area,PARAMETER,C++,{'kdevelop.srcml.xml_identifiers'},,docking Area,NM N
-int,down sample,PARAMETER,C,{'Telegram.srcml.xml_identifiers'},,down sample,NM N
 String,driver Type Name,PARAMETER,C++,{'ogre.srcml.xml_identifiers'},,driver Type Name,NM NM N
 OutputArray,dst map 2,PARAMETER,C++,{'opencv.srcml.xml_identifiers'},,dst map 2,NM N D
 bool,echo path change,PARAMETER,C,{'Telegram.srcml.xml_identifiers'},,echo path change,V NM N
@@ -2431,7 +2405,6 @@ vector,folder Names,PARAMETER,C++,{'openFrameworks.srcml.xml_identifiers'},,fold
 bool,force Direct,PARAMETER,C++,{'kdevelop.srcml.xml_identifiers'},,force Direct,V N
 opusint16[],frame,PARAMETER,C,{'Telegram.srcml.xml_identifiers'},,frame,N
 float[],frame pixel coords,PARAMETER,C,{'blender.srcml.xml_identifiers'},,frame pixel coords,NM NM NPL
-boolean,from Server,PARAMETER,Java,{'Telegram.srcml.xml_identifiers'},,from Server,P N
 gchar,full path,PARAMETER,C,{'gimp.srcml.xml_identifiers'},,full path,NM N
 InputArray,Func,PARAMETER,C++,{'opencv.srcml.xml_identifiers'},,Func,N
 Real,gauss Lobatto Eps,PARAMETER,C++,{'QuantLib.srcml.xml_identifiers'},,gauss Lobatto Eps,NM NM N
@@ -2573,7 +2546,6 @@ QGradient,src Gradient,PARAMETER,C++,{'calligra.srcml.xml_identifiers'},,src Gra
 QList,start Dirs,PARAMETER,C++,{'kdevelop.srcml.xml_identifiers'},,start Dirs,NM NPL
 int,Start Slot,PARAMETER,C++,{'ogre.srcml.xml_identifiers'},,Start Slot,NM N
 Real,start Up Fix Cost,PARAMETER,C++,{'QuantLib.srcml.xml_identifiers'},,start Up Fix Cost,NM NM NM N
-File,status File,PARAMETER,Java,{'antlr4.srcml.xml_identifiers'},,status File,NM N
 float,strength,PARAMETER,C,{'blender.srcml.xml_identifiers'},,strength,N
 String,subroutine Slot Name,PARAMETER,C++,{'ogre.srcml.xml_identifiers'},,subroutine Slot Name,NM NM N
 RealMethod,super Method,PARAMETER,Java,{'mockito.srcml.xml_identifiers'},,super Method,NM N
