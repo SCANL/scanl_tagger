@@ -1,5 +1,4 @@
-import json
-
+import json, os
 import numpy as np
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -70,37 +69,49 @@ class TrainTestvalidationData:
         self.labels = labels
 
 def build_datasets(X, y, output_directory, trainingSeed):
-    # Split the data into training (70%) and temporary (30%) sets
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, 
-                                                       random_state=trainingSeed, 
-                                                       stratify=y)
+    # Ensure the output directory exists
+    os.makedirs(output_directory, exist_ok=True)
 
+    # Split the data into training (70%) and temporary (30%) sets
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30,
+                                                       random_state=trainingSeed,
+                                                       stratify=y)
     # Split the temporary set into validation (15%) and testing (15%) sets
-    X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp, 
-                                                                 test_size=0.50, 
-                                                                 random_state=trainingSeed, 
+    X_validation, X_test, y_validation, y_test = train_test_split(X_temp, y_temp,
+                                                                 test_size=0.50,
+                                                                 random_state=trainingSeed,
                                                                  stratify=y_temp)
-    
+   
     # Store original copies before feature creation
     X_train_original = X_train.copy(deep=True)
     X_test_original = X_temp.copy(deep=True)
     
+    # Output X_validation to a CSV file
+    X_validation_path = os.path.join(output_directory, 'X_validation.csv')
+    X_validation.to_csv(X_validation_path, index=False)
+    print(f"X_validation saved to: {X_validation_path}")
+    
+    # Output y_validation to a CSV file
+    y_validation_path = os.path.join(output_directory, 'y_validation.csv')
+    pd.DataFrame(y_validation.values.ravel(), columns=['label']).to_csv(y_validation_path, index=False)
+    print(f"y_validation saved to: {y_validation_path}")
+    
     if 'WORD' in X_train.columns:
         # Calculate word frequencies from training data only
         word_frequencies = calculate_word_frequencies(X_train['WORD'])
-        
+       
         # Apply the word frequencies to all sets
         X_train = apply_word_counts(X_train, word_frequencies)
         X_validation = apply_word_counts(X_validation, word_frequencies)
         X_test = apply_word_counts(X_test, word_frequencies)
-    
+   
     # Print distribution of labels in all sets
     for name, labels in [("Training", y_train), ("Validation", y_validation), ("Test", y_test)]:
         unique, counts = np.unique(labels, return_counts=True)
         print(f" -- Distribution of labels in {name} set -- ")
         print(dict(zip(unique, counts)))
         print()
-
+    
     return X_train, X_validation, X_test, y_train.values.ravel(), y_validation.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed):

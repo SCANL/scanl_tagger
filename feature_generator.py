@@ -235,27 +235,34 @@ universal_to_custom = {
 }
 
 
+
 def calculate_word_frequencies(words):
     """
-    Calculate word frequencies from a series of words
+    Calculate normalized and log-transformed word frequencies from a series of words.
     
     Parameters:
     words (pd.Series): Series containing words
     
     Returns:
-    dict: Dictionary of word frequencies
+    dict: Dictionary of normalized and log-transformed word frequencies
     """
     # Convert all words to lowercase for consistent counting
     words = words.str.lower()
-    return Counter(words)
+    # Calculate raw frequencies
+    raw_counts = Counter(words)
+    total_words = sum(raw_counts.values())
+    
+    # Normalize counts and apply log transformation
+    word_frequencies = {word: np.log1p(count / total_words) for word, count in raw_counts.items()}
+    return word_frequencies
 
 def apply_word_counts(data, word_frequencies):
     """
-    Apply pre-calculated word frequencies to create WORD_COUNT feature
+    Apply pre-calculated normalized and log-transformed word frequencies to create WORD_COUNT feature.
     
     Parameters:
     data (pd.DataFrame): DataFrame containing 'WORD' column
-    word_frequencies (Counter): Pre-calculated word frequencies
+    word_frequencies (dict): Pre-calculated word frequencies
     
     Returns:
     pd.DataFrame: DataFrame with WORD_COUNT instead of WORD
@@ -264,9 +271,9 @@ def apply_word_counts(data, word_frequencies):
     # Convert words to lowercase to match frequencies
     words = result["WORD"].str.lower()
     # Map the pre-calculated frequencies
-    result['WORD_COUNT'] = words.map(word_frequencies)
-    print(result['WORD_COUNT'])
+    result['WORD_COUNT'] = words.map(word_frequencies).fillna(0)
     result = result.drop('WORD', axis=1)
+    result = result.drop('SPLIT_IDENTIFIER', axis=1)
     return result
 
 

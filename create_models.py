@@ -2,7 +2,7 @@ import gensim.downloader as api
 from gensim.models import KeyedVectors as word2vec
 import json, os
 
-stable_features = ['WORD', 'NORMALIZED_POSITION', 'MAXPOSITION', 'CONTEXT_NUMBER', 'POSITION', 'LANGUAGE']
+stable_features = ['SPLIT_IDENTIFIER', 'WORD', 'NORMALIZED_POSITION', 'MAXPOSITION', 'CONTEXT_NUMBER', 'POSITION', 'LANGUAGE']
 mutable_feature_list = ['LAST_LETTER', 'NLTK_POS', 'VERB_SCORE', 'DET_SCORE', 'PREP_SCORE',
                         'CONJ_SCORE', 'PREPOSITION', 'DETERMINER', 'ENGLISHV_SCORE', 'CONTAINSLISTVERB',
                         'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE',
