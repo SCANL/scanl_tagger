@@ -163,6 +163,18 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
+# Lazy import to avoid potential import issues
+import nltk
+
+# Download words corpus if not already present
+try:
+    from nltk.corpus import words
+    word_list = set(words.words())
+except LookupError:
+    nltk.download('words', quiet=True)
+    from nltk.corpus import words
+    word_list = set(words.words())
+    
 def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = None, modelMethods = None, modelGensimEnglish = None) -> pd.DataFrame:
     """
     Create various features for the input data based on the provided feature list.
@@ -180,6 +192,7 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
     feature_function_map: dict[str, Callable[[pd.DataFrame], pd.DataFrame]] = {
         'NLTK_POS': wordPosTag,
         'MAXPOSITION': maxPosition,
+        'POSITION_RATIO': positionRatio,
         'VERB_SCORE': lambda df: createVerbVectorFeature(df, modelGensimEnglish),
         'NOUN_SCORE': lambda df: createNounVectorFeature(df, modelGensimEnglish),
         'DET_SCORE': lambda df: createDeterminerVectorFeature(df, modelGensimEnglish),
@@ -197,6 +210,8 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
         'CONTAINSCLOSEDSET': createIdentifierClosedSetFeature,
         'CONTAINSVERB': createIdentifierContainsVerbFeature,
         'LAST_LETTER': createLetterFeature,
+        'CONSONANT_VOWEL_RATIO': consonantVowelRatio,
+        'DICTIONARY_WORD': dictionaryWordFeature,
         'SECOND_LAST_LETTER': createLastTwoLettersFeature,
         'METHODV_SCORE': lambda df: createSimilarityToVerbFeature("METHODV", modelMethods, df),
         'ENGLISHV_SCORE': lambda df: createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, df),
@@ -295,34 +310,118 @@ def wordPosTag(data):
     word_tags = [nltk.pos_tag([word.lower()])[-1][-1] for word in words]
     pos_tags = pd.DataFrame(word_tags, columns=['NLTK_POS'])
     
-    # Create 'Previous_NLTK_POS' column by shifting 'NLTK_POS' down and adding a special START tag
-    # pos_tags['PREVIOUS_NLTK_POS'] = pos_tags['NLTK_POS'].shift(1)
-    # pos_tags['PREVIOUS_NLTK_POS'].iloc[0] = 'START'
-    
     data = pd.concat([data, pos_tags], axis=1)
     
     return data
 
+def calculate_consonant_vowel_ratio(word):
+    """
+    Calculate the ratio of consonants to vowels in a word.
+    
+    Args:
+        word (str): The input word to analyze.
+    
+    Returns:
+        float: Ratio of consonants to vowels, defaulting to 0 in edge cases.
+    """
+    # Ensure input is a string and lowercase
+    word = str(word).lower()
+    
+    vowels = set('aeiou')
+    # Filter for alphabetic consonants
+    consonants = [c for c in word if c.isalpha() and c not in vowels]
+    vowel_count = sum(1 for c in word if c in vowels)
+    
+    # Return 0 if no alphabetic characters or no vowels
+    if not word or vowel_count == 0:
+        return 0.0
+    
+    return len(consonants) / max(vowel_count, 1)
+
+def consonantVowelRatio(data):
+    """
+    Add a CONSONANT_VOWEL_RATIO feature to the DataFrame.
+    Args:
+        data (pd.DataFrame): Input DataFrame with 'WORD' column.
+    Returns:
+        pd.DataFrame: DataFrame with added CONSONANT_VOWEL_RATIO column.
+    """
+    # Replace NaN values in 'WORD' with an empty string before processing
+    # data["WORD"] = data["WORD"].fillna("")
+    consonant_vowel_ratios = data["WORD"].apply(calculate_consonant_vowel_ratio)
+    data["CONSONANT_VOWEL_RATIO"] = consonant_vowel_ratios.fillna(0.0)
+    return data
+
+def is_dictionary_word(word):
+    """
+    Check if a word is a valid dictionary word, handling numeric and alphanumeric cases.
+    
+    Args:
+        word (str): The word to check.
+    
+    Returns:
+        int: 1 if dictionary word, 0 if numeric or contains non-alphabetic characters.
+    """
+    try:
+        # Ensure input is a string and lowercase
+        word = str(word).lower()
+        
+        # Handle purely numeric strings
+        if word.isnumeric():
+            return 0  # Numbers are not dictionary words
+        
+        # Check if word is alphabetic and in the dictionary
+        if word.isalpha() and word in word_list:
+            return 1
+        
+        # Handle alphanumeric strings or other cases explicitly
+        return 0
+    
+    except Exception:
+        # Return 0 in case of any errors
+        return 0
+
+
+def dictionaryWordFeature(data):
+    """
+    Add a DICTIONARY_WORD feature to the DataFrame.
+    Args:
+        data (pd.DataFrame): Input DataFrame with 'WORD' column.
+    Returns:
+        pd.DataFrame: DataFrame with added DICTIONARY_WORD column.
+    """
+    # Replace NaN values in 'WORD' with an empty string before processing
+    # data["WORD"] = data["WORD"].fillna("")
+    dictionary_word_check = data["WORD"].apply(is_dictionary_word)
+    data["DICTIONARY_WORD"] = dictionary_word_check.fillna(0).astype(int)
+    return data
 
 def maxPosition(data):
     """
-    Calculate and add a 'MAXPOSITION' column to the DataFrame indicating the maximum number of words in each identifier.
+    Calculate and add 'MAXPOSITION' and 'POSITION_RATIO' columns to the DataFrame.
 
-    This function calculates the maximum number of words (based on spaces as delimiters) in each identifier in the 'IDENTIFIER'
-    column of the input DataFrame and adds this information as a new column 'MAXPOSITION' in the DataFrame.
+    'MAXPOSITION' indicates the maximum number of words in each identifier.
+    'POSITION_RATIO' is the ratio of each word's position to the maximum position in its identifier.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing an 'IDENTIFIER' column.
+        data (pandas.DataFrame): The input DataFrame containing 'SPLIT_IDENTIFIER' and 'POSITION' columns.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'MAXPOSITION' column.
+        pandas.DataFrame: The input DataFrame with additional 'MAXPOSITION' and 'POSITION_RATIO' columns.
     """
+    # Calculate MAXPOSITION based on the number of words in each SPLIT_IDENTIFIER
     identifiers = data["SPLIT_IDENTIFIER"]
-    maxPosition = pd.DataFrame([len(identifier.split()) for identifier in identifiers])
-    maxPosition.columns = ['MAXPOSITION']
-    data = pd.concat([data, maxPosition], axis=1)
+    max_position = [len(identifier.split()) for identifier in identifiers]
+    
+    # Add MAXPOSITION column to the DataFrame
+    data["MAXPOSITION"] = max_position
     return data
 
+def positionRatio(data):
+    data["POSITION_RATIO"] = data["POSITION"].astype(int) / data["MAXPOSITION"].replace(0, pd.NA)
+    data["POSITION_RATIO"] = data["POSITION_RATIO"].fillna(0)
+    return data
+    
 def average_word_vectors(word_set, word2vec_model):
     """
     Calculate the average word vector for a set of words using a Word2Vec model.

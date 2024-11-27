@@ -27,7 +27,7 @@ def read_input(sql, features, conn):
     """
     input_data = pd.read_sql_query(sql, conn)
     print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
-
+    print(input_data.columns)
     input_data_copy = input_data.copy()
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
@@ -61,59 +61,60 @@ def train(config):
     np.random.seed(config['npseed'])
     random.seed(pyrandom_seed)
     independent_variables = config['independent_variables']
+    
     # ###############################################################
     print(" --  -- Started: Reading Database --  -- ")
     connection = sqlite3.connect(input_file)
     df_input = read_input(sql_statement, independent_variables, connection)
     print(" --  -- Completed: Reading Input --  -- ")
     # ###############################################################
-    category_variables = []
-    feature_list = independent_variables
-    df_input.set_index(identifier_column, inplace=True)
-    df_features = df_input[feature_list]
-    if 'NLTK_POS' in feature_list:
-        category_variables.append('NLTK_POS')
-        df_features['NLTK_POS'] = df_features['NLTK_POS'].astype(str)
-    if 'PREVIOUS_NLTK_POS' in feature_list:
-        category_variables.append('PREVIOUS_NLTK_POS')
-        df_features['PREVIOUS_NLTK_POS'] = df_features['PREVIOUS_NLTK_POS'].astype(str)
-    if 'TYPE' in feature_list:
-        category_variables.append('TYPE')
-        df_features['TYPE'] = df_features['TYPE'].astype(str)
-    if 'LANGUAGE' in feature_list:
-        category_variables.append('LANGUAGE')
-        df_features['LANGUAGE'] = df_features['LANGUAGE'].astype(str)
-    df_class = df_input[[dependent_variable]]
-    if not os.path.exists('output'):
-        os.makedirs('output')
     
+    # Create an explicit copy to avoid SettingWithCopyWarning
+    df_features = df_input[independent_variables].copy()
+    df_class = df_input[[dependent_variable]].copy()
+    
+    category_variables = []
+    categorical_columns = ['NLTK_POS', 'PREVIOUS_NLTK_POS', 'TYPE', 'LANGUAGE']
+    
+    # Safely handle categorical variables
+    for category_column in categorical_columns:
+        if category_column in df_features.columns:
+            category_variables.append(category_column)
+            # Convert to string first to ensure consistent type
+            df_features.loc[:, category_column] = df_features[category_column].astype(str)
+    
+    # Ensure output directories exist
     output_dir = os.path.join(SCRIPT_DIR, 'output')
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+    
     filename = os.path.join(output_dir, 'results.txt')
     mode = 'a' if os.path.exists(filename) else 'w'
-    
+   
     with open(filename, mode) as results_text_file:
         results_text_file.write(datetime.now().strftime("%H:%M:%S") + "\n")
-        
+       
         # Print config in a readable fashion
         results_text_file.write("Configuration:\n")
         for key, value in config.items():
             results_text_file.write(f"{key}: {value}\n")
         results_text_file.write("\n")
-        
+       
         for category_column in category_variables:
-            if category_column in df_features.columns:
-                df_features[category_column] = df_features[category_column].astype('category')
-                d = dict(enumerate(df_features[category_column].cat.categories))
-                results_text_file.write(f"{category_column}: {d}\n")
-                df_features[category_column] = df_features[category_column].cat.codes
-        
+            # Explicitly handle categorical conversion
+            unique_values = df_features[category_column].unique()
+            category_map = {val: idx for idx, val in enumerate(unique_values)}
+            
+            # Write category mapping
+            results_text_file.write(f"{category_column}: {category_map}\n")
+            
+            # Convert using the mapping
+            df_features.loc[:, category_column] = df_features[category_column].map(category_map)
+       
         print(" --  -- Distribution of labels in corpus --  -- ")
         print(df_class[dependent_variable].value_counts())
         results_text_file.write(f"SQL: {sql_statement}\n")
         results_text_file.write(f"Features: {df_features}\n")
-        
+       
         algorithms = [classifier_multiclass.TrainingAlgorithm.XGBOOST]
         classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
                                                     output_dir, algorithms, trainingSeed,
