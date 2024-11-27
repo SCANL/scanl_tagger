@@ -2,61 +2,83 @@ import pandas as pd
 from flair.data import Sentence
 from flair.models import SequenceTagger
 import csv
-import logging
+import logging, time
 
 logging.getLogger('flair').setLevel(logging.ERROR)
 
-def tag_with_flair(identifier):
+def convert_tag(flair_tag):
+    tag_mapping = {
+        'CC': 'CJ', 'CD': 'D', 'DT': 'DT', 'FW': 'N', 'IN': 'P', 'JJ': 'NM', 'JJR': 'NM',
+        'JJS': 'NM', 'LS': 'N', 'MD': 'V', 'NN': 'N', 'NNP': 'N', 'NNPS': 'NPL',
+        'NNS': 'NPL', 'PRP': 'PR', 'PRPS': 'PR', 'RB': 'VM', 'RBR': 'VM', 'RP': 'VM',
+        'SYM': 'N', 'TO': 'P', 'VB': 'V', 'VBD': 'NM', 'VBG': 'NM', 'VBN': 'NM',
+        'VBP': 'V', 'VBZ': 'V'
+    }
+    return tag_mapping.get(flair_tag, 'UNKNOWN')
+
+def tag_with_flair(full_identifier, target_word):
     # Handle potential NaN or non-string values
-    if pd.isna(identifier):
-        return ''
+    if pd.isna(full_identifier) or pd.isna(target_word):
+        return '', ''
     
-    identifier = str(identifier).strip()
-    if not identifier:
-        return ''
+    full_identifier = str(full_identifier.lower()).strip()
+    target_word = str(target_word.lower()).strip()
     
+    if not full_identifier or not target_word:
+        return '', ''
     
     # Load the English POS tagger (this will be cached after first use)
     tagger = SequenceTagger.load('pos')
     
-    # Create a Flair sentence from the identifier
-    sentence = Sentence(identifier)
-    
+    # Create a Flair sentence from the full identifier
+    sentence = Sentence(full_identifier.lower())
+    print("Handle: ", full_identifier)
     # Predict POS tags
     tagger.predict(sentence)
     
-    # Extract POS tags using the correct attribute
-    pos_tags = [token.tag for token in sentence]
+    # Find the tag for the target word
+    for token in sentence:
+        if token.text == target_word:
+            flair_tag = token.tag
+            custom_tag = convert_tag(flair_tag)
+            return flair_tag, custom_tag
     
-    # Return the POS tag (since we're processing one word at a time, 
-    # we'll usually have just one tag)
-    return ' '.join(pos_tags)
+    # Return a default value if the word isn't found (optional)
+    return 'NOT_FOUND', 'UNKNOWN'
 
 def process_csv(input_file):
     try:
         # Read the CSV file
         df = pd.read_csv(input_file)
         
-        # Verify the required column exists
-        if 'SPLIT_IDENTIFIER' not in df.columns:
-            raise ValueError("CSV file must contain a 'SPLIT_IDENTIFIER' column")
+        # Verify the required columns exist
+        required_columns = ['SPLIT_IDENTIFIER', 'WORD']
+        for col in required_columns:
+            if col not in df.columns:
+                raise ValueError(f"CSV file must contain a '{col}' column")
         
-        # Add a new column for Flair POS tags
+        start_time = time.time()
+        # Annotate each row
         print("Processing identifiers...")
-        df['FLAIR_POS'] = df['SPLIT_IDENTIFIER'].apply(tag_with_flair)
+        df[['FLAIR_TAG', 'CUSTOM_TAG']] = df.apply(lambda row: tag_with_flair(row['SPLIT_IDENTIFIER'], row['WORD']), axis=1, result_type='expand')
         
+        end_time = time.time()
+        processing_time = end_time - start_time
+        print(f"Total processing time: {processing_time:.2f} seconds")
+
         # Save the results to a new CSV file
-        output_file = 'output_with_flair_pos.csv'
-        df.to_csv(output_file, index=False)
+        output_file = 'annotated_output.csv'
+        df[['WORD', 'FLAIR_TAG', 'CUSTOM_TAG']].to_csv(output_file, index=False, header=True)
         print(f"Results saved to {output_file}")
         
         # Print example results
         print("\nExample results:")
-        print(df[['SPLIT_IDENTIFIER', 'FLAIR_POS']].head())
+        print(df[['WORD', 'FLAIR_TAG', 'CUSTOM_TAG']].head())
         
     except Exception as e:
         print(f"Error processing CSV: {str(e)}")
+
 if __name__ == "__main__":
     # Process the CSV file
-    input_file = '../output/X_validation.csv'  # Replace with your actual file name
+    input_file = '../validation_sets/X_validation.csv'  # Replace with your actual file name
     process_csv(input_file)
