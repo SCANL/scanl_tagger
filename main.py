@@ -32,8 +32,8 @@ def read_input(sql, features, conn):
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    input_data = createFeatures(shuffled_input_data, features, modelTokens, modelMethods, modelGensimEnglish)
+    # modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    input_data = createFeatures(shuffled_input_data, features)
     return input_data
 
 def train(config):
@@ -80,7 +80,6 @@ def train(config):
     for category_column in categorical_columns:
         if category_column in df_features.columns:
             category_variables.append(category_column)
-            # Convert to string first to ensure consistent type
             df_features.loc[:, category_column] = df_features[category_column].astype(str)
     
     # Ensure output directories exist
@@ -98,16 +97,17 @@ def train(config):
         for key, value in config.items():
             results_text_file.write(f"{key}: {value}\n")
         results_text_file.write("\n")
-       
+
         for category_column in category_variables:
             # Explicitly handle categorical conversion
             unique_values = df_features[category_column].unique()
-            category_map = {val: idx for idx, val in enumerate(unique_values)}
-            
-            # Write category mapping
-            results_text_file.write(f"{category_column}: {category_map}\n")
-            
-            # Convert using the mapping
+            category_map = {}
+            for value in unique_values:
+                if value in universal_to_custom:
+                    category_map[value] = custom_to_numeric[universal_to_custom[value]]
+                else:
+                    category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
+
             df_features.loc[:, category_column] = df_features[category_column].map(category_map)
        
         print(" --  -- Distribution of labels in corpus --  -- ")

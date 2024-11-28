@@ -249,7 +249,18 @@ universal_to_custom = {
     '.': '.',
 }
 
-
+custom_to_numeric = {
+    'VERB': 0,
+    'NOUN': 1,
+    'ADJ': 2,
+    'ADV': 3,
+    'ADP': 4,
+    'CONJ': 5,
+    'DET': 6,
+    'NUM': 7,
+    'NM': 8,
+    '.': 9
+}
 
 def calculate_word_frequencies(words):
     """
@@ -415,6 +426,7 @@ def maxPosition(data):
     
     # Add MAXPOSITION column to the DataFrame
     data["MAXPOSITION"] = max_position
+    
     return data
 
 def positionRatio(data):

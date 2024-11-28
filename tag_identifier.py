@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 class ModelData:
-    def __init__(self, modelTokens, modelMethods, modelGensimEnglish) -> None:
+    def __init__(self, modelTokens, modelMethods, modelGensimEnglish, wordCount) -> None:
         """
         Initialize an instance of the ModelData class with word vector models.
 
@@ -20,22 +20,35 @@ class ModelData:
         self.modelTokens = modelTokens
         self.modelMethods = modelMethods
         self.modelGensimEnglish = modelGensimEnglish
+        self.wordCount = wordCount
 
 def initialize_model():
     """
-    Initialize and load word vectors for the application.
+    Initialize and load word vectors for the application, and load a word count DataFrame.
 
-    This function initializes and loads word vectors using the 'createModel' function and stores them in the
-    'app.model_data' attribute for later use.
+    This function initializes and loads word vectors using the 'createModel' function, and loads word counts 
+    from a JSON file into a Pandas DataFrame for use in the application.
 
     Returns:
-        None
+        tuple: (ModelData, WORD_COUNT DataFrame)
     """
-    print("Loading word vectors!!")
-    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    print("Word vectors loaded!!")
-
-    app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish)
+    # print("Loading word vectors!!")
+    # modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    # print("Word vectors loaded!!")
+    
+    # # Load the word count JSON file into a DataFrame
+    # word_count_path = os.path.join("input", "word_count.json")
+    # if os.path.exists(word_count_path):
+    #     print(f"Loading word count data from {word_count_path}...")
+    #     word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
+    #     word_count_df.columns = ['word', 'log_frequency']
+    #     print("Word count data loaded!")
+    # else:
+    #     print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
+    #     word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
+    
+    # # Create and store model data
+    # app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
 
 def start_server():
     """
@@ -53,7 +66,7 @@ def start_server():
 
 
 @app.route('/<identifier_name>/<identifier_context>')
-def listen(identifier_name: str, identifier_context: str) -> List:
+def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     """
     Process a web request to analyze an identifier within a specific context.
 
@@ -66,36 +79,73 @@ def listen(identifier_name: str, identifier_context: str) -> List:
         identifier_context (str): The context in which the identifier appears.
 
     Returns:
-        List: A list of annotations for the identifier, including part-of-speech tags and other linguistic features.
+        List[dict]: A list of dictionaries containing words and their predicted POS tags.
     """
     print(f"INPUT: {identifier_name} {identifier_context}")
    
-    words = ronin.split(identifier_name)
+    # Split identifier_name into words
+    words = identifier_name.split('_')
+    
+    # Create initial data frame
     data = pd.DataFrame({
         'WORD': words,
         'IDENTIFIER': identifier_name,
-        'SPLIT_IDENTIFIER': ' '.join(words),
-        'MAXPOSITION': [len(words)] * len(words),
+        'SPLIT_IDENTIFIER': identifier_name.split('_'),
+        'MAXPOSITION': [len(words)] * len(words),  # Total words in the identifier
+        'POSITION': range(len(words)),  # Position of each word
         'NORMALIZED_POSITION': [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))],
-        'POSITION': range(len(words)),
-        'CONTEXT_NUMBER': identifier_context,
-        'LANGUAGE': 'C++'
+        'CONTEXT_NUMBER': identifier_context,  # Predefined context number
+        'LANGUAGE': 'C++'  # Predefined language
     })
     
+    # Convert CONTEXT_NUMBER to numeric
     data['CONTEXT_NUMBER'] = data['CONTEXT_NUMBER'].apply(context_to_number)
 
-    data = createFeatures(data, mutable_feature_list, app.model_data.modelTokens, app.model_data.modelMethods, app.model_data.modelGensimEnglish)
+    # # Add word count column using app.model_data.wordCount
+    # if hasattr(app.model_data, 'wordCount') and not app.model_data.wordCount.empty:
+    #     word_count_dict = app.model_data.wordCount.set_index('word')['log_frequency'].to_dict()
+    #     data['WORD_COUNT'] = data['WORD'].str.lower().map(word_count_dict).fillna(0)
+    # else:
+    #     print("Word count data is missing or empty; setting WORD_COUNT to 0.")
 
+    # Add features to the data
+    data = createFeatures(
+        data, 
+        mutable_feature_list,
+    )
+ 
+    # app.model_data.modelTokens, 
+    # app.model_data.modelMethods, 
+    # app.model_data.modelGensimEnglish
     # Convert categorical variables to numeric
     categorical_features = ['NLTK_POS', 'LANGUAGE']
-    for feature in categorical_features:
-        if feature in data.columns:
-            data[feature] = data[feature].astype('category').cat.codes
+    category_variables = []
 
+    for category_column in categorical_features:
+        if category_column in data.columns:
+            category_variables.append(category_column)
+            data.loc[:, category_column] = data[category_column].astype(str)
+
+    for category_column in category_variables:
+        # Explicitly handle categorical conversion
+        unique_values = data[category_column].unique()
+        category_map = {}
+        for value in unique_values:
+            if value in universal_to_custom:
+                category_map[value] = custom_to_numeric[universal_to_custom[value]]
+            else:
+                category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
+
+        data.loc[:, category_column] = data[category_column].map(category_map)
+        
     # Load and apply the classifier
     clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
-    
-    return list(annotate_identifier(clf, data))
+    predicted_tags = annotate_identifier(clf, data)
+
+    # Combine words and their POS tags into a parseable format
+    result = [{'word': word, 'pos_tag': tag} for word, tag in zip(words, predicted_tags)]
+
+    return result
     
 def context_to_number(context):
     """
@@ -147,8 +197,11 @@ def annotate_identifier(clf, data):
         data = pd.DataFrame(...)  # Create a DataFrame with feature data.
         predictions = annotate_identifier(clf, data)
     """
-    independent_variables_add = stable_features + mutable_feature_list
+    # Get feature names the classifier was trained on
+    trained_features = clf.feature_names_in_  # This attribute contains the expected feature names
+    # Filter out columns not used by the classifier
+    df_features = data[trained_features]
     
-    df_features = pd.DataFrame(data, columns=independent_variables_add)
+    # Make predictions
     y_pred = clf.predict(df_features)
     return y_pred
