@@ -32,8 +32,8 @@ def read_input(sql, features, conn):
     rows = input_data_copy.values.tolist()
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-    # modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    input_data = createFeatures(shuffled_input_data, features)
+    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    input_data = createFeatures(shuffled_input_data, features, modelGensimEnglish=modelGensimEnglish)
     return input_data
 
 def train(config):
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         download_files()
         # Define a configuration dictionary and pass it to the train function
         config = {
-            'input_file': os.path.join(SCRIPT_DIR, 'input', 'closed_set_tagger_db_5_13_2024.db'),
+            'input_file': os.path.join(SCRIPT_DIR, 'input', 'scanl_tagger_training_db_11_29_2024.db'),
             'sql_statement': 'select * from training_set',
             'identifier_column': "ID",
             'dependent_variable': 'CORRECT_TAG',

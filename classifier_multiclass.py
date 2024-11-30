@@ -387,17 +387,14 @@ def analyzeHistGradientBoost(results_text_file, output_directory, scorersKey, al
     results_text_file.write("\n------------------------------------------------------\n")
 
 
-def write_importances(results_text_file, algoData, presult, metric_name):
-    """
-    Helper function to write permutation importances to the results file.
-    """
-    results_text_file.write(f"{metric_name} importances\n")
-    for feature, value in zip(algoData.X_train.columns, presult.importances):
-        results_text_file.write(f"{feature},{','.join(map(str, value))}\n")
-    results_text_file.write("\n")
-    results_text_file.write(f"mean {metric_name} importances\n")
-    for feature, value in zip(algoData.X_train.columns, presult.importances_mean):
-        results_text_file.write(f"{feature},{value}\n")
+def write_importances(results_text_file, algoData, presult, metric):
+    feature_importances = pd.DataFrame({
+        'Feature': algoData.X_train.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore').columns,
+        'Importance': presult.importances_mean
+    }).sort_values(by='Importance', ascending=False)
+    
+    results_text_file.write(f"\n--- Permutation Importances ({metric}) ---\n")
+    results_text_file.write(feature_importances.to_string(index=False))
     results_text_file.write("\n")
 
 
@@ -438,14 +435,13 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
             cv=stratified_kfold,
             scoring=scorersKey,
             n_jobs=-1,
-            refit='weighted_f1',
-            error_score=0.0
+            refit='weighted_f1'
         )
         clf.fit(X_train_dropped, algoData.y_train)
 
         # Save the trained model
         model_path = os.path.join(output_directory, "model_GradientBoostingClassifier.pkl")
-        joblib.dump(clf, model_path)
+        joblib.dump(clf.best_estimator_, model_path)
 
         # Log the best parameters
         results_text_file.write("Best parameters set found on development set:\n")
@@ -476,7 +472,8 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         validation_results = pd.DataFrame({
             'Actual_label': algoData.y_validation,
             'Predicted_Label': y_validation_pred,
-            'Accuracy': [validation_accuracy] * len(algoData.y_validation)
+            'Accuracy': [validation_accuracy] * len(algoData.y_validation),
+            'Word': algoData.X_validation['WORD']
         })
         validation_results.to_csv(validation_results_path, index=False)
 

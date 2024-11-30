@@ -2,11 +2,8 @@ import time, nltk, sys
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cosine
-from spellchecker import SpellChecker
 from typing import List, Callable
 from collections import Counter
-
-spell = SpellChecker()
 
 vector_size = 128
 
@@ -190,6 +187,7 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
 
     # Define a mapping of features to their corresponding functions
     feature_function_map: dict[str, Callable[[pd.DataFrame], pd.DataFrame]] = {
+        'NORMALIZED_POSITION': createNormalizedPositionFeature,
         'NLTK_POS': wordPosTag,
         'MAXPOSITION': maxPosition,
         'POSITION_RATIO': positionRatio,
@@ -206,7 +204,7 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
         'CONJUNCTION': createConjunctionFeature,
         'DETERMINER': createDeterminerFeature,
         'DIGITS': createDigitFeature,
-        'CONTAINSDIGIT': createIdentifierDigitFeature,
+        'CONTAINSDIGITS': createIdentifierDigitFeature,
         'CONTAINSCLOSEDSET': createIdentifierClosedSetFeature,
         'CONTAINSVERB': createIdentifierContainsVerbFeature,
         'LAST_LETTER': createLetterFeature,
@@ -298,8 +296,8 @@ def apply_word_counts(data, word_frequencies):
     words = result["WORD"].str.lower()
     # Map the pre-calculated frequencies
     result['WORD_COUNT'] = words.map(word_frequencies).fillna(0)
-    result = result.drop('WORD', axis=1)
-    result = result.drop('SPLIT_IDENTIFIER', axis=1)
+    # result = result.drop('WORD', axis=1)
+    # result = result.drop('SPLIT_IDENTIFIER', axis=1)
     return result
 
 
@@ -448,15 +446,12 @@ def average_word_vectors(word_set, word2vec_model):
     Raises:
         ValueError: If none of the words in the set exist in the Word2Vec model.
     """
-    word_vectors = []
-    for word in word_set:
-        if word in word2vec_model.index_to_key:
-            word_vectors.append(word2vec_model.get_vector(word))
-
-    if not word_vectors:
+    vectors = [word2vec_model[word] for word in word_set if word in word2vec_model.key_to_index]
+    
+    if not vectors:
         raise ValueError("None of the words in the set exist in the Word2Vec model.")
-
-    return np.mean(word_vectors, axis=0)
+    
+    return np.mean(vectors, axis=0)
 
 def compute_similarity(verb_vector, target_word, model):
     """
@@ -470,12 +465,14 @@ def compute_similarity(verb_vector, target_word, model):
     Returns:
         float: The cosine similarity between the verb vector and the target word vector, or 0.0 if the target word is not in the model.
     """
-    try:
-        target_word_vector = model.get_vector(key=target_word, norm=True)
-        similarity = 1 - cosine(verb_vector, target_word_vector)
-        return similarity
-    except KeyError:
+    if target_word not in model.key_to_index:
         return 0.0
+
+    target_word_vector = model[target_word]
+    similarity = np.dot(verb_vector, target_word_vector) / (
+        np.linalg.norm(verb_vector) * np.linalg.norm(target_word_vector)
+    )
+    return similarity
 
 def createVerbVectorFeature(data, model):
     """
@@ -494,7 +491,6 @@ def createVerbVectorFeature(data, model):
     """
     words = data["WORD"]
     vector = average_word_vectors(verbs, model)
-    
     scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
     scores.columns = ['VERB_SCORE']
     scores = pd.concat([data, scores], axis=1)
@@ -700,6 +696,45 @@ def createDeterminerFeature(data):
     return data
 
 
+def createNormalizedPositionFeature(data):
+    """
+    Create a NORMALIZED_POSITION feature indicating whether a word is at the beginning, middle, or end of an identifier.
+
+    This function uses the SPLIT_IDENTIFIER column, which contains identifiers split into individual words by spaces.
+    It calculates the normalized position for each word in the split identifier and assigns:
+        - 0 for the first word
+        - 1 for words in the middle
+        - 2 for the last word
+
+    If the NORMALIZED_POSITION column already exists, it will be dropped before creating a new one.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'SPLIT_IDENTIFIER' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an updated 'NORMALIZED_POSITION' column.
+    """
+    # Drop the column if it already exists
+    if 'NORMALIZED_POSITION' in data.columns:
+        data = data.drop(columns=['NORMALIZED_POSITION'])
+
+    # Function to calculate normalized positions for a split identifier
+    def calculate_positions(split_identifier):
+        words = split_identifier.split()  # Split the identifier into words
+        n = len(words)
+        if n == 1:  # Single word
+            return [0]
+        positions = [0]  # First word gets 0
+        positions.extend([1] * (n - 2))  # Middle words get 1
+        positions.append(2)  # Last word gets 2
+        return positions
+
+    # Apply the function to each row and explode the results into a new column
+    data['NORMALIZED_POSITION'] = data['SPLIT_IDENTIFIER'].apply(calculate_positions)
+    data = data.explode('NORMALIZED_POSITION').reset_index(drop=True)
+
+    return data
+
 def createDigitFeature(data):
     """
     Calculate and add a 'DIGITS' column to the DataFrame indicating whether each word consists of digits.
@@ -721,77 +756,54 @@ def createDigitFeature(data):
 
 def createIdentifierDigitFeature(data):
     """
-    Calculate and add a 'CONTAINSDIGITS' column to the DataFrame indicating whether each word consists of digits.
-
-    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame consists of digits and adds a binary
-    'CONTAINSDIGITS' column (1 for identifiers with words consisting of digits, 0 otherwise) in the DataFrame.
+    Add a 'CONTAINSDIGITS' column indicating if any word in the SPLIT_IDENTIFIER contains digits.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+        data (pandas.DataFrame): Input DataFrame with 'SPLIT_IDENTIFIER' as a list of words.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSDIGITS' column.
+        pandas.DataFrame: Updated DataFrame with a 'CONTAINSDIGITS' column.
     """
-    identifiers = data["SPLIT_IDENTIFIER"]
-    column = []
-    for index, row in data.iterrows():
-        words = row["SPLIT_IDENTIFIER"].split()
-        contains_digit = any(word.isdigit() for word in words)
-        column.append(contains_digit)
-    containsDigit = pd.DataFrame(column)
-    containsDigit.columns = ["CONTAINSDIGIT"]
-    data = pd.concat([data, containsDigit], axis=1)
+    # Check if any word in SPLIT_IDENTIFIER is a digit
+    data['CONTAINSDIGITS'] = data['SPLIT_IDENTIFIER'].apply(
+        lambda words: any(word.isdigit() for word in words)
+    ).astype(int)
     return data
 
-def word_in_any_list(word, *lists):
-    return any(word in lst for lst in lists)
-
-def createIdentifierClosedSetFeature(data):
+def createIdentifierClosedSetFeature(data, conjunctions=conjunctions, determiners=determiners, prepositions=prepositions):
     """
-    Calculate and add a 'CONTAINSCLOSEDSET' column to the DataFrame indicating whether each word consists of digits.
-
-    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame contains a potentially closed-set word and adds a
-    'CONTAINSCLOSEDSET' column (1 for identifiers with words that look like closed set, 0 otherwise) in the DataFrame.
+    Add a 'CONTAINSCLOSEDSET' column indicating if any word in the SPLIT_IDENTIFIER matches closed-set words.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+        data (pandas.DataFrame): Input DataFrame with 'SPLIT_IDENTIFIER' as a list of words.
+        conjunctions (set): Set of conjunction words.
+        determiners (set): Set of determiner words.
+        prepositions (set): Set of preposition words.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSCLOSEDSET' column.
+        pandas.DataFrame: Updated DataFrame with a 'CONTAINSCLOSEDSET' column.
     """
-    column = []
-    for index, row in data.iterrows():
-        words = row["SPLIT_IDENTIFIER"].split()
-        for word in words:
-            contains_closed_set_word = word_in_any_list(word, conjunctions, determiners, prepositions)
-        column.append(contains_closed_set_word)
-    containsClosedSet = pd.DataFrame(column)
-    containsClosedSet.columns = ["CONTAINSCLOSEDSET"]
-    data = pd.concat([data, containsClosedSet], axis=1)
+    closed_set = set(conjunctions) | set(determiners) | set(prepositions)
+    data['CONTAINSCLOSEDSET'] = data['SPLIT_IDENTIFIER'].apply(
+        lambda words: any(word in closed_set for word in words)
+    ).astype(int)
     return data
 
-def createIdentifierContainsVerbFeature(data):
+def createIdentifierContainsVerbFeature(data, verbs=verbs):
     """
-    Calculate and add a 'CONTAINSVERB' column to the DataFrame indicating whether each word consists of digits.
-
-    This function checks if each word in the 'IDENTIFIER' column of the input DataFrame contains a potentially closed-set word and adds a
-    'CONTAINSVERB' column (1 for identifiers with words that look like closed set, 0 otherwise) in the DataFrame.
+    Add a 'CONTAINSVERB' column indicating if any word in the SPLIT_IDENTIFIER is a verb.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'IDENTIFIER' column.
+        data (pandas.DataFrame): Input DataFrame with 'SPLIT_IDENTIFIER' as a list of words.
+        verbs (set): Set of verb words.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'CONTAINSVERB' column.
+        pandas.DataFrame: Updated DataFrame with a 'CONTAINSVERB' column.
     """
-    column = []
-    for index, row in data.iterrows():
-        words = row["SPLIT_IDENTIFIER"].split()
-        for word in words:
-            contains_verb = word_in_any_list(word, verbs)
-        column.append(contains_verb)
-    containsVerb = pd.DataFrame(column)
-    containsVerb.columns = ["CONTAINSVERB"]
-    data = pd.concat([data, containsVerb], axis=1)
+    verb_set = set(verbs)
+    data['CONTAINSVERB'] = data['SPLIT_IDENTIFIER'].apply(
+        lambda words: any(word in verb_set for word in words)
+    ).astype(int)
     return data
 
 def createLetterFeature(data):
@@ -836,16 +848,7 @@ def get_word_vector(word, model, vector_size):
         vector = model.get_vector(word)
         return vector
     except KeyError:
-        # If the word is not in the model, correct it using pyspellchecker
-        corrected_word = spell.correction(word)
-        
-        try:
-            # Try again to get the word vector for the corrected word
-            vector = model.get_vector(corrected_word)
-            return vector
-        except KeyError:
-            # If the corrected word is still not in the model, return a zero vector
-            return np.zeros(model.vector_size)
+        return np.zeros(model.vector_size)            
 
 #Get word vectors for our closed set words
 def createWordVectorsFeature(model, data, name="DEFAULT"):

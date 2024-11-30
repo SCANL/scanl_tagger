@@ -32,23 +32,23 @@ def initialize_model():
     Returns:
         tuple: (ModelData, WORD_COUNT DataFrame)
     """
-    # print("Loading word vectors!!")
-    # modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    # print("Word vectors loaded!!")
+    print("Loading word vectors!!")
+    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+    print("Word vectors loaded!!")
     
-    # # Load the word count JSON file into a DataFrame
-    # word_count_path = os.path.join("input", "word_count.json")
-    # if os.path.exists(word_count_path):
-    #     print(f"Loading word count data from {word_count_path}...")
-    #     word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
-    #     word_count_df.columns = ['word', 'log_frequency']
-    #     print("Word count data loaded!")
-    # else:
-    #     print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
-    #     word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
+    # Load the word count JSON file into a DataFrame
+    word_count_path = os.path.join("input", "word_count.json")
+    if os.path.exists(word_count_path):
+        print(f"Loading word count data from {word_count_path}...")
+        word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
+        word_count_df.columns = ['word', 'log_frequency']
+        print("Word count data loaded!")
+    else:
+        print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
+        word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
     
-    # # Create and store model data
-    # app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
+    # Create and store model data
+    app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
 
 def start_server():
     """
@@ -93,7 +93,6 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
         'SPLIT_IDENTIFIER': identifier_name.split('_'),
         'MAXPOSITION': [len(words)] * len(words),  # Total words in the identifier
         'POSITION': range(len(words)),  # Position of each word
-        'NORMALIZED_POSITION': [0 if i == 0 else (2 if i == len(words) - 1 else 1) for i in range(len(words))],
         'CONTEXT_NUMBER': identifier_context,  # Predefined context number
         'LANGUAGE': 'C++'  # Predefined language
     })
@@ -112,6 +111,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     data = createFeatures(
         data, 
         mutable_feature_list,
+        modelGensimEnglish=app.model_data.modelGensimEnglish,
     )
  
     # app.model_data.modelTokens, 
