@@ -147,9 +147,20 @@ def start_server(temp_config = {}):
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
     #or if the word is in the list of approved words
+    dictionaryType = ""
     dictionary = word.lower() in app.english_words
     acceptable = app.words.find(word)
-    return dictionary or acceptable
+    digit = word.isnumeric()
+    if (dictionary):
+        dictionaryType = "DW"
+    elif (acceptable):
+        dictionaryType = "AW"
+    elif (digit):
+        dictionaryType = "DD"
+    else:
+        dictionaryType = "UC"
+    
+    return dictionaryType
 
 #TODO: this is not an intuitive way to save cache
 @app.route('/')
@@ -242,8 +253,9 @@ def listen(student, identifier_name, identifier_context):
         #check dictionary
         dictionary = "UC" #uncategorized
         word = words[i]
-        if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
-        if (word.isnumeric()): dictionary = "DD" #digit
+        dictionary = dictionary_lookup(word)
+	#if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
+        #if (word.isnumeric()): dictionary = "DD" #digit
         #append result
         result["words"].append(
             {
