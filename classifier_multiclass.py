@@ -425,6 +425,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
         print("GradientBoostingClassifier")
 
+
         # Drop SPLIT_IDENTIFIER and WORD columns from X_train
         X_train_dropped = algoData.X_train.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore')
 

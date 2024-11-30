@@ -116,6 +116,12 @@ def train(config):
         results_text_file.write(f"Features: {df_features}\n")
        
         algorithms = [classifier_multiclass.TrainingAlgorithm.XGBOOST]
+        #pd.set_option('display.max_rows', None)  # Show all rows
+        pd.set_option('display.max_columns', None)  # Show all columns
+        pd.set_option('display.width', None)  # Prevent line wrapping
+        pd.set_option('display.max_colwidth', None)  # Show full content of each cell
+
+        print(df_features)
         classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
                                                     output_dir, algorithms, trainingSeed,
                                                     classifierSeed)

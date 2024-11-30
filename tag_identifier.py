@@ -91,8 +91,6 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
         'WORD': words,
         'IDENTIFIER': identifier_name,
         'SPLIT_IDENTIFIER': identifier_name.split('_'),
-        'MAXPOSITION': [len(words)] * len(words),  # Total words in the identifier
-        'POSITION': range(len(words)),  # Position of each word
         'CONTEXT_NUMBER': identifier_context,  # Predefined context number
         'LANGUAGE': 'C++'  # Predefined language
     })

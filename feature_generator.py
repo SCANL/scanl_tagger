@@ -160,18 +160,6 @@ verbs = {'be','have','do','say','get','make','go','see','know','take','think','c
 
 hungarian = {'a', 'b', 'c', 'cb', 'cr', 'cx', 'dw', 'f', 'fn', 'g', 'h', 'i', 'l', 'lp', 'm', 'n', 'p', 's', 'sz', 'tm', 'u', 'ul', 'w', 'x', 'y'}
 
-# Lazy import to avoid potential import issues
-import nltk
-
-# Download words corpus if not already present
-try:
-    from nltk.corpus import words
-    word_list = set(words.words())
-except LookupError:
-    nltk.download('words', quiet=True)
-    from nltk.corpus import words
-    word_list = set(words.words())
-    
 def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = None, modelMethods = None, modelGensimEnglish = None) -> pd.DataFrame:
     """
     Create various features for the input data based on the provided feature list.
@@ -189,7 +177,8 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
     feature_function_map: dict[str, Callable[[pd.DataFrame], pd.DataFrame]] = {
         'NORMALIZED_POSITION': createNormalizedPositionFeature,
         'NLTK_POS': wordPosTag,
-        'MAXPOSITION': maxPosition,
+        'POSITION': createIdentifierPositionFeature,
+        'MAXPOSITION': createIdentifierMaxPositionFeature,
         'POSITION_RATIO': positionRatio,
         'VERB_SCORE': lambda df: createVerbVectorFeature(df, modelGensimEnglish),
         'NOUN_SCORE': lambda df: createNounVectorFeature(df, modelGensimEnglish),
@@ -209,7 +198,6 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
         'CONTAINSVERB': createIdentifierContainsVerbFeature,
         'LAST_LETTER': createLetterFeature,
         'CONSONANT_VOWEL_RATIO': consonantVowelRatio,
-        'DICTIONARY_WORD': dictionaryWordFeature,
         'SECOND_LAST_LETTER': createLastTwoLettersFeature,
         'METHODV_SCORE': lambda df: createSimilarityToVerbFeature("METHODV", modelMethods, df),
         'ENGLISHV_SCORE': lambda df: createSimilarityToVerbFeature("ENGLISHV", modelGensimEnglish, df),
@@ -260,47 +248,6 @@ custom_to_numeric = {
     '.': 9
 }
 
-def calculate_word_frequencies(words):
-    """
-    Calculate normalized and log-transformed word frequencies from a series of words.
-    
-    Parameters:
-    words (pd.Series): Series containing words
-    
-    Returns:
-    dict: Dictionary of normalized and log-transformed word frequencies
-    """
-    # Convert all words to lowercase for consistent counting
-    words = words.str.lower()
-    # Calculate raw frequencies
-    raw_counts = Counter(words)
-    total_words = sum(raw_counts.values())
-    
-    # Normalize counts and apply log transformation
-    word_frequencies = {word: np.log1p(count / total_words) for word, count in raw_counts.items()}
-    return word_frequencies
-
-def apply_word_counts(data, word_frequencies):
-    """
-    Apply pre-calculated normalized and log-transformed word frequencies to create WORD_COUNT feature.
-    
-    Parameters:
-    data (pd.DataFrame): DataFrame containing 'WORD' column
-    word_frequencies (dict): Pre-calculated word frequencies
-    
-    Returns:
-    pd.DataFrame: DataFrame with WORD_COUNT instead of WORD
-    """
-    result = data.copy()
-    # Convert words to lowercase to match frequencies
-    words = result["WORD"].str.lower()
-    # Map the pre-calculated frequencies
-    result['WORD_COUNT'] = words.map(word_frequencies).fillna(0)
-    # result = result.drop('WORD', axis=1)
-    # result = result.drop('SPLIT_IDENTIFIER', axis=1)
-    return result
-
-
 def wordPosTag(data):
     """
     Perform part-of-speech tagging on words in the 'WORD' column of the DataFrame.
@@ -347,6 +294,30 @@ def calculate_consonant_vowel_ratio(word):
     
     return len(consonants) / max(vowel_count, 1)
 
+def createIdentifierPositionFeature(data):
+    """
+    Add a 'POSITION' column indicating the position of the current word in the identifier.
+    """
+    # Initialize the POSITION column
+    positions = []
+
+    # Iterate through the rows
+    for _, row in data.iterrows():
+        words = row['SPLIT_IDENTIFIER'].lower().split()
+        current_word = row['WORD']
+        
+        # Find the position of the current word in the identifier (1-based index)
+        try:
+            position = words.index(current_word) + 1
+        except ValueError:
+            position = 0  # If the word is not found (fallback case)
+        
+        positions.append(position)
+    
+    # Assign the calculated positions
+    data['POSITION'] = positions
+    return data
+
 def consonantVowelRatio(data):
     """
     Add a CONSONANT_VOWEL_RATIO feature to the DataFrame.
@@ -355,76 +326,16 @@ def consonantVowelRatio(data):
     Returns:
         pd.DataFrame: DataFrame with added CONSONANT_VOWEL_RATIO column.
     """
-    # Replace NaN values in 'WORD' with an empty string before processing
-    # data["WORD"] = data["WORD"].fillna("")
     consonant_vowel_ratios = data["WORD"].apply(calculate_consonant_vowel_ratio)
     data["CONSONANT_VOWEL_RATIO"] = consonant_vowel_ratios.fillna(0.0)
     return data
 
-def is_dictionary_word(word):
+def createIdentifierMaxPositionFeature(data):
     """
-    Check if a word is a valid dictionary word, handling numeric and alphanumeric cases.
-    
-    Args:
-        word (str): The word to check.
-    
-    Returns:
-        int: 1 if dictionary word, 0 if numeric or contains non-alphabetic characters.
+    Add a 'MAXPOSITION' column indicating the total number of words in each identifier.
     """
-    try:
-        # Ensure input is a string and lowercase
-        word = str(word).lower()
-        
-        # Handle purely numeric strings
-        if word.isnumeric():
-            return 0  # Numbers are not dictionary words
-        
-        # Check if word is alphabetic and in the dictionary
-        if word.isalpha() and word in word_list:
-            return 1
-        
-        # Handle alphanumeric strings or other cases explicitly
-        return 0
-    
-    except Exception:
-        # Return 0 in case of any errors
-        return 0
-
-
-def dictionaryWordFeature(data):
-    """
-    Add a DICTIONARY_WORD feature to the DataFrame.
-    Args:
-        data (pd.DataFrame): Input DataFrame with 'WORD' column.
-    Returns:
-        pd.DataFrame: DataFrame with added DICTIONARY_WORD column.
-    """
-    # Replace NaN values in 'WORD' with an empty string before processing
-    # data["WORD"] = data["WORD"].fillna("")
-    dictionary_word_check = data["WORD"].apply(is_dictionary_word)
-    data["DICTIONARY_WORD"] = dictionary_word_check.fillna(0).astype(int)
-    return data
-
-def maxPosition(data):
-    """
-    Calculate and add 'MAXPOSITION' and 'POSITION_RATIO' columns to the DataFrame.
-
-    'MAXPOSITION' indicates the maximum number of words in each identifier.
-    'POSITION_RATIO' is the ratio of each word's position to the maximum position in its identifier.
-
-    Args:
-        data (pandas.DataFrame): The input DataFrame containing 'SPLIT_IDENTIFIER' and 'POSITION' columns.
-
-    Returns:
-        pandas.DataFrame: The input DataFrame with additional 'MAXPOSITION' and 'POSITION_RATIO' columns.
-    """
-    # Calculate MAXPOSITION based on the number of words in each SPLIT_IDENTIFIER
-    identifiers = data["SPLIT_IDENTIFIER"]
-    max_position = [len(identifier.split()) for identifier in identifiers]
-    
-    # Add MAXPOSITION column to the DataFrame
-    data["MAXPOSITION"] = max_position
-    
+    # Calculate max position for each unique identifier
+    data['MAXPOSITION'] = data['SPLIT_IDENTIFIER'].str.split().str.len()
     return data
 
 def positionRatio(data):
@@ -695,44 +606,31 @@ def createDeterminerFeature(data):
     data = pd.concat([data, isDeterminer], axis=1)
     return data
 
-
 def createNormalizedPositionFeature(data):
     """
-    Create a NORMALIZED_POSITION feature indicating whether a word is at the beginning, middle, or end of an identifier.
-
-    This function uses the SPLIT_IDENTIFIER column, which contains identifiers split into individual words by spaces.
-    It calculates the normalized position for each word in the split identifier and assigns:
-        - 0 for the first word
-        - 1 for words in the middle
-        - 2 for the last word
-
-    If the NORMALIZED_POSITION column already exists, it will be dropped before creating a new one.
-
-    Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'SPLIT_IDENTIFIER' column.
-
-    Returns:
-        pandas.DataFrame: The input DataFrame with an updated 'NORMALIZED_POSITION' column.
+    Add a 'NORMALIZED_POSITION' column indicating the normalized position:
+    0 for the first word, 1 for middle words, and 2 for the final word.
     """
-    # Drop the column if it already exists
-    if 'NORMALIZED_POSITION' in data.columns:
-        data = data.drop(columns=['NORMALIZED_POSITION'])
+    # Initialize the NORMALIZED_POSITION column
+    normalized_positions = []
 
-    # Function to calculate normalized positions for a split identifier
-    def calculate_positions(split_identifier):
-        words = split_identifier.split()  # Split the identifier into words
-        n = len(words)
-        if n == 1:  # Single word
-            return [0]
-        positions = [0]  # First word gets 0
-        positions.extend([1] * (n - 2))  # Middle words get 1
-        positions.append(2)  # Last word gets 2
-        return positions
-
-    # Apply the function to each row and explode the results into a new column
-    data['NORMALIZED_POSITION'] = data['SPLIT_IDENTIFIER'].apply(calculate_positions)
-    data = data.explode('NORMALIZED_POSITION').reset_index(drop=True)
-
+    # Iterate through the rows
+    for _, row in data.iterrows():
+        words = row['SPLIT_IDENTIFIER'].lower().split()
+        current_word = row['WORD']
+        
+        # Determine the normalized position
+        if current_word == words[0]:
+            normalized_position = 0  # First word
+        elif current_word == words[-1]:
+            normalized_position = 2  # Final word
+        else:
+            normalized_position = 1  # Middle words
+        
+        normalized_positions.append(normalized_position)
+    
+    # Assign the calculated normalized positions
+    data['NORMALIZED_POSITION'] = normalized_positions
     return data
 
 def createDigitFeature(data):
@@ -850,39 +748,6 @@ def get_word_vector(word, model, vector_size):
     except KeyError:
         return np.zeros(model.vector_size)            
 
-#Get word vectors for our closed set words
-def createWordVectorsFeature(model, data, name="DEFAULT"):
-    """
-    Calculate and add word vector features to the DataFrame.
-
-    This function calculates word vector features for each word in the 'WORD' column of the input DataFrame using the provided
-    word embedding model. The word vectors are added as new columns with names 'VEC0', 'VEC1', ... 'VEC(n-1)', where 'n' is
-    the dimensionality of the word vectors.
-
-    Args:
-        model (Word2Vec): The Word2Vec word embedding model.
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-        name (str): A name to indicate the type of word vectors (e.g., 'DEFAULT', 'ENG'). Different names may result in
-                    different vector dimensions.
-
-    Returns:
-        pandas.DataFrame: The input DataFrame with additional word vector feature columns.
-    """
-    words = data["WORD"]
-    vectors = None
-    if name == "ENG":
-        vectors = [get_word_vector(word.lower(), model, 300) for word in words]
-    else:
-        vectors = [get_word_vector(word.lower(), model, 128) for word in words]
-    cnames = [f'VEC{i}' for i in range(0, len(vectors[0]))]
-    df = pd.DataFrame()
-    for i in range(0, len(vectors[0])):
-        df = pd.concat([df, pd.DataFrame([vector[i] for vector in vectors])], axis=1)
-    df.columns = cnames
-
-    data = pd.concat([data, df], axis=1)
-    return data
-
 def get_word_similarity(word, word2, model):
     """
     Calculate the similarity between two words using a Word2Vec model.
@@ -954,29 +819,3 @@ def createSimilarityToNounFeature(name, model, data):
     scores.columns = [name+'_SCORE']
     scores = pd.concat([data, scores], axis=1)
     return scores
-
-def createMethodWordVectorsFeature(model, data):
-    """
-    Calculate and add method-specific word vector features to the DataFrame.
-
-    This function calculates method-specific word vector features for each word in the 'WORD' column of the input DataFrame
-    using the provided word embedding model. The word vectors are added as new columns with names 'MVEC0', 'MVEC1', ... 'MVEC(n-1)',
-    where 'n' is the dimensionality of the word vectors.
-
-    Args:
-        model (Word2Vec): The Word2Vec word embedding model.
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-
-    Returns:
-        pandas.DataFrame: The input DataFrame with additional method-specific word vector feature columns.
-    """
-    words = data["WORD"]
-    vectors = [get_word_vector(word.lower(), model, 128) for word in words]
-    cnames = [f'MVEC{i}' for i in range(0, vector_size)]
-    df = pd.DataFrame()
-    for i in range(0, vector_size):
-        df = pd.concat([df, pd.DataFrame([vector[i] for vector in vectors])], axis=1)
-    df.columns = cnames
-
-    data = pd.concat([data, df], axis=1)
-    return data
