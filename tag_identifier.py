@@ -106,7 +106,26 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
         mutable_feature_list,
         modelGensimEnglish=app.model_data.modelGensimEnglish,
     )
- 
+    
+    categorical_features = ['NLTK_POS']
+    category_variables = []
+
+    for category_column in categorical_features:
+        if category_column in data.columns:
+            category_variables.append(category_column)
+            data.loc[:, category_column] = data[category_column].astype(str)
+
+    for category_column in category_variables:
+        # Explicitly handle categorical conversion
+        unique_values = data[category_column].unique()
+        category_map = {}
+        for value in unique_values:
+            if value in universal_to_custom:
+                category_map[value] = custom_to_numeric[universal_to_custom[value]]
+            else:
+                category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
+
+        data.loc[:, category_column] = data[category_column].map(category_map)
     # app.model_data.modelTokens, 
     # app.model_data.modelMethods, 
     # app.model_data.modelGensimEnglish

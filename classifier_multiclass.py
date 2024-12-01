@@ -183,7 +183,7 @@ def analyzeRandomForest(results_text_file, output_directory, scorersKey, algoDat
         'max_features':["sqrt", "log2"],
         #'warm_start':[True]
     }
-    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
     results_text_file.write("\n---------------------------RandomForestClassifier---------------------------\n")
     print("RandomForestClassifier")
     clf = GridSearchCV(RandomForestClassifier(random_state=classifierSeed), param_randomforest, cv=stratified_kfold,
@@ -387,16 +387,16 @@ def analyzeHistGradientBoost(results_text_file, output_directory, scorersKey, al
     results_text_file.write("\n------------------------------------------------------\n")
 
 
-def write_importances(results_text_file, algoData, presult, metric_name):
+def write_importances(results_text_file, feature_names, presult, metric_name):
     """
     Helper function to write permutation importances to the results file.
     """
     results_text_file.write(f"{metric_name} importances\n")
-    for feature, value in zip(algoData.X_train.columns, presult.importances):
+    for feature, value in zip(feature_names, presult.importances):
         results_text_file.write(f"{feature},{','.join(map(str, value))}\n")
     results_text_file.write("\n")
     results_text_file.write(f"mean {metric_name} importances\n")
-    for feature, value in zip(algoData.X_train.columns, presult.importances_mean):
+    for feature, value in zip(feature_names, presult.importances_mean):
         results_text_file.write(f"{feature},{value}\n")
     results_text_file.write("\n")
 
@@ -422,7 +422,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         'max_features': ['sqrt'],
     }
 
-    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
 
     try:
         results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
@@ -462,7 +462,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
             presult = permutation_importance(
                 best_model, X_train_dropped, algoData.y_train, scoring=metric, n_jobs=-1
             )
-            write_importances(results_text_file, algoData, presult, metric)
+            write_importances(results_text_file, X_train_dropped.columns, presult, metric)
 
         # Validation set predictions
         X_validation_dropped = algoData.X_validation.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore')

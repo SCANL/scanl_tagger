@@ -197,6 +197,7 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
         'CONTAINSCLOSEDSET': createIdentifierClosedSetFeature,
         'CONTAINSVERB': createIdentifierContainsVerbFeature,
         'LAST_LETTER': createLetterFeature,
+        'MORPHOLOGICAL_PLURAL': addMorphologicalPluralFeature,
         'CONSONANT_VOWEL_RATIO': consonantVowelRatio,
         'SECOND_LAST_LETTER': createLastTwoLettersFeature,
         'METHODV_SCORE': lambda df: createSimilarityToVerbFeature("METHODV", modelMethods, df),
@@ -216,23 +217,61 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
     return data
 
 universal_to_custom = {
-    'VERB': 'VERB',
-    'NOUN': 'NOUN',
-    'PROPN': 'NOUN',
-    'ADJ': 'ADJ',
-    'ADV': 'ADV',
-    'ADP': 'ADP',
-    'CCONJ': 'CONJ',
-    'CONJ': 'CONJ',
-    'SCONJ' : 'CONJ',
-    'PRON' : 'DET',
-    'SYM' : 'NM',
-    'DET': 'DET',
-    'NUM': 'NUM',
-    'PRT': 'NM',
-    'INTJ' : 'NM',
-    'X': 'NM',
-    '.': '.',
+    # Nouns
+    'NN': 'NOUN',     # Noun, singular or mass
+    'NNS': 'NOUN_PL', # Noun, plural (special addition for plural nouns)
+    'NNP': 'NOUN',    # Proper noun, singular
+    'NNPS': 'NOUN_PL', # Proper noun, plural
+
+    # Verbs
+    'VB': 'VERB',     # Verb, base form
+    'VBD': 'VERB',    # Verb, past tense
+    'VBG': 'VERB',    # Verb, gerund or present participle
+    'VBN': 'VERB',    # Verb, past participle
+    'VBP': 'VERB',    # Verb, non-3rd person singular present
+    'VBZ': 'VERB',    # Verb, 3rd person singular present
+    'MD': 'VERB',     # Modal
+
+    # Adjectives
+    'JJ': 'ADJ',      # Adjective
+    'JJR': 'ADJ',     # Adjective, comparative
+    'JJS': 'ADJ',     # Adjective, superlative
+
+    # Adverbs
+    'RB': 'ADV',      # Adverb
+    'RBR': 'ADV',     # Adverb, comparative
+    'RBS': 'ADV',     # Adverb, superlative
+    'WRB': 'ADV',     # Wh-adverb
+
+    # Determiners and Pronouns
+    'DT': 'DET',      # Determiner
+    'WDT': 'DET',     # Wh-determiner
+    'PDT': 'DET',     # Predeterminer
+    'PRP': 'DET',     # Personal pronoun
+    'PRP$': 'DET',    # Possessive pronoun
+    'WP': 'DET',      # Wh-pronoun
+    'WP$': 'DET',     # Possessive wh-pronoun
+    'EX': 'DET',      # Existential there
+
+    # Prepositions and Conjunctions
+    'IN': 'ADP',      # Preposition or subordinating conjunction
+    'TO': 'ADP',      # to
+    'CC': 'CONJ',     # Coordinating conjunction
+
+    # Numbers and Symbols
+    'CD': 'NUM',      # Cardinal number
+    'LS': 'NUM',      # List item marker
+    'SYM': 'NOUN',    # Symbol
+
+    # Others
+    'UH': 'NOUN',     # Interjection
+    'FW': 'NOUN',     # Foreign word
+    'POS': 'NOUN',    # Possessive ending
+    'RP': 'NOUN',     # Particle
+    'X': 'NOUN',      # Unknown
+
+    # Punctuation
+    '.': '.',         # Punctuation
 }
 
 custom_to_numeric = {
@@ -244,31 +283,35 @@ custom_to_numeric = {
     'CONJ': 5,
     'DET': 6,
     'NUM': 7,
-    'NM': 8,
+    'NOUN_PL': 8,
     '.': 9
 }
 
 def wordPosTag(data):
     """
     Perform part-of-speech tagging on words in the 'WORD' column of the DataFrame.
-
-    This function uses NLTK's part-of-speech tagging to tag each word in the 'WORD' column of the input DataFrame with
-    custom POS tags (assuming a mapping from universal tags to custom tags). The tagged POS information is added as a new
-    column 'NLTK_POS' in the DataFrame.
-
+    
     Args:
         data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-
+    
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'NLTK_POS' column containing custom POS tags.
+        pandas.DataFrame: The input DataFrame with an additional 'NLTK_POS' column containing POS tags.
     """
-    words = data["WORD"]
-    word_tags = [nltk.pos_tag([word.lower()])[-1][-1] for word in words]
-    pos_tags = pd.DataFrame(word_tags, columns=['NLTK_POS'])
+    # Check if 'WORD' column exists
+    if 'WORD' not in data.columns:
+        raise ValueError("DataFrame must contain a 'WORD' column")
     
-    data = pd.concat([data, pos_tags], axis=1)
+    # Remove NaN and empty strings
+    words = data['WORD'].dropna().astype(str)
     
-    return data
+    # Perform POS tagging
+    word_tags = nltk.pos_tag(words)
+    
+    # Create DataFrame with POS tags
+    pos_tags = pd.DataFrame([tag for _, tag in word_tags], columns=['NLTK_POS'])
+    
+    # Assign POS tags to original DataFrame
+    return data.assign(NLTK_POS=pos_tags['NLTK_POS'])
 
 def calculate_consonant_vowel_ratio(word):
     """
@@ -704,6 +747,32 @@ def createIdentifierContainsVerbFeature(data, verbs=verbs):
     ).astype(int)
     return data
 
+def addMorphologicalPluralFeature(data):
+    """
+    Add a 'MORPHOLOGICAL_PLURAL' column to indicate morphological plural patterns.
+
+    Args:
+        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
+
+    Returns:
+        pandas.DataFrame: The input DataFrame with an additional 'MORPHOLOGICAL_PLURAL' column.
+    """
+    def detect_morphological_plural(word):
+        if not isinstance(word, str):
+            return False
+        word = word.lower()
+        if word.endswith('ies') and len(word) > 3:  # Example: cities
+            return True
+        if word.endswith('ves') and len(word) > 3:  # Example: wolves
+            return True
+        if word.endswith('es') and not word.endswith('ses'):  # Avoid cases like "glasses"
+            return True
+        if word.endswith('s') and len(word) > 1:  # General plural case
+            return True
+        return False
+    
+    data['MORPHOLOGICAL_PLURAL'] = data['WORD'].apply(detect_morphological_plural)
+    return data
 def createLetterFeature(data):
     """
     Calculate and add a 'LAST_LETTER' column to the DataFrame indicating the ASCII value of the last letter in each word.
