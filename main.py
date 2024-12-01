@@ -72,16 +72,7 @@ def train(config):
     # Create an explicit copy to avoid SettingWithCopyWarning
     df_features = df_input[independent_variables].copy()
     df_class = df_input[[dependent_variable]].copy()
-    
-    category_variables = []
-    categorical_columns = ['NLTK_POS', 'PREVIOUS_NLTK_POS', 'TYPE', 'LANGUAGE']
-    
-    # Safely handle categorical variables
-    for category_column in categorical_columns:
-        if category_column in df_features.columns:
-            category_variables.append(category_column)
-            df_features.loc[:, category_column] = df_features[category_column].astype(str)
-    
+
     # Ensure output directories exist
     output_dir = os.path.join(SCRIPT_DIR, 'output')
     os.makedirs(output_dir, exist_ok=True)
@@ -97,18 +88,6 @@ def train(config):
         for key, value in config.items():
             results_text_file.write(f"{key}: {value}\n")
         results_text_file.write("\n")
-
-        for category_column in category_variables:
-            # Explicitly handle categorical conversion
-            unique_values = df_features[category_column].unique()
-            category_map = {}
-            for value in unique_values:
-                if value in universal_to_custom:
-                    category_map[value] = custom_to_numeric[universal_to_custom[value]]
-                else:
-                    category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
-
-            df_features.loc[:, category_column] = df_features[category_column].map(category_map)
        
         print(" --  -- Distribution of labels in corpus --  -- ")
         print(df_class[dependent_variable].value_counts())

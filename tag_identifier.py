@@ -89,14 +89,9 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     # Create initial data frame
     data = pd.DataFrame({
         'WORD': words,
-        'IDENTIFIER': identifier_name,
-        'SPLIT_IDENTIFIER': identifier_name.split('_'),
-        'CONTEXT_NUMBER': identifier_context,  # Predefined context number
-        'LANGUAGE': 'C++'  # Predefined language
+        'SPLIT_IDENTIFIER': ' '.join(words),
+        'CONTEXT_NUMBER': context_to_number(identifier_context),  # Predefined context number
     })
-    
-    # Convert CONTEXT_NUMBER to numeric
-    data['CONTEXT_NUMBER'] = data['CONTEXT_NUMBER'].apply(context_to_number)
 
     # # Add word count column using app.model_data.wordCount
     # if hasattr(app.model_data, 'wordCount') and not app.model_data.wordCount.empty:
@@ -116,26 +111,6 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     # app.model_data.modelMethods, 
     # app.model_data.modelGensimEnglish
     # Convert categorical variables to numeric
-    categorical_features = ['NLTK_POS', 'LANGUAGE']
-    category_variables = []
-
-    for category_column in categorical_features:
-        if category_column in data.columns:
-            category_variables.append(category_column)
-            data.loc[:, category_column] = data[category_column].astype(str)
-
-    for category_column in category_variables:
-        # Explicitly handle categorical conversion
-        unique_values = data[category_column].unique()
-        category_map = {}
-        for value in unique_values:
-            if value in universal_to_custom:
-                category_map[value] = custom_to_numeric[universal_to_custom[value]]
-            else:
-                category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
-
-        data.loc[:, category_column] = data[category_column].map(category_map)
-        
     # Load and apply the classifier
     clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
@@ -189,17 +164,30 @@ def annotate_identifier(clf, data):
 
     Returns:
         np.array: An array of predicted labels for the identifier tokens.
-
-    Example:
-        clf = load_classifier('trained_classifier.pkl')
-        data = pd.DataFrame(...)  # Create a DataFrame with feature data.
-        predictions = annotate_identifier(clf, data)
     """
-    # Get feature names the classifier was trained on
-    trained_features = clf.feature_names_in_  # This attribute contains the expected feature names
-    # Filter out columns not used by the classifier
+    # Drop unnecessary columns
+    data = data.drop(columns=['WORD', 'SPLIT_IDENTIFIER'], errors='ignore')
+
+    # Ensure only the features used during training are included
+    trained_features = clf.feature_names_in_  # Features expected by the classifier
+    missing_features = set(trained_features) - set(data.columns)
+    extra_features = set(data.columns) - set(trained_features)
+
+    if missing_features:
+        raise ValueError(f"The following expected features are missing: {missing_features}")
+    if extra_features:
+        print(f"Warning: The following unused features are being ignored: {extra_features}")
+        data = data[trained_features]
+
+    # Ensure feature order matches the trained model
     df_features = data[trained_features]
     
+    print("THESE")
+    print(df_features)
+    
+    print("THOSE")
+    print(clf.feature_names_in_)
+
     # Make predictions
     y_pred = clf.predict(df_features)
     return y_pred

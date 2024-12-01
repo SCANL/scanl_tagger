@@ -387,14 +387,17 @@ def analyzeHistGradientBoost(results_text_file, output_directory, scorersKey, al
     results_text_file.write("\n------------------------------------------------------\n")
 
 
-def write_importances(results_text_file, algoData, presult, metric):
-    feature_importances = pd.DataFrame({
-        'Feature': algoData.X_train.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore').columns,
-        'Importance': presult.importances_mean
-    }).sort_values(by='Importance', ascending=False)
-    
-    results_text_file.write(f"\n--- Permutation Importances ({metric}) ---\n")
-    results_text_file.write(feature_importances.to_string(index=False))
+def write_importances(results_text_file, algoData, presult, metric_name):
+    """
+    Helper function to write permutation importances to the results file.
+    """
+    results_text_file.write(f"{metric_name} importances\n")
+    for feature, value in zip(algoData.X_train.columns, presult.importances):
+        results_text_file.write(f"{feature},{','.join(map(str, value))}\n")
+    results_text_file.write("\n")
+    results_text_file.write(f"mean {metric_name} importances\n")
+    for feature, value in zip(algoData.X_train.columns, presult.importances_mean):
+        results_text_file.write(f"{feature},{value}\n")
     results_text_file.write("\n")
 
 
@@ -424,7 +427,6 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
     try:
         results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
         print("GradientBoostingClassifier")
-
 
         # Drop SPLIT_IDENTIFIER and WORD columns from X_train
         X_train_dropped = algoData.X_train.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore')
