@@ -123,7 +123,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
             if value in universal_to_custom:
                 category_map[value] = custom_to_numeric[universal_to_custom[value]]
             else:
-                category_map[value] = custom_to_numeric['NM']  # Assign 'NM' (8) for unknown categories
+                category_map[value] = custom_to_numeric['NOUN']  # Assign 'NM' (8) for unknown categories
 
         data.loc[:, category_column] = data[category_column].map(category_map)
     # app.model_data.modelTokens, 
