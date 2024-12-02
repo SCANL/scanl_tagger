@@ -416,13 +416,13 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
     # Hyperparameter grid for Gradient Boosting
     param_gradientboost = {
         'n_estimators': [100, 200, 250],
-        'learning_rate': [0.1, 0.2],
+        'learning_rate': [0.05, 0.1],
         'max_depth': [5, 6],
         'subsample': [0.9, 1.0],
         'max_features': ['sqrt'],
     }
 
-    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
 
     try:
         results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")

@@ -388,14 +388,14 @@ def positionRatio(data):
     
 def average_word_vectors(word_set, word2vec_model):
     """
-    Calculate the average word vector for a set of words using a Word2Vec model.
+    Calculate the average word vector for a set of words using a Word2Vec model, with normalization.
 
     Args:
         word_set (set): A set of words for which to calculate the average vector.
         word2vec_model (Word2Vec): The Word2Vec word embedding model.
 
     Returns:
-        numpy.ndarray: The average word vector for the input set of words.
+        numpy.ndarray: The normalized average word vector for the input set of words.
     
     Raises:
         ValueError: If none of the words in the set exist in the Word2Vec model.
@@ -405,27 +405,34 @@ def average_word_vectors(word_set, word2vec_model):
     if not vectors:
         raise ValueError("None of the words in the set exist in the Word2Vec model.")
     
-    return np.mean(vectors, axis=0)
+    avg_vector = np.mean(vectors, axis=0)
+    return avg_vector / np.linalg.norm(avg_vector)  # Normalize the result
 
 def compute_similarity(verb_vector, target_word, model):
     """
-    Compute the cosine similarity between a verb vector and a target word vector in a word embedding model.
+    Compute the cosine similarity between a normalized verb vector and a normalized target word vector in a word embedding model.
 
     Args:
-        verb_vector (numpy.ndarray): The vector representation of a verb.
+        verb_vector (numpy.ndarray): The vector representation of a verb (will be normalized within the function).
         target_word (str): The target word for which similarity is calculated.
         model (Word2Vec): The Word2Vec word embedding model.
 
     Returns:
-        float: The cosine similarity between the verb vector and the target word vector, or 0.0 if the target word is not in the model.
+        float: The cosine similarity between the normalized verb vector and the normalized target word vector,
+               or 0.0 if the target word is not in the model.
     """
     if target_word not in model.key_to_index:
         return 0.0
 
+    # Normalize the verb vector
+    verb_vector = verb_vector / np.linalg.norm(verb_vector)
+
+    # Get and normalize the target word vector
     target_word_vector = model[target_word]
-    similarity = np.dot(verb_vector, target_word_vector) / (
-        np.linalg.norm(verb_vector) * np.linalg.norm(target_word_vector)
-    )
+    target_word_vector = target_word_vector / np.linalg.norm(target_word_vector)
+
+    # Compute cosine similarity
+    similarity = np.dot(verb_vector, target_word_vector)
     return similarity
 
 def createVerbVectorFeature(data, model):

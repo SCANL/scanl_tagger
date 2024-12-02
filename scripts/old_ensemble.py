@@ -101,7 +101,7 @@ def process_csv(input_file, output_file=None):
 
 if __name__ == "__main__":
     # Parse command-line arguments
-    input_file = sys.argv[1] if len(sys.argv) > 1 else '../validation_sets/X_validation.csv'
+    input_file = sys.argv[1] if len(sys.argv) > 1 else '../output/X_validation.csv'
     output_file = sys.argv[2] if len(sys.argv) > 2 else None
 
     process_csv(input_file, output_file)
