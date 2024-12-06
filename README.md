@@ -1,5 +1,8 @@
-# SCANL tagger 
-This the official release of the SCANL part-of-speech tagger.
+# SCALAR Part-of-speech tagger
+This the official release of the SCALAR Part-of-speech tagger
+
+**NOTE**
+There is a fork of SCALAR which was designed to handle parallel http requests and cache SCALAR's output to increase its speed. You can find this version here: https://github.com/brandonscholten/scanl_tagger. These will be combined into a single application in the *very* near future.
 
 ## Setup and Run
 You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
