@@ -1,6 +1,17 @@
 # SCANL tagger 
 This the official release of the SCANL part-of-speech tagger.
 
+## Getting Started with Docker
+
+To run SCNL tagger in a Docker container you can clone the repository and pull the latest docker impage from `srcml/scanl_tagger:latest`
+
+```
+git clone https://github.com/brandonscholten/scanl_tagger.git
+cd scanl_tagger
+docker compose pull
+docker compose up
+```
+
 ## Setup and Run
 You will need `python3.10` installed. 
 
