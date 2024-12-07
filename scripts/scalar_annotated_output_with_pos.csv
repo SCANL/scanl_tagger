@@ -1,0 +1,1077 @@
+WORD,TAG,POS_SEQUENCE
+file,N,post:NM file:N
+is,V,is:V first:NM frame:N
+manifest,V,manifest:V file:NM prefix:N
+1,D,v:N 1:D
+in,P,in:P flow:NM new:NM m:N
+fn,N,do:V all:DT sorted:V fn:N
+lower,NM,lower:NM tail:N
+dependency,NM,is:V dependency:NM changed:V
+is,V,is:V step:NM up:P
+loader,NM,base:NM loader:NM callback:N
+camera,NM,camera:NM data:N
+link,NM,link:NM url:N
+texture,NM,unpack:V texture:NM blend:NM func:N
+pos,N,update:V mouse:NM pos:N
+before,P,before:P first:DT
+cmd,N,dump:V cemd:NM cmd:N
+deformable,NM,bt:PRE deformable:NM contact:NM constraint:N
+only,VM,text:NM only:VM
+config,NM,gl:NM config:NM attribs:NPL
+expr,NM,sqlite3:PRE expr:NM if:CJ true:NM
+a,NM,a:NM pos:N
+descriptor,NM,generate:V service:NM descriptor:NM property:N
+all,DT,all:DT streams:NPL finished:V
+e,N,i:NM ar:NM e:N
+target,N,eglew:PRE android:NM frame:NM buffer:NM target:N
+singularity,PRE,singularity:PRE s3:PRE uploader:NM file:N
+height,NM,height:NM int:N
+range,N,next:DT date:NM range:N
+s3fs,PRE,s3fs:PRE init:V
+gui,PRE,gui:PRE input:PRE search:NM next:DT
+color,NM,color:NM map:N
+stencil,NM,rs:NM stencil:NM operation:N
+gs,NPL,solve:V via:P gs:NPL
+of,P,end:N of:P input:N
+down,P,supports:V join:V push:V down:P
+run,V,run:V once:VM
+files,NPL,language:NM to:P rules:NPL files:NPL
+get,V,igraph:PRE i:PRE get:V subisomorphisms:NPL vf:NM 2:P inner:N
+1,D,avg:NM 1:D
+op,N,has:V composite:NM op:N
+air,N,some:DT air:N
+test,NM,type:NM test:NM rule:N
+for,P,for:P unknown:NM schema:N
+keras,PRE,keras:PRE depthwise:NM convolution:NM 2d:NM
+plane,NM,m:PRE sky:NM plane:NM render:NM queue:N
+read,NM,c:PRE file:NM read:NM callback:N
+strings,NPL,char:NM strings:NPL
+i,NM,i:NM var:NM initializer:N
+new,NM,new:NM param:N 1:D
+begin,N,key:NM begin:N
+parent,NM,add:V parent:NM to:P host:N
+delete,N,delete:N
+headers,NPL,singularity:PRE s3:PRE uploader:NM content:NM headers:NPL
+parent,NM,parent:NM field:N
+w,NM,w:NM clique:NM 1:D
+param,NM,gimp:PRE param:NM drawable:NM id:N init:V
+local,N,next:DT local:N
+matchers,NPL,recorded:NM matchers:NPL size:N
+transitions,NPL,get:V number:N of:P transitions:NPL
+1,D,s:NM 1:D
+next,NM,next:NM upd:N
+last,DT,last:DT mem:NM cell:N
+2,D,p:NM 2:D
+copy,N,kinects:NM copy:N
+bw,NM,silk:PRE bw:NM expander:NM 32:D
+vary,NM,vary:NM fields:NPL
+comp,NM,temp:NM comp:NM mask:N
+m,PRE,m:PRE is:V indx:NM present:N
+e,N,e:N 3:D
+handle,N,after:P handle:N
+new,NM,new:NM order:N
+method,NM,method:NM handles:NPL
+no,DT,no:DT of:P groups:NPL
+of,P,of:P 1515:D
+annotation,N,for:P annotation:N
+to,P,adjust:V to:P camera:N
+hbp,NM,hbp:NM 1:D
+0,D,conv:NM 0:D
+resize,V,resize:V nearest:NM neighbor:N
+4,D,sqlite3:PRE put:V 4:D byte:N
+new,NM,new:NM verification:NM mode:N
+in,P,in:P scc:N
+0,D,o:NM stride:NM 0:D
+creds,NPL,creds:NPL
+field,N,as:P molecular:NM field:N
+operator,NM,operator:NM method:NM decls:NPL
+unicode,PRE,add:V unicode:PRE script:NM codes:NPL to:P names:NPL
+poll,N,palette:NM poll:N
+if,NM,if:NM exists:N
+agg,PRE,dot3:PRE ad:NM agg:PRE port:PRE attached:NM agg:PRE id:N
+when,VM,when:VM
+else,NM,else:NM replacement:N
+more,DT,more:DT futures:NPL
+ipv4,N,size:N from:P ipv4:N
+bibliography,NM,bibliography:NM type:N
+joint,NM,joint:NM start:N
+blob,PRE,set:V has:V blob:PRE included:V in:P max:NM row:NM size:N
+name,N,env:NM vars:NPL slave:NM info:NM display:NM name:N
+font,N,c:PRE at:NM font:N
+service,NM,generate:V service:NM descriptor:NM property:N
+email,N,git:PRE diff:NM commit:N as:P email:N
+num,N,num:N
+tessellate,PRE,tessellate:PRE to:P mesh:N
+from,P,from:P byte:NM buffers:NPL
+expected,NM,in:P expected:NM rpc:NM type:N
+gui,NM,less:DT dummy:NM gui:NM helper:N
+indices,NM,sorted:NM indices:NM buf:N
+charset,N,with:P charset:N
+im,N,im:N out:NM shape:N
+flag,NM,flag:NM true:NM if:CJ should:V convert:V
+addr,NM,grpc:PRE sock:NM addr:NM make:V wildcards:NPL
+manager,N,image:NM manager:N
+2,D,httperf:N 2:D
+vertically,N,within:P vertically:N
+0,D,get:V xcr:NM 0:D
+next,DT,next:DT page:N value:N
+atan,NM,ccv:PRE atan:NM 2:D
+in,N,speech:NM in:N
+key,N,next:DT row:NM key:N batch:N
+down,P,down:P time:N
+orientation,N,m:PRE sky:NM box:NM orientation:N
+small,N,n:PRE frag:NM too:VM small:N
+table,NM,dynamic:NM table:NM byte:NM count:N
+byte,NM,byte:NM array:NM view:N
+2,D,is:V valid:NM position:NM 2:D
+ambient,NM,ambient:NM coefficient:N
+error,N,warn:V if:CJ error:N
+in,N,fan:NM in:N
+utc,NM,utc:NM timestamp:NM ms:NPL
+adding,N,adding:N
+for,P,m:PRE for:P what:DT
+buff,NM,buff:NM ptr:N 2:D
+default,NM,default:NM auto:NM entry:N
+gradient,N,src:N gradient:N
+per,P,edges:NPL per:P node:N
+copy,V,copy:V primitives:NPL from:P
+jnt,NM,jnt:NM array:NM acc:N
+listener,N,hdr:NM listener:N
+text,NM,text:NM search:NM where:VM
+worker,NM,m:PRE is:V worker:NM done:N
+gc,N,simulate:V gc:N
+map,NM,edge:NM map:NM 2:D
+shader,PRE,shader:PRE data:NPL to:P shader:PRE globals:NPL
+change,NM,m:PRE transform:NM change:NM args:NPL
+merge,V,total:NM merge:V throttled:NM time:N
+validate,V,validate:V tree:N and:CJ parents:NPL
+open,NM,all:DT open:NM indices:NPL
+relative,NM,relative:NM contrast:N
+segment,N,num:NM vec:NM per:P segment:N
+clock,N,clock:N
+config,N,session:NM config:N
+p,PRE,p:PRE 2:D d:N
+idx,N,blob:NM name:N to:P last:DT top:NM idx:N
+transient,NM,ovs:NM db:PRE transient:NM datum:N from:P json:N
+m,PRE,m:PRE last:DT changed:NM location:N
+im,N,im:N 2:D col:N
+buffer,N,left:NM sisters:NM buffer:N
+points,NPL,dest:NM points:NPL
+png,N,save:V as:P quadratic:NM png:N
+ptr,N,ptr:N channel:NM 2:D
+app,N,un7zip:NM app:N
+tensor,NM,ccv:PRE nnc:PRE tensor:NM for:P while:NM count:N
+crf,PRE,crf:PRE non:NM linear:NM log:NM conditional:NM objective:NM function:N
+elem,N,tot:NM elem:N
+voronoi,NM,voronoi:NM fracture:NM demo:N
+sbox,NM,m:PRE sbox:NM 4:D
+list,NM,list:NM level:N
+yaml,N,to:P yaml:N
+thread,NM,thread:NM b:N to:P a:N
+schema,N,provided:V schema:N
+if,NM,if:NM present:NM
+extractor,N,mp4:NM extractor:N
+by,P,group:NM by:P context:N
+direction,N,inverted:NM direction:N
+style,NM,append:V python:NM style:NM escaped:NM code:NM point:N
+w,N,ori:N w:N
+this,DT,this:DT iteration:N
+mouse,NM,update:V mouse:NM pos:N
+file,NM,gimp:PRE image:NM file:NM get:V thumbnail:N
+end,NM,end:NM snapshot:N
+used,V,last:DT used:V
+line,NM,gui:PRE line:NM mixed:NM free:V all:DT
+this,DT,this:DT expr:N
+rule,N,binary:NM rule:N
+row,NM,row:NM type:NM 1:D
+b,N,b:N only:VM
+1,D,upgrade:V v:N 1:D layer:NM parameter:N
+function,N,left:NM recursive:NM rule:NM function:N
+data,NM,other:NM data:NM len:NM bits:NPL
+read,V,read:V subframe:N
+y,PRE,y:PRE pixels:NPL per:P unit:N
+m,PRE,m:PRE what:DT
+m,PRE,m:PRE is:V worker:NM done:N
+group,NM,build:V group:NM query:N
+remap,V,remap:V nearest:NM neighbor:N
+setting,NM,setting:NM manager:N
+sent,V,on:P group:NM call:NM key:N sent:V
+is,V,on:P thread:NM is:V alive:NM
+last,DT,check:V last:DT arg:N
+hash,N,sha256:NM hash:N
+inverted,NM,inverted:NM direction:N
+in,P,next:DT in:P bucket:N
+objective,NM,crf:PRE non:NM linear:NM log:NM conditional:NM objective:NM function:N
+on,P,on:P thread:NM is:V alive:NM
+amount,N,undiscounted:NM amount:N
+id,N,next:DT id:N
+empty,NM,returns:V empty:NM values:NPL
+now,VM,str:N now:VM
+operation,N,read:V operation:N
+in,N,titles:NM in:N
+long,NM,as:P long:NM
+dense,NM,decimal:NM 38:D dense:NM value:N
+layer,NM,v:N 0:D layer:NM connection:N
+x,N,dn:PRE 1:D x:N 2:D
+check,V,check:V for:P host:NM flapping:N
+apply,V,apply:V margin:NM insets:NPL
+parse,V,parse:V job:N private:NM
+driver,NM,driver:NM type:NM name:N
+replace,V,replace:V if:CJ exists:V
+js,NM,weechat:PRE js:NM unload:V all:DT
+selector,N,strictness:NM selector:N
+response,N,read:V response:N
+add,V,add:V no:DT exist:V
+args,NPL,m:PRE remove:V user:NM data:NM response:NM args:NPL
+regex,N,label:NM regex:N
+size,N,desktop:NM size:N
+4,D,from:P sv:N 4:D
+matrix,N,pybullet:PRE compute:V view:NM matrix:N
+options,NPL,shift:NM reduce:NM train:NM options:NPL
+chunks,NPL,merge:V chunks:NPL by:P bucket:NM size:N
+task,N,next:DT task:N
+last,DT,last:DT time:N ms:N
+size,N,merge:V chunks:NPL by:P bucket:NM size:N
+id,N,transform:V unique:NM id:N
+all,DT,all:DT cols:NPL indexed:V
+mocking,NM,default:NM mocking:NM details:NPL
+archive,N,file:NM system:NM archive:N
+evaluator,N,mention:NM detection:NM evaluator:N
+len,N,a:NM len:N
+is,V,is:V trained:V
+deconvolution,NM,deconvolution:NM 3d:N
+dep,NM,dep:NM h:N
+file,NM,manifest:V file:NM prefix:N
+id,N,gimp:PRE param:NM drawable:NM id:N init:V
+irc,PRE,irc:PRE notify:PRE new:NM for:P all:DT servers:NPL
+one,NM,at:P least:DT one:NM write:V
+metadata,N,next:DT metadata:N
+window,N,get:V initial:NM window:N size:N
+walk,V,sqlite3:PRE walk:V expr:P list:N
+max,NM,out:NM max:NM val:N
+next,DT,check:V next:DT
+params,NPL,run:V before:P params:NPL
+sil,NM,new:NM sil:NM type:N
+insert,V,insert:V at:P
+info,N,sibling:NM info:N
+all,DT,all:DT space:N before:P
+x,N,z:NM 2:P x:N mag:N
+line,NM,m:PRE line:NM dash:NM offset:N
+cache,N,disk:NM lru:NM cache:N
+for,P,fprint:V all:DT protocols:NPL for:P layer:NM types:NPL
+rcp,NM,rcp:NM len:NM 2:D
+model,N,coterminal:NM model:N
+tail,N,lower:NM tail:N
+variables,NPL,variables:NPL
+and,CJ,xodtemplate:PRE expand:V host:NM groups:NPL and:CJ hosts:NPL
+callback,N,no:DT callback:N
+text,N,new:NM rule:NM text:N
+arguments,NPL,get:V raw:NM arguments:NPL
+after,P,after:P write:NM cb:N
+after,P,after:P round:N
+projects,NPL,all:DT projects:NPL
+interface,N,check:V not:VM interface:N
+primes,NPL,num:NM primes:NPL
+pre,NM,pre:NM map:N
+offset,NM,ref:NM point:NM offset:NM percent:N
+s,NM,s:NM 1:D
+provided,V,provided:V
+0,D,dof:PRE reg:NM handoff:NM dpp:NM 0:D
+from,P,size:N from:P ipv4:N
+threshold,N,past:NM threshold:N
+str,N,str:N args:NPL
+execute,V,before:P execute:V
+cipher,NM,cipher:NM suite:N
+in,P,in:P outer:NM list:N
+pair,N,label:NM pair:N
+current,NM,tiff:NM current:NM tile:N
+s3,NM,s3:NM services:NPL
+in,NM,in:NM key:N
+0,D,insn:NM 0:D
+naming,NM,set:V project:NM naming:NM strategy:N
+utf8,N,rtf:NM utf8:N
+call,NM,ongoing:NM call:NM notification:N
+linear,NM,resize:V linear:NM open:NM cv:N
+multipolygon,N,multipolygon:N
+deser,N,t:N for:P deser:N
+out,NM,out:NM of:P domain:N
+val,NM,val:NM from:P literal:N
+request,NM,on:P request:NM response:N
+archive,NM,c:PRE archive:NM loader:NM tar:N
+g,PRE,g:PRE curand:NM availability:NM logged:V
+file,N,cache:NM file:N
+file,N,html:NM file:N
+passed,V,m:PRE last:DT assertion:NM passed:V
+disk,NM,disk:NM lru:NM cache:N
+to,P,string:N conv:NM base64:N 8:D x:P 3:D to:P 6:D x:P 4:D
+b,N,is:V a:N ge:NM zero:NM and:CJ a:N lt:NM b:N
+generator,NM,cpp:NM generator:NM services:NPL
+options,NPL,all:DT options:NPL
+protos,NPL,next:NM protos:NPL
+string,N,ovsdb:PRE atom:PRE string:N create:V no:DT copy:N
+p,PRE,p:PRE name:N 2:D
+setup,N,setup:N bounding:NM box:NM vertices:NPL
+ssl,NM,default:NM ssl:NM roots:NPL override:N
+mask,NM,combine:NM paint:NM mask:NM to:P canvas:NM buffer:N to:P paint:NM buf:NM alpha:N
+is,V,is:V return:NM bridged:NM
+ccv,PRE,ccv:PRE nnc:PRE insert:V if:CJ prior:NM to:P any:DT
+after,P,after:P processing:V
+provided,V,provided:V column:N
+bottom,N,ya:NM bottom:N
+is,V,is:V partial:N
+for,P,for:P unknown:NM schema:N
+stream,N,cout:NM stream:N
+check,V,check:V arrival:NM add:V next:DT nodes:NPL
+best,NM,best:NM node:N
+requested,NM,requested:NM plugins:NPL
+r,N,r:N 14:D
+alt,NM,alt:NM and:CJ context:NM config:NM equality:NM comparator:N
+editor,NM,sk:NM editor:NM consumer:N
+flatten,V,dupe:V for:P flatten:V
+1,D,host:NM 1:D
+2,D,noise:N 2:D
+list,NM,max:NM v:N 4:D frag:NM list:NM size:N
+dump,V,netdev:PRE dummy:NM queue:N dump:V next:DT
+sky,NM,m:PRE sky:NM box:NM orientation:N
+docking,NM,docking:NM area:N
+tx1523,PRE,tx1523:PRE to:P max:NM packets:NPL
+2,D,sum:N 2:D
+replacement,N,else:NM replacement:N
+operator,N,with:P unary:NM operator:N
+mat,NM,default:NM mat:NM x:N
+throwable,N,a:NM throwable:N
+score,N,f1:N score:N
+src,NM,no:DT src:NM loc:N
+tag,N,tag:N all:DT
+get,V,get:V dmf:NM header:N
+target,N,c:PRE d3d9:NM render:NM target:N
+jpg,N,c:PRE image:NM writer:N jpg:N
+current,NM,current:NM prefix:N
+delay,N,no:DT delay:N
+by,P,merge:V chunks:NPL by:P bucket:NM size:N
+next,DT,next:DT names:NPL
+scale,N,inv:NM unit:NM scale:N
+gl,NM,gl:NM config:NM attribs:NPL
+indexed,V,make:V no:DT n:NM indexed:V
+1,D,entry:NM 1:D
+value,NM,value:NM or:CJ
+rest,NM,rest:NM client:N
+start,N,rule:NM property:NM ref:NM start:N
+more,DT,in:P eq:N more:DT than:DT once:VM
+dense,N,decimal:NM 38:D dense:N
+tag,N,next:DT tag:N
+connection,N,v:N 0:D layer:NM connection:N
+then,VM,then:VM
+worker,N,m:PRE worker:N
+load,V,ico:NM load:V layer:N
+matrix,NM,c:PRE matrix:NM 33:D
+settings,NPL,settings:NPL
+price,NM,price:NM 2:D
+8,D,convert:V to:P 8:D bit:N
+from,P,from:P iterator:N
+run,V,has:V run:V at:P least:DT once:VM
+irc,PRE,irc:PRE message:NM split:V 005:D
+i,NM,byte:NM i:NM plus:P 1:D
+all,DT,all:DT service:NM response:N
+plfit,NM,plfit:NM errno:N
+transpose,V,transpose:V a:N
+spline,NM,spline:NM max:NM len:N
+l,PRE,l:PRE set:V last:DT run:V mod:N
+index,N,tbl:NM index:N
+next,DT,next:DT date:NM range:N
+yolo,NM,yolo:NM 2:D
+with,P,with:P path:NM and:CJ type:N
+in,NM,in:NM size:N
+idx,N,src:NM start:NM idx:N
+nnc,PRE,ccv:PRE nnc:PRE tensor:NM for:P while:NM count:N
+ms,NPL,query:NM timeout:NM in:P ms:NPL
+field,NM,to:P hash:N field:NM exp:N
+program,N,on:P execute:V program:N
+handled,NM,handled:NM boxes:NPL
+diffuse,NM,get:V diffuse:NM colour:N
+n,NM,n:NM from:P
+join,V,join:V mj:NM id:N 2:P scan:NM mj:NM id:N
+configuration,N,singularity:PRE s3:PRE uploader:NM configuration:N
+set,NM,set:NM group:NM name:N 1:D
+utimens,NPL,s3fs:PRE utimens:NPL
+less,DT,less:DT terminal:NM path:N
+key,N,s3:PRE uploader:NM key:N pattern:N
+for,N,in:P for:N
+not,DT,propagate:V when:CJ not:DT up:P
+validate,V,validate:V public:NM static:NM void:NM methods:NPL
+filtered,NM,filtered:NM children:NPL
+all,DT,irc:PRE notify:PRE new:NM for:P all:DT servers:NPL
+resize,V,resize:V linear:NM open:NM cv:N
+active,N,last:DT active:N
+arg,N,arg:N 31:D
+supported,NM,minimum:NM supported:NM version:N
+method,NM,method:NM name:N prefixes:NPL
+shadows,NM,use:V shadows:NM 1:D
+alias,NM,alias:NM off:N
+stubbing,NM,stubbing:NM comparator:N
+pass,N,m:PRE shadow:NM receiver:NM pass:N
+env,NM,env:NM vars:NPL slave:NM info:NM display:NM name:N
+treebank,NM,chinese:NM treebank:NM parser:NM params:NPL
+0,D,v:N 0:D layer:NM connection:N
+of,P,time:N of:P day:N smooth:N
+native,NM,path:NM with:P native:NM separators:NPL
+1,D,set:NM group:NM name:N 1:D
+in,P,angle:NM in:P radian:N
+as,P,index:NM as:P child:N
+x,N,want:V x:N
+vs,NM,m:PRE vs:NM out:NM light:NM position:N
+string,N,object:N with:P to:P string:N
+base,NM,find:V hashable:NM base:NM type:N
+gpu,NM,m:PRE gpu:NM rays:NPL
+settings,NPL,mock:NM creation:NM settings:NPL
+in,NM,in:NM name:N
+reads,NPL,get:V operations:NM reads:NPL
+i,PRE,i:PRE graph:PRE all:DT st:NM min:NM cuts:NPL
+pairs,NPL,parent:NM pairs:NPL
+img,NM,img:NM buffer:NM original:NM
+log,N,bm:NM log:N
+16,D,get:V u:N 16:D no:DT ex:N
+decimal,NM,decimal:NM 38:D dense:NM value:N
+after,P,caffe:PRE next:DT after:P
+clause,NM,m:PRE like:NM escape:NM clause:NM supported:V
+to,P,language:NM to:P rules:NPL files:NPL
+dialog,NM,area:NM info:NM dialog:NM t:N
+class,NM,validate:V class:NM rules:NPL
+param,N,new:NM param:N 2:D
+to,P,to:P write:N
+sort,V,sort:V collector:NM labels:NPL 2:D
+present,NM,present:NM scaling:N
+size,N,layer:NM field:NM pool:NM 1d:NM size:N
+gson,NM,gson:NM builder:N
+instance,NM,default:NM instance:NM void:N
+path,NM,lp:PRE binary:NM path:NM name:N
+or,CJ,til:P or:CJ since:P
+heat,NM,heat:NM vision:NM listener:N
+sample,NM,packet:NM sample:NM count:N
+sqlite3,PRE,sqlite3:PRE with:P dup:N
+basket,NM,basket:NM payoff:N
+server,NM,on:P server:NM egress:N paused:N
+ar,NM,i:NM ar:NM e:N
+to,P,to:P bare:NM jid:N
+in,P,in:P order:N wrapped:NM verification:NM mode:N
+subdevices,NPL,enabled:NM subdevices:NPL
+ngram,NM,top:NM ngram:NM record:N
+2,D,c:PRE partition:NM 2:D
+new,NM,new:NM warning:NM header:NM size:N
+no,N,store:NM last:DT err:NM no:N
+copy,N,m:PRE to:P copy:N
+code,NM,gui:PRE mouse:NM event:NM code:NM 2:P key:N
+off,NM,off:NM icon:N
+metric,N,refresh:NM metric:N
+entry,NM,entry:NM 1:D
+parts,NPL,num:NM body:NM parts:NPL
+initializer,N,i:NM var:NM initializer:N
+forward,N,add:V before:P forward:N
+num,NM,num:NM verts:NPL in:P a:N
+friend,N,is:V friend:N
+action,NM,action:NM view:N show:NM master:NM pages:NPL
+pointer,N,rate:NM pointer:N
+copy,V,copy:V this:DT file:N
+key,NM,out:NM key:NM field:NM ids:NPL
+if,CJ,ccv:PRE nnc:PRE insert:V if:CJ prior:NM to:P any:DT
+builder,NM,new:NM aggregate:NM builder:NM map:N
+color,NM,ko:PRE rgb:NM u8:NM invert:NM color:NM transformation:N
+bucket,N,last:DT bucket:N
+vertex,NM,vertex:NM position:N
+include,NM,include:NM all:DT fetch:NM heads:NPL
+http2,NM,c:PRE http2:NM connector:N
+alpha,N,combine:NM paint:NM mask:NM to:P canvas:NM buffer:N to:P paint:NM buf:NM alpha:N
+in,P,size:N in:P datum:N
+events,NPL,extract:V events:NPL
+lobatto,NM,gauss:NM lobatto:NM eps:NPL
+discount,NM,dividend:NM discount:NM mother:N
+a,DT,a:DT 3:D
+chinese,NM,chinese:NM treebank:NM parser:NM params:NPL
+24,D,unknown:NM 24:D
+execute,V,m:PRE execute:V on:P host:N
+query,N,m:PRE last:DT query:N
+tiling,N,set:V tiling:N
+mock,NM,mock:NM ref:N
+chopped,NM,text:NM chopped:NM 2:D
+fix,NM,start:NM up:NM fix:NM cost:N
+loaded,NM,loaded:NM mentions:NM count:N
+get,V,get:V longitude:N
+id,N,as:P id:N
+everything,N,send:V everything:N
+nearest,NM,nearest:NM point:N
+default,N,gimp:PRE eraser:NM default:N
+controller,NM,project:NM controller:NM private:NM
+size,N,thread:NM array:NM size:N
+iv,N,generate:V key:N or:CJ iv:N
+vlan,N,out:NM vlan:N
+map,N,dump:V core:NM map:N to:P string:NM builder:N
+step,NM,step:NM no:N
+frame,NM,dump:V frame:NM buffer:NM formats:NPL
+group,NM,max:NM work:NM group:NM size:N
+value,NM,grpc:PRE json:NM writer:N value:NM string:N
+compare,V,compare:V fields:NPL by:P name:N
+or,CJ,r:PRE igraph:PRE 0:D or:CJ vector:N bool:NM to:P sexp:N
+and,CJ,skip:V whitespace:NM and:CJ commas:NPL
+bridged,NM,bridged:NM value:NM fun:NM arg:N
+notify,V,notify:V touch:NM down:N
+input,N,end:N of:P input:N
+forked,NM,forked:NM iter:N
+from,P,get:V decimal:N 9:D from:P big:NM decimal:N
+embedded,NM,embedded:NM version:N
+values,NPL,returns:V empty:NM values:NPL
+connection,NM,on:P connection:NM close:N
+sequence,N,append:V sequence:N
+message,NM,irc:PRE message:NM split:V 005:D
+rules,NPL,rules:NPL of:P new:NM chain:N
+the,DT,the:DT getter:N
+remoting,NM,remoting:NM diagnostics:NPL
+ten,NM,ten:NM 00:D
+style,NM,ko:PRE shadow:NM style:NM private:NM
+hooks,NPL,prev:NM num:NM hooks:NPL
+cubic,NM,log:NM mixed:NM linear:NM cubic:NM interpolation:N
+to,P,refine:V equal:NM to:P first:DT
+methods,NPL,all:DT methods:NPL
+add,V,add:V object:NM index:N
+all,DT,all:DT exprs:NPL
+name,N,blob:NM name:N to:P last:DT top:NM idx:N
+or,CJ,or:CJ filter:N at:P index:N
+work,NM,work:NM 1:D
+string,N,buffer:NM as:P string:N
+1,D,i:NM 1:D
+open,NM,resize:V linear:NM open:NM cv:N
+to,P,num:NM faces:NPL to:P draw:V
+scheduler,N,runner:NM scheduler:N
+scc,N,in:P scc:N
+n,PRE,n:PRE frag:NM too:VM small:N
+name,N,name:N 1:D
+enum,NM,enum:NM count:N
+on,P,on:P
+url,NM,context:NM url:NM list:N
+t,N,t:N 1:D prepare:V mun:NM map:NM code:N
+basis,NM,lsm:PRE basis:NM system:N
+layer,NM,set:V layer:NM texture:NM name:N
+3,D,user:NM hook:NM 3:D
+above,P,above:P base:N
+u,N,get:V u:N 16:D no:DT ex:N
+stash,V,stash:V update:V index:N from:P diff:N
+paths,NPL,all:DT new:NM schema:NM paths:NPL
+wire,NM,gimp:PRE wire:NM compare:V
+initialize,V,initialize:V dual:NM graph:N
+tolerance,N,f:NM tolerance:N
+component,NM,component:NM type:N
+dir,N,top:NM dir:N
+face,N,next:DT real:NM face:N
+look,NM,get:V look:NM and:CJ feel:NM label:N
+entry,NM,last:DT entry:NM batch:N
+set,V,set:V tiling:N
+users,NPL,all:DT users:NPL
+plugin,PRE,plugin:PRE if:CJ mainwindow:PRE update:V toolbars:NPL
+page,N,next:DT page:N value:N
+sha256,NM,sha256:NM hash:N
+content,NM,content:NM path:N
+rgbx,PRE,rgbx:PRE 2:P bgrx:N
+after,P,net:PRE after:P forward:N
+time,N,time:N spec:N
+subexp,NM,subexp:NM to:P
+expander,NM,silk:PRE bw:NM expander:NM 32:D
+aead,NM,aead:NM crypter:NM seal:N
+cache,NM,cache:NM strategy:N
+before,P,before:P
+area,N,docking:NM area:N
+v,N,v:N 0:D layer:NM connection:N
+a,N,tensor:NM a:N
+mx,N,mx:N bean:N
+ad,NM,dot3:PRE ad:NM agg:PRE port:PRE attached:NM agg:PRE id:N
+btn,N,btn:N save:V
+bypass,NM,generate:V rule:NM bypass:NM transitions:NPL
+send,V,send:V serial:NM config:N
+eglew,PRE,eglew:PRE android:NM frame:NM buffer:NM target:N
+least,DT,has:V run:V at:P least:DT once:VM
+timestamp,NM,utc:NM timestamp:NM ms:NPL
+type,N,cmd:NM output:NM operation:NM type:N
+bridged,NM,is:V return:NM bridged:NM
+32,D,is:V 32:D
+client,NM,physics:NM client:NM example:N
+y,N,y:N in:N
+as,P,mark:V as:P fetching:N
+client,N,rest:NM client:N
+of,P,plus:NM of:P this:DT
+border,NM,get:V top:NM border:NM size:N
+tables,NPL,m:PRE all:DT tables:NPL selectable:NM
+queue,N,netdev:PRE dummy:NM queue:N dump:V next:DT
+indexer,N,b:PRE float:NM 16:D indexer:N
+class,NM,reset:V meta:NM class:NM cache:N
+face,NM,face:NM index:N
+dependencies,NM,dependencies:NM st:N
+field,NM,to:P field:NM list:N
+k,NM,k:NM dp:NM significand:NM mask:N
+interpolation,N,log:NM mixed:NM linear:NM cubic:NM interpolation:N
+matched,NM,start:V matched:NM count:N dec:N
+item,NM,default:NM blocked:NM item:NM comparator:N
+y,N,line:NM y:N
+to,P,ccv:PRE nnc:PRE insert:V if:CJ prior:NM to:P any:DT
+normalize,V,normalize:V by:P rebuilding:V
+separable,NM,separable:NM convolution:N 2d:NM
+if,CJ,if:CJ notifier:N wait:V
+status,NM,status:NM icon:N
+or,CJ,or:CJ sel:N
+for,P,get:V constant:NM reference:N for:P protocol:NM descriptor:N
+next,NM,next:NM protocol:N
+band,N,has:V in:P band:N
+id,NM,scroll:NM id:NM for:P node:N
+region,NM,state:NM to:P grammar:NM region:NM map:N
+html,NM,html:NM file:N
+8,D,k:N 8:D
+read,V,last:DT batch:NM read:V
+finder,N,expression:NM finder:N
+factor,N,discount:NM factor:N
+utilization,NM,last:DT request:NM utilization:NM cache:N
+canceled,V,gimp:PRE status:NM bar:NM progress:NM canceled:V
+diff,N,data:NM or:CJ diff:N
+clear,V,clear:V part:N 1:D
+in,P,conv:NM in:P channels:NPL
+last,DT,last:DT activity:NM date:NM range:NM max:N
+time,N,down:P time:N
+part,N,clear:V part:N 1:D
+mod,N,message:N after:P mod:N
+change,NM,change:NM scroll:N
+vanilla,NM,fd:PRE black:NM scholes:NPL vanilla:NM engine:N
+gimp,PRE,gimp:PRE canvas:NM rectangle:N set:V property:N
+mono,NM,mono:NM p:NM invoke:NM callback:NM attribute:N
+0,D,obj:NM 0:D
+in,N,nxt:P in:N
+m,PRE,m:PRE in:P nanoseconds:NPL
+c,NM,c:NM where:VM
+light,NM,light:NM attenuation:NM value:N
+address,NM,address:NM lowering:V
+last,DT,last:DT argument:N
+horizontally,N,b:PRE flip:NM horizontally:N
+android,NM,of:PRE android:NM life:NM cycle:NM helper:N
+current,NM,current:NM open:NM shards:NPL
+euler,NM,explicit:NM euler:NM scheme:N
+flags,NPL,ds:N 2:D flags:NPL
+wrapped,NM,wrapped:NM verification:N
+to,P,object:N with:P to:P string:N
+mode,N,handshake:NM mode:N
+stream,NM,stream:NM out:N
+read,V,read:V only:VM
+has,V,gui:PRE line:NM has:V tag:NM no:DT filter:N
+size,N,bitmap:NM data:NM size:N
+get,V,get:V xcr:NM 0:D
+fd,PRE,fd:PRE black:NM scholes:NPL vanilla:NM engine:N
+nor,CJ,raw:NM nor:CJ
+factory,N,xpp3:PRE xml:NM pull:NM parser:NM factory:N
+copy,N,ovsdb:PRE atom:PRE string:N create:V no:DT copy:N
+utf8,PRE,utf8:PRE next:DT code:NM point:N
+num,NM,num:NM factors:NPL
+v,N,v:N 5:D
+last,DT,last:DT script:N
+filter,NM,filter:NM spec:N
+frame,NM,frame:NM 2:D
+value,NM,value:NM x:N
+code,NM,op:NM code:NM continuation:N
+31,D,arg:N 31:D
+declare,V,declare:V component:N
+occurences,NPL,multiple:NM occurences:NPL
+ingress,NM,on:P ingress:NM error:N
+fingerprint,NM,fingerprint:NM dialog:N
+type,NM,column:NM type:NM metadata:NM v:NM 4:D
+1d,NM,keras:PRE upsampling:NM 1d:NM
+to,P,bytes:NPL to:P read:V
+fence,N,fence:N
+sound,NM,aud:PRE sound:NM envelope:N
+to,P,to:P repo:N
+zero,NM,zero:NM plane:NM res:NPL
+move,NM,move:NM rbt:NM surgeon:N
+from,P,git:PRE delta:PRE read:V header:NM from:P stream:N
+cbor,PRE,cbor:PRE x:NM content:N
+dp,NM,k:NM dp:NM significand:NM mask:N
+shadow,NM,ko:PRE shadow:NM style:NM private:NM
+batch,N,after:P first:NM batch:N
+create,V,create:V in:P indices:NPL
+example,N,inverse:NM dynamics:NM example:N
+parent,N,destroy:V with:P parent:N
+excess,NM,excess:NM workload:N
+c,NM,c:NM problem:N
+func,N,unpack:V texture:NM blend:NM func:N
+system,NM,file:NM system:NM archive:N
+all,DT,all:DT set:N
+value,NM,gimp:PRE value:NM set:V int32:NM array:N
+x,N,x:N scale:N
+cmd,NM,cmd:NM output:NM operation:NM type:N
+samples,NPL,save:V samples:NPL
+range,N,secondary:NM range:N
+type,N,component:NM type:N
+fog,NM,force:V fog:NM off:N
+side,N,on:P server:NM side:N
+default,NM,default:NM injection:NM engine:N
+from,P,url:N from:P json:N
+vmax,NM,vmax:NM over:P base:N
+wrapped,NM,wrapped:NM around:P
+n,PRE,n:PRE water:NM or:CJ ice:N
+endpoint,NM,endpoint:NM 1:D
+lexer,PRE,build:V lexer:PRE rule:NM actions:NPL
+done,N,close:V fd:NM when:VM done:N
+type,N,prim:NM type:N
+component,N,declare:V component:N
+vf,NM,igraph:PRE i:PRE get:V subisomorphisms:NPL vf:NM 2:P inner:N
+max,NM,max:NM draw:NM buffers:NPL
+maximize,V,maximize:V all:DT
+add,V,show:V string:NM for:P add:V
+next,DT,next:DT tok:NM ptr:N
+list,N,in:P outer:NM list:N
+dialog,NM,dialog:NM info:NM update:N
+frame,N,chapter:NM toc:NM frame:N
+rpc,NM,in:P expected:NM rpc:NM type:N
+color,N,message:N no:DT color:N
+window,N,m:PRE window:N width:N
+profile,NM,search:NM profile:NM results:NPL
+list,N,as:P sorted:NM entry:NM list:N
+to,P,b:PRE float:NM 16:D to:P double:N
+more,DT,more:DT generators:NPL
+stroke,PRE,stroke:PRE attribute:NM alpha:NM get:V
+config,N,send:V serial:NM config:N
+any,DT,ccv:PRE nnc:PRE insert:V if:CJ prior:NM to:P any:DT
+is,V,is:V dependency:NM changed:V
+copies,NPL,active:NM copies:NPL
+reload,N,wait:V for:P reload:N
+from,P,from:P key:N
+data,NM,data:NM access:NM repository:NM private:NM
+only,VM,encode:V only:VM
+second,N,items:NPL per:P second:N
+m,PRE,m:PRE weaver:N
+roots,NPL,all:DT action:NM roots:NPL
+custom,NM,add:V custom:NM variable:NM to:P service:N
+m,PRE,m:PRE 23:D
+services,NPL,singularity:PRE s3:PRE services:NPL
+map,N,state:NM to:P grammar:NM region:NM map:N
+base,NM,base:NM category:N
+least,DT,at:P least:DT one:NM write:V
+retain,V,retain:V function:N
+this,DT,this:DT object:N
+random,N,no:DT random:N
+copier,N,abstract:NM sv:N 2:D copier:N
+t,N,print:NM t:N
+method,N,suite:NM method:N
+a,N,is:V node:N a:N left:NM child:NM leaf:N
+next,DT,next:DT object:NM list:N
+sent,N,packet:NM sent:N
+unicode,NM,added:NM unicode:NM smp:N
+request,N,basic:NM replication:NM request:N
+mid,NM,mid:NM 1:D
+package,N,for:P package:N
+builder,N,matcher:NM builder:N
+set,V,set:V project:NM naming:NM strategy:N
+the,DT,vertex:N to:P the:DT left:N
+for,P,waiting:V for:P dht:NM connection:N
+is,V,is:V v:N
+footnotes,NPL,footnotes:NPL position:N
+at,P,look:NM at:P
+repo,N,to:P repo:N
+rotate,NM,rotate:NM desc:N
+friction,NM,rolling:NM friction:NM demo:N
+time,N,gui:PRE buffer:PRE set:V time:N for:P each:DT line:N
+default,NM,default:NM factory:N
+bt,PRE,bt:PRE deformable:NM contact:NM constraint:N
+chunks,NPL,png:NM get:V unknown:NM chunks:NPL
+some,DT,some:DT columns:NM indexed:V
+tab,NM,container:NM tab:NM bar:N
+second,N,rotation:NM per:P second:N
+stubbings,NPL,arg:NM mismatch:NM stubbings:NPL
+minor,N,before:P minor:N
+unit,NM,inv:NM unit:NM scale:N
+forward,NM,mail:NM forward:NM 16:D x:P 16:D
+2,D,dist:N 2:D
+scale,NM,max:NM scale:NM f:N
+rules,NPL,language:NM to:P rules:NPL files:NPL
+shader,PRE,shader:PRE data:NPL to:P shader:PRE globals:NPL
+textured,NM,dynamic:NM textured:NM cube:NM demo:N
+now,VM,ul:N now:VM
+version,NM,version:NM bitmap:NM from:P version:NM
+finder,N,bt3zip:PRE match:NM finder:N get:V matches:NPL
+value,N,abs:NPL deadline:NM n:NM sec:NM value:N
+field,NM,field:NM 4:D
+var,NM,gui:PRE buffer:PRE local:NM var:NM remove:V all:DT
+2,D,new:NM param:N 2:D
+2,D,v:N 2:D
+stubbing,NM,stubbing:NM lookup:NM listeners:NPL
+sil,NM,visit:V sil:NM argument:N
+blob,NM,blob:NM name:N to:P last:DT top:NM idx:N
+vertex,N,m:PRE perspective:NM bias:NM 1:D vertex:N
+array,N,create:V metadata:N array:N
+append,V,append:V sequence:N
+ticket,NM,session:NM ticket:NM key:N
+a,N,a:N
+new,NM,new:NM image:NM height:N
+2dimensional,NM,build:V schema:NM for:P 2dimensional:NM dataset:N
+is,V,is:V friend:N
+v,NM,column:NM type:NM metadata:NM v:NM 4:D
+index,N,rectangle:NM index:N
+wc,N,last:DT wc:N
+s3fs,PRE,s3fs:PRE read:V link:N
+after,P,after:P
+device,NM,dx7:NM device:NM guid:N
+assignment,N,parameter:NM assignment:N
+id,N,m:PRE last:DT used:NM id:N
+neighbor,N,resize:V nearest:NM neighbor:N
+before,P,before:P minor:N
+or,CJ,last:NM token:N was:NM delete:N or:CJ default:N
+contact,NM,block:NM contact:NM 16:D x:P 16:D
+code,N,provider:NM code:N
+time,N,next:DT update:NM time:N
+pfm,N,pnm:PRE load:V raw:NM pfm:N
+ret,N,err:NM ret:N
+interactions,NPL,null:N passed:V to:P verify:V no:VM more:DT interactions:NPL
+ori,N,ori:N w:N
+interface,NM,interface:NM bounds:NPL
+new,NM,new:NM rule:NM text:N
+after,P,after:P 2:D
+buddy,NM,android:NM byte:NM buddy:NM mock:NM maker:N
+interfaces,NPL,extra:NM interfaces:NPL
+level,N,list:NM level:N
+convert,V,flag:NM true:NM if:CJ should:V convert:V
+uniform,NM,set:V custom:NM uniform:NM 1:D f:N
+size,N,do:V adjust:V this:DT size:N
+3,D,point:NM 3:D
+desktop,NM,desktop:NM size:N
+path,NM,ko:PRE path:NM point:NM remove:NM command:NM private:NM
+index,NM,index:NM as:P child:N
+clip,NM,clip:NM dist:NM bug:N
+index,N,last:DT segment:NM index:N
+read,NM,i:NM read:NM file:N
+cs,N,to:P cs:N
+caps,NPL,do:NM caps:NPL
+k,NM,k:NM dp:NM significand:NM size:N
+cone,NM,cone:NM translation:N
+key,N,pem:NM key:N
+n,NM,n:NM col:N 2:D
+if,NM,if:NM name:N
+version,N,embedded:NM version:N
+matrix,N,bind:V matrix:N
+grpc,PRE,grpc:PRE chttp2:PRE mark:V stream:NM writable:N
+build,V,build:V group:NM query:N
+comparator,N,default:NM blocked:NM item:NM comparator:N
+creation,NM,mock:NM creation:NM validator:N
+4,D,field:NM 4:D
+pc,N,next:DT pc:N
+hash,N,spell:PRE speller:PRE add:V dicts:NPL to:P hash:N
+active,NM,future:NM active:NM doc:N
+index,N,in:NM index:N
+engine,N,fd:PRE black:NM scholes:NPL vanilla:NM engine:N
+2,P,join:V mj:NM id:N 2:P scan:NM mj:NM id:N
+data,NPL,accelerometer:NM data:NPL
+tick,NM,tick:NM freq:N
+37,D,field:NM 37:D
+to,P,to:P index:N
+process,N,process:N
+arg,N,check:V last:DT arg:N
+strip,V,strip:V left:NM recursion:N
+last,DT,last:DT usage:N
+next,DT,next:DT config:N
+host,N,notify:V contact:N of:P host:N
+in,P,num:NM verts:NPL in:P a:N
+signing,N,s3:NM use:V v2:NM signing:N
+equal,NM,refine:V equal:NM to:P first:DT
+dnd,NM,x:NM dnd:NM type:NM list:N
+deconvolution,NM,cudnn:PRE deconvolution:NM layer:N
+allow,V,allow:V login:V or:CJ register:V
+0,D,body:N 0:D
+from,P,load:V from:P lib:NM dir:N
+now,VM,now:VM time:N
+validator,NM,validator:NM strategies:NPL
+only,VM,checkout:PRE action:NM wd:N only:VM
+no,DT,add:V no:DT exist:V
+reset,V,reset:V meta:NM class:NM cache:N
+as,P,as:P of:P
+new,NM,rules:NPL of:P new:NM chain:N
+2d,NM,keras:PRE deconvolution:NM 2d:NM
+map,N,pointer:NM map:N
+annuity,N,risky:NM annuity:N
+block,NM,block:NM nr:N
+find,V,find:V all:DT matches:NPL
+big,NM,get:V decimal:N 9:D from:P big:NM decimal:N
+charset,N,with:P charset:N
+dot3,PRE,dot3:PRE ad:NM agg:PRE port:PRE attached:NM agg:PRE id:N
+table,NM,globals:NPL as:P members:NPL table:NM reader:NM info:N
+speech,NM,speech:NM in:N
+c,NM,c:NM outside:P
+emitter,N,tuple:NM lvalue:NM emitter:N
+hash,N,gui:PRE nick:PRE hash:N sum:N 64:D
+matches,NPL,matches:NPL any:DT parent:NM categories:NPL
+warning,N,as:P warning:N
+size,N,tiff:NM get:V size:N proc:N
+2,D,rcp:NM len:NM 2:D
+to,P,to:P element:N
+next,DT,next:DT field:NM name:N
+width,N,pixel:NM width:N
+ko,PRE,ko:PRE main:NM window:NM private:NM
+no,DT,get:V u:N 16:D no:DT ex:N
+2,D,no:N of:P edges:NPL 2:D
+warning,NM,new:NM warning:NM header:NM size:N
+search,NM,search:NM profile:NM results:NPL
+1,D,byte:NM i:NM plus:P 1:D
+l,PRE,l:PRE get:V node:N or:CJ nil:NM
+per,P,forward:NM time:N per:P layer:N
+prefix,NM,index:NM prefix:NM with:P template:N
+load,V,m:PRE psp:NM 2:D load:V rom:N
+sizes,NPL,layer:NM sizes:NPL
+s3,PRE,singularity:PRE s3:PRE uploader:NM file:N
+fragment,NM,next:DT fragment:NM expression:N
+size,N,size:N per:P span:N
+gl,NM,gl:NM m:N 3:D inv:N
+start,NM,start:NM dirs:NPL
+size,N,last:DT stream:NM id:N size:N
+source,NM,find:V source:NM subdir:N
+ty,N,clang:PRE can:NM ty:N
+bitstream,N,read:NM bitstream:N
+mapped,NM,mapped:NM color:N
+next,DT,next:DT element:N
+all,DT,all:DT casts:NPL
+in,NM,in:NM buffer:N
+stats,NPL,reset:V token:NM stats:NPL
+ico,NM,ico:NM load:V layer:N
+of,P,out:NM of:P memory:N
+string,N,send:V string:N
+service,NM,this:DT service:NM ext:N info:N
+file,NM,render:V result:NM exr:NM file:NM end:N
+vetoes,NPL,skip:NM vetoes:NPL
+platform,NM,platform:NM string:N
+obsess,V,obsess:V over:P host:N
+executors,NPL,executors:NPL
+impl,N,task:NM impl:N
+i,PRE,igraph:PRE i:PRE get:V subisomorphisms:NPL vf:NM 2:P inner:N
+auto,NM,default:NM auto:NM entry:N
+connected,N,vertex:NM 0:D 2:D connected:N
+all,DT,all:DT drill:NM bits:NPL
+fullscreen,N,b:PRE multi:NM fullscreen:N
+response,N,ares:NPL expand:V name:N for:P response:N
+dummy,NM,netdev:PRE dummy:NM queue:N dump:V next:DT
+hdr,N,r:N hdr:N
+micros,NPL,now:VM micros:NPL
+m,PRE,m:PRE post:NM fix:N
+upgrade,N,plugin:NM name:N for:P upgrade:N
+channels,NPL,conv:NM out:NM channels:NPL
+keep,V,keep:V aspect:N
+bli,PRE,bli:PRE str:N r:VM strip:N
+on,P,commit:V on:P success:N
+rtf,NM,rtf:NM utf8:N
+rx128,PRE,rx128:PRE to:P 255:D packets:NPL
+dirs,NPL,start:NM dirs:NPL
+process,NM,process:NM ipv6:NM packet:N
+pref,NM,pref:NM font:N
+purge,N,last:DT data:NM purge:N
+info,N,else:NM info:N
+number,N,invalid:NM state:NM number:N
+in,N,as:P in:N
+ice,N,n:PRE water:NM or:CJ ice:N
+out,NM,out:NM seq:N
+elementary,NM,number:NM elementary:NM vegas:NPL
+loop,N,b:N loop:N
+function,N,crf:PRE non:NM linear:NM log:NM conditional:NM objective:NM function:N
+bke,PRE,bke:PRE lattice:NM index:NM flip:V
+c,PRE,c:PRE at:NM grayscale:N
+example,N,physics:NM client:NM example:N
+true,N,keep:V when:VM true:N
+as,P,save:V as:P quadratic:NM png:N
+3way,N,ovsdb:PRE datum:N compare:V 3way:N
+existing,N,only:VM if:CJ existing:N
+core,N,core:N
+wait,V,wait:V for:P server:NM start:N
+get,V,tiff:NM get:V size:N proc:N
+datas,NPL,reference:NM index:NM meta:NM datas:NPL
+src,N,src:N 1:D
+tasks,NPL,accepting:NM tasks:NPL
+texture,NM,has:V view:NM relative:NM texture:NM coordinate:NM generation:N
+position,N,m:PRE vs:NM out:NM light:NM position:N
+entry,NM,entry:NM out:N
+escape,NM,m:PRE like:NM escape:NM clause:NM supported:V
+lsm,PRE,lsm:PRE basis:NM system:N
+task,NM,task:NM reconciliation:NM response:NM p:NM 999:D
+alt,NM,alt:NM name:N
+size,N,max:NM input:NM size:N
+part,NM,part:NM document:NM private:NM
+no,DT,no:DT src:NM loc:N
+b,PRE,b:PRE float:NM 16:D to:P double:N
+key,N,gui:PRE mouse:NM event:NM code:NM 2:P key:N
+create,V,dp:PRE if:CJ create:V and:CJ open:V
+expression,NM,expression:NM 8:D
+samples,NPL,out:NM audio:NM samples:NPL
+bare,NM,to:P bare:NM jid:N
+if,CJ,sqlite3:PRE expr:NM if:CJ true:NM
+gimp,PRE,gimp:PRE value:NM set:V int32:NM array:N
+destruct,N,has:V after:P destruct:N
+global,NM,global:NM scope:N
+point,NM,ref:NM point:NM offset:NM percent:N
+id,NM,id:NM lumninance:NM min:N
+significand,N,significand:N
+in,P,refresh:NM interval:NM in:P millis:NPL
+text,NM,replace:V text:NM context:N
+func,N,next:NM func:N
+convert,V,convert:V to:P 8:D bit:N
+file,NM,max:NM file:NM open:NM
+conv,NM,string:N conv:NM base64:N 8:D x:P 3:D to:P 6:D x:P 4:D
+perspective,NM,m:PRE perspective:NM bias:NM 1:D vertex:N
+search,NM,next:DT giphy:NM search:NM offset:N
+class,N,factory:NM class:N
+out,NM,out:NM vlan:N
+no,DT,no:DT interfaces:NPL
+mouse,NM,gui:PRE mouse:NM event:NM code:NM 2:P key:N
+desc,N,rotate:NM desc:N
+super,NM,get:V msg:NM send:V super:NM ty:N
+rgb,NM,ko:PRE rgb:NM u8:NM invert:NM color:NM transformation:N
+at,P,has:V run:V at:P least:DT once:VM
+number,N,noti:NM flags:NM number:N
+1,D,interval:NM substring:NM 1:D
+font,NM,min:NM font:NM size:N
+private,NM,declaration:NM context:NM private:NM
+are,NM,are:NM unities:NPL in:P shape:N
+out,NM,out:NM dev:N
+prod,V,spx:PRE nt:NM prod:V 1:D
+with,P,with:P web:NM socket:NM upgrade:N
+q,NM,q:NM 2:D
+for,P,for:P socks4:NM proxy:N
+bytes,NPL,on:P header:NM bytes:NPL generated:V
+tex,NM,tex:NM id:N
+all,DT,all:DT mirrors:NPL
+paint,NM,paint:NM radio:N
+host,N,add:V parent:NM to:P host:N
+line,N,gui:PRE buffer:PRE set:V time:N for:P each:DT line:N
+status,N,on:P status:N
+big,NM,parent:NM had:V big:NM change:N
+abc,NM,abc:NM opt:N
+vec,N,tmp:NM vec:N
+free,V,gui:PRE line:NM mixed:NM free:V all:DT
+mask,N,glew:PRE index:NM mask:N
+expr,N,if:CJ reduced:NM expr:N
+row,NM,next:DT row:NM key:N batch:N
+next,DT,next:DT nonsingleton:N
+on,P,on:P header:NM bytes:NPL generated:V
+restore,V,restore:V degs:NM only:VM
+time,N,gui:PRE buffer:PRE set:V time:N for:P each:DT line:N
+of,P,notify:V contact:N of:P host:N
+destroy,V,destroy:V usr:N 1:D handler:N
+method,N,get:NM protocol:NM method:N
+every,DT,save:V every:DT since:CJ last:DT
+suppress,V,suppress:V file:N
+udpif,N,udpif:N
+each,DT,submodule:PRE load:V each:DT
+scholes,NPL,fd:PRE black:NM scholes:NPL vanilla:NM engine:N
+neighbor,N,remap:V nearest:NM neighbor:N
+size,N,recorded:NM matchers:NPL size:N
+next,DT,next:DT in:P bucket:N
+9,D,get:V decimal:N 9:D from:P big:NM decimal:N
+weights,NPL,learned:NM lop:NM expert:NM weights:NPL 2:D d:N
+chain,N,rules:NPL of:P new:NM chain:N
+b,N,b:N 3:D
+in,P,query:NM timeout:NM in:P ms:NPL
+parameter,N,upgrade:V v:N 1:D layer:NM parameter:N
+headers,NPL,stream:NM headers:NPL
+in,N,z:NM in:N
+min,NM,min:NM fresh:NM seconds:NPL
+check,V,check:V t:N
+enable,V,enable:V materials:NPL
+count,N,byte:NM count:N
+errno,N,plfit:NM errno:N
+coords,NPL,frame:NM pixel:NM coords:NPL
+2,D,rgb:N 2:D
+corr,NM,corr:NM qc:N
