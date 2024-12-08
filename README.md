@@ -1,5 +1,8 @@
-# SCANL tagger 
-This the official release of the SCANL part-of-speech tagger.
+# SCALAR Part-of-speech tagger
+This the official release of the SCALAR Part-of-speech tagger
+
+**NOTE**
+There is a fork of SCALAR which was designed to handle parallel http requests and cache SCALAR's output to increase its speed. You can find this version here: https://github.com/brandonscholten/scanl_tagger. These will be combined into a single application in the *very* near future.
 
 ## Getting Started with Docker
 
@@ -82,7 +85,7 @@ No paper for now however the current tagger is based on our previous, so you cou
 Christian  D.  Newman,  Michael  J.  Decker,  Reem  S.  AlSuhaibani,  Anthony  Peruma,  Satyajit  Mohapatra,  Tejal  Vishnoi, Marcos Zampieri, Mohamed W. Mkaouer, Timothy J. Sheldon, and Emily Hill, "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags," in IEEE Transactions on Software Engineering, doi: 10.1109/TSE.2021.3098242.
 
 # Training set
-Most of the data used to train this tagger can be found here: https://github.com/SCANL/datasets/tree/master/ensemble_tagger_training_data -- some of it is not there yet.
+The data used to train this tagger can be found in the most recent database update in the repo -- https://github.com/SCANL/scanl_tagger/blob/master/input/scanl_tagger_training_db_11_29_2024.db
 
 # Interested in our other work?
 Find our other research [at our webpage](https://www.scanl.org/) and check out the [Identifier Name Structure Catalogue](https://github.com/SCANL/identifier_name_structure_catalogue)
