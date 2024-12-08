@@ -50,9 +50,11 @@ options:
 
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:5000/{identifier_name}/{code_context}
+http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
 
-Where "code context" is one of:
+"cache selection" will save results to a separate cache if it is set to "student"
+
+"code context" is one of:
 - FUNCTION
 - ATTRIBUTE
 - CLASS
@@ -61,11 +63,11 @@ Where "code context" is one of:
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:5000/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:5000/cache/numberArray/DECLARATION``
 
-Tag a function: ``http://127.0.0.1:5000/GetNumberArray/FUNCTION``
+Tag a function: ``http://127.0.0.1:5000/cache/GetNumberArray/FUNCTION``
 
-Tag an class: ``http://127.0.0.1:5000/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:5000/cache/PersonRecord/CLASS``
 
 #### Note
 Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 
