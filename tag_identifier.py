@@ -23,9 +23,10 @@ class ModelData:
             ModelGensimEnglish: Word vectors model for general English words.
         """
 
-        self.ModelTokens = ModelTokens
-        self.ModelMethods = ModelMethods
-        self.ModelGensimEnglish = ModelGensimEnglish
+        self.ModelTokens = modelTokens
+        self.ModelMethods = modelMethods
+        self.ModelGensimEnglish = modelGensimEnglish
+        self.wordCount = wordCount
         self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
@@ -124,7 +125,6 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
-#<<<<<<< HEAD
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
     app.cache = AppCache("cache", "cache.json")
@@ -184,6 +184,7 @@ def save():
     app.studentCache.save()
     return "successfully saved cache"
 
+#TODO: use a query string instead for specifying student cache
 @app.route('/<student>/<identifier_name>/<identifier_context>')
 def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
@@ -197,12 +198,7 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
     if (identifier_name in cache.Cache.keys()): 
         cache.encounter(identifier_name)
         return cache.Cache[identifier_name]
-
-#=======
-
-#@app.route('/<identifier_name>/<identifier_context>')
-#def listen(identifier_name: str, identifier_context: str) -> List[dict]:
-#>>>>>>> master
+    
     """
     Process a web request to analyze an identifier within a specific context.
 
@@ -222,60 +218,24 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
     # Split identifier_name into words
     words = identifier_name.split('_')
     
-    # Create initial data frame
+    # # Create initial data frame
     data = pd.DataFrame({
         'WORD': words,
         'SPLIT_IDENTIFIER': ' '.join(words),
         'CONTEXT_NUMBER': context_to_number(identifier_context),  # Predefined context number
     })
 
-    # # Add word count column using app.model_data.wordCount
-    # if hasattr(app.model_data, 'wordCount') and not app.model_data.wordCount.empty:
-    #     word_count_dict = app.model_data.wordCount.set_index('word')['log_frequency'].to_dict()
-    #     data['WORD_COUNT'] = data['WORD'].str.lower().map(word_count_dict).fillna(0)
-    # else:
-    #     print("Word count data is missing or empty; setting WORD_COUNT to 0.")
-
-#<<<<<<< HEAD
-    # input_model = 'output/model_RandomForestClassifier.pkl'
-    # clf = joblib.load(input_model)
-
-    # result = {
-    #     "tags" : list(annotate_identifier(app.model_data.ModelClassifier, data)),
-    #     "words" : words
-    # }
-
     # create response JSON
-    tags = list(annotate_identifier(app.model_data.ModelClassifier, data))
+    # tags = list(annotate_identifier(app.model_data.ModelClassifier, data))
     result = {
         "words" : []
     }
 
-    for i in range(len(words)):
-        #check dictionary
-        dictionary = "UC" #uncategorized
-        word = words[i]
-        dictionary = dictionary_lookup(word)
-	#if (dictionary_lookup(word)): dictionary = "DW" #dictionary word
-        #if (word.isnumeric()): dictionary = "DD" #digit
-        #append result
-        result["words"].append(
-            {
-                words[i] : {
-                    "tag" : tags[i],
-                    "dictionary" : dictionary
-                }
-            }
-        )
-
-    # append result to cache
-    cache.add(identifier_name, result)
-#=======
     # Add features to the data
     data = createFeatures(
         data, 
         mutable_feature_list,
-        modelGensimEnglish=app.model_data.modelGensimEnglish,
+        modelGensimEnglish=app.model_data.ModelGensimEnglish,
     )
     
     categorical_features = ['NLTK_POS']
@@ -297,17 +257,31 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
                 category_map[value] = custom_to_numeric['NOUN']  # Assign 'NM' (8) for unknown categories
 
         data.loc[:, category_column] = data[category_column].map(category_map)
-    # app.model_data.modelTokens, 
-    # app.model_data.modelMethods, 
-    # app.model_data.modelGensimEnglish
+
     # Convert categorical variables to numeric
     # Load and apply the classifier
     clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
 
     # Combine words and their POS tags into a parseable format
-    result = [{'word': word, 'pos_tag': tag} for word, tag in zip(words, predicted_tags)]
-#>>>>>>> master
+    #result = [{'word': word, 'pos_tag': tag} for word, tag in zip(words, predicted_tags)]
+
+    for i in range(len(words)):
+        #check dictionary
+        dictionary = "UC" #uncategorized
+        word = words[i]
+        dictionary = dictionary_lookup(word)
+        result["words"].append(
+            {
+                words[i] : {
+                    "tag" : predicted_tags[i],
+                    "dictionary" : dictionary
+                }
+            }
+        )
+
+    # append result to cache
+    cache.add(identifier_name, result)
 
     return result
     
