@@ -1,0 +1,22 @@
+volumes:
+  vectors:
+  gensim:
+  cache:
+  words:
+
+services:
+
+  tagger:
+    image: srcml/scanl_tagger
+    build:
+      context: ./
+      platforms:
+        - ${BUILD_PLATFORM:-linux/arm64}
+        - ${BUILD_PLATFORM:-linux/amd64}
+    volumes:
+      - vectors:/code2vec
+      - gensim:/root/gensim-data
+      - cache:/cache
+      - words:/words
+    ports:
+      - "${PORT-8080}:5000"

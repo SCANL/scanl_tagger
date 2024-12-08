@@ -1,3 +1,5 @@
 output/
 __pycache__/
 code2vec/
+cache/
+input.txt
