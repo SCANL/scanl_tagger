@@ -80,5 +80,5 @@ def process_csv(input_file):
 
 if __name__ == "__main__":
     # Process the CSV file
-    input_file = '../output/X_validation.csv'  # Replace with your actual file name
+    input_file = '../output/X_test.csv'  # Replace with your actual file name
     process_csv(input_file)
