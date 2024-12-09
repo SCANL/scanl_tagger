@@ -10,6 +10,7 @@ from create_models import createModel, stable_features, mutable_feature_list
 
 # Get the directory of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+nltk.download('averaged_perceptron_tagger_eng')
 
 def read_input(sql, features, conn):
     """
