@@ -84,7 +84,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     print(f"INPUT: {identifier_name} {identifier_context}")
    
     # Split identifier_name into words
-    words = identifier_name.split('_')
+    words = ronin.split(identifier_name)
     
     # Create initial data frame
     data = pd.DataFrame({
