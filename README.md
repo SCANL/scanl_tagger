@@ -7,9 +7,9 @@ There is a fork of SCALAR which was designed to handle parallel http requests an
 ## Setup and Run
 You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
 
-You'll need to install `pip`
+You'll need to install `pip` -- https://pip.pypa.io/en/stable/installation/
 
-In the root of the repo, run `pip install -r requirements.txt`
+After it's installed, in the root of the repo, run `pip install -r requirements.txt`
 
 Finally, you need to install Spiral, which we use for identifier splitting. The current version of Spiral on the official repo has a [problem](https://github.com/casics/spiral/issues/4), so consider installing the one from the link below:
 
