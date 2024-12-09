@@ -496,7 +496,7 @@ def createDeterminerVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'DET_SCORE' column.
     """
     words = data["WORD"]
-    vector = average_word_vectors(conjunctions, model)
+    vector = average_word_vectors(determiners, model)
     
     data = data.reset_index(drop=True)  # Reset index to avoid duplicates
     scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
