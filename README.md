@@ -7,15 +7,13 @@ There is a fork of SCALAR which was designed to handle parallel http requests an
 ## Setup and Run
 You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
 
-You'll need to install `pip3`
+You'll need to install `pip`
 
-Conosider configuring `PYTHONPATH` as well:
-
-	export PYTHONPATH=~/path/to/scanl_tagger
+In the root of the repo, run `pip install -r requirements.txt`
 
 Finally, you need to install Spiral, which we use for identifier splitting. The current version of Spiral on the official repo has a [problem](https://github.com/casics/spiral/issues/4), so consider installing the one from the link below:
 
-    sudo pip3 install git+https://github.com/cnewman/spiral.git
+    pip install git+https://github.com/cnewman/spiral.git
 
 Finally, we require the `token` and `target` vectors from [code2vec](https://github.com/tech-srl/code2vec). The tagger will attempt to automatically download them if it doesn't find them, but you could download them yourself if you like. It will place them in your local directory under `./code2vec/*`
 

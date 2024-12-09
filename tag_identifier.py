@@ -131,7 +131,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     # app.model_data.modelGensimEnglish
     # Convert categorical variables to numeric
     # Load and apply the classifier
-    clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
+    clf = joblib.load(os.path.join(SCRIPT_DIR, 'models', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
 
     # Combine words and their POS tags into a parseable format
