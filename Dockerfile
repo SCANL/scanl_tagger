@@ -16,10 +16,12 @@ COPY classifier_multiclass.py \
      feature_generator.py \
      print_utility_functions.py \
      tag_identifier.py \
+     create_models.py \
      serve.json \
      main \
      /.
-COPY input/det_conj_db2.db /input/.
+COPY input/* /input/.
+COPY models/model_GradientBoostingClassifier.pkl /models/.
 
 CMD date; \
     echo "Download..."; \

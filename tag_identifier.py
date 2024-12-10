@@ -27,7 +27,7 @@ class ModelData:
         self.ModelMethods = modelMethods
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
-        self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
+        # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
     def __init__(self, Path, Filename) -> None:
