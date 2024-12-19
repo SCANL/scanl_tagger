@@ -7,15 +7,13 @@ There is a fork of SCALAR which was designed to handle parallel http requests an
 ## Setup and Run
 You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
 
-You'll need to install `pip3`
+You'll need to install `pip` -- https://pip.pypa.io/en/stable/installation/
 
-Conosider configuring `PYTHONPATH` as well:
-
-	export PYTHONPATH=~/path/to/scanl_tagger
+After it's installed, in the root of the repo, run `pip install -r requirements.txt`
 
 Finally, you need to install Spiral, which we use for identifier splitting. The current version of Spiral on the official repo has a [problem](https://github.com/casics/spiral/issues/4), so consider installing the one from the link below:
 
-    sudo pip3 install git+https://github.com/cnewman/spiral.git
+    pip install git+https://github.com/cnewman/spiral.git
 
 Finally, we require the `token` and `target` vectors from [code2vec](https://github.com/tech-srl/code2vec). The tagger will attempt to automatically download them if it doesn't find them, but you could download them yourself if you like. It will place them in your local directory under `./code2vec/*`
 
@@ -61,7 +59,7 @@ No paper for now however the current tagger is based on our previous, so you cou
 Christian  D.  Newman,  Michael  J.  Decker,  Reem  S.  AlSuhaibani,  Anthony  Peruma,  Satyajit  Mohapatra,  Tejal  Vishnoi, Marcos Zampieri, Mohamed W. Mkaouer, Timothy J. Sheldon, and Emily Hill, "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags," in IEEE Transactions on Software Engineering, doi: 10.1109/TSE.2021.3098242.
 
 # Training set
-Most of the data used to train this tagger can be found here: https://github.com/SCANL/datasets/tree/master/ensemble_tagger_training_data -- some of it is not there yet.
+The data used to train this tagger can be found in the most recent database update in the repo -- https://github.com/SCANL/scanl_tagger/blob/master/input/scanl_tagger_training_db_11_29_2024.db
 
 # Interested in our other work?
 Find our other research [at our webpage](https://www.scanl.org/) and check out the [Identifier Name Structure Catalogue](https://github.com/SCANL/identifier_name_structure_catalogue)

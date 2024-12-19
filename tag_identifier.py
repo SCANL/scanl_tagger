@@ -84,7 +84,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     print(f"INPUT: {identifier_name} {identifier_context}")
    
     # Split identifier_name into words
-    words = identifier_name.split('_')
+    words = ronin.split(identifier_name)
     
     # Create initial data frame
     data = pd.DataFrame({
@@ -131,7 +131,7 @@ def listen(identifier_name: str, identifier_context: str) -> List[dict]:
     # app.model_data.modelGensimEnglish
     # Convert categorical variables to numeric
     # Load and apply the classifier
-    clf = joblib.load(os.path.join(SCRIPT_DIR, 'output', 'model_GradientBoostingClassifier.pkl'))
+    clf = joblib.load(os.path.join(SCRIPT_DIR, 'models', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
 
     # Combine words and their POS tags into a parseable format
