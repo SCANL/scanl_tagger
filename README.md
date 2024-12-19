@@ -4,8 +4,19 @@ This the official release of the SCALAR Part-of-speech tagger
 **NOTE**
 There is a fork of SCALAR which was designed to handle parallel http requests and cache SCALAR's output to increase its speed. You can find this version here: https://github.com/brandonscholten/scanl_tagger. These will be combined into a single application in the *very* near future.
 
+## Getting Started with Docker
+
+To run SCNL tagger in a Docker container you can clone the repository and pull the latest docker impage from `srcml/scanl_tagger:latest`
+
+```
+git clone https://github.com/brandonscholten/scanl_tagger.git
+cd scanl_tagger
+docker compose pull
+docker compose up
+```
+
 ## Setup and Run
-You will need `python3` installed. We will explicitly use the `python3` command below but, of course, if your environment is configured to use python3 by default, you do not need to. We have also only tested this on **Ubuntu 22** and **Ubuntu via WSL**. It most likely works in similar environments, but no guarantees.
+You will need `python3.10` installed. 
 
 You'll need to install `pip` -- https://pip.pypa.io/en/stable/installation/
 
@@ -19,17 +30,29 @@ Finally, we require the `token` and `target` vectors from [code2vec](https://git
 
 ## Usage
 
-```bash
-python main.py -v  # Display the application version.
-python main.py -r  # Start the server for tagging requests.
-python main.py -t  # Run the training set to retrain the model.
+```
+usage: main [-h] [-v] [-r] [-t] [-a ADDRESS] [--port PORT] [--protocol PROTOCOL]
+            [--words WORDS]
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         print tagger application version
+  -r, --run             run server for part of speech tagging requests
+  -t, --train           run training set to retrain the model
+  -a ADDRESS, --address ADDRESS
+                        configure server address
+  --port PORT           configure server port
+  --protocol PROTOCOL   configure whether the server uses http or https
+  --words WORDS         provide path to a list of acceptable abbreviations
 ```
 
-`python main.py -r` will start the server, which will listen for identifier names sent via HTTP over the route:
+`./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:5000/{identifier_name}/{code_context}
+http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
 
-Where "code context" is one of:
+"cache selection" will save results to a separate cache if it is set to "student"
+
+"code context" is one of:
 - FUNCTION
 - ATTRIBUTE
 - CLASS
@@ -38,16 +61,19 @@ Where "code context" is one of:
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:5000/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:5000/cache/numberArray/DECLARATION``
 
-Tag a function: ``http://127.0.0.1:5000/GetNumberArray/FUNCTION``
+Tag a function: ``http://127.0.0.1:5000/cache/GetNumberArray/FUNCTION``
 
-Tag an class: ``http://127.0.0.1:5000/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:5000/cache/PersonRecord/CLASS``
+
+#### Note
+Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 
 
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 
 ## Training the tagger
-You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This is will potentially change in the future.
+You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This will potentially change in the future.
 
 ## Errors?
 Please make an issue if you run into errors
@@ -63,3 +89,9 @@ The data used to train this tagger can be found in the most recent database upda
 
 # Interested in our other work?
 Find our other research [at our webpage](https://www.scanl.org/) and check out the [Identifier Name Structure Catalogue](https://github.com/SCANL/identifier_name_structure_catalogue)
+
+# WordNet
+This project uses WordNet to perform a dictionary lookup on the individual words in each identifier:
+
+Princeton University "About WordNet." [WordNet](https://wordnet.princeton.edu/). Princeton University. 2010
+

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os, sqlite3, classifier_multiclass, random, nltk, argparse
 from datetime import datetime
 import classifier_multiclass
@@ -6,6 +8,7 @@ import pandas as pd
 import numpy as np
 from tag_identifier import start_server
 from download_code2vec_vectors import *
+import json
 from create_models import createModel, stable_features, mutable_feature_list
 
 # Get the directory of the current script
@@ -136,11 +139,16 @@ if __name__ == "__main__":
     - To check the application version, use: -v or --version.
     - To start a server for part-of-speech tagging requests, use: -r or --run.
     - To run a training set and retrain the model, use: -t or --train.
+    - To update server configuration, use -c or --config
 
     Example Usage:
-    python script.py -v  # Display the application version.
-    python script.py -r  # Start the server for tagging requests.
-    python script.py -t  # Run the training set to retrain the model.
+    python script.py -v                          # Display the application version.
+    python script.py -r                          # Start the server for tagging requests.
+    python script.py -t                          # Run the training set to retrain the model.
+    python script.py -a --address [host]         # Run the tagger on a specific IP address
+    python script.py --port [port]               # Run the tagger on a specific port
+    python script.py --protocol [http/https]     # Specify use of http or https
+    python script.py --words [path]              # Specify path of word list
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
@@ -153,6 +161,10 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
+    parser.add_argument("-a", "--address", nargs=1, action="store", help="configure server address", )
+    parser.add_argument("--port", nargs=1, action="store", help="configure server port")
+    parser.add_argument("--protocol", nargs=1, action="store", help="configure whether the server uses http or https")
+    parser.add_argument("--words", nargs=1, action="store", help="provide path to a list of acceptable abbreviations")
 
     args = parser.parse_args()
 
@@ -160,7 +172,13 @@ if __name__ == "__main__":
         print("SCANL Tagger version 1.5.0")
     elif args.run:
         download_files()
-        start_server()
+        temp_config = {}
+        print(args)
+        if args.address != None: temp_config["address"] = args.address[0]
+        if args.port != None: temp_config["port"] = args.port[0]
+        if args.protocol != None: temp_config["protocol"] = args.protocol[0]
+        if args.words != None: temp_config["words"] = args.words[0]
+        start_server(temp_config)
     elif args.train:
         download_files()
         # Define a configuration dictionary and pass it to the train function
