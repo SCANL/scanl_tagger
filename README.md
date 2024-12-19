@@ -1,9 +1,6 @@
 # SCALAR Part-of-speech tagger
 This the official release of the SCALAR Part-of-speech tagger
 
-**NOTE**
-There is a fork of SCALAR which was designed to handle parallel http requests and cache SCALAR's output to increase its speed. You can find this version here: https://github.com/brandonscholten/scanl_tagger. These will be combined into a single application in the *very* near future.
-
 ## Getting Started with Docker
 
 To run SCNL tagger in a Docker container you can clone the repository and pull the latest docker impage from `srcml/scanl_tagger:latest`
