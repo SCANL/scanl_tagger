@@ -10,10 +10,15 @@ from tag_identifier import start_server
 from download_code2vec_vectors import *
 import json
 from create_models import createModel, stable_features, mutable_feature_list
+from version import __version__ 
 
 # Get the directory of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 nltk.download('averaged_perceptron_tagger_eng')
+
+def get_version():
+    """Return the current version of SCANL Tagger."""
+    return f"SCANL Tagger version {__version__}"
 
 def read_input(sql, features, conn):
     """
@@ -154,10 +159,10 @@ if __name__ == "__main__":
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
 
     Author: Christian Newman
-    Version: 1.5.0
+    Version: 2.0.0
     """
     parser = argparse.ArgumentParser()
-
+    
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
@@ -169,7 +174,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.version:
-        print("SCANL Tagger version 1.5.0")
+        print(get_version())
     elif args.run:
         download_files()
         temp_config = {}
