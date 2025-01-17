@@ -1,3 +1,4 @@
+utils
 flair
 Flask
 gensim
@@ -10,3 +11,5 @@ pandas
 Requests
 scikit_learn
 scipy
+git+https://github.com/cnewman/spiral.git
+waitress
