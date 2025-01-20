@@ -143,7 +143,7 @@ def start_server(temp_config = {}):
                 app.english_words.add(word[:-1])
 
     print('retrieving server configuration...')
-    data = open('serve.json')
+    data = open(os.path.join(SCRIPT_DIR, 'serve.json'))
     config = json.load(data)
 
     server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
@@ -188,7 +188,7 @@ def save():
 @app.route('/<student>/<identifier_name>/<identifier_context>')
 def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
-    cache = None;
+    cache = None
 
     if (student == "student"):
         cache = app.studentCache
@@ -347,12 +347,6 @@ def annotate_identifier(clf, data):
     # Ensure feature order matches the trained model
     df_features = data[trained_features]
     
-    print("THESE")
-    print(df_features)
-    
-    print("THOSE")
-    print(clf.feature_names_in_)
-
     # Make predictions
     y_pred = clf.predict(df_features)
     return y_pred
