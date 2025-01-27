@@ -5,7 +5,8 @@ from gensim.models import KeyedVectors
 import logging
 #'VERB_SCORE', 'DET_SCORE', 'ENGLISHV_SCORE', 'POSITION_RATIO','METHODV_SCORE', 'CONTAINSLISTVERB'
 stable_features = ['WORD', 'SPLIT_IDENTIFIER', 'CONTEXT_NUMBER'] #'LANGUAGE' 'PREP_SCORE' 'CONTAINSLISTVERB','CONTAINSCLOSEDSET'
-mutable_feature_list = ['PREPOSITION', 'DETERMINER', 'NOUN_SCORE', 'PREP_SCORE', 'NORMALIZED_POSITION', 'DET_SCORE', 'CONSONANT_VOWEL_RATIO', 'NLTK_POS', 'MORPHOLOGICAL_PLURAL', 'POSITION', 'MAXPOSITION','POSITION_RATIO', 'VERB_SCORE', 'CONJ_SCORE'] # 'ENGLISHN_SCORE' ,'ENGLISHPRE_SCORE'  'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'ENGLISHV_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONJ_SCORE'
+mutable_feature_list = ['ENGLISHPRE_SCORE', 'PREPOSITION', 'DETERMINER', 'PREP_SCORE', 'NORMALIZED_POSITION', 'DET_SCORE', 'CONSONANT_VOWEL_RATIO', 'PREV_POS', 'NEXT_POS', 'NLTK_POS', 'MORPHOLOGICAL_PLURAL', 'POSITION', 'MAXPOSITION','POSITION_RATIO', 'ENGLISH_VERB_SCORE', 'CONJ_SCORE','ENGLISH_NOUN_SCORE'] 
+columns_to_drop = ['SPLIT_IDENTIFIER', 'WORD', 'MAXPOSITION', 'POSITION']
 
 def load_word_count(input_file):
     """
@@ -51,7 +52,7 @@ def createModel(pklFile="", rootDir=""):
     try:
         # Load FastText model 
         logger.info("Loading FastText model...")
-        modelGensimEnglish = api.load('word2vec-google-news-300')
+        modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
         logger.info("FastText model loaded successfully")
     except Exception as e:
         logger.error(f"Failed to load FastText model: {e}")

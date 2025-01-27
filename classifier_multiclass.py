@@ -14,6 +14,7 @@ from sklearn.inspection import permutation_importance
 import pandas as pd
 from enum import Enum
 from feature_generator import *
+import multiprocessing
 
 class TrainingAlgorithm(Enum):
     RANDOM_FOREST = "RandomForest"
@@ -101,7 +102,7 @@ def build_datasets(X, y, output_directory, trainingSeed):
     return X_train, X_test, y_train.values.ravel(), y_test.values.ravel(), X_train_original, X_test_original
 
 
-def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed):
+def perform_classification(X, y, results_text_file, output_directory, TrainingAlgorithms, trainingSeed, classifierSeed, columns_to_drop):
     """
     Perform classification using specified TrainingAlgorithms and report results.
 
@@ -135,7 +136,7 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
 
     for TrainingAlgorithm in TrainingAlgorithms:
         if TrainingAlgorithm == TrainingAlgorithm.XGBOOST:
-            analyzeGradientBoost(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed)
+            analyzeGradientBoost(results_text_file, output_directory, scorers, algoData, classifierSeed, trainingSeed, columns_to_drop)
 
 def write_importances(results_text_file, feature_names, presult, metric_name):
     """
@@ -151,7 +152,7 @@ def write_importances(results_text_file, feature_names, presult, metric_name):
     results_text_file.write("\n")
 
 
-def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed):
+def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed, columns_to_drop):
     """
     Analyze a GradientBoostingClassifier for classification and report results.
 
@@ -167,27 +168,29 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
     param_gradientboost = {
         'n_estimators': [100, 200, 250],
         'learning_rate': [0.05, 0.1],
-        'max_depth': [7, 8],
+        'max_depth': [7, 8, 9],
         'subsample': [0.9, 1.0],
         'max_features': ['sqrt'],
     }
 
-    stratified_kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=trainingSeed)
+    stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=trainingSeed)
 
     try:
         results_text_file.write("\n---------------------------GradientBoostingClassifier---------------------------\n")
         print("GradientBoostingClassifier")
 
         # Drop SPLIT_IDENTIFIER and WORD columns from X_train
-        X_train_dropped = algoData.X_train.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore')
-
+        X_train_dropped = algoData.X_train.drop(columns=columns_to_drop, errors='ignore')
+        
+        max_threads = max(1, multiprocessing.cpu_count() - 3)
+        
         # Grid search with cross-validation
         clf = GridSearchCV(
             GradientBoostingClassifier(random_state=classifierSeed),
             param_gradientboost,
             cv=stratified_kfold,
             scoring=scorersKey,
-            n_jobs=-1,
+            n_jobs=max_threads,
             refit='weighted_f1'
         )
         clf.fit(X_train_dropped, algoData.y_train)
@@ -215,7 +218,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
             write_importances(results_text_file, X_train_dropped.columns, presult, metric)
 
         # Test set predictions
-        X_test_dropped = algoData.X_test.drop(columns=['SPLIT_IDENTIFIER', 'WORD'], errors='ignore')
+        X_test_dropped = algoData.X_test.drop(columns=columns_to_drop, errors='ignore')
         y_test_pred = best_model.predict(X_test_dropped)
         test_accuracy = accuracy_score(algoData.y_test, y_test_pred)
         results_text_file.write(f"Test Accuracy: {test_accuracy:.4f}\n")

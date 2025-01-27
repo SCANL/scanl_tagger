@@ -180,8 +180,13 @@ def createFeatures(data: pd.DataFrame, feature_list: List[str], modelTokens = No
         'POSITION': createIdentifierPositionFeature,
         'MAXPOSITION': createIdentifierMaxPositionFeature,
         'POSITION_RATIO': positionRatio,
-        'VERB_SCORE': lambda df: createVerbVectorFeature(df, modelGensimEnglish),
-        'NOUN_SCORE': lambda df: createNounVectorFeature(df, modelGensimEnglish),
+        'METHOD_VERB_SCORE': lambda df: createVerbVectorFeature("METHOD", df, modelMethods),
+        'TOKEN_VERB_SCORE': lambda df: createVerbVectorFeature("TOKEN", df, modelTokens),
+        'ENGLISH_VERB_SCORE': lambda df: createVerbVectorFeature("ENGLISH", df, modelGensimEnglish),
+        'METHOD_NOUN_SCORE': lambda df: createNounVectorFeature("METHOD", df, modelGensimEnglish),
+        'TOKEN_NOUN_SCORE': lambda df: createNounVectorFeature("TOKEN", df, modelGensimEnglish),
+        'ENGLISH_NOUN_SCORE': lambda df: createNounVectorFeature("ENGLISH", df, modelGensimEnglish),
+        'EMB_FEATURES': lambda df: createEmbeddingFeatures(df, modelGensimEnglish),
         'DET_SCORE': lambda df: createDeterminerVectorFeature(df, modelGensimEnglish),
         'PREP_SCORE': lambda df: createPrepositionVectorFeature(df, modelGensimEnglish),
         'CONJ_SCORE': lambda df: createConjunctionVectorFeature(df, modelGensimEnglish),
@@ -269,6 +274,8 @@ universal_to_custom = {
     'POS': 'NOUN',    # Possessive ending
     'RP': 'NOUN',     # Particle
     'X': 'NOUN',      # Unknown
+    'START':'START',
+    'END':'END',
 
     # Punctuation
     '.': '.',         # Punctuation
@@ -284,34 +291,49 @@ custom_to_numeric = {
     'DET': 6,
     'NUM': 7,
     'NOUN_PL': 8,
-    '.': 9
+    '.': 9,
+    'START':10,
+    'END':11
 }
 
 def wordPosTag(data):
     """
-    Perform part-of-speech tagging on words in the 'WORD' column of the DataFrame.
-    
+    Perform part-of-speech tagging with context-aware tagging for entire identifiers before assigning word-level POS.
+
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-    
+        data (pandas.DataFrame): Input DataFrame with 'WORD' and 'SPLIT_IDENTIFIER' columns.
+
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'NLTK_POS' column containing POS tags.
+        pandas.DataFrame: DataFrame with NLTK_POS, PREV_POS, NEXT_POS columns.
     """
-    # Check if 'WORD' column exists
-    if 'WORD' not in data.columns:
-        raise ValueError("DataFrame must contain a 'WORD' column")
+    nltk.download('punkt_tab')
+    # Validate columns
+    if 'WORD' not in data.columns or 'SPLIT_IDENTIFIER' not in data.columns:
+        raise ValueError("DataFrame must contain 'WORD' and 'SPLIT_IDENTIFIER' columns")
     
-    # Remove NaN and empty strings
-    words = data['WORD'].dropna().astype(str)
+    # Function to tag words within each identifier
+    def process_identifier_group(group):
+        identifier = " ".join(group['WORD'])  # Reconstruct full identifier for better context
+        tokens = nltk.word_tokenize(identifier)  # Tokenize the identifier
+        pos_tags = nltk.pos_tag(tokens)  # Get POS tags
+        
+        # Create mapping of tokens to POS tags
+        pos_dict = {word: tag for word, tag in pos_tags}
+
+        # Assign POS tags to words in the group
+        group['NLTK_POS'] = group['WORD'].map(lambda word: pos_dict.get(word, 'NN'))  # Default to NN (noun)
+        
+        # Assign previous and next POS tags
+        pos_list = group['NLTK_POS'].tolist()
+        group['PREV_POS'] = ['START'] + pos_list[:-1]
+        group['NEXT_POS'] = pos_list[1:] + ['END']
+        
+        return group
+
+    # Apply grouping by identifier and process each identifier
+    result = data.groupby('SPLIT_IDENTIFIER').apply(process_identifier_group).reset_index(drop=True)
     
-    # Perform POS tagging
-    word_tags = nltk.pos_tag(words)
-    
-    # Create DataFrame with POS tags
-    pos_tags = pd.DataFrame([tag for _, tag in word_tags], columns=['NLTK_POS'])
-    
-    # Assign POS tags to original DataFrame
-    return data.assign(NLTK_POS=pos_tags['NLTK_POS'])
+    return result
 
 def calculate_consonant_vowel_ratio(word):
     """
@@ -435,50 +457,90 @@ def compute_similarity(verb_vector, target_word, model):
     similarity = np.dot(verb_vector, target_word_vector)
     return similarity
 
-def createVerbVectorFeature(data, model):
+def contrastive_embedding(target_vector, contrast_vectors, beta=0.1):
     """
-    Calculate and add a 'VERB_SCORE' column to the DataFrame indicating the similarity of each word to a verb vector.
-
-    This function calculates the average vector of a set of verbs and then computes the cosine similarity between each
-    word in the 'WORD' column of the input DataFrame and the verb vector. The similarity scores are added as a new column
-    'VERB_SCORE' in the DataFrame.
+    Adjust a target embedding by pushing it away from contrast embeddings.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-        model (Word2Vec): The Word2Vec word embedding model.
+        target_vector (np.array): Base vector (e.g., verb or noun vector).
+        contrast_vectors (list of np.array): List of contrast word embeddings.
+        beta (float): Strength of repulsion from contrast embeddings.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'VERB_SCORE' column.
+        np.array: Adjusted embedding.
     """
-    words = data["WORD"]
-    vector = average_word_vectors(verbs, model)
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
-    scores.columns = ['VERB_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+    if not contrast_vectors:
+        return target_vector  # No contrast data, return original
 
-def createNounVectorFeature(data, model):
+    contrast_mean = np.mean(contrast_vectors, axis=0)
+    return target_vector + beta * (target_vector - contrast_mean)  # Push away from contrast mean
+
+
+def createVerbVectorFeature(ID, data, model):
     """
-    Calculate and add a 'NOUN_SCORE' column to the DataFrame indicating the similarity of each word to a verb vector.
-
-    This function calculates the average vector of a set of verbs and then computes the cosine similarity between each
-    word in the 'WORD' column of the input DataFrame and the verb vector. The similarity scores are added as a new column
-    'NOUN_SCORE' in the DataFrame.
+    Compute 'VERB_SCORE' by measuring word similarity to a contrast-enhanced verb vector.
+    The embedding is anchored with the word "Verb" to reinforce its representation.
 
     Args:
-        data (pandas.DataFrame): The input DataFrame containing a 'WORD' column.
-        model (Word2Vec): The Word2Vec word embedding model.
+        ID (str): Identifier for column naming.
+        data (pandas.DataFrame): DataFrame with a 'WORD' column.
+        model (Word2Vec): Word2Vec embedding model.
 
     Returns:
-        pandas.DataFrame: The input DataFrame with an additional 'NOUN_SCORE' column.
+        pandas.DataFrame: Updated DataFrame with a 'VERB_SCORE' column.
     """
     words = data["WORD"]
-    vector = average_word_vectors(nouns, model)
     
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
-    scores.columns = ['NOUN_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+    # Convert sets to lists before merging
+    non_verbs = list(nouns) + list(conjunctions) + list(determiners) + list(prepositions)
+    
+    # Include "Verb" as an anchor in the verb set
+    expanded_verbs = list(verbs) + ["verb"] * 5  # Adding weight by repetition
+    
+    # Compute base verb and non-verb vectors
+    verb_vector = average_word_vectors(expanded_verbs, model)
+    non_verb_vector = average_word_vectors(non_verbs, model)
+    
+    # Apply contrastive shift
+    adjusted_verb_vector = contrastive_embedding(verb_vector, [non_verb_vector], beta=0.5)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_verb_vector, word.lower(), model) for word in words])
+    scores.columns = [ID+'_VERB_SCORE']
+    
+    return pd.concat([data, scores], axis=1)
+
+
+def createNounVectorFeature(ID, data, model):
+    """
+    Compute 'NOUN_SCORE' by measuring word similarity to a contrast-enhanced noun vector.
+
+    Args:
+        ID (str): Identifier for column naming.
+        data (pandas.DataFrame): DataFrame with a 'WORD' column.
+        model (Word2Vec): Word2Vec embedding model.
+
+    Returns:
+        pandas.DataFrame: Updated DataFrame with a 'NOUN_SCORE' column.
+    """
+    words = data["WORD"]
+    
+    # Convert sets to lists before merging
+    verb_list = list(verbs) + list(conjunctions) + list(determiners) + list(prepositions)
+    noun_list = list(nouns) + ["noun"] * 5
+    
+    # Compute base noun and verb vectors
+    noun_vector = average_word_vectors(noun_list, model)
+    verb_vector = average_word_vectors(verb_list, model)
+    
+    # Apply contrastive shift
+    adjusted_noun_vector = contrastive_embedding(noun_vector, [verb_vector], beta=0.5)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_noun_vector, word.lower(), model) for word in words])
+    scores.columns = [ID+'_NOUN_SCORE']
+    
+    return pd.concat([data, scores], axis=1)
 
 def createDeterminerVectorFeature(data, model):
     """
@@ -496,10 +558,19 @@ def createDeterminerVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'DET_SCORE' column.
     """
     words = data["WORD"]
-    vector = average_word_vectors(determiners, model)
+    # Convert sets to lists before merging
+    non_determiners = list(nouns) + list(verbs) + list(prepositions) +  list(conjunctions)
     
-    data = data.reset_index(drop=True)  # Reset index to avoid duplicates
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    # Compute base verb and non-verb vectors
+    expanded_determiners = list(determiners) + ["determiner"] * 5  # Adding weight by repetition
+    determiner_vector = average_word_vectors(expanded_determiners, model)
+    non_determiner_vector = average_word_vectors(non_determiners, model)
+    
+    # Apply contrastive shift
+    adjusted_determiner_vector = contrastive_embedding(determiner_vector, [non_determiner_vector], beta=0.1)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_determiner_vector, word.lower(), model) for word in words])
     scores.columns = ['DET_SCORE']
 
     data = pd.concat([data, scores], axis=1)
@@ -522,12 +593,21 @@ def createPrepositionVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'PREP_SCORE' column.
     """
     words = data["WORD"]
-    vector = average_word_vectors(prepositions, model)
+    # Convert sets to lists before merging
+    non_prepositions = list(nouns) + list(verbs) + list(determiners) + list(conjunctions)
     
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    # Compute base verb and non-verb vectors
+    expanded_prepositions = list(prepositions) + ["preposition"] * 5  # Adding weight by repetition
+    preposition_vector = average_word_vectors(expanded_prepositions, model)
+    non_preposition_vector = average_word_vectors(non_prepositions, model)
+    
+    # Apply contrastive shift
+    adjusted_preposition_vector = contrastive_embedding(preposition_vector, [non_preposition_vector], beta=0.1)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_preposition_vector, word.lower(), model) for word in words])
     scores.columns = ['PREP_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+    return pd.concat([data, scores], axis=1)
 
 def createConjunctionVectorFeature(data, model):
     """
@@ -545,12 +625,23 @@ def createConjunctionVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'CONJ_SCORE' column.
     """
     words = data["WORD"]
-    vector = average_word_vectors(conjunctions, model)
     
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    # Convert sets to lists before merging
+    non_conjunctions = list(nouns) + list(verbs) + list(determiners) + list(prepositions)
+    
+    # Compute base verb and non-verb vectors
+    expanded_conjunctions = list(conjunctions) + ["conjunction"] * 5  # Adding weight by repetition
+    conjunction_vector = average_word_vectors(expanded_conjunctions, model)
+    non_conjunction_vector = average_word_vectors(non_conjunctions, model)
+    
+    # Apply contrastive shift
+    adjusted_conjunction_vector = contrastive_embedding(conjunction_vector, [non_conjunction_vector], beta=0.1)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_conjunction_vector, word.lower(), model) for word in words])
     scores.columns = ['CONJ_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+    
+    return pd.concat([data, scores], axis=1)
 
 def createPreambleVectorFeature(name, data, model):
     """
@@ -572,12 +663,22 @@ def createPreambleVectorFeature(name, data, model):
         The actual name of the new column will be 'name'+'PRE_SCORE' (e.g., 'CODEPRE_SCORE', 'METHODPRE_SCORE').
     """
     words = data["WORD"]
-    vector = average_word_vectors(hungarian, model)
+    # Convert sets to lists before merging
+    non_preambles = list(nouns) + list(verbs) + list(determiners) + list(prepositions) + list(determiners)
     
-    scores = pd.DataFrame([compute_similarity(vector, word.lower(), model) for word in words])
+    # Compute base verb and non-verb vectors
+    expanded_preambles = list(hungarian) + ["hungarian notation"] * 5  # Adding weight by repetition
+    preamble_vector = average_word_vectors(expanded_preambles, model)
+    non_preamble_vector = average_word_vectors(non_preambles, model)
+    
+    # Apply contrastive shift
+    adjusted_preamble_vector = contrastive_embedding(preamble_vector, [non_preamble_vector], beta=0.1)
+    
+    # Compute similarity
+    scores = pd.DataFrame([compute_similarity(adjusted_preamble_vector, word.lower(), model) for word in words])
     scores.columns = [name+'PRE_SCORE']
-    scores = pd.concat([data, scores], axis=1)
-    return scores
+    
+    return pd.concat([data, scores], axis=1)
 
 def createVerbFeature(data):
     """
@@ -718,6 +819,40 @@ def createIdentifierDigitFeature(data):
     ).astype(int)
     return data
 
+def createEmbeddingFeatures(data, model):
+    """
+    Add statistical features (mean, std, min, max, norm) from FastText/Word2Vec embeddings.
+
+    Args:
+        data (pandas.DataFrame): Input DataFrame with 'SPLIT_IDENTIFIER' as a list of words.
+
+    Returns:
+        pandas.DataFrame: Updated DataFrame with new embedding-based numerical features.
+    """
+    def compute_embedding_stats(words):
+        # Get embeddings for words that exist in the model
+        word_vectors = [model[word] for word in words if word in model]
+        
+        if not word_vectors:  # Handle cases where no words have embeddings
+            return np.zeros(5)  # Return a zero vector with 5 statistical features
+
+        word_vectors = np.array(word_vectors)
+        
+        # Compute statistical features
+        mean_embedding = np.mean(word_vectors)
+        std_embedding = np.std(word_vectors)
+        min_embedding = np.min(word_vectors)
+        max_embedding = np.max(word_vectors)
+        norm_embedding = np.linalg.norm(np.mean(word_vectors, axis=0))
+
+        return np.array([mean_embedding, std_embedding, min_embedding, max_embedding, norm_embedding])
+
+    # Apply function to each row and expand into separate columns
+    embedding_features = data['SPLIT_IDENTIFIER'].apply(compute_embedding_stats).apply(pd.Series)
+    embedding_features.columns = ['EMB_MEAN', 'EMB_STD', 'EMB_MIN', 'EMB_MAX', 'EMB_NORM']
+
+    return pd.concat([data, embedding_features], axis=1)
+
 def createIdentifierClosedSetFeature(data, conjunctions=conjunctions, determiners=determiners, prepositions=prepositions):
     """
     Add a 'CONTAINSCLOSEDSET' column indicating if any word in the SPLIT_IDENTIFIER matches closed-set words.
@@ -732,9 +867,10 @@ def createIdentifierClosedSetFeature(data, conjunctions=conjunctions, determiner
         pandas.DataFrame: Updated DataFrame with a 'CONTAINSCLOSEDSET' column.
     """
     closed_set = set(conjunctions) | set(determiners) | set(prepositions)
-    data['CONTAINSCLOSEDSET'] = data['SPLIT_IDENTIFIER'].apply(
-        lambda words: any(word in closed_set for word in words)
-    ).astype(int)
+    words = data["WORD"]
+    isClosedSet = pd.DataFrame([1 if word in closed_set else 0 for word in words])
+    isClosedSet.columns = ["CONTAINSCLOSEDSET"]
+    data = pd.concat([data, isClosedSet], axis=1)
     return data
 
 def createIdentifierContainsVerbFeature(data, verbs=verbs):
@@ -749,9 +885,10 @@ def createIdentifierContainsVerbFeature(data, verbs=verbs):
         pandas.DataFrame: Updated DataFrame with a 'CONTAINSVERB' column.
     """
     verb_set = set(verbs)
-    data['CONTAINSVERB'] = data['SPLIT_IDENTIFIER'].apply(
-        lambda words: any(word in verb_set for word in words)
-    ).astype(int)
+    words = data["WORD"]
+    isVerb = pd.DataFrame([1 if word in verb_set else 0 for word in words])
+    isVerb.columns = ["CONTAINSVERB"]
+    data = pd.concat([data, isVerb], axis=1)
     return data
 
 def addMorphologicalPluralFeature(data):

@@ -238,7 +238,7 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
         modelGensimEnglish=app.model_data.ModelGensimEnglish,
     )
     
-    categorical_features = ['NLTK_POS']
+    categorical_features = ['NLTK_POS','PREV_POS', 'NEXT_POS']
     category_variables = []
 
     for category_column in categorical_features:
