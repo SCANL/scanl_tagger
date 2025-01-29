@@ -69,15 +69,62 @@ Kebab case is not currently supported due to the limitations of Spiral. Attempti
 
 You will need to have a way to parse code and filter out identifier names if you want to do some on-the-fly analysis of source code. We recommend [srcML](https://www.srcml.org/). Since the actual tagger is a web server, you don't have to use srcML. You could always use other AST-based code representations, or any other method of obtaining identifier information. 
 
+
+## Tagset
+
+**Supported Tagset**
+| Abbreviation |                 Expanded Form                |                   Examples                   |
+|:------------:|:--------------------------------------------:|:--------------------------------------------:|
+|       N      |                     noun                     | Disneyland, shoe, faucet, mother             |
+|      DT      |                  determiner                  | the, this, that, these, those, which         |
+|      CJ      |                  conjunction                 | and, for, nor, but, or, yet, so              |
+|       P      |                  preposition                 | behind, in front of, at, under, above        |
+|      NPL     |                  noun plural                 | Streets, cities, cars, people, lists         |
+|      NM      | noun modifier  (**noun-adjunct**, adjective) | red, cold, hot, **bit**Set, **employee**Name |
+|       V      |                     verb                     | Run, jump, spin,                             |
+|      VM      |            verb modifier  (adverb)           | Very, loudly, seriously, impatiently         |
+|       D      |                     digit                    | 1, 2, 10, 4.12, 0xAF                         |
+|      PRE     |                   preamble                   | Gimp, GLEW, GL, G, p, m, b                   |
+
+**Penn Treebank to SCALAR tagset**
+
+|   Penn Treebank Annotation  | SCALAR Tagset            |
+|:---------------------------:|:------------------------:|
+|       Conjunction (CC)      |     Conjunction (CJ)     |
+|          Digit (CD)         |         Digit (D)        |
+|       Determiner (DT)       |      Determiner (DT)     |
+|      Foreign Word (FW)      |         Noun (N)         |
+|       Preposition (IN)      |      Preposition (P)     |
+|        Adjective (JJ)       |    Noun Modifier (NM)    |
+| Comparative Adjective (JJR) |    Noun Modifier (NM)    |
+| Superlative Adjective (JJS) |    Noun Modifier (NM)    |
+|        List Item (LS)       |         Noun (N)         |
+|          Modal (MD)         |         Verb (V)         |
+|      Noun Singular (NN)     |         Noun (N)         |
+|      Proper Noun (NNP)      |         Noun (N)         |
+|  Proper Noun Plural (NNPS)  |     Noun Plural (NPL)    |
+|      Noun Plural (NNS)      |     Noun Plural (NPL)    |
+|         Adverb (RB)         |    Verb Modifier (VM)    |
+|   Comparative Adverb (RBR)  |    Verb Modifier (VM)    |
+|        Particle (RP)        |    Verb Modifier (VM)    |
+|         Symbol (SYM)        |         Noun (N)         |
+|     To Preposition (TO)     |      Preposition (P)     |
+|          Verb (VB)          |         Verb (V)         |
+|          Verb (VBD)         |         Verb (V)         |
+|          Verb (VBG)         |         Verb (V)         |
+|          Verb (VBN)         |         Verb (V)         |
+|          Verb (VBP)         |         Verb (V)         |
+|          Verb (VBZ)         |         Verb (V)         |
+
 ## Training the tagger
 You can train this tagger using the `-t` option (which will re-run the training routine). For the moment, most of this is hard-coded in, so if you want to use a different data set/different seeds, you'll need to modify the code. This will potentially change in the future.
 
 ## Errors?
 Please make an issue if you run into errors
 
-# Please Cite the Paper!
+# Please Cite the Paper(s)!
 
-No paper for now however the current tagger is based on our previous, so you could cite the previous one for now: 
+Newman, Christian, Scholten , Brandon, Testa, Sophia, Behler, Joshua, Banabilah, Syreen, Collard, Michael L., Decker, Michael, Mkaouer, Mohamed Wiem, Zampieri, Marcos, Alomar, Eman Abdullah, Alsuhaibani, Reem, Peruma, Anthony, Maletic, Jonathan I., (2025), “SCALAR: A Part-of-speech Tagger for Identifiers”, in the Proceedings of the 33rd IEEE/ACM International Conference on Program Comprehension - Tool Demonstrations Track (ICPC), Ottawa, ON, Canada, April 27 -28, 5 pages TO APPEAR.
 
 Christian  D.  Newman,  Michael  J.  Decker,  Reem  S.  AlSuhaibani,  Anthony  Peruma,  Satyajit  Mohapatra,  Tejal  Vishnoi, Marcos Zampieri, Mohamed W. Mkaouer, Timothy J. Sheldon, and Emily Hill, "An Ensemble Approach for Annotating Source Code Identifiers with Part-of-speech Tags," in IEEE Transactions on Software Engineering, doi: 10.1109/TSE.2021.3098242.
 
