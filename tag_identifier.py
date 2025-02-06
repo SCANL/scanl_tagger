@@ -8,6 +8,7 @@ from flask import Flask
 from waitress import serve
 from spiral import ronin
 import json
+import re
 from create_models import createModel, stable_features, mutable_feature_list
 app = Flask(__name__)
 
@@ -159,6 +160,11 @@ def start_server(temp_config = {}):
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
     data.close()
 
+def split_by_capitals(name: str):
+    matches = re.finditer(r'[A-Z]+(?![a-z])|[A-Z][a-z]*|[a-z]+', name)
+    words = [match.group() for match in matches]
+    return words
+
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
     #or if the word is in the list of approved words
@@ -218,6 +224,9 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
     # Split identifier_name into words
     words = identifier_name.split('_')
     
+    if (len(words) == 1 and identifier_name == words[0]):
+        words = split_by_capitals(identifier_name)
+
     # # Create initial data frame
     data = pd.DataFrame({
         'WORD': words,
