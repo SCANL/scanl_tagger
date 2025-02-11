@@ -1,27 +1,32 @@
 # SCALAR Part-of-speech tagger
 This the official release of the SCALAR Part-of-speech tagger
 
+There are two ways to run the tagger. This document describes both ways.
+
+1. Using Docker compose (which runs the tagger's built-in server for you)
+2. Running the tagger's built-in server without Docker
+
 ## Getting Started with Docker
 
 To run SCNL tagger in a Docker container you can clone the repository and pull the latest docker impage from `srcml/scanl_tagger:latest`
 
+Make sure you have Docker and Docker Compose installed:
+https://docs.docker.com/engine/install/
+https://docs.docker.com/compose/install/
+
 ```
-git clone https://github.com/brandonscholten/scanl_tagger.git
+git clone git@github.com:SCANL/scanl_tagger.git
 cd scanl_tagger
 docker compose pull
 docker compose up
 ```
 
-## Setup and Run
-You will need `python3.10` installed. 
+## Getting Started without Docker
+You will need `python3.12` installed. 
 
 You'll need to install `pip` -- https://pip.pypa.io/en/stable/installation/
 
 After it's installed, in the root of the repo, run `pip install -r requirements.txt`
-
-Finally, you need to install Spiral, which we use for identifier splitting. The current version of Spiral on the official repo has a [problem](https://github.com/casics/spiral/issues/4), so consider installing the one from the link below:
-
-    pip install git+https://github.com/cnewman/spiral.git
 
 Finally, we require the `token` and `target` vectors from [code2vec](https://github.com/tech-srl/code2vec). The tagger will attempt to automatically download them if it doesn't find them, but you could download them yourself if you like. It will place them in your local directory under `./code2vec/*`
 
@@ -46,6 +51,8 @@ options:
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
 http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
+
+**NOTE: ** On docker, the port is 8080 instead of 5000.
 
 "cache selection" will save results to a separate cache if it is set to "student"
 

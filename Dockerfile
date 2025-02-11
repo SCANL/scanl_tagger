@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
@@ -14,9 +14,9 @@ RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger');nltk.do
 COPY classifier_multiclass.py \
      download_code2vec_vectors.py \
      feature_generator.py \
-     print_utility_functions.py \
      tag_identifier.py \
      create_models.py \
+     version.py \
      serve.json \
      main \
      /.
@@ -61,9 +61,6 @@ CMD date; \
     else \
         echo "Failed to retrieve Last-Modified headers"; \
     fi; \
-    date; \
-    echo "Training..."; \
-    /main -t; \
     date; \
     echo "Running..."; \
     /main -r --words words/abbreviationList.csv
