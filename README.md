@@ -26,7 +26,11 @@ You will need `python3.12` installed.
 
 You'll need to install `pip` -- https://pip.pypa.io/en/stable/installation/
 
-After it's installed, in the root of the repo, run `pip install -r requirements.txt`
+Set up a virtual environtment: `python -m venv /tmp/tagger` -- feel free to put it somewhere else (change /tmp/tagger) if you prefer
+
+Activate the virtual environment: `source /tmp/tagger/bin/activate` (you can find how to activate it here if `source` does not work for you -- https://docs.python.org/3/library/venv.html#how-venvs-work)
+
+After it's installed and your virtual environment is activated, in the root of the repo, run `pip install -r requirements.txt`
 
 Finally, we require the `token` and `target` vectors from [code2vec](https://github.com/tech-srl/code2vec). The tagger will attempt to automatically download them if it doesn't find them, but you could download them yourself if you like. It will place them in your local directory under `./code2vec/*`
 
