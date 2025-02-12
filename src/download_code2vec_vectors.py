@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from huggingface_hub import hf_hub_download
-import requests
+import requests, nltk
 
 # Get the directory of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -15,9 +15,15 @@ def create_directory_if_not_exists(directory_path):
         os.makedirs(directory_path)
 
 def download_files():
+    
+    nltk.download('averaged_perceptron_tagger_eng')
+    nltk.download('universal_tagset')
+    nltk.download('punkt_tab')
+    nltk.download("words")
+    
     files = [
-        "target_vecs.txt",
-        "token_vecs.txt"
+        # "target_vecs.txt",
+        # "token_vecs.txt"
     ]
     
     # Define the directory name and create the full path

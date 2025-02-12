@@ -3,12 +3,12 @@ import time
 import joblib
 import nltk
 import pandas as pd
-from feature_generator import *
+from src.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
 from flask import Flask
 from waitress import serve
 from spiral import ronin
 import json
-from create_models import createModel, stable_features, mutable_feature_list
+from src.create_models import createModel, stable_features, mutable_feature_list
 app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -131,8 +131,6 @@ def start_server(temp_config = {}):
     app.studentCache = AppCache("cache", "student_cache.json")
     app.cache.load()
 
-    print("loading dictionary...")
-    nltk.download("words")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
     #insert english words from words/en.txt
     if not os.path.exists("words/en.txt"):
@@ -143,7 +141,7 @@ def start_server(temp_config = {}):
                 app.english_words.add(word[:-1])
 
     print('retrieving server configuration...')
-    data = open(os.path.join(SCRIPT_DIR, 'serve.json'))
+    data = open(os.path.join(SCRIPT_DIR, '..', 'serve.json'))
     config = json.load(data)
 
     server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
@@ -186,7 +184,7 @@ def save():
 
 #TODO: use a query string instead for specifying student cache
 @app.route('/<student>/<identifier_name>/<identifier_context>')
-def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
+def listen(student, identifier_name: str, identifier_context: str) -> list[dict]:
     #check if identifier name has already been used
     cache = None
 
@@ -260,7 +258,7 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
 
     # Convert categorical variables to numeric
     # Load and apply the classifier
-    clf = joblib.load(os.path.join(SCRIPT_DIR, 'models', 'model_GradientBoostingClassifier.pkl'))
+    clf = joblib.load(os.path.join(SCRIPT_DIR, '..', 'models', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
 
     # Combine words and their POS tags into a parseable format

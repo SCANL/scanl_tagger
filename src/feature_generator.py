@@ -306,7 +306,6 @@ def wordPosTag(data):
     Returns:
         pandas.DataFrame: DataFrame with NLTK_POS, PREV_POS, NEXT_POS columns.
     """
-    nltk.download('punkt_tab')
     # Validate columns
     if 'WORD' not in data.columns or 'SPLIT_IDENTIFIER' not in data.columns:
         raise ValueError("DataFrame must contain 'WORD' and 'SPLIT_IDENTIFIER' columns")

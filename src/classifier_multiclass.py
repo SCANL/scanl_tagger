@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
 import pandas as pd
 from enum import Enum
-from feature_generator import *
+import src.feature_generator
 import multiprocessing
 
 class TrainingAlgorithm(Enum):
