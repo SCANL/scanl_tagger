@@ -17,7 +17,7 @@ setup(
             'scanl_tagger=scanl_tagger.main:main',
         ],
     },
-    python_requires='>=3.10',
+    python_requires='>=3.12',
     author="Christian Newman",
     description="A machine learning based tagger for source code analysis",
 )
