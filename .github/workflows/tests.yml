@@ -18,7 +18,8 @@ jobs:
       - name: Start Docker container
         run: |
           docker compose pull
-          docker compose up -d
+          docker compose up --build -d
+          docker compose up
       
       - name: Wait for model loading and service start
         run: |
