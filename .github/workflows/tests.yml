@@ -13,11 +13,11 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Pull pre-built image
-        run: docker pull sourceslicer/scalar_tagger:tagname
+        run: docker pull sourceslicer/scalar_tagger:latest
       
       - name: Start container
         run: |
-          docker run -d -p 8080:8080 sourceslicer/scalar_tagger:tagname
+          docker run -d -p 8080:8080 sourceslicer/scalar_tagger:latest
       
       - name: Wait for service to start
         run: |
