@@ -12,32 +12,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v3
+      - name: Pull pre-built image
+        run: docker pull sourceslicer/scalar_tagger:tagname
       
-      - name: Start Docker container
+      - name: Start container
         run: |
-          docker compose pull
-          docker compose up --build -d
-          docker compose up
+          docker run -d -p 8080:8080 sourceslicer/scalar_tagger:tagname
       
-      - name: Wait for model loading and service start
+      - name: Wait for service to start
         run: |
-          # Wait for up to 5 minutes for the service to start and load models
-          timeout=300
+          # Wait for up to 2 minutes for the service to start
+          timeout=120
           while [ $timeout -gt 0 ]; do
             if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
             echo "Waiting for service to start... ($timeout seconds remaining)"
-            sleep 10
-            timeout=$((timeout - 10))
+            sleep 5
+            timeout=$((timeout - 5))
           done
           
           if [ $timeout -le 0 ]; then
             echo "Service failed to start within timeout"
-            docker compose logs
+            docker logs $(docker ps -q)
             exit 1
           fi
       
@@ -82,21 +80,20 @@ jobs:
         run: |
           ./main -r &
           
-          # Wait for up to 5 minutes for the service to start and load models
-          timeout=300
+          # Wait for up to 2 minutes for the service to start
+          timeout=120
           while [ $timeout -gt 0 ]; do
             if curl -s "http://localhost:5000/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
             echo "Waiting for service to start... ($timeout seconds remaining)"
-            sleep 10
-            timeout=$((timeout - 10))
+            sleep 5
+            timeout=$((timeout - 5))
           done
           
           if [ $timeout -le 0 ]; then
             echo "Service failed to start within timeout"
-            # Print logs or debug information
             cat logs/*.log 2>/dev/null || true
             exit 1
           fi
