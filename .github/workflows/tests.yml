@@ -20,8 +20,25 @@ jobs:
           docker compose pull
           docker compose up -d
       
-      - name: Wait for service to start
-        run: sleep 300
+      - name: Wait for model loading and service start
+        run: |
+          # Wait for up to 5 minutes for the service to start and load models
+          timeout=300
+          while [ $timeout -gt 0 ]; do
+            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
+              echo "Service is ready"
+              break
+            fi
+            echo "Waiting for service to start... ($timeout seconds remaining)"
+            sleep 10
+            timeout=$((timeout - 10))
+          done
+          
+          if [ $timeout -le 0 ]; then
+            echo "Service failed to start within timeout"
+            docker compose logs
+            exit 1
+          fi
       
       - name: Test tagger endpoint
         run: |
@@ -51,10 +68,37 @@ jobs:
         run: |
           pip install -r requirements.txt
       
+      - name: Download FastText model
+        run: |
+          python -c "
+          import gensim.downloader as api
+          print('Downloading FastText model...')
+          _ = api.load('fasttext-wiki-news-subwords-300')
+          print('FastText model downloaded successfully')
+          "
+      
       - name: Start tagger server
         run: |
-          ./main -r
-          sleep 10
+          ./main -r &
+          
+          # Wait for up to 5 minutes for the service to start and load models
+          timeout=300
+          while [ $timeout -gt 0 ]; do
+            if curl -s "http://localhost:5000/cache/numberArray/DECLARATION" > /dev/null; then
+              echo "Service is ready"
+              break
+            fi
+            echo "Waiting for service to start... ($timeout seconds remaining)"
+            sleep 10
+            timeout=$((timeout - 10))
+          done
+          
+          if [ $timeout -le 0 ]; then
+            echo "Service failed to start within timeout"
+            # Print logs or debug information
+            cat logs/*.log 2>/dev/null || true
+            exit 1
+          fi
       
       - name: Test tagger endpoint
         run: |
@@ -64,3 +108,9 @@ jobs:
             exit 1
           fi
           echo "Received response: $response"
+
+      - name: Cache FastText model
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/gensim-data/fasttext-wiki-news-subwords-300*
+          key: ${{ runner.os }}-fasttext-model
