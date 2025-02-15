@@ -10,10 +10,13 @@ RUN apt-get update && \
 COPY . .
 RUN pip install -e .
 
+# Download FastText model during build
+RUN python3 -c "import gensim.downloader as api; api.load('fasttext-wiki-news-subwords-300')"
+
 # ntlk downloads
 RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger');nltk.download('universal_tagset')"
 
-# Pythong scripts and data
+# Python scripts and data
 COPY src/classifier_multiclass.py \
      src/download_code2vec_vectors.py \
      src/feature_generator.py \

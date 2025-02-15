@@ -43,7 +43,7 @@ def createModel(pklFile="", rootDir=""):
     """
     # Configure logging
     logging.basicConfig(level=logging.INFO, 
-                        format='%(asctime)s - %(levelname)s - %(message)s')
+                       format='%(asctime)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
     modelGensimEnglish = None
@@ -52,9 +52,18 @@ def createModel(pklFile="", rootDir=""):
 
     # Attempt to load FastText model
     try:
-        logger.info("Loading FastText model...")
-        modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
-        logger.info("FastText model loaded successfully")
+        logger.info("Attempting to load local FastText model...")
+        # The model should be in the gensim-data directory after download
+        model_path = os.path.expanduser('~/gensim-data/fasttext-wiki-news-subwords-300/fasttext-wiki-news-subwords-300.model')
+        
+        if os.path.exists(model_path):
+            import gensim
+            modelGensimEnglish = gensim.models.fasttext.load_facebook_model(model_path)
+            logger.info("Local FastText model loaded successfully")
+        else:
+            logger.info("Local model not found, attempting to download...")
+            modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
+            logger.info("FastText model downloaded and loaded successfully")
     except Exception as e:
         logger.warning(f"FastText model could not be loaded: {e}")
 
@@ -65,6 +74,8 @@ def createModel(pklFile="", rootDir=""):
     # Paths for method vectors
     method_txt_path = os.path.join(rootDir, 'code2vec', 'target_vecs.txt')
     method_native_path = os.path.join(rootDir, 'code2vec', 'target_vecs.kv')
+
+    return modelGensimTokens, modelGensimMethods, modelGensimEnglish
     
     # Helper function to load models safely
     def load_model(txt_path, native_path, model_name):
