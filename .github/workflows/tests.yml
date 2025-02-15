@@ -80,20 +80,21 @@ jobs:
         run: |
           ./main -r &
           
-          # Wait for up to 2 minutes for the service to start
-          timeout=120
+          # Wait for up to 5 minutes for the service to start and load models
+          timeout=300
           while [ $timeout -gt 0 ]; do
             if curl -s "http://localhost:5000/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
             echo "Waiting for service to start... ($timeout seconds remaining)"
-            sleep 5
-            timeout=$((timeout - 5))
+            sleep 10
+            timeout=$((timeout - 10))
           done
           
           if [ $timeout -le 0 ]; then
             echo "Service failed to start within timeout"
+            # Print logs or debug information
             cat logs/*.log 2>/dev/null || true
             exit 1
           fi
