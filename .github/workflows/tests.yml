@@ -21,8 +21,8 @@ jobs:
       
       - name: Wait for service to start
         run: |
-          # Wait for up to 5 minutes for the service to start
-          timeout=300
+          # Wait for up to 10 minutes for the service to start
+          timeout=600
           while [ $timeout -gt 0 ]; do
             if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
