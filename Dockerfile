@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.12-slim
 
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
@@ -7,16 +7,22 @@ RUN apt-get update && \
     pip install -r requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
+COPY . .
+RUN pip install -e .
+
+# Download FastText model during build
+RUN python3 -c "import gensim.downloader as api; api.load('fasttext-wiki-news-subwords-300')"
+
 # ntlk downloads
 RUN python3 -c "import nltk; nltk.download('averaged_perceptron_tagger');nltk.download('universal_tagset')"
 
-# Pythong scripts and data
-COPY classifier_multiclass.py \
-     download_code2vec_vectors.py \
-     feature_generator.py \
-     print_utility_functions.py \
-     tag_identifier.py \
-     create_models.py \
+# Python scripts and data
+COPY src/classifier_multiclass.py \
+     src/download_code2vec_vectors.py \
+     src/feature_generator.py \
+     src/tag_identifier.py \
+     src/create_models.py \
+     version.py \
      serve.json \
      main \
      /.
@@ -61,9 +67,6 @@ CMD date; \
     else \
         echo "Failed to retrieve Last-Modified headers"; \
     fi; \
-    date; \
-    echo "Training..."; \
-    /main -t; \
     date; \
     echo "Running..."; \
     /main -r --words words/abbreviationList.csv
