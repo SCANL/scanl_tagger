@@ -54,9 +54,7 @@ options:
 
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
-
-**NOTE: ** On docker, the port is 8080 instead of 5000.
+http://127.0.0.1:8080/{cache_selection}/{identifier_name}/{code_context}
 
 "cache selection" will save results to a separate cache if it is set to "student"
 
@@ -69,11 +67,11 @@ http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:5000/cache/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:8080/cache/numberArray/DECLARATION``
 
-Tag a function: ``http://127.0.0.1:5000/cache/GetNumberArray/FUNCTION``
+Tag a function: ``http://127.0.0.1:8080/cache/GetNumberArray/FUNCTION``
 
-Tag an class: ``http://127.0.0.1:5000/cache/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:8080/cache/PersonRecord/CLASS``
 
 #### Note
 Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 
