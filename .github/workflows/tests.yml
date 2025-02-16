@@ -24,7 +24,7 @@ jobs:
           # Wait for up to 10 minutes for the service to start
           timeout=600
           while [ $timeout -gt 0 ]; do
-            if curl -s "http://localhost:5000/cache/numberArray/DECLARATION" > /dev/null; then
+            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
@@ -83,7 +83,7 @@ jobs:
           # Wait for up to 5 minutes for the service to start and load models
           timeout=300
           while [ $timeout -gt 0 ]; do
-            if curl -s "http://localhost:5000/cache/numberArray/DECLARATION" > /dev/null; then
+            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
@@ -101,7 +101,7 @@ jobs:
       
       - name: Test tagger endpoint
         run: |
-          response=$(curl -s "http://localhost:5000/cache/numberArray/DECLARATION")
+          response=$(curl -s "http://localhost:8080/cache/numberArray/DECLARATION")
           if [ -z "$response" ]; then
             echo "No response from tagger"
             exit 1
