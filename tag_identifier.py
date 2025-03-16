@@ -8,6 +8,7 @@ from flask import Flask
 from waitress import serve
 from spiral import ronin
 import json
+import sqlite3
 from create_models import createModel, stable_features, mutable_feature_list
 
 app = Flask(__name__)
@@ -30,41 +31,119 @@ class ModelData:
         self.wordCount = wordCount
         # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
-class AppCache:
-    def __init__(self, Path, Filename) -> None:
-        self.Cache = {}
-        self.Path = Path
-        self.Filename = Filename
+#TODO: rewrite to use an SQL lite database
+# class AppCache:
+#     def __init__(self, Path, Filename) -> None:
+#         self.Cache = {}
+#         self.Path = Path
+#         self.Filename = Filename
 
-    def load(self): 
-        if not os.path.isdir(self.Path): 
-            raise Exception("Cannot load path: "+self.Path)
-        else:
-            if not os.path.isfile(self.Path+"/"+self.Filename):
-                JSONcache = open(self.Path+"/"+self.Filename, 'w')
-                json.dump({}, JSONcache)
-                JSONcache.close()
-            JSONcache = open(self.Path+"/"+self.Filename, 'r')
-            self.Cache = json.load(JSONcache)
-            JSONcache.close()
+#     def load(self): 
+#         if not os.path.isdir(self.Path): 
+#             raise Exception("Cannot load path: "+self.Path)
+#         else:
+#             if not os.path.isfile(self.Path+"/"+self.Filename):
+#                 JSONcache = open(self.Path+"/"+self.Filename, 'w')
+#                 json.dump({}, JSONcache)
+#                 JSONcache.close()
+#             JSONcache = open(self.Path+"/"+self.Filename, 'r')
+#             self.Cache = json.load(JSONcache)
+#             JSONcache.close()
+
+#     def add(self, identifier, result):
+#         info = result
+#         info.update({"firstEncounter": time.time()})
+#         info.update({"lastEncounter": time.time()})
+#         info.update({"count": 1})
+#         info.update({"version": "SCANL 1.0"})
+#         self.Cache.update({identifier : info})
+
+#     def encounter(self, identifier):
+#         self.Cache[identifier].update({"lastEncounter": time.time()})
+#         self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
+#         self.Cache[identifier].update({"version": "SCANL 1.0"})
+
+#     def save(self):
+#         JSONcache = open(self.Path+"/"+self.Filename, 'w')
+#         json.dump(self.Cache, JSONcache)
+#         JSONcache.close()
+
+#TODO: context should probably be considered when saving tagged names
+class AppCache:
+    def __init__(self, Path) -> None:
+        self.Path = Path #path to an SQL lite database
+    
+    def load(self):
+        #create connection to database
+        conn = sqlite3.connect(self.Path)
+        #create the table of names if it doesn't exist
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS names (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       name TEXT NOT NULL,
+                       words TEXT, -- this is a JSON string
+                       firstEncounter INTEGER,
+                       lastEncounter INTEGER,
+                       count INTEGER
+                       )
+        ''')
+        #close the database connection
+        conn.commit()
+        conn.close()
 
     def add(self, identifier, result):
-        info = result
-        info.update({"firstEncounter": time.time()})
-        info.update({"lastEncounter": time.time()})
-        info.update({"count": 1})
-        info.update({"version": "SCANL 1.0"})
-        self.Cache.update({identifier : info})
+        #connection setup
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        #add identifier to table
+        record = {
+            "name": identifier,
+            "words": json.dumps(result["words"]),
+            "firstEncounter": time.time(),
+            "lastEncounter": time.time(),
+            "count": 1
+        }
+        cursor.execute('''
+            INSERT INTO names (name, words, firstEncounter, lastEncounter, count)
+            VALUES (:name, :words, :firstEncounter, :lastEncounter, :count)
+        ''', record)
+        #close the database connection
+        conn.commit()
+        conn.close()
+
+    def retrieve(self, identifier):
+        #return a dictionary of the name, or false if not in database
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", identifier)
+        row = cursor.fetchone()
+
+        if row:
+            return {
+                "name": row[0],
+                "words": json.loads(rows[1]),
+                "firstEncounter": row[2],
+                "lastEncounter": row[3],
+                "count": row[4]
+            }
+        else: 
+            return False
 
     def encounter(self, identifier):
-        self.Cache[identifier].update({"lastEncounter": time.time()})
-        self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
-        self.Cache[identifier].update({"version": "SCANL 1.0"})
-
-    def save(self):
-        JSONcache = open(self.Path+"/"+self.Filename, 'w')
-        json.dump(self.Cache, JSONcache)
-        JSONcache.close()
+        currentCount = self.retrieve()["count"]
+        #connection setup
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        #update record
+        cursor.execute('''
+            UPDATE names 
+            SET lastEncounter = ?, count = ?
+            WHERE name = ?
+        ''', time.time(), currentCount+1, identifier)
+        #close connection
+        conn.commit()
+        conn.close()
 
 class WordList:
     def __init__(self, Path):
@@ -186,10 +265,12 @@ def save():
     return "successfully saved cache"
 
 #TODO: use a query string instead for specifying student cache
+#TODO: update to save data to SQL lite instead of updating a JSON
+#      responses should still be sent in the JSON format
 @app.route('/<student>/<identifier_name>/<identifier_context>')
 def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
-    cache = None;
+    cache = None
 
     if (student == "student"):
         cache = app.studentCache
