@@ -29,44 +29,41 @@ class ModelData:
         self.ModelMethods = modelMethods
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
-        # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
-#TODO: rewrite to use an SQL lite database
-# class AppCache:
-#     def __init__(self, Path, Filename) -> None:
-#         self.Cache = {}
-#         self.Path = Path
-#         self.Filename = Filename
+class CacheIndex:
+    def __init__(self, Path) -> None:
+        self.Path = Path
+        #create a table that just has a single column of cache IDs
+        conn = sqlite3.connect(Path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS caches (
+                cache_id TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
 
-#     def load(self): 
-#         if not os.path.isdir(self.Path): 
-#             raise Exception("Cannot load path: "+self.Path)
-#         else:
-#             if not os.path.isfile(self.Path+"/"+self.Filename):
-#                 JSONcache = open(self.Path+"/"+self.Filename, 'w')
-#                 json.dump({}, JSONcache)
-#                 JSONcache.close()
-#             JSONcache = open(self.Path+"/"+self.Filename, 'r')
-#             self.Cache = json.load(JSONcache)
-#             JSONcache.close()
+    def add(self, cache_id):
+        #add cache_id to the table
+        conn = sqlite3(self.Path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO caches (cache_id) VALUES (?)
+        ''', cache_id)
+        conn.commit()
+        conn.close()
 
-#     def add(self, identifier, result):
-#         info = result
-#         info.update({"firstEncounter": time.time()})
-#         info.update({"lastEncounter": time.time()})
-#         info.update({"count": 1})
-#         info.update({"version": "SCANL 1.0"})
-#         self.Cache.update({identifier : info})
+    def isCacheExistent(self, cache_id):
+        conn = sqlite3(self.Path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT cache_id FROM caches WHERE cache_id = ?
+        ''')
+        row = cursor.fetchone()
+        if row: return True
+        else: return False
 
-#     def encounter(self, identifier):
-#         self.Cache[identifier].update({"lastEncounter": time.time()})
-#         self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
-#         self.Cache[identifier].update({"version": "SCANL 1.0"})
-
-#     def save(self):
-#         JSONcache = open(self.Path+"/"+self.Filename, 'w')
-#         json.dump(self.Cache, JSONcache)
-#         JSONcache.close()
 
 #TODO: context should probably be considered when saving tagged names
 class AppCache:
@@ -118,6 +115,7 @@ class AppCache:
         cursor = conn.cursor()
         cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", identifier)
         row = cursor.fetchone()
+        conn.close()
 
         if row:
             return {
@@ -205,11 +203,8 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
-    print("loading cache...")
-    if not os.path.isdir("cache"): os.mkdir("cache")
-    app.cache = AppCache("cache", "cache.json")
-    app.studentCache = AppCache("cache", "student_cache.json")
-    app.cache.load()
+    print("setting up cache...")
+    app.caches = {}
 
     print("loading dictionary...")
     nltk.download("words")
@@ -258,28 +253,30 @@ def dictionary_lookup(word):
     return dictionaryType
 
 #TODO: this is not an intuitive way to save cache
-@app.route('/')
-def save():
-    app.cache.save()
-    app.studentCache.save()
-    return "successfully saved cache"
+# @app.route('/')
+# def save():
+#     app.cache.save()
+#     app.studentCache.save()
+#     return "successfully saved cache"
 
-#TODO: use a query string instead for specifying student cache
-#TODO: update to save data to SQL lite instead of updating a JSON
-#      responses should still be sent in the JSON format
-@app.route('/<student>/<identifier_name>/<identifier_context>')
-def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
+#TODO: caches should be saved in an SQL lite database
+@app.route('/<cache_id>/<identifier_name>/<identifier_context>')
+def listen(cache_id, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
     cache = None
-
-    if (student == "student"):
-        cache = app.studentCache
-    else: 
-        cache = app.cache
-
-    if (identifier_name in cache.Cache.keys()): 
-        cache.encounter(identifier_name)
-        return cache.Cache[identifier_name]
+    
+    #find the existing cache in app.caches or create a new one if it doesn't exist
+    if cache_id in app.caches:
+        cache = app.caches[cache_id]
+        #check if the identifier name is in this cache and return it if so
+        data = cache.retrieve(identifier_name)
+        if data != False:
+            return data
+    else:
+        #create the cache and add it to the dictionary of caches
+        cache = AppCache("cache/"+cache_id+".db")
+        cache.load()
+        app.caches[cache_id] = cache
     
     """
     Process a web request to analyze an identifier within a specific context.
