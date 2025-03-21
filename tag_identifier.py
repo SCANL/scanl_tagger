@@ -59,7 +59,7 @@ class CacheIndex:
         cursor = conn.cursor()
         cursor.execute('''
             SELECT cache_id FROM caches WHERE cache_id = ?
-        ''')
+        ''', cache_id)
         row = cursor.fetchone()
         if row: return True
         else: return False
@@ -204,7 +204,7 @@ def start_server(temp_config = {}):
     initialize_model()
 
     print("setting up cache...")
-    app.caches = {}
+    app.cacheIndex = CacheIndex('index.db')
 
     print("loading dictionary...")
     nltk.download("words")
@@ -252,23 +252,15 @@ def dictionary_lookup(word):
     
     return dictionaryType
 
-#TODO: this is not an intuitive way to save cache
-# @app.route('/')
-# def save():
-#     app.cache.save()
-#     app.studentCache.save()
-#     return "successfully saved cache"
-
-#TODO: caches should be saved in an SQL lite database
+#caches should be saved in an SQL lite database
 @app.route('/<cache_id>/<identifier_name>/<identifier_context>')
 def listen(cache_id, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
     cache = None
-    
     #find the existing cache in app.caches or create a new one if it doesn't exist
-    if cache_id in app.caches:
-        cache = app.caches[cache_id]
+    if app.cacheIndex.isCacheExistent(cache_id):
         #check if the identifier name is in this cache and return it if so
+        cache = AppCache("cache/"+cache_id+".db")
         data = cache.retrieve(identifier_name)
         if data != False:
             return data
@@ -276,7 +268,7 @@ def listen(cache_id, identifier_name: str, identifier_context: str) -> List[dict
         #create the cache and add it to the dictionary of caches
         cache = AppCache("cache/"+cache_id+".db")
         cache.load()
-        app.caches[cache_id] = cache
+        app.cacheIndex.add(cache_id)
     
     """
     Process a web request to analyze an identifier within a specific context.
