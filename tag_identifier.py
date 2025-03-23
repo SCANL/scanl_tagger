@@ -9,7 +9,7 @@ from waitress import serve
 from spiral import ronin
 import json
 import sqlite3
-from create_models import createModel, stable_features, mutable_feature_list
+from create_models import createModel, mutable_feature_list
 
 app = Flask(__name__)
 
@@ -255,22 +255,24 @@ def dictionary_lookup(word):
     return dictionaryType
 
 #caches should be saved in an SQL lite database
-@app.route('/<cache_id>/<identifier_name>/<identifier_context>')
-def listen(cache_id: str, identifier_name: str, identifier_context: str) -> List[dict]:
+@app.route('/<identifier_name>/<identifier_context>')
+@app.route('/<identifier_name>/<identifier_context>/<cache_id>')
+def listen(identifier_name: str, identifier_context: str, cache_id: str = None) -> List[dict]:
     #check if identifier name has already been used
     cache = None
     #find the existing cache in app.caches or create a new one if it doesn't exist
-    if app.cacheIndex.isCacheExistent(cache_id):
-        #check if the identifier name is in this cache and return it if so
-        cache = AppCache("cache/"+cache_id+".db")
-        data = cache.retrieve(identifier_name)
-        if data != False:
-            return data
-    else:
-        #create the cache and add it to the dictionary of caches
-        cache = AppCache("cache/"+cache_id+".db")
-        cache.load()
-        app.cacheIndex.add(cache_id)
+    if cache_id != None:
+        if app.cacheIndex.isCacheExistent(cache_id):
+            #check if the identifier name is in this cache and return it if so
+            cache = AppCache("cache/"+cache_id+".db")
+            data = cache.retrieve(identifier_name)
+            if data != False:
+                return data
+        else:
+            #create the cache and add it to the dictionary of caches
+            cache = AppCache("cache/"+cache_id+".db")
+            cache.load()
+            app.cacheIndex.add(cache_id)
     
     """
     Process a web request to analyze an identifier within a specific context.
@@ -354,7 +356,8 @@ def listen(cache_id: str, identifier_name: str, identifier_context: str) -> List
         )
 
     # append result to cache
-    cache.add(identifier_name, result)
+    if cache_id != None:
+        cache.add(identifier_name, result)
 
     return result
     
