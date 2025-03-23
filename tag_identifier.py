@@ -46,20 +46,21 @@ class CacheIndex:
 
     def add(self, cache_id):
         #add cache_id to the table
-        conn = sqlite3(self.Path)
+        conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
+        #cache_id needs to be by itself in a tuple for some reason? otherwise sqlite freaks out idk
         cursor.execute('''
             INSERT INTO caches (cache_id) VALUES (?)
-        ''', cache_id)
+        ''', (cache_id,))
         conn.commit()
         conn.close()
 
     def isCacheExistent(self, cache_id):
-        conn = sqlite3(self.Path)
+        conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
         cursor.execute('''
             SELECT cache_id FROM caches WHERE cache_id = ?
-        ''', cache_id)
+        ''', (cache_id,))
         row = cursor.fetchone()
         if row: return True
         else: return False
@@ -113,14 +114,14 @@ class AppCache:
         #return a dictionary of the name, or false if not in database
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
-        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", identifier)
+        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", (identifier,))
         row = cursor.fetchone()
         conn.close()
 
         if row:
             return {
                 "name": row[0],
-                "words": json.loads(rows[1]),
+                "words": json.loads(row[1]),
                 "firstEncounter": row[2],
                 "lastEncounter": row[3],
                 "count": row[4]
@@ -204,7 +205,8 @@ def start_server(temp_config = {}):
     initialize_model()
 
     print("setting up cache...")
-    app.cacheIndex = CacheIndex('index.db')
+    if not os.path.exists('cache'): os.mkdir('cache')
+    app.cacheIndex = CacheIndex('cache/index.db')
 
     print("loading dictionary...")
     nltk.download("words")
@@ -254,7 +256,7 @@ def dictionary_lookup(word):
 
 #caches should be saved in an SQL lite database
 @app.route('/<cache_id>/<identifier_name>/<identifier_context>')
-def listen(cache_id, identifier_name: str, identifier_context: str) -> List[dict]:
+def listen(cache_id: str, identifier_name: str, identifier_context: str) -> List[dict]:
     #check if identifier name has already been used
     cache = None
     #find the existing cache in app.caches or create a new one if it doesn't exist
