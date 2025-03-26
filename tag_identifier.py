@@ -130,7 +130,7 @@ class AppCache:
             return False
 
     def encounter(self, identifier):
-        currentCount = self.retrieve()["count"]
+        currentCount = self.retrieve(identifier)["count"]
         #connection setup
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
@@ -139,7 +139,7 @@ class AppCache:
             UPDATE names 
             SET lastEncounter = ?, count = ?
             WHERE name = ?
-        ''', time.time(), currentCount+1, identifier)
+        ''', (time.time(), currentCount+1, identifier))
         #close connection
         conn.commit()
         conn.close()
@@ -265,6 +265,7 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
         if app.cacheIndex.isCacheExistent(cache_id):
             #check if the identifier name is in this cache and return it if so
             cache = AppCache("cache/"+cache_id+".db")
+            cache.encounter(identifier_name)
             data = cache.retrieve(identifier_name)
             if data != False:
                 return data
