@@ -265,9 +265,9 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
         if app.cacheIndex.isCacheExistent(cache_id):
             #check if the identifier name is in this cache and return it if so
             cache = AppCache("cache/"+cache_id+".db")
-            cache.encounter(identifier_name)
             data = cache.retrieve(identifier_name)
             if data != False:
+                cache.encounter(identifier_name)
                 return data
         else:
             #create the cache and add it to the dictionary of caches
