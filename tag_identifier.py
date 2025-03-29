@@ -30,42 +30,6 @@ class ModelData:
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
 
-class CacheIndex:
-    def __init__(self, Path) -> None:
-        self.Path = Path
-        #create a table that just has a single column of cache IDs
-        conn = sqlite3.connect(Path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS caches (
-                cache_id TEXT NOT NULL
-            )
-        ''')
-        conn.commit()
-        conn.close()
-
-    def add(self, cache_id):
-        #add cache_id to the table
-        conn = sqlite3.connect(self.Path)
-        cursor = conn.cursor()
-        #cache_id needs to be by itself in a tuple for some reason? otherwise sqlite freaks out idk
-        cursor.execute('''
-            INSERT INTO caches (cache_id) VALUES (?)
-        ''', (cache_id,))
-        conn.commit()
-        conn.close()
-
-    def isCacheExistent(self, cache_id):
-        conn = sqlite3.connect(self.Path)
-        cursor = conn.cursor()
-        cursor.execute('''
-            SELECT cache_id FROM caches WHERE cache_id = ?
-        ''', (cache_id,))
-        row = cursor.fetchone()
-        if row: return True
-        else: return False
-
-
 #TODO: context should probably be considered when saving tagged names
 class AppCache:
     def __init__(self, Path) -> None:
@@ -206,7 +170,6 @@ def start_server(temp_config = {}):
 
     print("setting up cache...")
     if not os.path.exists('cache'): os.mkdir('cache')
-    app.cacheIndex = CacheIndex('cache/index.db')
 
     print("loading dictionary...")
     nltk.download("words")
@@ -254,7 +217,15 @@ def dictionary_lookup(word):
     
     return dictionaryType
 
-#caches should be saved in an SQL lite database
+#route to check for and create a database if it does not exist already
+@app.route('/probe/<cache_id>')
+def probe(cache_id: str):
+    if os.path.exists("cache/"+cache_id+".db3"):
+        return "Opening existing identifier database..."
+    else:
+        return "First request will create identifier database: "+cache_id+"..."
+
+#route to tag an identifier name
 @app.route('/<identifier_name>/<identifier_context>')
 @app.route('/<identifier_name>/<identifier_context>/<cache_id>')
 def listen(identifier_name: str, identifier_context: str, cache_id: str = None) -> List[dict]:
@@ -262,18 +233,17 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     cache = None
     #find the existing cache in app.caches or create a new one if it doesn't exist
     if cache_id != None:
-        if app.cacheIndex.isCacheExistent(cache_id):
+        if os.path.exists("cache/"+cache_id+".db3"):
             #check if the identifier name is in this cache and return it if so
-            cache = AppCache("cache/"+cache_id+".db")
+            cache = AppCache("cache/"+cache_id+".db3")
             data = cache.retrieve(identifier_name)
             if data != False:
                 cache.encounter(identifier_name)
                 return data
         else:
-            #create the cache and add it to the dictionary of caches
-            cache = AppCache("cache/"+cache_id+".db")
+            #create the cache
+            cache = AppCache("cache/"+cache_id+".db3")
             cache.load()
-            app.cacheIndex.add(cache_id)
     
     """
     Process a web request to analyze an identifier within a specific context.
