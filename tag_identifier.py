@@ -8,7 +8,8 @@ from flask import Flask
 from waitress import serve
 from spiral import ronin
 import json
-from create_models import createModel, stable_features, mutable_feature_list
+import sqlite3
+from create_models import createModel, mutable_feature_list
 
 app = Flask(__name__)
 
@@ -28,43 +29,84 @@ class ModelData:
         self.ModelMethods = modelMethods
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
-        # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
+#TODO: context should probably be considered when saving tagged names
 class AppCache:
-    def __init__(self, Path, Filename) -> None:
-        self.Cache = {}
-        self.Path = Path
-        self.Filename = Filename
-
-    def load(self): 
-        if not os.path.isdir(self.Path): 
-            raise Exception("Cannot load path: "+self.Path)
-        else:
-            if not os.path.isfile(self.Path+"/"+self.Filename):
-                JSONcache = open(self.Path+"/"+self.Filename, 'w')
-                json.dump({}, JSONcache)
-                JSONcache.close()
-            JSONcache = open(self.Path+"/"+self.Filename, 'r')
-            self.Cache = json.load(JSONcache)
-            JSONcache.close()
+    def __init__(self, Path) -> None:
+        self.Path = Path #path to an SQL lite database
+    
+    def load(self):
+        #create connection to database
+        conn = sqlite3.connect(self.Path)
+        #create the table of names if it doesn't exist
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS names (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       name TEXT NOT NULL,
+                       words TEXT, -- this is a JSON string
+                       firstEncounter INTEGER,
+                       lastEncounter INTEGER,
+                       count INTEGER
+                       )
+        ''')
+        #close the database connection
+        conn.commit()
+        conn.close()
 
     def add(self, identifier, result):
-        info = result
-        info.update({"firstEncounter": time.time()})
-        info.update({"lastEncounter": time.time()})
-        info.update({"count": 1})
-        info.update({"version": "SCANL 1.0"})
-        self.Cache.update({identifier : info})
+        #connection setup
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        #add identifier to table
+        record = {
+            "name": identifier,
+            "words": json.dumps(result["words"]),
+            "firstEncounter": time.time(),
+            "lastEncounter": time.time(),
+            "count": 1
+        }
+        cursor.execute('''
+            INSERT INTO names (name, words, firstEncounter, lastEncounter, count)
+            VALUES (:name, :words, :firstEncounter, :lastEncounter, :count)
+        ''', record)
+        #close the database connection
+        conn.commit()
+        conn.close()
+
+    def retrieve(self, identifier):
+        #return a dictionary of the name, or false if not in database
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", (identifier,))
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return {
+                "name": row[0],
+                "words": json.loads(row[1]),
+                "firstEncounter": row[2],
+                "lastEncounter": row[3],
+                "count": row[4]
+            }
+        else: 
+            return False
 
     def encounter(self, identifier):
-        self.Cache[identifier].update({"lastEncounter": time.time()})
-        self.Cache[identifier].update({"count": self.Cache[identifier]["count"]+1})
-        self.Cache[identifier].update({"version": "SCANL 1.0"})
-
-    def save(self):
-        JSONcache = open(self.Path+"/"+self.Filename, 'w')
-        json.dump(self.Cache, JSONcache)
-        JSONcache.close()
+        currentCount = self.retrieve(identifier)["count"]
+        #connection setup
+        conn = sqlite3.connect(self.Path)
+        cursor = conn.cursor()
+        #update record
+        cursor.execute('''
+            UPDATE names 
+            SET lastEncounter = ?, count = ?
+            WHERE name = ?
+        ''', (time.time(), currentCount+1, identifier))
+        #close connection
+        conn.commit()
+        conn.close()
 
 class WordList:
     def __init__(self, Path):
@@ -126,11 +168,8 @@ def start_server(temp_config = {}):
     print('initializing model...')
     initialize_model()
 
-    print("loading cache...")
-    if not os.path.isdir("cache"): os.mkdir("cache")
-    app.cache = AppCache("cache", "cache.json")
-    app.studentCache = AppCache("cache", "student_cache.json")
-    app.cache.load()
+    print("setting up cache...")
+    if not os.path.exists('cache'): os.mkdir('cache')
 
     print("loading dictionary...")
     nltk.download("words")
@@ -178,27 +217,33 @@ def dictionary_lookup(word):
     
     return dictionaryType
 
-#TODO: this is not an intuitive way to save cache
-@app.route('/')
-def save():
-    app.cache.save()
-    app.studentCache.save()
-    return "successfully saved cache"
+#route to check for and create a database if it does not exist already
+@app.route('/probe/<cache_id>')
+def probe(cache_id: str):
+    if os.path.exists("cache/"+cache_id+".db3"):
+        return "Opening existing identifier database..."
+    else:
+        return "First request will create identifier database: "+cache_id+"..."
 
-#TODO: use a query string instead for specifying student cache
-@app.route('/<student>/<identifier_name>/<identifier_context>')
-def listen(student, identifier_name: str, identifier_context: str) -> List[dict]:
+#route to tag an identifier name
+@app.route('/<identifier_name>/<identifier_context>')
+@app.route('/<identifier_name>/<identifier_context>/<cache_id>')
+def listen(identifier_name: str, identifier_context: str, cache_id: str = None) -> List[dict]:
     #check if identifier name has already been used
-    cache = None;
-
-    if (student == "student"):
-        cache = app.studentCache
-    else: 
-        cache = app.cache
-
-    if (identifier_name in cache.Cache.keys()): 
-        cache.encounter(identifier_name)
-        return cache.Cache[identifier_name]
+    cache = None
+    #find the existing cache in app.caches or create a new one if it doesn't exist
+    if cache_id != None:
+        if os.path.exists("cache/"+cache_id+".db3"):
+            #check if the identifier name is in this cache and return it if so
+            cache = AppCache("cache/"+cache_id+".db3")
+            data = cache.retrieve(identifier_name)
+            if data != False:
+                cache.encounter(identifier_name)
+                return data
+        else:
+            #create the cache
+            cache = AppCache("cache/"+cache_id+".db3")
+            cache.load()
     
     """
     Process a web request to analyze an identifier within a specific context.
@@ -282,7 +327,8 @@ def listen(student, identifier_name: str, identifier_context: str) -> List[dict]
         )
 
     # append result to cache
-    cache.add(identifier_name, result)
+    if cache_id != None:
+        cache.add(identifier_name, result)
 
     return result
     
