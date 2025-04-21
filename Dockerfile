@@ -2,8 +2,8 @@ FROM python:3.10-slim
 
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
-RUN apt-get update && \
-    apt-get install -y git curl && \
+RUN apt-get update --fix-missing && \
+    apt-get install --allow-unauthenticated -y git curl && \
     pip install -r requirements.txt && \
     rm -rf /var/lib/apt/lists/*
 
