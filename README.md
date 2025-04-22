@@ -24,9 +24,7 @@ Conosider configuring `PYTHONPATH` as well:
 
 	export PYTHONPATH=~/path/to/scanl_tagger
 
-Finally, you need to install Spiral, which we use for identifier splitting. The current version of Spiral on the official repo has a [problem](https://github.com/casics/spiral/issues/4), so consider installing the one from the link below:
-
-    sudo pip3 install git+https://github.com/cnewman/spiral.git
+Install dependencies by running `pip3 install -r requirements.txt` in the root of the repository. 
 
 Finally, we require the `token` and `target` vectors from [code2vec](https://github.com/tech-srl/code2vec). The tagger will attempt to automatically download them if it doesn't find them, but you could download them yourself if you like. It will place them in your local directory under `./code2vec/*`
 
@@ -50,9 +48,13 @@ options:
 
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:5000/{cache_selection}/{identifier_name}/{code_context}
+http://127.0.0.1:5000/{identifier_name}/{code_context}/{database_name (optional)}
 
-"cache selection" will save results to a separate cache if it is set to "student"
+"database name" specifies an sqlite database to be used for result caching and data collection. If the database specified does not exist, one will be created. 
+
+You can check wehther or not a database exists by using the `/probe` route by sending an HTTP request like this:
+
+http://127.0.0.1:5000/probe/{database_name}
 
 "code context" is one of:
 - FUNCTION
