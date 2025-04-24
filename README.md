@@ -8,10 +8,12 @@ There are two ways to run the tagger. This document describes both ways.
 
 ## Getting Started with Docker
 
-To run SCNL tagger in a Docker container you can clone the repository and pull the latest docker impage from `sourceslicer/scalar_tagger:latest`
+To run SCALAR in a Docker container you can clone the repository and pull the latest docker impage from `sourceslicer/scalar_tagger:latest`
 
 Make sure you have Docker and Docker Compose installed:
+
 https://docs.docker.com/engine/install/
+
 https://docs.docker.com/compose/install/
 
 ```
