@@ -6,7 +6,7 @@ There are two ways to run the tagger. This document describes both ways.
 1. Using Docker compose (which runs the tagger's built-in server for you)
 2. Running the tagger's built-in server without Docker
 
-# Current Metrics (this will be updated every time we update/change the model!)
+## Current Metrics (this will be updated every time we update/change the model!)
 |            | Accuracy | Balanced Accuracy | Weighted Recall | Weighted Precision | Weighted F1 | Performance (seconds) |
 |------------|:--------:|:------------------:|:---------------:|:------------------:|:-----------:|:---------------------:|
 | **SCALAR** | **0.8216** | **0.9160** | **0.8216** | **0.8245** | **0.8220** | **249.05** |
