@@ -1,6 +1,14 @@
 # SCALAR Part-of-speech tagger
 This the official release of the SCALAR Part-of-speech tagger
 
+# Current Metrics (this will be updated every time we update/change the model!)
+|            | Accuracy | Balanced Accuracy | Weighted Recall | Weighted Precision | Weighted F1 | Performance (seconds) |
+|------------|:--------:|:------------------:|:---------------:|:------------------:|:-----------:|:---------------------:|
+| **SCALAR** | **0.8216** | **0.9160** | **0.8216** | **0.8245** | **0.8220** | **249.05** |
+| Ensemble   | 0.7124   | 0.8311             | 0.7124          | 0.7597             | 0.7235      | 1149.44                |
+| Flair      | 0.6087   | 0.7844             | 0.6087          | 0.7755             | 0.6497      | 807.03                 |
+
+
 There are two ways to run the tagger. This document describes both ways.
 
 1. Using Docker compose (which runs the tagger's built-in server for you)
