@@ -1,18 +1,22 @@
 #!/usr/bin/env python
 
-import os, sqlite3, classifier_multiclass, random, nltk, argparse
+import os, sqlite3, random, argparse
 from datetime import datetime
-import classifier_multiclass
-from feature_generator import *
+from src.classifier_multiclass import perform_classification, TrainingAlgorithm
 import pandas as pd
 import numpy as np
-from tag_identifier import start_server
-from download_code2vec_vectors import *
-import json
-from create_models import createModel, stable_features, mutable_feature_list
+from src.tag_identifier import start_server
+from src.download_code2vec_vectors import *
+from src.feature_generator import custom_to_numeric, universal_to_custom, createFeatures
+from src.create_models import createModel, stable_features, mutable_feature_list, columns_to_drop
+from version import __version__ 
 
 # Get the directory of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+def get_version():
+    """Return the current version of SCANL Tagger."""
+    return f"SCANL Tagger version {__version__}"
 
 def read_input(sql, features, conn):
     """
@@ -36,7 +40,7 @@ def read_input(sql, features, conn):
     random.shuffle(rows)
     shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
     modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    input_data = createFeatures(shuffled_input_data, features, modelGensimEnglish=modelGensimEnglish)
+    input_data = createFeatures(shuffled_input_data, features, modelGensimEnglish=modelGensimEnglish, modelTokens=modelTokens, modelMethods=modelMethods)
     return input_data
 
 def train(config):
@@ -50,7 +54,6 @@ def train(config):
     Returns:
         None
     """
-    nltk.download('universal_tagset')
    
     # Extract configuration values from the 'config' dictionary
     input_file = config['input_file']
@@ -73,11 +76,12 @@ def train(config):
     # ###############################################################
     
     # Create an explicit copy to avoid SettingWithCopyWarning
+    #independent_variables.remove("EMB_FEATURES")
     df_features = df_input[independent_variables].copy()
     df_class = df_input[[dependent_variable]].copy()
     
     category_variables = []
-    categorical_columns = ['NLTK_POS']
+    categorical_columns = ['NLTK_POS', 'PREV_POS', 'NEXT_POS']
     
     # Safely handle categorical variables
     for category_column in categorical_columns:
@@ -119,16 +123,16 @@ def train(config):
         results_text_file.write(f"SQL: {sql_statement}\n")
         results_text_file.write(f"Features: {df_features}\n")
        
-        algorithms = [classifier_multiclass.TrainingAlgorithm.XGBOOST]
+        algorithms = [TrainingAlgorithm.XGBOOST]
         #pd.set_option('display.max_rows', None)  # Show all rows
         pd.set_option('display.max_columns', None)  # Show all columns
         pd.set_option('display.width', None)  # Prevent line wrapping
         pd.set_option('display.max_colwidth', None)  # Show full content of each cell
 
         print(df_features)
-        classifier_multiclass.perform_classification(df_features, df_class, results_text_file,
+        perform_classification(df_features, df_class, results_text_file,
                                                     output_dir, algorithms, trainingSeed,
-                                                    classifierSeed)
+                                                    classifierSeed, columns_to_drop)
 
 if __name__ == "__main__":
     """
@@ -153,10 +157,10 @@ if __name__ == "__main__":
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
 
     Author: Christian Newman
-    Version: 1.5.0
+    Version: 2.0.0
     """
     parser = argparse.ArgumentParser()
-
+    
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
     parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
@@ -168,7 +172,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.version:
-        print("SCANL Tagger version 1.5.0")
+        print(get_version())
     elif args.run:
         download_files()
         temp_config = {}

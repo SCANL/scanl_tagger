@@ -80,11 +80,11 @@ http://127.0.0.1:5000/probe/{database_name}
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:8000/cache/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:8000/numberArray/DECLARATION/database``
 
-Tag a function: ``http://127.0.0.1:8000/cache/GetNumberArray/FUNCTION``
+Tag a function: ``http://127.0.0.1:8000/GetNumberArray/FUNCTION/database``
 
-Tag an class: ``http://127.0.0.1:8000/cache/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:8000/PersonRecord/CLASS/database``
 
 #### Note
 Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 

@@ -5,7 +5,8 @@ from gensim.models import KeyedVectors
 import logging
 #'VERB_SCORE', 'DET_SCORE', 'ENGLISHV_SCORE', 'POSITION_RATIO','METHODV_SCORE', 'CONTAINSLISTVERB'
 stable_features = ['WORD', 'SPLIT_IDENTIFIER', 'CONTEXT_NUMBER'] #'LANGUAGE' 'PREP_SCORE' 'CONTAINSLISTVERB','CONTAINSCLOSEDSET'
-mutable_feature_list = ['CONJUNCTION', 'NOUN_SCORE', 'PREP_SCORE', 'NORMALIZED_POSITION', 'DET_SCORE', 'CONSONANT_VOWEL_RATIO', 'NLTK_POS', 'MORPHOLOGICAL_PLURAL', 'POSITION', 'MAXPOSITION','POSITION_RATIO', 'VERB_SCORE', 'CONJ_SCORE'] # 'ENGLISHN_SCORE' ,'ENGLISHPRE_SCORE'  'ENGLISHN_SCORE', 'METHODN_SCORE', 'METHODV_SCORE', 'CODEPRE_SCORE', 'ENGLISHV_SCORE', 'METHODPRE_SCORE', 'ENGLISHPRE_SCORE', 'CONJ_SCORE'
+mutable_feature_list = ['ENGLISHPRE_SCORE', 'PREPOSITION', 'DETERMINER', 'PREP_SCORE', 'NORMALIZED_POSITION', 'DET_SCORE', 'CONSONANT_VOWEL_RATIO', 'PREV_POS', 'NEXT_POS', 'NLTK_POS', 'MORPHOLOGICAL_PLURAL', 'POSITION', 'MAXPOSITION','POSITION_RATIO', 'ENGLISH_VERB_SCORE', 'CONJ_SCORE','ENGLISH_NOUN_SCORE'] 
+columns_to_drop = ['SPLIT_IDENTIFIER', 'WORD', 'MAXPOSITION', 'POSITION']
 
 def load_word_count(input_file):
     """
@@ -29,88 +30,92 @@ def load_word_count(input_file):
 def createModel(pklFile="", rootDir=""):
     """
     Create and load Word2Vec models for tokens, methods, and English text.
-    Checks for native KeyedVectors format, converts from txt if needed.
+    Handles missing files gracefully by setting models to None instead of raising errors.
     
     Args:
         pklFile (str, optional): The path to a pickle file. Defaults to an empty string.
         rootDir (str): Root directory containing model files
     
     Returns:
-        tuple: A tuple containing three Word2Vec models: (modelGensimTokens, modelGensimMethods, modelGensimEnglish).
-    
-    Raises:
-        FileNotFoundError: If text vector files are missing
-        PermissionError: If there are permission issues with file access
-        IOError: For other I/O related errors
+        tuple: A tuple containing three Word2Vec models: 
+               (modelGensimTokens, modelGensimMethods, modelGensimEnglish).
+               Models that fail to load are set to None.
     """
     # Configure logging
     logging.basicConfig(level=logging.INFO, 
-                        format='%(asctime)s - %(levelname)s - %(message)s')
+                       format='%(asctime)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
+    modelGensimEnglish = None
+    modelGensimTokens = None
+    modelGensimMethods = None
+
+    # Attempt to load FastText model
     try:
-        # Load FastText model 
-        logger.info("Loading FastText model...")
-        modelGensimEnglish = api.load('word2vec-google-news-300')
-        logger.info("FastText model loaded successfully")
+        logger.info("Attempting to load local FastText model...")
+        # The model should be in the gensim-data directory after download
+        model_path = os.path.expanduser('~/gensim-data/fasttext-wiki-news-subwords-300/fasttext-wiki-news-subwords-300.model')
+        
+        if os.path.exists(model_path):
+            import gensim
+            modelGensimEnglish = gensim.models.fasttext.load_facebook_model(model_path)
+            logger.info("Local FastText model loaded successfully")
+        else:
+            logger.info("Local model not found, attempting to download...")
+            modelGensimEnglish = api.load('fasttext-wiki-news-subwords-300')
+            logger.info("FastText model downloaded and loaded successfully")
     except Exception as e:
-        logger.error(f"Failed to load FastText model: {e}")
-        raise
-    
-    # Paths for txt and native format files
+        logger.warning(f"FastText model could not be loaded: {e}")
+
+    # Paths for token vectors
     token_txt_path = os.path.join(rootDir, 'code2vec', 'token_vecs.txt')
     token_native_path = os.path.join(rootDir, 'code2vec', 'token_vecs.kv')
     
+    # Paths for method vectors
     method_txt_path = os.path.join(rootDir, 'code2vec', 'target_vecs.txt')
     method_native_path = os.path.join(rootDir, 'code2vec', 'target_vecs.kv')
+
+    return modelGensimTokens, modelGensimMethods, modelGensimEnglish
     
-    # Load token vectors
-    try:
-        if not os.path.exists(token_txt_path):
-            raise FileNotFoundError(f"Token vector text file not found: {token_txt_path}")
+    # Helper function to load models safely
+    def load_model(txt_path, native_path, model_name):
+        """
+        Load a word vector model, converting from text format if necessary.
         
-        if not os.path.exists(token_native_path):
-            logger.info("Native token vector format not found. Converting...")
-            try:
-                modelGensimTokens = KeyedVectors.load_word2vec_format(token_txt_path, binary=False)
-                modelGensimTokens.save(token_native_path)
-                logger.info(f"Token vectors converted and saved to {token_native_path}")
-            except PermissionError:
-                logger.error(f"Permission denied when saving token vectors to {token_native_path}")
-                raise
-            except IOError as e:
-                logger.error(f"Error converting token vectors: {e}")
-                raise
-        else:
-            modelGensimTokens = KeyedVectors.load(token_native_path)
-            logger.info("Token vectors loaded from native format")
-    except Exception as e:
-        logger.error(f"Error loading token vectors: {e}")
-        raise
-    
-    # Load method vectors
-    try:
-        if not os.path.exists(method_txt_path):
-            raise FileNotFoundError(f"Method vector text file not found: {method_txt_path}")
+        Args:
+            txt_path (str): Path to the text-based word vectors.
+            native_path (str): Path to the native .kv format file.
+            model_name (str): Name of the model for logging.
+
+        Returns:
+            KeyedVectors or None: The loaded model, or None if unavailable.
+        """
+        try:
+            if os.path.exists(native_path):
+                logger.info(f"Loading {model_name} from native format...")
+                return KeyedVectors.load(native_path)
+            
+            elif os.path.exists(txt_path):
+                logger.info(f"Native format for {model_name} not found. Converting from text format...")
+                model = KeyedVectors.load_word2vec_format(txt_path, binary=False)
+                try:
+                    model.save(native_path)
+                    logger.info(f"{model_name} vectors converted and saved to {native_path}")
+                except PermissionError:
+                    logger.warning(f"Permission denied when saving {model_name} to {native_path}. Using in-memory only.")
+                return model
+            
+            else:
+                logger.warning(f"{model_name} vector file not found at {txt_path} or {native_path}. Skipping.")
+                return None
         
-        if not os.path.exists(method_native_path):
-            logger.info("Native method vector format not found. Converting...")
-            try:
-                modelGensimMethods = KeyedVectors.load_word2vec_format(method_txt_path, binary=False)
-                modelGensimMethods.save(method_native_path)
-                logger.info(f"Method vectors converted and saved to {method_native_path}")
-            except PermissionError:
-                logger.error(f"Permission denied when saving method vectors to {method_native_path}")
-                raise
-            except IOError as e:
-                logger.error(f"Error converting method vectors: {e}")
-                raise
-        else:
-            modelGensimMethods = KeyedVectors.load(method_native_path)
-            logger.info("Method vectors loaded from native format")
-    except Exception as e:
-        logger.error(f"Error loading method vectors: {e}")
-        raise
-    
-    logger.info("All models loaded successfully")
+        except Exception as e:
+            logger.warning(f"Failed to load {model_name}: {e}")
+            return None
+
+    # Load models with the new safe function
+    modelGensimTokens = load_model(token_txt_path, token_native_path, "Token vectors")
+    modelGensimMethods = load_model(method_txt_path, method_native_path, "Method vectors")
+
+    logger.info("Model loading complete.")
     return modelGensimTokens, modelGensimMethods, modelGensimEnglish

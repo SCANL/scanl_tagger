@@ -1,0 +1,115 @@
+name: SCALAR Tagger CI
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  test-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Pull pre-built image
+        run: docker pull sourceslicer/scalar_tagger:latest
+      
+      - name: Start container
+        run: |
+          docker run -d -p 8080:8080 sourceslicer/scalar_tagger:latest
+      
+      - name: Wait for service to start
+        run: |
+          # Wait for up to 10 minutes for the service to start
+          timeout=600
+          while [ $timeout -gt 0 ]; do
+            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
+              echo "Service is ready"
+              break
+            fi
+            echo "Waiting for service to start... ($timeout seconds remaining)"
+            sleep 5
+            timeout=$((timeout - 5))
+          done
+          
+          if [ $timeout -le 0 ]; then
+            echo "Service failed to start within timeout"
+            docker logs $(docker ps -q)
+            exit 1
+          fi
+      
+      - name: Test tagger endpoint
+        run: |
+          response=$(curl -s "http://localhost:8080/cache/numberArray/DECLARATION")
+          if [ -z "$response" ]; then
+            echo "No response from tagger"
+            exit 1
+          fi
+          echo "Received response: $response"
+
+  test-native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      
+      - name: Create and activate virtual environment
+        run: |
+          python -m venv /tmp/tagger
+          source /tmp/tagger/bin/activate
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Download FastText model
+        run: |
+          python -c "
+          import gensim.downloader as api
+          print('Downloading FastText model...')
+          _ = api.load('fasttext-wiki-news-subwords-300')
+          print('FastText model downloaded successfully')
+          "
+      
+      - name: Start tagger server
+        run: |
+          ./main -r &
+          
+          # Wait for up to 5 minutes for the service to start and load models
+          timeout=300
+          while [ $timeout -gt 0 ]; do
+            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
+              echo "Service is ready"
+              break
+            fi
+            echo "Waiting for service to start... ($timeout seconds remaining)"
+            sleep 10
+            timeout=$((timeout - 10))
+          done
+          
+          if [ $timeout -le 0 ]; then
+            echo "Service failed to start within timeout"
+            # Print logs or debug information
+            cat logs/*.log 2>/dev/null || true
+            exit 1
+          fi
+      
+      - name: Test tagger endpoint
+        run: |
+          response=$(curl -s "http://localhost:8080/cache/numberArray/DECLARATION")
+          if [ -z "$response" ]; then
+            echo "No response from tagger"
+            exit 1
+          fi
+          echo "Received response: $response"
+
+      - name: Cache FastText model
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/gensim-data/fasttext-wiki-news-subwords-300*
+          key: ${{ runner.os }}-fasttext-model
