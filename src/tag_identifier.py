@@ -43,6 +43,7 @@ class AppCache:
             CREATE TABLE IF NOT EXISTS names (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        name TEXT NOT NULL,
+                       context TEXT NOT NULL,
                        words TEXT, -- this is a JSON string
                        firstEncounter INTEGER,
                        lastEncounter INTEGER,
@@ -53,31 +54,32 @@ class AppCache:
         conn.commit()
         conn.close()
 
-    def add(self, identifier, result):
+    def add(self, identifier, result, context):
         #connection setup
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
         #add identifier to table
         record = {
             "name": identifier,
+            "context": context,
             "words": json.dumps(result["words"]),
             "firstEncounter": time.time(),
             "lastEncounter": time.time(),
             "count": 1
         }
         cursor.execute('''
-            INSERT INTO names (name, words, firstEncounter, lastEncounter, count)
-            VALUES (:name, :words, :firstEncounter, :lastEncounter, :count)
+            INSERT INTO names (name, context, words, firstEncounter, lastEncounter, count)
+            VALUES (:name, :context, :words, :firstEncounter, :lastEncounter, :count)
         ''', record)
         #close the database connection
         conn.commit()
         conn.close()
         
-    def retrieve(self, identifier):
+    def retrieve(self, identifier, context):
         #return a dictionary of the name, or false if not in database
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
-        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ?", (identifier,))
+        cursor.execute("SELECT name, words, firstEncounter, lastEncounter, count FROM names WHERE name = ? AND context = ?", (identifier, context))
         row = cursor.fetchone()
         conn.close()
 
@@ -92,8 +94,8 @@ class AppCache:
         else:
             return False
 
-    def encounter(self, identifier):
-        currentCount = self.retrieve(identifier)["count"]
+    def encounter(self, identifier, context):
+        currentCount = self.retrieve(identifier, context)["count"]
         #connection setup
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
@@ -171,9 +173,8 @@ def start_server(temp_config = {}):
     if not os.path.isdir("cache"): os.mkdir("cache")
 
     print("laoding dictionary")
-    #TODO: if there's issues with uncateogorized words, it's porbably because this is commented out
-    #nltk.download("words")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
+
     #insert english words from words/en.txt
     if not os.path.exists("words/en.txt"):
         print("could not find English words, using WordNet only!")
@@ -236,9 +237,9 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
         if os.path.exists("cache/"+cache_id+".db3"):
             #check if the identifier name is in this cache and return it if so
             cache = AppCache("cache/"+cache_id+".db3")
-            data = cache.retrieve(identifier_name)
+            data = cache.retrieve(identifier_name, identifier_context)
             if data != False:
-                cache.encounter(identifier_name)
+                cache.encounter(identifier_name, identifier_context)
                 return data
         else:
             #create the cache
@@ -329,7 +330,7 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
 
     # append result to cache
     if cache_id != None:
-        cache.add(identifier_name, result)
+        cache.add(identifier_name, result, identifier_context)
 
     return result
     
