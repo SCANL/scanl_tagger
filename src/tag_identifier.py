@@ -47,14 +47,15 @@ class AppCache:
                        words TEXT, -- this is a JSON string
                        firstEncounter INTEGER,
                        lastEncounter INTEGER,
-                       count INTEGER
+                       count INTEGER,
+                       tagTime INTEGER -- time it took to tag the identifier
                        )
         ''')
         #close the database connection
         conn.commit()
         conn.close()
 
-    def add(self, identifier, result, context):
+    def add(self, identifier, result, context, tag_time):
         #connection setup
         conn = sqlite3.connect(self.Path)
         cursor = conn.cursor()
@@ -65,11 +66,12 @@ class AppCache:
             "words": json.dumps(result["words"]),
             "firstEncounter": time.time(),
             "lastEncounter": time.time(),
-            "count": 1
+            "count": 1,
+            "tagTime": tag_time
         }
         cursor.execute('''
-            INSERT INTO names (name, context, words, firstEncounter, lastEncounter, count)
-            VALUES (:name, :context, :words, :firstEncounter, :lastEncounter, :count)
+            INSERT INTO names (name, context, words, firstEncounter, lastEncounter, count, tagTime)
+            VALUES (:name, :context, :words, :firstEncounter, :lastEncounter, :count, :tagTime)
         ''', record)
         #close the database connection
         conn.commit()
@@ -263,6 +265,9 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     """
     print(f"INPUT: {identifier_name} {identifier_context}")
    
+    # get the start time
+    start_time = time.perf_counter()
+
     # Split identifier_name into words
     words = ronin.split(identifier_name)
     
@@ -328,9 +333,12 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
             }
         )
 
+    # get time it took to tag the identifier
+    tag_time = time.perf_counter() - start_time
+
     # append result to cache
     if cache_id != None:
-        cache.add(identifier_name, result, identifier_context)
+        cache.add(identifier_name, result, identifier_context, tag_time)
 
     return result
     
