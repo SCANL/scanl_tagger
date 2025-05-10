@@ -1,11 +1,18 @@
 FROM python:3.12-slim
 
+#argument to enable GPU accelaration
+ARG GPU=false
+
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
+COPY requirements_gpu.txt /requirements_gpu.txt
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
     apt-get update --fix-missing && \
     apt-get install --allow-unauthenticated -y git curl && \
     pip install -r requirements.txt && \
+    if [ "$GPU" = true ]; then \
+        pip install -r requirements_gpu.txt; \
+    fi && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY . .
