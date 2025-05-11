@@ -20,3 +20,4 @@ services:
       - words:/words
     ports:
       - "${PORT-8080}:5000"
+    restart: always

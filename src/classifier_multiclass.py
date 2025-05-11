@@ -121,10 +121,12 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
     Returns:
         None
     """
+
     X_train, X_test, y_train, y_test, X_train_original, X_test_original = build_datasets(X, y, output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
     
     algoData = TrainTestvalidationData(X_train, X_test, y_train, y_test, X_train_original, X_test_original, labels)
+    
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
@@ -150,7 +152,6 @@ def write_importances(results_text_file, feature_names, presult, metric_name):
     for feature, value in zip(feature_names, presult.importances_mean):
         results_text_file.write(f"{feature},{value}\n")
     results_text_file.write("\n")
-
 
 def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed, columns_to_drop):
     """
@@ -180,6 +181,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         print("GradientBoostingClassifier")
 
         # Drop SPLIT_IDENTIFIER and WORD columns from X_train
+
         X_train_dropped = algoData.X_train.drop(columns=columns_to_drop, errors='ignore')
         
         max_threads = max(1, multiprocessing.cpu_count() - 3)
