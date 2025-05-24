@@ -63,9 +63,13 @@ options:
 
 `./main -r` will start the server, which will listen for identifier names sent via HTTP over the route:
 
-http://127.0.0.1:8080/{cache_selection}/{identifier_name}/{code_context}
+http://127.0.0.1:8080/{identifier_name}/{code_context}/{database_name (optional)}
 
-"cache selection" will save results to a separate cache if it is set to "student"
+"database name" specifies an sqlite database to be used for result caching and data collection. If the database specified does not exist, one will be created. 
+
+You can check wehther or not a database exists by using the `/probe` route by sending an HTTP request like this:
+
+http://127.0.0.1:5000/probe/{database_name}
 
 "code context" is one of:
 - FUNCTION
@@ -76,11 +80,11 @@ http://127.0.0.1:8080/{cache_selection}/{identifier_name}/{code_context}
 
 For example:
 
-Tag a declaration: ``http://127.0.0.1:8080/cache/numberArray/DECLARATION``
+Tag a declaration: ``http://127.0.0.1:8000/numberArray/DECLARATION/database``
 
-Tag a function: ``http://127.0.0.1:8080/cache/GetNumberArray/FUNCTION``
+Tag a function: ``http://127.0.0.1:8000/GetNumberArray/FUNCTION/database``
 
-Tag an class: ``http://127.0.0.1:8080/cache/PersonRecord/CLASS``
+Tag an class: ``http://127.0.0.1:8000/PersonRecord/CLASS/database``
 
 #### Note
 Kebab case is not currently supported due to the limitations of Spiral. Attempting to send the tagger identifiers which are in kebab case will result in the entry of a single noun. 
@@ -156,4 +160,3 @@ Find our other research [at our webpage](https://www.scanl.org/) and check out t
 This project uses WordNet to perform a dictionary lookup on the individual words in each identifier:
 
 Princeton University "About WordNet." [WordNet](https://wordnet.princeton.edu/). Princeton University. 2010
-

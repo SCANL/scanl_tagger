@@ -274,6 +274,7 @@ universal_to_custom = {
     'POS': 'NOUN',    # Possessive ending
     'RP': 'NOUN',     # Particle
     'X': 'NOUN',      # Unknown
+
     'START':'START',
     'END':'END',
 
@@ -456,6 +457,7 @@ def compute_similarity(verb_vector, target_word, model):
     similarity = np.dot(verb_vector, target_word_vector)
     return similarity
 
+
 def contrastive_embedding(target_vector, contrast_vectors, beta=0.1):
     """
     Adjust a target embedding by pushing it away from contrast embeddings.
@@ -557,6 +559,7 @@ def createDeterminerVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'DET_SCORE' column.
     """
     words = data["WORD"]
+    
     # Convert sets to lists before merging
     non_determiners = list(nouns) + list(verbs) + list(prepositions) +  list(conjunctions)
     
@@ -570,6 +573,7 @@ def createDeterminerVectorFeature(data, model):
     
     # Compute similarity
     scores = pd.DataFrame([compute_similarity(adjusted_determiner_vector, word.lower(), model) for word in words])
+
     scores.columns = ['DET_SCORE']
 
     data = pd.concat([data, scores], axis=1)
@@ -592,6 +596,7 @@ def createPrepositionVectorFeature(data, model):
         pandas.DataFrame: The input DataFrame with an additional 'PREP_SCORE' column.
     """
     words = data["WORD"]
+
     # Convert sets to lists before merging
     non_prepositions = list(nouns) + list(verbs) + list(determiners) + list(conjunctions)
     
@@ -662,6 +667,7 @@ def createPreambleVectorFeature(name, data, model):
         The actual name of the new column will be 'name'+'PRE_SCORE' (e.g., 'CODEPRE_SCORE', 'METHODPRE_SCORE').
     """
     words = data["WORD"]
+
     # Convert sets to lists before merging
     non_preambles = list(nouns) + list(verbs) + list(determiners) + list(prepositions) + list(determiners)
     
@@ -866,10 +872,12 @@ def createIdentifierClosedSetFeature(data, conjunctions=conjunctions, determiner
         pandas.DataFrame: Updated DataFrame with a 'CONTAINSCLOSEDSET' column.
     """
     closed_set = set(conjunctions) | set(determiners) | set(prepositions)
+
     words = data["WORD"]
     isClosedSet = pd.DataFrame([1 if word in closed_set else 0 for word in words])
     isClosedSet.columns = ["CONTAINSCLOSEDSET"]
     data = pd.concat([data, isClosedSet], axis=1)
+    
     return data
 
 def createIdentifierContainsVerbFeature(data, verbs=verbs):
@@ -884,10 +892,12 @@ def createIdentifierContainsVerbFeature(data, verbs=verbs):
         pandas.DataFrame: Updated DataFrame with a 'CONTAINSVERB' column.
     """
     verb_set = set(verbs)
+    
     words = data["WORD"]
     isVerb = pd.DataFrame([1 if word in verb_set else 0 for word in words])
     isVerb.columns = ["CONTAINSVERB"]
     data = pd.concat([data, isVerb], axis=1)
+    
     return data
 
 def addMorphologicalPluralFeature(data):
