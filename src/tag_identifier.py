@@ -3,16 +3,21 @@ import time
 import joblib
 import nltk
 import pandas as pd
-from src.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
-from flask import Flask
+from flask import Flask, request
 from waitress import serve
 from spiral import ronin
 import json
 import sqlite3
-from src.create_models import createModel, stable_features, mutable_feature_list
+from src.tree_based_tagger.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
+from src.tree_based_tagger.create_models import createModel, stable_features, mutable_feature_list
+from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
+
 app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+model_type = None
+lm_model = None
+
 class ModelData:
     def __init__(self, modelTokens, modelMethods, modelGensimEnglish, wordCount) -> None:
         """
@@ -28,7 +33,6 @@ class ModelData:
         self.ModelMethods = modelMethods
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
-        # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
     def __init__(self, Path) -> None:
@@ -127,7 +131,7 @@ class WordList:
     def find(self, item):
         return item in self.Words
 
-def initialize_model():
+def initialize_model(selected_model_type):
     """
     Initialize and load word vectors for the application, and load a word count DataFrame.
 
@@ -137,23 +141,25 @@ def initialize_model():
     Returns:
         tuple: (ModelData, WORD_COUNT DataFrame)
     """
-    print("Loading word vectors!!")
-    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    print("Word vectors loaded!!")
-    
-    # Load the word count JSON file into a DataFrame
-    word_count_path = os.path.join("input", "word_count.json")
-    if os.path.exists(word_count_path):
-        print(f"Loading word count data from {word_count_path}...")
-        word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
-        word_count_df.columns = ['word', 'log_frequency']
-        print("Word count data loaded!")
-    else:
-        print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
-        word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
-    
-    # Create and store model data
-    app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
+    global model_type, lm_model
+    model_type = selected_model_type
+    if model_type == "tree_based":
+        print("Loading word vectors!!")
+        modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+        print("Word vectors loaded!!")
+        word_count_path = os.path.join("input", "word_count.json")
+        if os.path.exists(word_count_path):
+            print(f"Loading word count data from {word_count_path}...")
+            word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
+            word_count_df.columns = ['word', 'log_frequency']
+        else:
+            print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
+            word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
+        app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
+    elif model_type == "lm_based":
+        print("Loading DistilBERT tagger...")
+        lm_model = DistilBertTagger(SCRIPT_DIR)
+        print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):
     """
@@ -169,12 +175,13 @@ def start_server(temp_config = {}):
         None
     """
     print('initializing model...')
-    initialize_model()
+    selected_model = temp_config.get("model_type", "tree_based")
+    initialize_model(selected_model)
 
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
 
-    print("laoding dictionary")
+    print("loading dictionary")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
 
     #insert english words from words/en.txt
@@ -248,6 +255,10 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
             cache = AppCache("cache/"+cache_id+".db3")
             cache.load()
     
+    system_name = request.args.get("system_name", default="")
+    programming_language = request.args.get("language", default="")
+    data_type = request.args.get("type", default="")
+    
     #TODO: update this documentation
     """
     Process a web request to analyze an identifier within a specific context.
@@ -267,7 +278,20 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
    
     # get the start time
     start_time = time.perf_counter()
-
+    
+    if model_type == "lm_based":
+        result = {
+            "words": []
+        }
+        tags = lm_model.predict(words, identifier_context, programming_language, data_type, system_name)
+        for word, tag in zip(words, tags):
+            dictionary = dictionary_lookup(word)
+            result["words"].append({word: {"tag": tag, "dictionary": dictionary}})
+        tag_time = time.perf_counter() - start_time
+        if cache_id:
+            AppCache(f"cache/{cache_id}.db3").add(identifier_name, result, identifier_context, tag_time)
+        return result
+    
     # Split identifier_name into words
     words = ronin.split(identifier_name)
     

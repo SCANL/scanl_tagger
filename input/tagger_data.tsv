@@ -1,0 +1,2610 @@
+TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME
+ABCOpt	ABC Opt	CLASS	NM N	C++	swift
+int64t	abs deadline n sec value	PARAMETER	NM NM NM NM N	C++	grpc
+AbstractBuildExecution	Abstract Build Execution	CLASS	NM NM N	Java	jenkins
+ofVec3f	accelerometer Data	PARAMETER	NM N	C	openFrameworks
+boolean	accepting Tasks	PARAMETER	NM NPL	Java	jenkins
+AccessorConformanceInfo	Accessor Conformance Info	CLASS	NM NM N	C++	swift
+Map	action To Index Map	ATTRIBUTE	N P NM N	Java	antlr4
+ActionTranslator	Action Translator	CLASS	NM N	Java	antlr4
+KToggleAction	action View Show Master Pages	ATTRIBUTE	NM N V NM NPL	C++	calligra
+AtomicInteger	active Copies	ATTRIBUTE	NM NPL	Java	elasticsearch
+QString	active Tool Id	DECLARATION	NM NM N	C++	calligra
+int	actual Count	ATTRIBUTE	NM N	Java	mockito
+int	actual Suffix	DECLARATION	NM N	Java	junit4
+void	Add Bezier Curve	FUNCTION	V NM N	C++	bullet3
+boolean	add Bias To Embedding	ATTRIBUTE	V N P N	Java	corenlp
+void	Add Log To Stream	FUNCTION	V N P N	C++	Telegram
+void	add Object Index	FUNCTION	V NM N	C++	blender
+void	add Ordered List	FUNCTION	V NM N	Java	mockito
+void	add Unicode Script Codes To Names	FUNCTION	V NM NM NPL P NPL	Java	antlr4
+Guid	Added Unicode Smp	ATTRIBUTE	NM NM N	C#	antlr4
+boolean	adding	DECLARATION	V	Java	jenkins
+grpcresolvedaddress	addr	PARAMETER	N	C	grpc
+AddressLowering	Address Lowering	CLASS	N V	C++	swift
+int	ADDRESS TYPE IPV4	ATTRIBUTE	NM NM N	Java	okhttp
+QGradient	adjusted Gradient	FUNCTION	NM N	C++	calligra
+gsecaeadcrypter	aead crypter seal	DECLARATION	NM NM N	C++	grpc
+void	after Channel	FUNCTION	P N	Java	jenkins
+List	all action Roots	DECLARATION	DT NM NPL	Java	antlr4
+vector	all Factors	PARAMETER	DT NPL	C++	QuantLib
+List	all Invocation Matchers	DECLARATION	DT NM NPL	Java	mockito
+QString	all Open Files String	FUNCTION	DT NM NM N	C++	kdevelop
+List	all Open Indices	DECLARATION	DT NM NPL	Java	elasticsearch
+Collection	all Stubbings	ATTRIBUTE	DT NPL	Java	mockito
+AltAndContextConfigEqualityComparator	Alt And Context Config Equality Comparator	CLASS	N CJ NM NM NM N	Java	antlr4
+Map	alt Label Ctxs	ATTRIBUTE	NM NM NPL	Java	antlr4
+String	alt Name	PARAMETER	NM N	Java	okhttp
+path	alternative Cache Name	PARAMETER	NM NM N	C++	irrlicht
+gboolean alwayspreview	always preview	DECLARATION	VM V	C	gimp
+ofFloatColor	ambient	ATTRIBUTE	N	C	openFrameworks
+float	ambient coefficient	PARAMETER	NM N	C++	bullet3
+QStringList	anchor Name	DECLARATION	NM N	C++	calligra
+AndroidByteBuddyMockMaker	Android Byte Buddy Mock Maker	CLASS	NM NM NM NM N	Java	mockito
+qreal	angle In Radian	DECLARATION	N P N	C++	calligra
+GtkWidget	animation box	DECLARATION	NM N	C	gimp
+KPrPredefinedAnimationsLoader	animations Data	PARAMETER	NM NPL	C++	calligra
+String	App ID	PARAMETER	NM N	Java	opencv
+void	append Python Style Escaped Code Point	FUNCTION	V NM N NM NM N	Java	antlr4
+void	append Sequence	FUNCTION	V N	C++	kdevelop
+void	apply Margin Insets	FUNCTION	V NM NPL	Java	Telegram
+ApplyRewriter	Apply Rewriter	CLASS	NM N	C++	swift
+ArabicSegmenter	Arabic Segmenter	CLASS	NM N	Java	corenlp
+AreaInfoDialog_t	Area Info Dialog t	CLASS	NM NM NM N	C	gimp.idents
+AresDnsResolver	Ares Dns Resolver	CLASS	NM NM N	C++	grpc
+int	ares expand name for response	FUNCTION	PRE V N P N	C	grpc
+Collection	arg Mismatch Stubbings	PARAMETER	NM NM NPL	Java	mockito
+void	ARGB Subtract Row C	FUNCTION	N V NM N	C++	Telegram
+Class	array Class	PARAMETER	NM N	Java	junit4
+ArrayCountPropagation	Array Count Propagation	CLASS	NM NM N	C++	swift
+SILValue	Array Struct Value	PARAMETER	NM NM N	C++	swift
+void	assign Lexer Token Types	FUNCTION	V NM NM NPL	Java	antlr4
+Set	assigns	PARAMETER	NPL	Java	junit4
+int	atn State	DECLARATION	NM N	C#	antlr4
+int	ATOM	ATTRIBUTE	N	Java	antlr4
+Attribute	Attribute	CLASS	N	C++	openFrameworks
+OrderedHashSet	attribute Decls	ATTRIBUTE	NM NPL	Java	antlr4
+QXmlStreamAttributes	attrs	DECLARATION	NPL	C++	calligra
+AUDSound	AUD Sound envelope	FUNCTION	PRE NM N	C++	blender
+Authentication	auth Result	PARAMETER	NM N	Java	jenkins
+uint	average In Bucket Used Slot Count	ATTRIBUTE	N P NM NM NM N	C	kdevelop
+uint8x8t	avg 1	DECLARATION	N D	C	opencv
+Map	avg Map	DECLARATION	NM N	Java	corenlp
+BusinessDayConvention	b d c	PARAMETER	NM NM N	C++	QuantLib
+bool	b Flip Horizontally	PARAMETER	PRE V VM	C++	openFrameworks
+boolean	b Is Playing	ATTRIBUTE	PRE V V	Java	openFrameworks
+bool	b Loop	ATTRIBUTE	PRE N	C++	openFrameworks
+bool	b Multi Fullscreen	PARAMETER	PRE NM N	C++	openFrameworks
+void	b3 Push Profile Timing	FUNCTION	PRE V NM N	C++	bullet3
+BackgroundParserPrivate	Background Parser Private	CLASS	NM N NM	C++	kdevelop
+boolean	backprop Training	PARAMETER	NM N	Java	corenlp
+String	base Category	DECLARATION	NM N	Java	corenlp
+BaseLoaderCallback	Base Loader Callback	CLASS	NM NM N	Java	opencv
+btTransform	base transform	DECLARATION	NM N	C++	bullet3
+BasicReplicationRequest	Basic Replication Request	CLASS	NM NM N	Java	elasticsearch
+BasketPayoff	Basket Payoff	CLASS	NM N	C++	QuantLib
+Map beanConfigs	bean Configs	ATTRIBUTE	NM NPL	Java	jenkins
+List	befores	ATTRIBUTE	NPL	Java	junit4
+guchar	best b	DECLARATION	NM N	C	gimp
+IndexedWord	best Node	DECLARATION	NM N	Java	corenlp
+XIMStyle	best Style	DECLARATION	NM N	C++	irrlicht
+QString	bibliography Type	PARAMETER	NM N	C++	calligra
+Constructor	biggest Constructor	FUNCTION	NM N	Java	mockito
+BinaryRule	Binary Rule	CLASS	NM N	Java	corenlp
+String	binary Search Bytes	FUNCTION	NM N NPL	Java	okhttp
+MMatrix	bind Matrix	DECLARATION	NM N	C++	ogre
+s16	binormal type	DECLARATION	NM N	C++	irrlicht
+u32	Bitmap Data Size	ATTRIBUTE	NM NM N	C	irrlicht
+int	BKE lattice index flip	FUNCTION	PRE NM N V	C	blender
+void	BLI str r strip	FUNCTION	PRE N VM V	C	blender
+unsigned	block Nr	PARAMETER	NM N	C++	calligra
+BMLog	bm log	ATTRIBUTE	NM N	C	blender
+vector	bone Positions	PARAMETER	NM NPL	C++	ogre
+int	bound Port	PARAMETER	NM N	C#	grpc
+float	Bounding Radius	ATTRIBUTE	NM N	C	irrlicht
+LongConsumer	breaker Consumer	PARAMETER	NM N	Java	elasticsearch
+BreakpointDataPtr	breakpoint	ATTRIBUTE	N	C++	kdevelop
+SILValue	Bridged Value Fun Arg	PARAMETER	NM NM NM N	C++	swift
+quint32	brush Hatch	PARAMETER	NM N	C++	calligra
+btCollisionShape	bt Collision Shape	CLASS	PRE NM N	C++	bullet3
+class btDeformableContactConstraint	bt Deformable Contact Constraint	CLASS	PRE NM NM N	C++	bullet3
+btMaterial	bt Material	CLASS	PRE N	C++	bullet3
+BucketCollector	Bucket Collector	CLASS	NM N	Java	elasticsearch
+ParseField	BUCKETS PATH FIELD	ATTRIBUTE	NM NM N	Java	elasticsearch
+u32	buf Num	PARAMETER	NM N	C++	irrlicht
+vector	buffers	ATTRIBUTE	NPL	C++	Telegram
+BuildContext	build Context	PARAMETER	NM N	Java	antlr4
+void	build Group Query	FUNCTION	V NM N	Java	elasticsearch
+void	build Lexer Rule Actions	FUNCTION	V NM NM NPL	Java	antlr4
+gint	build time minor	PARAMETER	NM NM N	C	gimp
+long	build Timestamp	ATTRIBUTE	NM N	Java	jenkins
+BuildWrapper	Build Wrapper	CLASS	NM N	Java	jenkins
+Path	built Url	PARAMETER	NM N	C++	kdevelop
+ByteArrayView	byte Array View	PARAMETER	NM NM N	C++	kdevelop
+uint32t	byte Count	DECLARATION	NM N	C	Telegram
+int8t	byte Src	DECLARATION	NM N	C++	Telegram
+long	bytes Received	ATTRIBUTE	NPL NM	Java	okhttp
+CAnimatedMeshSceneNode	C Animated Mesh Scene Node	CLASS	PRE NM NM NM N	C++	irrlicht
+CArchiveLoaderTAR	C Archive Loader TAR	CLASS	PRE NM N NM	C++	irrlicht
+CAtBackgroundColor	C At Background Color	CLASS	PRE NM NM N	C++	openFrameworks
+CAtFont	C At Font	CLASS	PRE NM N	C++	openFrameworks
+CAtGrayScale	C At Grayscale	CLASS	PRE NM N	C++	openFrameworks
+CBurningShader_Raster_Reference	C Burning Shader Raster Reference	CLASS	PRE NM NM NM N	C++	irrlicht
+CD3D9RenderTarget	C D3D9 Render Target	CLASS	PRE NM NM N	C++	irrlicht
+CFileReadCallBack	C File Read Callback	CLASS	PRE NM NM N	C++	irrlicht
+Chttp2Connector	C http2 Connector	CLASS	PRE NM N	C++	grpc
+CImage	C Image	CLASS	PRE N	C++	irrlicht
+CImageWriterJPG	C Image Writer JPG	CLASS	PRE NM N NM	C++	irrlicht
+ceresproblemt	c problem	PARAMETER	NM N	C++	blender
+CSkinnedMesh	C Skinned Mesh	CLASS	PRE NM N	C++	irrlicht
+Sink	cache Body Unbuffered	DECLARATION	NM N NM	Java	okhttp
+IndexShardCacheEntity	cache Entity	DECLARATION	NM N	Java	elasticsearch
+QString	cache file	PARAMETER	NM N	C++	kdevelop
+CacheStrategy	Cache Strategy	CLASS	NM N	Java	okhttp
+CachedRegionTracker	Cached Region Tracker	CLASS	NM NM N	Java	Telegram
+BytecodeGenerator	caching Mock Bytecode Generator	ATTRIBUTE	NM NM NM N	Java	mockito
+u32	calc LUT	FUNCTION	V N	C++	opencv
+bool	calibration Phase	ATTRIBUTE	NM N	C++	QuantLib
+CallErrorExtensions	Call Error Extensions	CLASS	NM NM NPL	C#	grpc
+long	call Id	PARAMETER	NM N	Java	okhttp
+float	cam Rot Z	DECLARATION	NM NM N	C++	bullet3
+CameraData	Camera Data	CLASS	NM N	C++	irrlicht
+GimpCanvasItem	canvas item	ATTRIBUTE	NM N	C	gimp
+vector	cap Times	DECLARATION	NM NPL	C++	QuantLib
+CapletVarianceCurve	Caplet Variance Curve	CLASS	NM NM N	C++	QuantLib
+sharedptr	cat Risk	ATTRIBUTE	NM N	C++	QuantLib
+CategoryFilterFactory	Category Filter Factory	CLASS	NM NM N	Java	junit4
+Matcher	cause Matcher	PARAMETER	NM N	Java	junit4
+grpcsslcertificateconfigreloadstatus	cb result	DECLARATION	NM N	C++	grpc
+CborXContent	Cbor X Content	CLASS	NM NM N	Java	elasticsearch
+FrameIterator	cell Cursor	DECLARATION	NM N	C++	calligra
+CertificateChainCleaner	certificate Chain Cleaner	ATTRIBUTE	NM NM N	Java	okhttp
+char	Ch	DECLARATION	N	C++	grpc
+ChangeScroll	Change Scroll	CLASS	V N	C++	calligra
+ChapterTocFrame	Chapter Toc Frame	CLASS	NM NM N	Java	Telegram
+stbttbuf	char strings	ATTRIBUTE	NM NPL	C	bullet3
+bool	check GL Support	FUNCTION	V NM N	C++	openFrameworks
+QSet	check Next	DECLARATION	V N	C++	kdevelop
+void	check Not Interface	FUNCTION	V VM N	Java	mockito
+void	check Not Local	FUNCTION	V VM N	Java	mockito
+void	check Sign	FUNCTION	V N	C++	QuantLib
+void	check T	FUNCTION	V N	C++	QuantLib
+void	Check Writeable	FUNCTION	V NM	C#	grpc
+Set	child Categories	DECLARATION	NM NPL	Java	junit4
+ChildLocation	Child Location	CLASS	NM N	C	gimp.idents
+Runnable	child Statement	PARAMETER	NM N	Java	junit4
+ChineseTreebankParserParams	Chinese Treebank Parser Params	CLASS	NM NM NM NPL	Java	corenlp
+void	choose Document	FUNCTION	V N	C++	kdevelop
+QList	chosen Overrides	ATTRIBUTE	NM NPL	C++	kdevelop
+CipherSuite	Cipher Suite	CLASS	NM N	Java	okhttp
+auto	clang Can Ty	DECLARATION	PRE NM N	C++	swift
+Annotation[]	class Annotations	FUNCTION	NM NPL	Java	junit4
+ClassLoaders	Class Loaders	CLASS	NM NPL	Java	mockito
+byte[]	classfile Buffer	PARAMETER	NM N	Java	mockito
+ClauseMatrix	Clause Matrix	CLASS	NM N	C++	swift
+void	Clear Active ID	FUNCTION	V NM N	C++	bullet3
+OkHttpClient	client	ATTRIBUTE	N	Java	okhttp
+HandshakeCertificates	client Certificates	DECLARATION	NM NPL	Java	okhttp
+int	client Number	ATTRIBUTE	NM N	Java	corenlp
+bool	clip Dist Bug	DECLARATION	NM NM N	C++	ogre
+Clock	Clock	CLASS	N	C++	openFrameworks
+ClusterUpdateSettingsResponse	Cluster Update Settings Response	CLASS	NM NM NM N	Java	elasticsearch
+List	cmd Lines	DECLARATION	NM NPL	Java	jenkins
+CmdOutputOperationType	Cmd Output Operation Type	CLASS	NM NM NM N	C++	ogre
+String	cmd Str	PARAMETER	NM N	Java	corenlp
+sharedptr	cms Pricer	DECLARATION	NM N	C++	QuantLib
+String	code Exception Message	DECLARATION	NM NM N	Java	okhttp
+CodeGeneratorPrivate	Code Generator Private	CLASS	NM N NM	C++	kdevelop
+int	code Point To	PARAMETER	NM N P	Java	antlr4
+int[]	CODES	ATTRIBUTE	NPL	Java	okhttp
+long	col Length Left	DECLARATION	NM NM N	C++	bullet3
+KoColorConversionSystem	color Conversion System	ATTRIBUTE	NM NM N	C++	calligra
+ColorMap	Color Map	CLASS	NM N	C++	calligra
+QMap	color Map	PARAMETER	NM N	C++	opencv
+uint	colored Count	ATTRIBUTE	NM N	C	kdevelop
+CombinePaintMaskToCanvasBufferToPaintBufAlpha	Combine Paint Mask To Canvas Buffer To Paint Buf Alpha	CLASS	NM NM N P NM N P NM NM N	C++	gimp.idents
+Command_t	Command t	CLASS	NM N	C	gimp.idents
+CompMask	Comp Mask	CLASS	NM N	C++	gimp.idents
+Field	compare Fields By Name	DECLARATION	V NPL P N	Java	mockito
+int	compare Inverse And Forward Dynamics	FUNCTION	V NM CJ NM NPL	C++	bullet3
+TValue	comparison Value	PARAMETER	NM N	C#	antlr4
+CompilerItem	Compiler Item	CLASS	NM N	C++	kdevelop
+bool	compiling Contexts	DECLARATION	V NPL	C	kdevelop
+BatchCompletionDelegate	Completion Handler I Unary Response Client Callback	ATTRIBUTE	NM N NM NM NM NM N	C#	grpc
+PixelComponentType	component Type	ATTRIBUTE	NM N	C	ogre
+List	concrete Follower Indices	PARAMETER	NM NM NPL	Java	elasticsearch
+mat4	cone translation	DECLARATION	NM N	C++	openFrameworks
+ConfigureTimeouts	Configure Timeouts	CLASS	NM NPL	Java	okhttp
+serverconnectionstate	connection state	PARAMETER	NM N	C++	grpc
+ConstParameterFloat	Const Parameter Float	CLASS	NM NM N	C++	ogre
+ContainerTabBar	Container Tab Bar	CLASS	NM NM N	C++	kdevelop
+ContentPath	Content Path	CLASS	NM N	Java	elasticsearch
+String	content Type String	PARAMETER	NM NM N	Java	okhttp
+int	context Length	ATTRIBUTE	NM N	Java	junit4
+ContextTokenListIndexedGetterDecl	Context Token List Indexed Getter Decl	CLASS	NM NM NM NM NM N	Java	antlr4
+QList	context Url List	FUNCTION	NM NM N	C++	kdevelop
+ContextualizeClosures	Contextualize Closures	CLASS	V NPL	C++	swift
+QVector	control Points	DECLARATION	NM NPL	C++	calligra
+ControlledObject	Controlled Object	CLASS	NM N	C++	blender
+ControllerValue	Controller Value	CLASS	NM N	C++	ogre
+string	Convert To Php Namespace	FUNCTION	V P NM N	C++	grpc
+b3ConvexPolyhedronData	convex Shapes	PARAMETER	NM NPL	C	bullet3
+CookieJar	cookie Jar	ATTRIBUTE	NM N	Java	okhttp
+ActionBarMenuItem	copy Item	DECLARATION	NM N	Java	Telegram
+GsrProcessCore	core	ATTRIBUTE	N	C++	QuantLib
+opusint64[]	corr QC	DECLARATION	NM N	C	Telegram
+sharedptr	coterminal Model	DECLARATION	NM N	C++	QuantLib
+char[]	cp 1254	DECLARATION	N D	C++	calligra
+CppGeneratorServices	Cpp Generator Services	CLASS	NM NM NPL	C#	grpc
+CqEventQueue	Cq Event Queue	CLASS	NM NM N	C++	grpc
+int	create Duplicate Change Id	FUNCTION	V NM NM N	C++	calligra
+ParameterPtr	create In Indices	FUNCTION	V NM NPL	C++	ogre
+bool	create metadata array	FUNCTION	V NM N	C++	grpc
+Buffer	create Sub Buffer	FUNCTION	V NM N	C++	opencv
+grpc_server_credentials* creds_	creds	ATTRIBUTE	NPL	C	grpc
+CRFNonLinearLogConditionalObjectiveFunction	CRF Non Linear Log Conditional Objective Function	CLASS	NM NM NM NM NM NM N	Java	corenlp
+GeglNode	crop node	ATTRIBUTE	NM N	C	gimp
+Exception	curr Thread Exception	DECLARATION	NM NM N	Java	junit4
+Mat	current Charuco Corners	DECLARATION	NM NM NPL	C++	opencv
+String	current Filename	ATTRIBUTE	NM N	Java	corenlp
+InvocationOnMock	current Invocation	PARAMETER	NM N	Java	mockito
+int16_t current_median	current median	PARAMETER	NM N	C	Telegram
+int	current Open Shards	DECLARATION	NM NM NPL	Java	elasticsearch
+String	current Prefix	PARAMETER	NM N	Java	jenkins
+Matrix	current Root	PARAMETER	NM N	C++	QuantLib
+ISceneNode	Current Scene Node	ATTRIBUTE	NM NM N	C++	irrlicht
+vector	current Sequence	DECLARATION	NM N	C++	QuantLib
+int	current Slide	FUNCTION	NM N	C++	calligra
+gint	curvatures height	PARAMETER	NM N	C	gimp
+vector	curves	FUNCTION	NPL	C++	QuantLib
+DBusProxy	D Bus Proxy	CLASS	NM NM N	C++	kdevelop
+float	d inf	DECLARATION	NM N	Java	Telegram
+Mat	D mat	PARAMETER	NM N	C++	opencv
+DobjPoints	D obj Points	CLASS	NM NM NPL	C	gimp.idents
+D3D11UnsupportedGpuProgram	D3D11 Unsupported Gpu Program	CLASS	NM NM NM N	C++	ogre
+DataAccessRepositoryPrivate	Data Access Repository Private	CLASS	NM NM N NM	C++	kdevelop
+FrameworkMethod	data Point Method	PARAMETER	NM NM N	Java	junit4
+GimpDebugPolicy	debug policy	ATTRIBUTE	NM N	C	gimp
+DeclarationContextPrivate	Declaration Context Private	CLASS	NM N NM	C++	kdevelop
+DeclarationItem	Declaration Item	CLASS	NM N	C++	kdevelop
+void	declare Component	FUNCTION	V N	C++	kdevelop
+Object	deep Stub	FUNCTION	NM N	Java	mockito
+guchar	default	PARAMETER	N	C	gimp
+Answer defaultAnswer	default Answer	ATTRIBUTE	NM N	Java	mockito
+AutoConstantEntry	default Auto Entry	PARAMETER	NM NM N	C++	ogre
+BlockedItem	DEFAULT BLOCKED ITEM COMPARATOR	DECLARATION	NM NM NM N	Java	jenkins
+ParametersRunnerFactory	DEFAULT FACTORY	ATTRIBUTE	NM N	Java	junit4
+int	DEFAULT FLAGS	ATTRIBUTE	NM NPL	Java	elasticsearch
+DefaultInjectionEngine	Default Injection Engine	CLASS	NM NM N	Java	mockito
+void	default instance void	ATTRIBUTE	NM NM N	C	opencv
+ColorManagedLook	default look	DECLARATION	NM N	C	blender
+Matx	default mat x	PARAMETER	NM NM N	C++	opencv
+DefaultMockingDetails	Default Mocking Details	CLASS	NM NM NPL	Java	mockito
+bool	default open	PARAMETER	NM N	C	bullet3
+String	default Role	PARAMETER	NM N	Java	jenkins
+DefaultSslRootsOverride	Default Ssl Roots Override	CLASS	NM NM NPL NM	C#	grpc
+Define	Define	CLASS	N	C++	calligra
+int	delay agnostic enabled	ATTRIBUTE	NM N V	C	Telegram
+DeleteResponse	delete	FUNCTION	V	Java	elasticsearch
+void	Delete Input	FUNCTION	V N	C	grpc
+AbstractCoreLabel	dep H	PARAMETER	NM N	Java	corenlp
+ST	dependencies ST	DECLARATION	NM N	Java	antlr4
+QString	DEPOT MESSAGE START	DECLARATION	NM NM N	C++	kdevelop
+freenectdepthcb	depth cb	ATTRIBUTE	NM N	C	openFrameworks
+bool	depth Stencil As Texture	ATTRIBUTE	NM N P N	C	openFrameworks
+DeserializationContext	Deserialization Context	CLASS	NM N	C#	grpc
+dimension2d	desktop Size	PARAMETER	NM N	C++	irrlicht
+GimpVector2	dest points	PARAMETER	NM NPL	C	gimp
+gboolean	destroy with parent	PARAMETER	V P N	C	gimp
+bool	Detect Leaks	ATTRIBUTE	V NPL	C	grpc
+Strictness	determine Strictness	FUNCTION	V N	Java	mockito
+InstallState	DEVELOPMENT	ATTRIBUTE	N	Java	jenkins
+DeviceHandler	Device Handler	CLASS	NM N	C++	opencv
+DialogElements	Dialog Elements	CLASS	NM NPL	C	gimp.idents
+void	dialog info update	FUNCTION	NM N V	C	gimp
+Real	discount Factor	PARAMETER	NM N	C++	QuantLib
+DiskLruCache	Disk Lru Cache	CLASS	NM NM N	Java	okhttp
+DispatchMaskBufferIterator	Dispatch Mask Buffer Iterator	CLASS	NM NM NM N	C++	gimp.idents
+DispatchPaintMask	Dispatch Paint Mask	CLASS	NM NM N	C++	gimp.idents
+DisposeType	dispose	PARAMETER	N	C	gimp
+DiscountFactor	dividend Discount Mother	FUNCTION	NM NM N	C++	QuantLib
+bool	do Caps	PARAMETER	V NPL	C++	QuantLib
+HttpResponse	do Forward	FUNCTION	V V	Java	jenkins
+HttpResponse	do Install Status	FUNCTION	V NM N	Java	jenkins
+void	do Login Entry	FUNCTION	V NM N	Java	jenkins
+bool	do Print After	FUNCTION	V V P	C++	swift
+DockWidgetArea	docking Area	PARAMETER	NM N	C++	kdevelop
+DOTGenerator	DOT Generator	CLASS	NM N	Java	antlr4
+int	down sample	PARAMETER	NM N	C	Telegram
+Real	drift term	DECLARATION	NM N	C++	QuantLib
+String	driver Type Name	PARAMETER	NM NM N	C++	ogre
+OutputArray	dst map 2	PARAMETER	NM N D	C++	opencv
+float	dst Saturation	DECLARATION	NM N	C	calligra
+int	dst Type 1	DECLARATION	NM N D	C++	opencv
+DualConInputReader	Dual Con Input Reader	CLASS	NM NM NM N	C++	blender
+void	dump cemd cmd	FUNCTION	V NM N	C	openFrameworks
+void	dump Core Map To String Builder	FUNCTION	V NM N P NM N	Java	corenlp
+void	dump Frame buffer Formats	FUNCTION	V NM NM NPL	C	irrlicht
+DvbSubtitleReader	Dvb Subtitle Reader	CLASS	NM NM N	Java	Telegram
+int	dynamic Table Byte Count	ATTRIBUTE	NM NM NM N	Java	okhttp
+int	dynamic Table Index	FUNCTION	NM NM N	Java	okhttp
+DynamicTexturedCubeDemo	Dynamic Textured Cube Demo	CLASS	NM NM NM N	C++	bullet3
+bool	echo path change	PARAMETER	V NM N	C	Telegram
+gint	edit count	ATTRIBUTE	NM N	C	gimp
+unsigned	Edit Length	PARAMETER	NM N	C++	swift
+Style	effective Style	FUNCTION	NM N	C++	calligra
+GLboolean	EGLEW ANDROID frame buffer target	ATTRIBUTE	PRE PRE NM NM N	C	blender
+PFNCREATEPLATFORMWINDOWSURFACE	eglew Create Platform Window Surface	ATTRIBUTE	PRE V NM NM N	C	blender
+GLboolean	EGLEW KHR stream fifo	ATTRIBUTE	PRE PRE NM N	C	blender
+GParamSpec	element spec	DECLARATION	NM N	C	gimp
+VersionNumber	EMBEDDED VERSION	ATTRIBUTE	NM N	Java	jenkins
+ManagedValue	emit Address	FUNCTION	V N	C++	swift
+FileObserver[]	EMPTY DIRECTORY	ATTRIBUTE	NM N	Java	elasticsearch
+void	enable Background Opacity	FUNCTION	V NM N	C++	calligra
+void	enable Materials	FUNCTION	V NPL	C++	openFrameworks
+freenectdeviceflags	enabled subdevices	ATTRIBUTE	NM NPL	C	openFrameworks
+List	encoded Path Segments	ATTRIBUTE	NM NM NPL	Java	okhttp
+List	encoded Values	PARAMETER	NM N	Java	okhttp
+boolean	end Of Input	DECLARATION	N P N	Java	antlr4
+ImmutableTextSnapshotRef	End Snapshot	PARAMETER	NM N	C++	swift
+int	enum Count	DECLARATION	NM N	Java	junit4
+String	env Name	PARAMETER	NM N	Java	antlr4
+EnvVarsSlaveInfo_DisplayName	Env Vars Slave Info Display Name	CLASS	NM NM NM NM NM N	Java	jenkins
+Real	EPS	PARAMETER	N	C++	QuantLib
+EqualsBuilder	equals Builder	DECLARATION	NM N	Java	mockito
+int	equals Offset	DECLARATION	NM N	Java	okhttp
+T	err ret	PARAMETER	NM N	C++	Telegram
+uint	error Mark Type	DECLARATION	NM NM N	C++	kdevelop
+ESetTextureActive	esa	PARAMETER	N	C	irrlicht
+Date	event 0	DECLARATION	N D	C++	QuantLib
+ArrayList	exception Channels	ATTRIBUTE	NM NPL	Java	Telegram
+int	excess Workload	PARAMETER	NM N	Java	jenkins
+Executor	Executor	CLASS	N	Java	jenkins
+List	executors	DECLARATION	NPL	Java	jenkins
+path	existing symlink	PARAMETER	NM N	C++	grpc
+Set	expand Headers From Request	FUNCTION	V NPL P N	Java	elasticsearch
+int	expect rows	DECLARATION	NM NPL	C++	opencv
+ExpectedException	Expected Exception	CLASS	NM N	Java	junit4
+String	expected String	DECLARATION	NM N	Java	junit4
+ExplicitEulerScheme	Explicit Euler Scheme	CLASS	NM NM N	C++	QuantLib
+ExpressionFinder	Expression Finder	CLASS	NM N	C++	swift
+ClusteredBitVector	extra Inhabitants Mask	DECLARATION	NM NM N	C++	swift
+List	extra Interfaces	DECLARATION	NM NPL	Java	mockito
+TimeSeries	extract Component	FUNCTION	V N	C++	QuantLib
+boolean	extract Events	ATTRIBUTE	V NPL	Java	corenlp
+Class	extract Raw Type Of	FUNCTION	V NM NM P	Java	mockito
+int	f Context Length	ATTRIBUTE	PRE NM N	Java	junit4
+Real	f Cos	DECLARATION	NM N	C++	ogre
+bool	f curve Found	DECLARATION	NM N V	C++	ogre
+FakeMetaMethod	f m m	DECLARATION	NM NM N	C++	kdevelop
+Matcher	f Matcher	ATTRIBUTE	PRE N	Java	junit4
+float	f Ptr Out	DECLARATION	PRE NM N	C++	openFrameworks
+Real	f Tolerance	PARAMETER	NM N	C++	ogre
+int	face index	DECLARATION	NM N	C	blender
+Class	factory Class	DECLARATION	NM N	Java	junit4
+bool	fast Load Success	DECLARATION	VM V N	C++	ogre
+FdBlackScholesVanillaEngine	Fd Black Scholes Vanilla Engine	CLASS	NM NM NM NM N	C++	QuantLib
+auto	feature Iterator	DECLARATION	NM N	C++	antlr4
+FeedAdapter	FEED ADAPTER	ATTRIBUTE	NM N	Java	jenkins
+void	fence	FUNCTION	N	C++	opencv
+unsigned	field Offset Vector	DECLARATION	NM NM N	C++	swift
+SourceFile	File	ATTRIBUTE	N	C++	swift
+FileChannel	file Channel	PARAMETER	NM N	Java	okhttp
+RepeatedField	file Descriptor Proto	ATTRIBUTE	NM NM N	C#	grpc
+FileItemDelegate	File Item Delegate	CLASS	NM NM N	C++	calligra
+FileOperator	File Operator	CLASS	NM N	Java	okhttp
+FilePathFilter	File Path Filter	CLASS	NM NM N	Java	jenkins
+FileSystemArchive	File System Archive	CLASS	NM NM N	C++	ogre
+String	filter Spec	DECLARATION	NM N	Java	junit4
+List	filtered Children	ATTRIBUTE	NM NPL	Java	junit4
+Response	final Response	PARAMETER	NM N	Java	elasticsearch
+Metadata	find Hashable Base Type	FUNCTION	V NM NM N	C++	swift
+String	find Source Subdir	FUNCTION	V NM N	Java	antlr4
+int	fine priority	PARAMETER	NM N	C	Telegram
+AlertDialog	fingerprint Dialog	ATTRIBUTE	NM N	Java	Telegram
+boolean	finished Normally	DECLARATION	V VM	Java	elasticsearch
+int	first Space	DECLARATION	NM N	Java	okhttp
+gchar	first type label	PARAMETER	NM NM N	C	gimp
+ICameraSceneNode	fixed Cam	DECLARATION	NM N	C++	irrlicht
+Frequency	fixed Leg Frequency	DECLARATION	NM NM N	C++	QuantLib
+FixedObject	Fixed Object	CLASS	NM N	C++	blender
+int	flag	ATTRIBUTE	N	C	blender
+Pair	flags Classifier Pair	PARAMETER	NM NM N	Java	corenlp
+float	Float	FUNCTION	N	C++	bullet3
+DayCounter	float Day Counter	ATTRIBUTE	NM NM N	C++	QuantLib
+vector	folder Names	PARAMETER	NM NPL	C++	openFrameworks
+MetadataResponse	follow Component	FUNCTION	V N	C++	swift
+Request	followUp	DECLARATION	N	Java	okhttp
+FootnotesPosition	footnotes Position	ATTRIBUTE	NM N	C++	calligra
+bool	force Direct	PARAMETER	V N	C++	kdevelop
+bool	forked iter	DECLARATION	V N	C	blender
+String	format Display Name	FUNCTION	V NM N	Java	junit4
+boolean	format OK	DECLARATION	N NM	Java	antlr4
+FormattedText	Formatted Text	CLASS	NM N	Java	mockito
+opusint16[]	frame	PARAMETER	N	C	Telegram
+Frame2	Frame 2	CLASS	N D	C++	blender
+float[]	frame pixel coords	PARAMETER	NM NM NPL	C	blender
+pointer	free cell	ATTRIBUTE	NM N	C	gimp
+int[]	free Positions	DECLARATION	NM NPL	Java	corenlp
+BytesReference	from Byte Buffers	FUNCTION	P NM NPL	Java	elasticsearch
+btVector3	from Local Aabb Min	DECLARATION	P NM NM N	C++	bullet3
+boolean	from Server	PARAMETER	P N	Java	Telegram
+gchar	full path	PARAMETER	NM N	C	gimp
+InputArray	Func	PARAMETER	N	C++	opencv
+IDocument	future Active Doc	DECLARATION	NM NM N	C++	kdevelop
+Real	gauss Lobatto Eps	PARAMETER	NM NM N	C++	QuantLib
+String	GEN SUBJ	ATTRIBUTE	NM N	Java	corenlp
+bool	generate Rule Bypass Transitions	DECLARATION	V NM NM NPL	C#	antlr4
+void	Generate Service Descriptor Property	FUNCTION	V NM NM N	C++	grpc
+String	generated Token On Creation	DECLARATION	NM N P N	Java	jenkins
+GenericEmissiveClosure	Generic Emissive Closure	CLASS	NM NM N	C++	blender
+GenericTypeExtractor	Generic Type Extractor	CLASS	NM NM N	Java	mockito
+GeometryInterface	Geometry Interface	CLASS	NM N	C++	bullet3
+Object[]	get Actual Values	FUNCTION	V NM NPL	Java	junit4
+String	get Artificial Op Prec Rule	FUNCTION	V NM NM NM N	Java	antlr4
+Side	get Binary Side	FUNCTION	V NM N	Java	corenlp
+String	get Commit Id	FUNCTION	V NM N	Java	jenkins
+long	get Completed	FUNCTION	V NM	Java	elasticsearch
+ConstantReference	get Constant Reference For Protocol Descriptor	FUNCTION	V NM N P NM N	C++	swift
+void	get Controller Transform	FUNCTION	V NM N	C++	bullet3
+TextureAtlasAttib	get Default Atlasing Attributes	FUNCTION	V NM NM NPL	C++	ogre
+InstallState	get Default Install State	FUNCTION	V NM NM N	Java	jenkins
+ColourValue	get Diffuse Colour	FUNCTION	V NM N	C++	ogre
+String	get Display Path	FUNCTION	V NM N	Java	jenkins
+bool	Get DMF Header	FUNCTION	V NM N	C	irrlicht
+List	get Error Listeners	FUNCTION	V NM NPL	Java	antlr4
+Long	get Failure Timestamp	FUNCTION	V NM N	Java	junit4
+GetHomeDirectory	Get Home Directory	CLASS	V NM N	Java	jenkins
+String	get Id For Name	FUNCTION	V N P N	Java	elasticsearch
+int	get Initial Window Size	FUNCTION	V NM NM N	Java	okhttp
+Descriptor	get Item Type Descriptor	FUNCTION	V NM NM N	Java	jenkins
+ematrix6	get Jf	FUNCTION	V N	C++	blender
+Tree	get Leftmost Descendant	FUNCTION	V NM N	Java	corenlp
+double	Get Longitude	FUNCTION	V N	C#	grpc
+int	get Max Shingle Diff	FUNCTION	V NM NM N	Java	elasticsearch
+int	Get Meta Index	FUNCTION	V NM N	C	Telegram
+FunctionType	get Msg Send Super Ty	FUNCTION	V NM NM NM N	C++	swift
+int	get Number Of Transitions	FUNCTION	V N P NPL	Java	antlr4
+long	get Operations Reads	FUNCTION	V NM NPL	Java	elasticsearch
+String	get Phrase 1	FUNCTION	V N D	Java	corenlp
+int	get PID No Exceptions	FUNCTION	V N DT NPL	Java	corenlp
+Vector3	get Plane Point	FUNCTION	V NM N	C	ogre
+Method	get Protocol Method	PARAMETER	NM NM N	Java	okhttp
+Object[]	get Raw Arguments	FUNCTION	V NM NPL	Java	mockito
+float	get Red Adjust 2	FUNCTION	V NM N D	C++	ogre
+double	Get Related View Data Row Double	FUNCTION	V NM NM NM N NM	C++	grpc
+String	GET SOURCE NAME	ATTRIBUTE	NM NM N	Java	elasticsearch
+Real	get Top Border Size	FUNCTION	V NM NM N	C++	ogre
+GetTotalDiskSpace	Get Total Disk Space	CLASS	V NM NM N	Java	jenkins
+path	get Working Directory	FUNCTION	V NM N	C++	irrlicht
+int	Get XCR 0	FUNCTION	V N D	C++	Telegram
+void	gimp canvas rectangle set property	FUNCTION	PRE NM N V N	C	gimp
+gboolean	gimp devices check change	FUNCTION	PRE NPL V V	C	gimp
+gboolean	gimp eraser default	FUNCTION	PRE N NM	C	gimp
+void	gimp filter tool set gyroscope	FUNCTION	PRE NM N V N	C	gimp
+GimpThumbnail	gimp image file get thumbnail	FUNCTION	PRE NM N V N	C	gimp
+void	gimp param drawable id init	FUNCTION	PRE NM NM N V	C	gimp
+void	gimp selection tool class init	FUNCTION	PRE NM NM N V	C	gimp
+void	gimp status bar progress canceled	FUNCTION	PRE NM NM N V	C	gimp
+void	gimp value set int32 array	FUNCTION	PRE N V NM N	C	gimp
+gboolean	gimp wire compare	FUNCTION	PRE N V	C	gimp
+GLConfigAttribs	GL Config Attribs	CLASS	PRE NM NPL	C++	ogre
+PFNGLINDEXMASKPROC	glew Index Mask	ATTRIBUTE	PRE NM N	C	blender
+PFNGLRENDERMODEPROC	glew Render Mode	ATTRIBUTE	PRE NM N	C	blender
+PFNGLVALIDATEPROGRAMPIPELINEPROC	glew Validate Program Pipeline	ATTRIBUTE	PRE V NM N	C	ogre
+ObjectValue	global Scope	FUNCTION	NM N	C++	kdevelop
+GlobalsAsMembersTableReaderInfo	Globals As Members Table Reader Info	CLASS	NPL P NPL NM NM N	C++	swift
+GLXConfigurator	GLX Configurator	CLASS	NM N	C++	ogre
+int	gpencil primitive modal	FUNCTION	NM NM N	C	blender
+QList	group Boxes	ATTRIBUTE	NM NPL	C++	kdevelop
+GroupByContext	Group By Context	CLASS	N P N	Java	elasticsearch
+String	group Role Attribute	PARAMETER	NM NM N	Java	jenkins
+string	grouping	PARAMETER	N	C++	grpc
+void	grpc chttp2 mark stream writable	FUNCTION	PRE PRE V N NM	C++	grpc
+void	grpc json writer value string	FUNCTION	PRE NM NM NM N	C++	grpc
+void	grpc sock addr make wildcards	FUNCTION	PRE NM N V NPL	C++	grpc
+Hpack	H pack	CLASS	NM N	Java	okhttp
+void	H Wnd	ATTRIBUTE	N NM	C	irrlicht
+bool	Handle If	FUNCTION	V CJ	C++	ogre
+QPointF	handle Pos	PARAMETER	NM N	C++	calligra
+DenseSet	handled Boxes	ATTRIBUTE	NM NPL	C++	swift
+HandshakeMode	Handshake Mode	CLASS	NM N	Java	elasticsearch
+bool	has Composite Op	FUNCTION	V NM N	C++	calligra
+bool	has View Relative Texture Coordinate Generation	FUNCTION	V NM NM NM NM N	C++	ogre
+bool	have Mask	DECLARATION	V N	C++	opencv
+HDRListener	HDR Listener	CLASS	NM N	C++	ogre
+HeatVisionListener	Heat Vision Listener	CLASS	NM NM N	C++	ogre
+gint	height int	ATTRIBUTE	NM N	C	gimp
+FastVectorHighlighter	highlighter	PARAMETER	N	Java	elasticsearch
+QAction	history Action	ATTRIBUTE	NM N	C++	kdevelop
+HtmlFile	html File	PARAMETER	NM N	C++	calligra
+Http1ExchangeCodec	Http1 Exchange Codec	CLASS	NM NM N	Java	okhttp
+int	http2 Error Code	PARAMETER	NM NM N	Java	okhttp
+IllegalArgumentException	i ar e	PARAMETER	NM NM N	Java	junit4
+IReadFile	I Read File	CLASS	NM NM N	C++	irrlicht
+SILDeclRef	i var Initializer	PARAMETER	NM NM N	C++	swift
+gint32	ico load layer	FUNCTION	PRE V N	C	gimp
+IcyDecoder	Icy Decoder	CLASS	NM N	Java	Telegram
+long	id A	PARAMETER	NM N	Java	jenkins
+int	ID LUMNINANCE MIN	ATTRIBUTE	NM NM N	Java	Telegram
+Map	id Mention	DECLARATION	N NM	Java	corenlp
+GQuark	identifier quark	DECLARATION	NM N	C	gimp
+long	idle Delay	ATTRIBUTE	NM N	Java	jenkins
+IdpConfiguration	idp Configuration	DECLARATION	NM N	Java	elasticsearch
+int	idx u	DECLARATION	NM N	C	blender
+vector	im out shape	ATTRIBUTE	NM NM N	C++	opencv
+ImageManager	Image Manager	CLASS	NM N	C++	blender
+void	imb stereo3d read interlace	FUNCTION	PRE NM V N	C	blender
+stbi_uc	img buffer original	ATTRIBUTE	NM N NM	C	ogre
+IplImage[]	img stub	DECLARATION	NM N	C++	opencv
+FREEIMAGETYPE	img Type	DECLARATION	NM N	C++	openFrameworks
+String	IMPLICIT GROUP KEY	DECLARATION	NM NM N	Java	elasticsearch
+Grammar	import G	PARAMETER	NM N	Java	antlr4
+wchart	in	PARAMETER	N	C++	bullet3
+float	in buffer	PARAMETER	NM N	C	openFrameworks
+Strategy	in Cache	DECLARATION	P N	Java	Telegram
+VerificationMode inOrderWrappedVerificationMode	in Order Wrapped Verification Mode	ATTRIBUTE	P N NM NM N	Java	mockito
+bool	in SCC	FUNCTION	P N	C++	swift
+boolean	inbound	PARAMETER	NM	Java	okhttp
+IndexData	index Data	ATTRIBUTE	NM NPL	C	ogre
+String	INDEX PREFIX WITH TEMPLATE	ATTRIBUTE	NM N P N	Java	elasticsearch
+int	index Tensor	PARAMETER	NM N	C++	opencv
+int	index To Loc Format	ATTRIBUTE	N P NM N	C	bullet3
+Integer[]	indexes Of Suspicious Args	DECLARATION	NPL P NM NPL	Java	mockito
+IntPtr	inertial Frame	DECLARATION	NM N	C#	bullet3
+InetSocketAddress	inet Socket Address	ATTRIBUTE	NM NM N	Java	okhttp
+Real	inflation Leg NPV	FUNCTION	NM NM N	C++	QuantLib
+void	init For Group	FUNCTION	V P N	Java	Telegram
+Throwable	INITIALIZATION ERROR	ATTRIBUTE	NM N	Java	mockito
+void	Initialize Dual Graph	FUNCTION	V NM N	C++	bullet3
+float	inner Alpha	ATTRIBUTE	NM N	Java	Telegram
+Radian	inner Angle	PARAMETER	NM N	C++	ogre
+auto	inst Results	DECLARATION	NM NPL	C++	swift
+InstallUncaughtExceptionHandler	Install Uncaught Exception Handler	CLASS	V NM NM N	Java	jenkins
+QString	institution	PARAMETER	N	C++	calligra
+string	int Hex String	PARAMETER	NM NM N	C++	openFrameworks
+Type[]	interface Bounds	DECLARATION	NM NPL	Java	mockito
+Internal	Internal	CLASS	NM	Java	okhttp
+InternalFFMpegRegister	Internal FFMpeg Register	CLASS	NM NM N	C++	opencv
+Real	inv Flight K 2	DECLARATION	NM NM N D	C++	QuantLib
+float	inv unit scale	DECLARATION	NM NM N	C	blender
+Interval	INVALID	ATTRIBUTE	NM	Java	antlr4
+String	INVALID HOST	ATTRIBUTE	NM N	Java	okhttp
+int	INVALID STATE NUMBER	ATTRIBUTE	NM NM N	Java	antlr4
+InverseDynamicsExample	Inverse Dynamics Example	CLASS	NM NM N	C++	bullet3
+bool	Invert Success	ATTRIBUTE	V N	C++	swift
+Vector3	inverted Direction	DECLARATION	NM N	C++	ogre
+OutputStream	ios	PARAMETER	N	Java	jenkins
+int	is a empty	DECLARATION	V DT N	C	grpc
+boolean	is Android	FUNCTION	V N	Java	mockito
+boolean	is Blocked By Shutdown	FUNCTION	V V P N	Java	jenkins
+BitVector	Is Bridged Argument	ATTRIBUTE	V NM N	C++	swift
+bool	is canon	FUNCTION	V N	C	blender
+boolean	is Conscrypt Preferred	FUNCTION	V N V	Java	okhttp
+boolean	is Dependency Changed	FUNCTION	V N V	Java	antlr4
+ScorePhraseMeasures	IS FIRST CAPITAL	ATTRIBUTE	V NM N	Java	corenlp
+boolean	is First Frame	ATTRIBUTE	V NM N	Java	okhttp
+bool	is Friend	PARAMETER	V N	C++	kdevelop
+bool	is Generic Type Disambiguating Token	FUNCTION	V NM NM NM N	C++	swift
+bool	Is Indirect Result	ATTRIBUTE	V NM N	C	swift
+bool	is Node A Left Child Leaf	DECLARATION	V N DT NM NM N	C++	bullet3
+int	is partial	ATTRIBUTE	V N	C	opencv
+bool	Is Return Bridged	ATTRIBUTE	V N NM	C++	swift
+bool	is Stdlib Module	FUNCTION	V NM N	C++	swift
+bool	is Sum Supported	FUNCTION	V N V	C++	opencv
+bool	is Trained	DECLARATION	V V	C++	opencv
+IsVariadic	is V	PARAMETER	V NM	C++	swift
+bool	is Vaild	PARAMETER	V NM	C++	ogre
+bool	is Valid Trailing Closure	FUNCTION	V NM NM N	C++	swift
+double	items per second	DECLARATION	NPL P N	C++	grpc
+JarURLConnection	jar URL Connection	DECLARATION	NM NM N	Java	jenkins
+JFlexDummyLexer	JFlex Dummy Lexer	CLASS	PRE NM N	Java	corenlp
+JntArrayAcc	Jnt Array Acc	CLASS	NM NM N	C++	blender
+u32	joint Start	DECLARATION	NM N	C++	irrlicht
+bool	keep Aspect	ATTRIBUTE	V N	C++	calligra
+List	keep Readability Only On Descendants	FUNCTION	V NM VM P NPL	Java	jenkins
+QString	key	PARAMETER	N	C++	kdevelop
+int	key Begin	DECLARATION	NM N	Java	okhttp
+queue	key Events Copy	DECLARATION	NM NM N	C++	openFrameworks
+KeyFrame	key Frame 2	PARAMETER	NM N D	C++	ogre
+Setting	KEY PASSWORD PROFILES	ATTRIBUTE	NM NM NPL	Java	elasticsearch
+KeyStatus	Key Status	CLASS	NM N	Java	Telegram
+Keysym	key sym	ATTRIBUTE	NM N	C	ogre
+map	kinects Copy	DECLARATION	NM N	C++	openFrameworks
+KoMainWindowPrivate	Ko Main Window Private	CLASS	PRE NM N NM	C++	calligra
+KoPathPointRemoveCommandPrivate	Ko Path Point Remove Command Private	CLASS	PRE NM NM NM N NM	C++	calligra
+KoRgbU8InvertColorTransformation	Ko Rgb U8 Invert Color Transformation	CLASS	PRE NM NM NM NM N	C++	calligra
+KoSectionEndPrivate	Ko Section End Private	CLASS	PRE NM N NM	C++	calligra
+KoShadowStylePrivate	Ko Shadow Style Private	CLASS	PRE NM N NM	C++	calligra
+ListBase	l b layer	PARAMETER	NM NM N	C	blender
+LabelAction	Label Action	CLASS	NM N	C++	calligra
+gchar	label casefold	DECLARATION	NM N	C	gimp
+LabelDrawingWidget	Label Drawing Widget	CLASS	NM NM N	C++	calligra
+int	label Op	PARAMETER	NM N	Java	antlr4
+LabelElementPair	label Pair	PARAMETER	NM N	Java	antlr4
+Pattern	label Regex	ATTRIBUTE	NM N	Java	corenlp
+int[]	labels	PARAMETER	NPL	C++	opencv
+String	labels File	PARAMETER	NM N	Java	corenlp
+HashMap	language To Rules Files	ATTRIBUTE	N P NM NPL	Java	corenlp
+Array	last Gradient	FUNCTION	NM N	C++	QuantLib
+Size	last Saved Step	ATTRIBUTE	NM NM N	C++	QuantLib
+bool	last Token Was Delete Or Default	DECLARATION	NM N V N CJ N	C++	kdevelop
+String	LATENCY ARG	ATTRIBUTE	NM N	Java	elasticsearch
+GimpValueArray	layer get composite mode invoker	FUNCTION	NM V NM NM N	C	gimp
+GeglNode	layer mask source node	ATTRIBUTE	NM NM NM N	C	gimp
+LayerParameter	Layer Parameter	CLASS	NM N	C++	opencv
+vector	layer sizes	DECLARATION	NM NPL	C++	opencv
+LayoutData	Layout Data	CLASS	NM N	C++	calligra
+double[]	learned Lop Expert Weights 2 D	PARAMETER	NM NM NM NPL D N	Java	corenlp
+Lease	Lease	CLASS	N	Java	jenkins
+int	led Color	PARAMETER	NM N	Java	Telegram
+LeftRecursiveRuleFunction	Left Recursive Rule Function	CLASS	NM NM NM N	Java	antlr4
+int	left Sisters Buffer	DECLARATION	NM NM N	Java	corenlp
+int	len r	PARAMETER	NM N	C++	bullet3
+LessDummyGuiHelper	Less Dummy Gui Helper	CLASS	NM NM NM N	C++	bullet3
+unsigned	lhs Component	DECLARATION	NM N	C++	swift
+LightAttenuationValue	Light Attenuation Value	CLASS	NM NM N	C++	ogre
+vector3df	light Dim	PARAMETER	NM N	C++	irrlicht
+double	line 1 grad	DECLARATION	NM D N	C	gimp
+int	line index mask len	PARAMETER	NM NM NM N	C	blender
+int	line Y	DECLARATION	NM N	C++	calligra
+c8[]	Link Name	ATTRIBUTE	NM N	C	irrlicht
+QUrl	link URL	DECLARATION	NM N	C++	calligra
+ListLevel	List Level	CLASS	NM N	C++	calligra
+ResultBucket	literal Bucket	PARAMETER	NM N	C++	swift
+int	loaded mentions count	DECLARATION	NM NM N	Java	Telegram
+LocalRef	Local Ref	CLASS	NM N	Java	antlr4
+vector	locations	ATTRIBUTE	NPL	C++	QuantLib
+bool	locking	PARAMETER	V	C++	grpc
+LogMixedLinearCubicInterpolation	Log Mixed Linear Cubic Interpolation	CLASS	NM NM NM NM N	C++	QuantLib
+Logger	LOGGER	ATTRIBUTE	N	Java	jenkins
+String[]	logger Name Parts	DECLARATION	NM NM NPL	Java	jenkins
+Real	lower Boundary Factor	FUNCTION	NM NM N	C++	QuantLib
+int	lower tail	DECLARATION	NM N	C++	calligra
+String	lp Binary Path Name	PARAMETER	PRE NM NM N	Java	jenkins
+LsmBasisSystem	Lsm Basis System	CLASS	NM NM N	C++	QuantLib
+LVLCurrency	LVL Currency	CLASS	NM N	C++	QuantLib
+VcsAnnotation	m annotation	ATTRIBUTE	PRE N	C++	kdevelop
+b3Scalar	m contact Motion 1	ATTRIBUTE	PRE NM N D	C++	bullet3
+int	m count Activities	ATTRIBUTE	PRE NM NPL	Java	openFrameworks
+bool	m execute On Host	ATTRIBUTE	PRE V P N	C++	kdevelop
+int	m FBO Height	ATTRIBUTE	PRE NM N	Java	opencv
+uint8 mFirstRenderQueue	m First Render Queue	ATTRIBUTE	PRE NM NM N	C++	ogre
+b3OpenCLArray	m gpu Rays	ATTRIBUTE	PRE NM NPL	C++	bullet3
+bool	m is indx present	ATTRIBUTE	PRE V NM N	C++	opencv
+AtomicBoolean	m is Worker Done	ATTRIBUTE	PRE V N NM	Java	openFrameworks
+Cursor	m last Changed Location	ATTRIBUTE	PRE NM NM N	C++	kdevelop
+float	m Line Dash Offset	ATTRIBUTE	PRE NM NM N	C++	openFrameworks
+int	m num Visual Shapes Copied	ATTRIBUTE	PRE NM NM NM N	C	bullet3
+Mode	m paste Mode	ATTRIBUTE	PRE NM N	C++	calligra
+char[]	m post Fix	ATTRIBUTE	PRE NM N	C	bullet3
+boolean	m Preview Started	ATTRIBUTE	PRE N NM	Java	opencv
+MultiBodyTree	m reference	ATTRIBUTE	PRE N	C++	bullet3
+UserDataRequestArgs	m remove User Data Response Args	ATTRIBUTE	PRE NM NM NM NM NPL	C	bullet3
+Resources	m Resources	ATTRIBUTE	PRE NPL	Java	opencv
+streambuf	m sbuf	ATTRIBUTE	PRE N	C++	ogre
+Pass	m Shadow Receiver Pass	ATTRIBUTE	PRE NM NM N	C	ogre
+Quaternion	m Sky Box Orientation	ATTRIBUTE	PRE NM NM N	C	ogre
+uint8	m Sky Plane Render Queue	ATTRIBUTE	PRE NM NM NM N	C	ogre
+QStringList	m text Types	ATTRIBUTE	PRE NM NPL	C++	kdevelop
+b3TransformChangeNotificationArgs	m transform Change Args	ATTRIBUTE	PRE NM NM NPL	C	bullet3
+ParameterPtr	m VS Out Light Position	ATTRIBUTE	PRE NM NM NM N	C	ogre
+Queue	m weaver	ATTRIBUTE	PRE N	C++	kdevelop
+int	m window Width	ATTRIBUTE	PRE NM N	C++	bullet3
+CodeCompletionWorker	m worker	ATTRIBUTE	PRE N	C++	kdevelop
+ZoomController	m zoom Controller	ATTRIBUTE	PRE NM N	C++	kdevelop
+MainClass	Main Class	CLASS	NM N	C#	grpc
+String	make HTML Table	FUNCTION	V NM N	Java	corenlp
+String	MANIFEST FILE PREFIX	ATTRIBUTE	NM NM N	Java	elasticsearch
+guchar	mapped color	PARAMETER	NM N	C	gimp
+vector	mapped labels	DECLARATION	NM NPL	C++	opencv
+Maps	Maps	CLASS	NPL	Java	corenlp
+void	mark As Fetching	FUNCTION	V P V	Java	elasticsearch
+MaskComponents	Mask Components	CLASS	NM NPL	C++	gimp.idents
+boolean	match By IP	FUNCTION	V P N	Java	elasticsearch
+ExpectedExceptionMatcherBuilder	matcher Builder	ATTRIBUTE	NM N	Java	junit4
+boolean	matches Any Parent Categories	FUNCTION	V DT NM NPL	Java	junit4
+long	max Age Seconds Long	DECLARATION	NM NM NPL NM	Java	okhttp
+sharedptr	max basket	DECLARATION	NM N	C++	QuantLib
+int	max Buffer Size	ATTRIBUTE	NM NM N	C++	opencv
+MaxCore	Max Core	CLASS	NM N	Java	junit4
+int	max Draw Buffers	FUNCTION	NM NM NPL	C++	openFrameworks
+quint64	max File Open	ATTRIBUTE	NM N NM	C++	kdevelop
+sizet	max input size	DECLARATION	NM NM N	C++	grpc
+int	max Intermediate Cas	PARAMETER	NM NM NPL	Java	okhttp
+int	max Requests Per Host	PARAMETER	NM NPL P N	Java	okhttp
+double	max scale f	PARAMETER	NM NM N	C++	opencv
+int	max width	ATTRIBUTE	NM N	C++	openFrameworks
+sizet	max Work Group Size	ATTRIBUTE	NM NM NM N	C++	opencv
+void	maximize All	FUNCTION	V DT	C++	openFrameworks
+int	media Chunk Index	PARAMETER	NM NM N	Java	Telegram
+MediaChunkIterator	Media Chunk Iterator	CLASS	NM NM N	Java	Telegram
+uint	melanin ofs	DECLARATION	NM N	C	blender
+MentionDetectionEvaluator	Mention Detection Evaluator	CLASS	NM NM N	Java	corenlp
+String	merged Type	DECLARATION	NM N	Java	elasticsearch
+MetadataSnapshot	metadata Snapshot	FUNCTION	NM N	Java	elasticsearch
+Class	method Handles	DECLARATION	NM NPL	Java	mockito
+auto	method index	DECLARATION	NM N	C++	grpc
+String[]	method Name Prefixes	PARAMETER	NM NM NPL	Java	junit4
+double	Min Error	PARAMETER	NM N	C++	opencv
+int	min Font Size	ATTRIBUTE	NM NM N	Java	corenlp
+int	min Fresh	PARAMETER	NM N	Java	okhttp
+int	min Fresh Seconds	PARAMETER	NM NM NPL	Java	okhttp
+TransducerGraph	minimized Random FA	DECLARATION	NM NM N	Java	corenlp
+MINIMUM_SUPPORTED_VERSION	MINIMUM SUPPORTED VERSION	CLASS	NM NM N	Java	jenkins
+Set	missing Classes	DECLARATION	NM NPL	Java	elasticsearch
+vector	mkt Factors	PARAMETER	NM NPL	C++	QuantLib
+MockCreationSettings	mock Creation Settings	PARAMETER	NM NM NPL	Java	mockito
+MockCreationValidator	Mock Creation Validator	CLASS	NM NM N	Java	mockito
+Method	mock Method	DECLARATION	NM N	Java	mockito
+MockReference	mock Ref	ATTRIBUTE	NM N	Java	mockito
+MockitoAssertionError	Mockito Assertion Error	CLASS	PRE NM N	Java	mockito
+ModificationInterface	mod Iface	DECLARATION	NM N	C++	kdevelop
+Sezpoz	module Finder	ATTRIBUTE	NM N	Java	jenkins
+ModuleHandler	Module Handler	CLASS	NM N	Java	mockito
+MonoPInvokeCallbackAttribute	Mono P Invoke Callback Attribute	CLASS	NM NM NM NM N	C#	grpc
+int	MORE	ATTRIBUTE	DT	Java	antlr4
+TsurgeonPattern	move RBT surgeon	ATTRIBUTE	NM NM N	Java	corenlp
+MediaHandler	movie Media Handler	DECLARATION	NM NM N	C++	openFrameworks
+Mp4Extractor	Mp4 Extractor	CLASS	NM N	Java	Telegram
+MP4Input	MP4 Input	CLASS	NM N	Java	Telegram
+MpegAudioReader	Mpeg Audio Reader	CLASS	NM NM N	Java	Telegram
+mutex	mtx	ATTRIBUTE	N	C++	opencv
+MultiCubicSpline	MultiCubic Spline	CLASS	NM N	C++	QuantLib
+MultipleFailureException	Multiple Failure Exception	CLASS	NM NM N	Java	junit4
+bool	multiple Occurences	ATTRIBUTE	NM NPL	C++	calligra
+MultiPolygon	MultiPolygon	CLASS	N	Java	elasticsearch
+ThreadMXBean	mx Bean	DECLARATION	NM N	Java	junit4
+NormalDistribution	n d	ATTRIBUTE	NM N	C++	QuantLib
+gint32	n layers	PARAMETER	NM NPL	C	gimp
+int nrepeats	n repeats	DECLARATION	NM NPL	C++	opencv
+float	n Shininess	PARAMETER	NM N	C++	openFrameworks
+vector3d	n vector	PARAMETER	NM N	C	irrlicht
+LinearLayout	name Container	ATTRIBUTE	NM N	Java	Telegram
+List	named Writeables	PARAMETER	NM NPL	Java	elasticsearch
+bool	Nav Visible	ATTRIBUTE	N NM	C	bullet3
+int	nbr gaps	DECLARATION	NM NPL	C	blender
+int	nd Formula	DECLARATION	NM N	C++	calligra
+int	nearest point	DECLARATION	NM N	C	blender
+bool	need fallback	DECLARATION	V N	C	blender
+guint	neighbor pos	DECLARATION	NM N	C	gimp
+NetStateRuleDefaultTypeInternal	Net State Rule Default Type Internal	CLASS	NM NM NM NM N NM	C++	opencv
+Object	network Security Policy	DECLARATION	NM NM N	Java	okhttp
+NewAggregateBuilderMap	New Aggregate Builder Map	CLASS	NM NM NM N	C++	swift
+Exchange	new Exchange	FUNCTION	NM N	Java	okhttp
+MappedFieldType	new Field Type	PARAMETER	NM NM N	Java	elasticsearch
+List	new Files	PARAMETER	NM NPL	Java	corenlp
+gint	new image height	DECLARATION	NM NM N	C	gimp
+int	new order	DECLARATION	NM N	C	blender
+String	new Rule Text	DECLARATION	NM NM N	Java	antlr4
+SILType	new Sil Type	DECLARATION	NM NM N	C++	swift
+QList	new Strokes	ATTRIBUTE	NM NPL	C++	calligra
+VerificationMode	new Verification Mode	PARAMETER	NM NM N	Java	mockito
+long	new Warning Header Size	DECLARATION	NM NM NM N	Java	elasticsearch
+float	new Y	ATTRIBUTE	NM N	C++	calligra
+QRegularExpression	next Fragment Expression	DECLARATION	NM NM N	C++	kdevelop
+char	next func	PARAMETER	NM N	C	blender
+int	next Giphy Search Offset	ATTRIBUTE	NM NM NM N	Java	Telegram
+string	next Line	PARAMETER	NM N	C++	kdevelop
+byte[]	next Search	DECLARATION	NM N	Java	elasticsearch
+ParameterSignature	next Unassigned	FUNCTION	NM NM	Java	junit4
+bool	nla invert combine value	FUNCTION	NM V NM N	C	blender
+ShaderOutput	node find output by name	FUNCTION	N V N P N	C++	blender
+NodeShape	Node Shape	CLASS	NM N	C++	blender
+CSGNoiseSource	noise 1	DECLARATION	N D	C++	ogre
+JsonArrayBuilder	non Greedy States Builder	DECLARATION	NM NM NM N	Java	antlr4
+sizet	nonce length	ATTRIBUTE	NM N	C++	grpc
+void	notify Touch Down	FUNCTION	V NM N	C++	openFrameworks
+MockitoException	null Passed To Verify No More Interactions	FUNCTION	N V P V VM DT NPL	Java	mockito
+NullProgram	Null Program	CLASS	NM N	C++	ogre
+Class	nullable Class	PARAMETER	NM N	Java	junit4
+boolean	nulls Ok	FUNCTION	NPL NM	Java	junit4
+Num	Num	CLASS	N	C#	grpc
+int	num Active Contexts	PARAMETER	NM NM NPL	C++	bullet3
+u16	Num Active Tris	ATTRIBUTE	NM NM NPL	C++	irrlicht
+gint	num axis events	ATTRIBUTE	NM NM NPL	C	gimp
+u32	num body parts	ATTRIBUTE	NM NM NPL	C	irrlicht
+int	num cols	ATTRIBUTE	NM NPL	C	blender
+Size	num Factors	PARAMETER	NM NPL	C++	QuantLib
+int	num Files	PARAMETER	NM NPL	C++	openFrameworks
+u32	num groups	ATTRIBUTE	NM NPL	C	irrlicht
+int	num Keys	PARAMETER	NM NPL	Java	corenlp
+gint	num light	ATTRIBUTE	NM N	C	gimp
+sizet	num metadata	DECLARATION	NM N	C++	grpc
+int	num Outs	ATTRIBUTE	NM NPL	Java	openFrameworks
+sizet	num primes	DECLARATION	NM NPL	C	Telegram
+int	num States	DECLARATION	NM NPL	Java	corenlp
+int	num Tess Face Data	ATTRIBUTE	NM NM NM N	C	blender
+int16t	num Vec Per Segment	DECLARATION	NM N P N	C	Telegram
+int	num Verts In A	DECLARATION	NM NPL P N	C	bullet3
+Size	number Elementary Vegas	ATTRIBUTE	NM NM NPL	C++	QuantLib
+u32	number Of Joysticks	DECLARATION	N P NPL	C++	irrlicht
+u16	Number Start	ATTRIBUTE	NM N	C	irrlicht
+String	number Str	PARAMETER	NM N	Java	jenkins
+QString	numbering Path	DECLARATION	NM N	C++	calligra
+OAuthSession	OAuth Session	CLASS	NM N	Java	okhttp
+OAuthSessionFactory	OAuth Session Factory	CLASS	NM NM N	Java	okhttp
+ObjectProjection	obj Proj	DECLARATION	NM N	C++	swift
+Object	object With To String	FUNCTION	N P P N	Java	junit4
+OdfSymbolType	odf Symbol Type	ATTRIBUTE	NM NM N	C++	calligra
+OFAndroidLifeCycleHelper	OF Android Life Cycle Helper	CLASS	PRE NM NM NM N	Java	openFrameworks
+OFAndroidObject	OF Android Object	CLASS	PRE NM N	Java	openFrameworks
+OFAndroidSoundPlayer	OF Android Sound Player	CLASS	PRE NM NM N	Java	openFrameworks
+OFAndroidWindow	OF Android Window	CLASS	PRE NM N	Java	openFrameworks
+OFOrientationListener	OF Orientation Listener	CLASS	PRE NM N	Java	openFrameworks
+string	of To Binary	FUNCTION	PRE P N	C++	openFrameworks
+grpcclosure	on connect	PARAMETER	P N	C	grpc
+void	on Group Call Key Sent	FUNCTION	P NM NM N NM	Java	Telegram
+Void	on Implies	FUNCTION	P V	Java	jenkins
+OnItemLongClickListener	on Item Long Click Listener	ATTRIBUTE	P NM NM NM N	Java	Telegram
+boolean	one Document	DECLARATION	NM N	Java	corenlp
+Notification	ongoing Call Notification	ATTRIBUTE	NM NM N	Java	Telegram
+int	OP CODE CONTINUATION	ATTRIBUTE	NM NM N	Java	okhttp
+OpPool	Op Pool	CLASS	NM N	C++	opencv
+String[]	open Class Tags	DECLARATION	NM NM NPL	Java	corenlp
+DeclTable	operator Method Decls	PARAMETER	NM NM NPL	C++	swift
+bool	optimize Identity Cast Composition	FUNCTION	V NM NM N	C++	swift
+OrderWith	order With	DECLARATION	V P	Java	junit4
+Request	order With	FUNCTION	V P	Java	junit4
+List	ordered Invocations	PARAMETER	NM NPL	Java	mockito
+float	ori W	DECLARATION	NM N	C++	bullet3
+MockingDetails	original Mocking Details	ATTRIBUTE	NM NM NPL	Java	mockito
+Set	original Set	PARAMETER	NM N	Java	elasticsearch
+long	other Data Len Bits	ATTRIBUTE	NM NM NM NPL	Java	Telegram
+gdouble	other side x	ATTRIBUTE	NM NM N	C	gimp
+char	out buf	PARAMETER	NM N	C	irrlicht
+double[]	out d G	DECLARATION	N NM NM	C	Telegram
+char[]	out table	PARAMETER	NM N	C	bullet3
+TestRule	outer Rule	PARAMETER	NM N	Java	junit4
+T	output array	PARAMETER	NM N	C++	grpc
+OutputDelegatePrivate	Output Delegate Private	CLASS	NM N NM	C++	kdevelop
+int	overlap	PARAMETER	N	C	Telegram
+auto	overriden Function It	DECLARATION	NM NM N	C++	kdevelop
+short	own flags	PARAMETER	NM NPL	C	blender
+unzglobalinfo	p global info 32	PARAMETER	PRE NM N D	C	bullet3
+long	packet Sample Count	PARAMETER	NM NM N	Java	Telegram
+Optional	packet sent	ATTRIBUTE	NM N	C	grpc
+auto	PAI Arg	DECLARATION	NM N	C++	swift
+GtkWidget	paint radio	DECLARATION	NM N	C	gimp
+bool	palette poll	FUNCTION	N V	C	blender
+sizet	palette size	PARAMETER	NM N	C++	bullet3
+ParallelComputer	Parallel Computer	CLASS	NM N	Java	junit4
+ParameterDef	param Def	DECLARATION	NM N	C	ogre
+Assignments	parameter Assignment	PARAMETER	NM N	Java	junit4
+ParameterSignature	Parameter Signature	CLASS	NM N	Java	junit4
+String	PARENT	ATTRIBUTE	N	Java	jenkins
+vector	parent field	PARAMETER	NM N	C++	opencv
+boolean	parent Had Big Change	PARAMETER	N V NM N	Java	elasticsearch
+List	parent Pairs	FUNCTION	NM NPL	Java	corenlp
+Attribute	parse Attribute Def	FUNCTION	V NM N	Java	antlr4
+long	parse Expires	FUNCTION	V NPL	Java	okhttp
+ParseJobPrivate	Parse Job Private	CLASS	NM N NM	C++	kdevelop
+long	parse Max Age	FUNCTION	V NM N	Java	okhttp
+List parserErrors	parser Errors	ATTRIBUTE	NM NPL	Java	junit4
+bool	parsing	PARAMETER	V	C++	calligra
+PartDocumentPrivate	Part Document Private	CLASS	NM N NM	C++	kdevelop
+int	parts Size	DECLARATION	NM N	Java	elasticsearch
+MachineInstContainer	Pass Machine Instructions	PARAMETER	NM NM NPL	C	ogre
+string	passphrase	DECLARATION	N	C++	openFrameworks
+PatchCoordBuffer	Patch Coord Buffer	CLASS	NM NM N	C++	blender
+QString	path With Native Separators	FUNCTION	N P NM NPL	C	kdevelop
+PatternsAnnotations	Patterns Annotations	CLASS	NM NPL	Java	corenlp
+Real	pd Sum	DECLARATION	NM N	C++	QuantLib
+char	pem key	PARAMETER	NM N	C++	grpc
+bool	pen Loaded	PARAMETER	N V	C++	calligra
+PhysicsClientExample	Physics Client Example	CLASS	NM NM N	C++	bullet3
+int	pi Hash	PARAMETER	PRE N	C	Telegram
+c8	pickup	ATTRIBUTE	N	C	irrlicht
+PiecewiseConstantAbcdVariance	Piecewise Constant Abcd Variance	CLASS	NM NM NM N	C++	QuantLib
+s32	pixel Width	ATTRIBUTE	NM N	C	irrlicht
+string[]	platform String	DECLARATION	NM N	C++	openFrameworks
+void	png do strip channel	FUNCTION	NM V V N	C	irrlicht
+PNGAPI	png get row bytes	FUNCTION	NM V NM NPL	C	irrlicht
+PNGAPI	png get rows	FUNCTION	NM V NPL	C	irrlicht
+PNGAPI	png get unknown chunks	FUNCTION	NM V NM NPL	C	irrlicht
+void	png init palette transformations	FUNCTION	NM V NM NPL	C	irrlicht
+void	png read IDAT data	FUNCTION	NM V NM N	C	irrlicht
+void	pnm load raw pfm	FUNCTION	NM V NM N	C	gimp
+Point3_	Point 3	CLASS	N D	C++	opencv
+int	point index	PARAMETER	NM N	C	blender
+PointerMap	Pointer Map	CLASS	NM N	C++	grpc
+String	polling Log	PARAMETER	NM N	Java	jenkins
+PostFile	Post File	CLASS	NM N	Java	okhttp
+PostScriptDocument	Post Script Document	CLASS	NM NM N	Java	antlr4
+Map	pre Map	PARAMETER	P N	Java	corenlp
+PredicateWrapper	Predicate Wrapper	CLASS	NM N	C++	blender
+String	PREF FONT	ATTRIBUTE	NM N	Java	corenlp
+aiVector3D	present Scaling	DECLARATION	NM N	C++	openFrameworks
+void	presentation Start From First	FUNCTION	N V P NM	C++	calligra
+int	prev num hooks	DECLARATION	NM NM NPL	C++	grpc
+IntervalSet	prev Property	ATTRIBUTE	NM N	Java	antlr4
+int	prev Signal Bar Count	DECLARATION	NM NM NM N	C++	Telegram
+String	previous Caption	ATTRIBUTE	NM N	Java	Telegram
+QModelIndex	previous Index	PARAMETER	NM N	C++	calligra
+Real	previous Initial Value	PARAMETER	NM NM N	C++	QuantLib
+bool	previous Is Valid	PARAMETER	N V NM	C++	calligra
+int	previous Stream Id	DECLARATION	NM NM N	Java	okhttp
+D3D11PRIMITIVETOPOLOGY	prim Type	DECLARATION	NM N	C++	ogre
+PrintEvents	Print Events	CLASS	NM NPL	Java	okhttp
+int	print Features Up to	ATTRIBUTE	V NPL VM P	Java	corenlp
+PrintLabelFlag	print label flag	PARAMETER	NM NM N	C++	opencv
+boolean	print t	PARAMETER	V N	C	gimp
+ProblemReporterFactory	Problem Reporter Factory	CLASS	NM NM N	C++	kdevelop
+Process	Process	CLASS	N	C++	gimp.idents
+sharedptr	process Helper	FUNCTION	NM N	C++	QuantLib
+Features	processing Level	DECLARATION	NM N	C++	kdevelop
+Bool	progress out	DECLARATION	V N	C	irrlicht
+bool	progressive	PARAMETER	N	C++	blender
+ProjectControllerPrivate	Project Controller Private	CLASS	NM N NM	C++	kdevelop
+QString	project file	PARAMETER	NM N	C++	kdevelop
+Path	projects Dir	PARAMETER	NM N	C++	kdevelop
+List	promises	PARAMETER	NPL	Java	okhttp
+String	pronoun	PARAMETER	N	Java	corenlp
+GimpColorProfile	proof profile	ATTRIBUTE	NM N	C	gimp
+IntervalSet	property Interval Set	PARAMETER	NM NM N	Java	antlr4
+int	provider Code	DECLARATION	NM N	Java	Telegram
+PublishResponse	Publish Response	CLASS	NM N	Java	elasticsearch
+void	push Reset Later	FUNCTION	V N VM	Java	okhttp
+PutWatchRequest	put Watch Request	PARAMETER	NM NM N	Java	elasticsearch
+PyObject	pybullet compute View Matrix	FUNCTION	PRE V NM N	C	bullet3
+sendrequest	q tail	ATTRIBUTE	NM N	C	grpc
+QRDetect	QR Detect	CLASS	NM N	C++	opencv
+Quad	Quad	CLASS	N	C++	blender
+long	query Timeout In Ms	PARAMETER	NM N P NPL	Java	elasticsearch
+GrammarAST	question AST	PARAMETER	NM N	Java	antlr4
+Quote	Quote	CLASS	N	C++	QuantLib
+RangeInRevision	r	PARAMETER	N	C++	kdevelop
+camhdr	r hdr	DECLARATION	NM N	C	openFrameworks
+float	radius	PARAMETER	N	C	gimp
+sharedptr	random Walk	PARAMETER	NM N	C++	QuantLib
+void	rate Pointer	PARAMETER	NM N	C++	bullet3
+Object	raw Arguments	ATTRIBUTE	NM NPL	Java	mockito
+List	raw Extra Interfaces	DECLARATION	NM NM NPL	Java	mockito
+GPUVertBufRaw	raw nor	DECLARATION	NM N	C	blender
+SILValue	RC Identity	ATTRIBUTE	NM N	C	swift
+float	rcp len 2	DECLARATION	NM N D	C	bullet3
+ReadBitstream	Read Bitstream	CLASS	V N	C++	opencv
+void	read Element Text Span	FUNCTION	V NM NM N	C++	calligra
+ReadBufferOperation	read Operation	PARAMETER	NM N	C++	blender
+void	read Pass	FUNCTION	V N	C++	irrlicht
+List	read Response	FUNCTION	V N	Java	okhttp
+FLACbool	read subframe	FUNCTION	V N	C	Telegram
+char	Read Text File	FUNCTION	V NM N	C++	ogre
+void	read White Space	FUNCTION	V NM N	Java	corenlp
+int	reader Flags	PARAMETER	NM NPL	Java	mockito
+void	reapply Filter	FUNCTION	V N	C++	calligra
+String	received Token Signature	DECLARATION	NM NM N	Java	jenkins
+ReconstructUpdateCallback	Reconstruct Update Callback	CLASS	NM NM N	C++	blender
+RecordHeader	Record Header	CLASS	NM N	C++	calligra
+int	recorded Matchers Size	DECLARATION	NM NM N	Java	mockito
+u32	rectangle Index	DECLARATION	NM N	C++	irrlicht
+JSONObject	reduced Json	DECLARATION	NM N	Java	jenkins
+int	reduction Indices	ATTRIBUTE	NM NPL	C++	opencv
+QPointF	ref Point Offset Percent	ATTRIBUTE	NM NM NM N	C++	calligra
+Map	referee Set Map	PARAMETER	NM NM N	Java	jenkins
+List	reference Index Meta Datas	ATTRIBUTE	NM NM NM NPL	Java	elasticsearch
+SourceRange	Reference Range	PARAMETER	NM N	C++	swift
+String	REFRESH INTERVAL IN MILLIS	ATTRIBUTE	NM N P NPL	Java	elasticsearch
+MeanMetric	refresh Metric	PARAMETER	NM N	Java	elasticsearch
+RefutablePatternInitialization	Refutable Pattern Initialization	CLASS	NM NM N	C++	swift
+void	register With Volatility Spread	FUNCTION	V P NM N	C++	QuantLib
+f32	relative contrast	PARAMETER	NM N	C++	irrlicht
+Int32	rem F	DECLARATION	NM N	C	irrlicht
+void	remap Nearest Neighbor	FUNCTION	V NM N	C++	opencv
+Set	remote Cluster Names	PARAMETER	NM NM NPL	Java	elasticsearch
+RemotingDiagnostics	Remoting Diagnostics	CLASS	NM NPL	Java	jenkins
+void	remove Imported Parent Contexts	FUNCTION	V NM NM NPL	C++	kdevelop
+void	render result exr file end	FUNCTION	V NM NM NM N	C	blender
+void	Render Text	FUNCTION	V N	C++	bullet3
+auto	REPL Module	DECLARATION	NM N	C++	swift
+StringSet	Replace Text Context	ATTRIBUTE	NM NM N	C++	swift
+sizet	Replacement Length	ATTRIBUTE	NM N	C	swift
+void	report No Setter Found	FUNCTION	V DT N V	Java	mockito
+void	repress Ref At Loc	FUNCTION	V N P N	C++	swift
+uint8t	request bytes	DECLARATION	NM NPL	C++	grpc
+Map	requested Plugins	DECLARATION	NM NPL	Java	jenkins
+void	require Client Auth	FUNCTION	V NM N	Java	okhttp
+int	res Width	PARAMETER	NM N	C++	openFrameworks
+vector	resamplers	ATTRIBUTE	NPL	C++	Telegram
+SILFunction	Reserve Fn	PARAMETER	NM N	C++	swift
+void	reset Meta Class Cache	FUNCTION	V NM NM N	Java	jenkins
+void	Reset Token Stats	FUNCTION	V NM NPL	C	Telegram
+void	resize Linear Open CV	FUNCTION	V NM NM N	C++	opencv
+void	resize Nearest Neighbor	FUNCTION	V NM N	C++	opencv
+ResolvedFailedException	Resolved Failed Exception	CLASS	NM NM N	Java	jenkins
+ResponseHandlers	Response Handlers	CLASS	NM NPL	Java	elasticsearch
+RestClient	Rest Client	CLASS	NM N	C++	openFrameworks
+boolean	resume	PARAMETER	V	Java	Telegram
+Predicate	retain Function	PARAMETER	NM N	Java	corenlp
+restrict	rets	PARAMETER	NPL	C	blender
+bool	return Path	PARAMETER	NM N	C++	irrlicht
+Object	returned Value	ATTRIBUTE	NM N	Java	mockito
+ReturnsEmptyValues	Returns Empty Values	CLASS	V NM NPL	Java	mockito
+Answer	RETURNS SELF	ATTRIBUTE	V N	Java	mockito
+void	rgb 2 rgb565	FUNCTION	N P N	C++	opencv
+guchar[]	rgb real	DECLARATION	NM N	C	gimp
+void	rgbx 2 bgrx	FUNCTION	N P N	C++	opencv
+Real	risky Annuity	ATTRIBUTE	NM N	C++	QuantLib
+RiskyBond	Risky Bond	CLASS	NM N	C++	QuantLib
+RollingFrictionDemo	Rolling Friction Demo	CLASS	NM NM N	C++	bullet3
+PointerRNA	root ptr	DECLARATION	NM N	C	blender
+Vector	rot axis	PARAMETER	NM N	C++	blender
+gchar	rotate desc	ATTRIBUTE	NM N	C	gimp
+vector3df	rotation Per Second	PARAMETER	N P N	C++	irrlicht
+ExtendedBounds	rounded Bounds	DECLARATION	NM NPL	Java	elasticsearch
+int	row limit	ATTRIBUTE	NM N	C++	grpc
+RSComputeOperation	RS Compute Operation	CLASS	NM NM N	C++	ogre
+RSStencilOperation	RS Stencil Operation	CLASS	NM NM N	C++	ogre
+ofRtAudioSoundStream	rt Stream Ptr	DECLARATION	NM NM N	C++	openFrameworks
+RtmSession	rtm Session	DECLARATION	NM N	Java	okhttp
+RuleMemberValidator	Rule Member Validator	CLASS	NM NM N	Java	junit4
+Set	rule Options	ATTRIBUTE	NM NPL	Java	antlr4
+RulePropertyRef_ctx	Rule Property Ref ctx	CLASS	NM NM NM N	Java	antlr4
+RulePropertyRef_start	Rule Property Ref start	CLASS	NM NM NM N	Java	antlr4
+RuleVersionAttribute	Rule Version Attribute	CLASS	NM NM N	C#	antlr4
+List	rules Of New Chain	DECLARATION	N P NM N	Java	junit4
+RunAfterParams	Run After Params	CLASS	V NM NPL	Java	junit4
+RunBeforeParams	Run Before Params	CLASS	V NM NPL	Java	junit4
+String	RUN DIST CMD PROP	ATTRIBUTE	NM NM NM N	Java	corenlp
+void	run Methods	FUNCTION	V NPL	Java	junit4
+ParametersRunnerFactory	runner Factory	PARAMETER	NM N	Java	junit4
+Runner	runner Override	ATTRIBUTE	NM N	Java	junit4
+RunnerScheduler	Runner Scheduler	CLASS	NM N	Java	junit4
+Real	running Log Average	DECLARATION	NM NM N	C++	QuantLib
+Object	runtime Mx Bean	ATTRIBUTE	NM NM N	Java	junit4
+string	s Tracking System Name	DECLARATION	PRE NM NM N	C++	bullet3
+TerrainLayerSamplerList	samplers	ATTRIBUTE	NPL	C	ogre
+QString	sanitize Path	FUNCTION	V N	C++	kdevelop
+Dst	saturated cast	FUNCTION	NM N	C	Telegram
+void	save As Quadratic Png	FUNCTION	V P NM N	C++	calligra
+bool	save Dual Cells	PARAMETER	V NM NPL	C	ogre
+char	scene Node Type Name	PARAMETER	NM NM NM N	C++	irrlicht
+double[]	score Pos Prev	DECLARATION	NM N NM	Java	corenlp
+QHash	script Event Action Factories	ATTRIBUTE	NM NM NM NPL	C++	calligra
+ScrollIdForNode	Scroll Id For Node	CLASS	NM N P N	Java	elasticsearch
+Map	search Profile Results	PARAMETER	NM NM NPL	Java	elasticsearch
+GimpHueRange	secondary range	PARAMETER	NM N	C	gimp
+SegmenterCoreAnnotations	Segmenter Core Annotations	CLASS	NM NM NPL	Java	corenlp
+SeiReader	Sei Reader	CLASS	NM N	Java	Telegram
+int	selected Account	ATTRIBUTE	NM N	Java	Telegram
+GeglRectangle	selection bounds	DECLARATION	NM NPL	C	gimp
+GtkWidget	selection width label	ATTRIBUTE	NM NM N	C	gimp
+void	send Serial Config	FUNCTION	V NM N	C++	openFrameworks
+void	send String	FUNCTION	V N	Java	openFrameworks
+List	sentence List	DECLARATION	NM N	Java	corenlp
+QColor	separator Color	PARAMETER	NM N	C++	calligra
+SerializedForm	Serialized Form	CLASS	NM N	Java	junit4
+char	server list	PARAMETER	NM N	C++	grpc
+ServerSafeHandle	Server Safe Handle	CLASS	NM NM N	C#	grpc
+KConfigGroup	session Config	FUNCTION	NM N	C++	kdevelop
+OAuthSessionFactory	session Factory	ATTRIBUTE	NM N	Java	okhttp
+char	session ticket key	ATTRIBUTE	NM NM N	C	grpc
+void	Set Add Faces Points	FUNCTION	V V NM NPL	C	bullet3
+Builder	set Canonical Mention Begin	FUNCTION	V NM NM N	Java	corenlp
+void	set Custom Uniform 1 f	FUNCTION	V NM N D NM	C++	openFrameworks
+clint	set Destructor Callback	FUNCTION	V NM N	C++	opencv
+void	set Display Index	FUNCTION	V NM N	C++	ogre
+CreationSettings	set Extra Interfaces	FUNCTION	V NM NPL	Java	mockito
+void	set Frame Pen	FUNCTION	V NM N	C++	calligra
+void	set Invert	FUNCTION	V N	C++	antlr4
+void	set Layer Texture Name	FUNCTION	V NM NM N	C++	ogre
+Action	set Prev Ctx Action	DECLARATION	NM NM NM N	Java	antlr4
+void	set Project Naming Strategy	FUNCTION	V NM NM N	Java	jenkins
+Method	set Protocol Method	PARAMETER	NM NM N	Java	okhttp
+void	set Tiling	FUNCTION	V N	C++	ogre
+SettingManager	Setting Manager	CLASS	NM N	C++	irrlicht
+ofSoundStreamSettings	settings	PARAMETER	NPL	C++	openFrameworks
+void	setup Bounding Box Vertices	FUNCTION	V NM NM NPL	C++	ogre
+sha2void	sha256 hash	FUNCTION	NM N	C++	irrlicht
+void	shader data to shader globals	FUNCTION	NM NPL P NM NPL	C++	blender
+ShiftReduceTrainOptions	Shift Reduce Train Options	CLASS	NM NM NM NPL	Java	corenlp
+vector	shift Values	ATTRIBUTE	NM NPL	C++	QuantLib
+bool	show tags	ATTRIBUTE	V NPL	C++	blender
+SiblingAlignInfo	Sibling Info	PARAMETER	NM N	C++	swift
+void	silk bw expander 32	FUNCTION	NM NM N D	C	Telegram
+auto	simple Fn Ty	DECLARATION	NM NM N	C++	swift
+SimplePressure	Simple Pressure	CLASS	NM N	C++	gimp.idents
+void	simulate GC	FUNCTION	V N	Java	corenlp
+float	sin rot w	DECLARATION	NM NM N	C++	ogre
+SinglePeriodTimeline	Single Period Timeline	CLASS	NM NM N	Java	Telegram
+SINH	SINH	CLASS	N	Java	elasticsearch
+ImVec2	size contents	PARAMETER	NM NPL	C++	bullet3
+long	size Guess	DECLARATION	NM N	Java	jenkins
+ImVec2	size on first use	PARAMETER	N P NM N	C	bullet3
+int	size Per Span	DECLARATION	N P N	Java	Telegram
+SKEditorConsumer	SK Editor Consumer	CLASS	NM NM N	C++	swift
+boolean	skip Vetoes	ATTRIBUTE	NM NPL	Java	jenkins
+boolean	skip Whitespace And Commas	FUNCTION	V N CJ NPL	Java	okhttp
+SlackClient	Slack Client	CLASS	NM N	Java	okhttp
+DataType	sort Field Data Type	ATTRIBUTE	NM NM NM N	Java	elasticsearch
+int	sorted Indices Buf	PARAMETER	NM NM N	C++	opencv
+uint32t	source index	DECLARATION	NM N	C	openFrameworks
+auto	source Ty	DECLARATION	NM N	C++	swift
+Optional	speaker	FUNCTION	N	Java	corenlp
+int16t	speech in	PARAMETER	NM N	C	Telegram
+gint	spline max len	ATTRIBUTE	NM NM N	C	gimp
+int	split Argument List	FUNCTION	V NM N	Java	antlr4
+array	Sprites	ATTRIBUTE	NPL	C++	irrlicht
+int	sqlite3 session config	FUNCTION	PRE N V	C	Telegram
+int	sqlite3 Walk Expr List	FUNCTION	PRE V NM N	C	Telegram
+QFileInfo	src File Info	DECLARATION	NM NM N	C++	kdevelop
+QGradient	src Gradient	PARAMETER	NM N	C++	calligra
+int	src start idx	DECLARATION	NM NM N	C++	opencv
+grpcchannelcredentials	ssl creds	DECLARATION	NM NPL	C++	grpc
+STGroup	st lib	ATTRIBUTE	NM N	Java	antlr4
+stack	stack	ATTRIBUTE	N	C++	grpc
+QList	start Dirs	PARAMETER	NM NPL	C++	kdevelop
+void	start Matched Count Dec	FUNCTION	V NM N V	Java	corenlp
+int	Start Slot	PARAMETER	NM N	C++	ogre
+Real	start Up Fix Cost	PARAMETER	NM NM NM N	C++	QuantLib
+Map	state To Grammar Region Map	ATTRIBUTE	N P NM NM N	Java	antlr4
+Statement	statement	ATTRIBUTE	N	Java	junit4
+rect	static Rect	DECLARATION	NM N	C++	irrlicht
+File	status File	DECLARATION	NM N	Java	antlr4
+File	status File	PARAMETER	NM N	Java	antlr4
+QIcon	status Icon	FUNCTION	NM N	C++	kdevelop
+int	Step No	ATTRIBUTE	NM N	C	bullet3
+Real	step Size	DECLARATION	NM N	C++	QuantLib
+int	step x	DECLARATION	NM N	C++	opencv
+int	stmt Close	FUNCTION	N V	C	Telegram
+StochasticProcess	Stochastic Process	CLASS	NM N	C++	QuantLib
+Store	Store	CLASS	N	Java	elasticsearch
+QStringList	str args	DECLARATION	NM NPL	C++	kdevelop
+sizet	str array len	FUNCTION	NM NM N	C++	bullet3
+Headers	stream Headers	DECLARATION	NM NPL	Java	okhttp
+float	strength	PARAMETER	N	C	blender
+StrictnessSelector	Strictness Selector	CLASS	NM N	Java	mockito
+GrammarAST	strip Left Recursion	FUNCTION	V NM N	Java	antlr4
+PyObject	Stroke Attribute alpha get	FUNCTION	NM NM N V	C++	blender
+StructType	Struct Ty	ATTRIBUTE	NM N	C++	swift
+StubbingComparator	Stubbing Comparator	CLASS	NM N	Java	mockito
+List stubbingLookupListeners	stubbing Lookup Listeners	ATTRIBUTE	NM NM NPL	Java	mockito
+SUTime	SU Time	CLASS	NM N	Java	corenlp
+vector	Sub Module Name Visibility Pairs	ATTRIBUTE	NM NM NM NM NPL	C++	swift
+constiterator	sub start	DECLARATION	NM N	C++	openFrameworks
+String	subroutine Slot Name	PARAMETER	NM NM N	C++	ogre
+SuiteMethod	Suite Method	CLASS	NM N	Java	junit4
+SuiteMethodBuilder	Suite Method Builder	CLASS	NM NM N	Java	junit4
+RealMethod	super Method	PARAMETER	NM N	Java	mockito
+Class	supplier Class	PARAMETER	NM N	Java	junit4
+XIMStyle	supported Style	DECLARATION	NM N	C++	irrlicht
+bool	suppress File	PARAMETER	V N	C++	ogre
+int	sz Joint Ranges	DECLARATION	NM NM NPL	C	bullet3
+QStyleOptionTab	tab Overlap	DECLARATION	NM N	C++	kdevelop
+gint	table 2 id	PARAMETER	N D N	C	gimp
+QSet	tagged Resources	DECLARATION	NM NPL	C++	calligra
+ATNState	target	PARAMETER	N	C++	antlr4
+char	target chars	DECLARATION	NM NPL	C	grpc
+void	target Started	FUNCTION	N V	Java	jenkins
+TaskImpl	Task Impl	CLASS	NM N	Java	jenkins
+uint32t	tbl index	PARAMETER	NM N	C++	grpc
+Object	tcp Slave Agent Listener Lock	ATTRIBUTE	NM NM NM NM N	Java	jenkins
+int	TEGRA MORPH INIT	FUNCTION	PRE N V	C++	opencv
+DeclAttributes	temp Attrs	DECLARATION	NM NPL	C++	swift
+TempCompMask	Temp Comp Mask	CLASS	NM NM N	C++	gimp.idents
+TemperatureCauchy1D	Temperature Cauchy 1 D	CLASS	NM N D NM	C++	QuantLib
+TemplatePreviewIconData	Template Preview Icon Data	CLASS	NM NM NM NPL	C++	kdevelop
+TemporaryFolder	Temporary Folder	CLASS	NM N	Java	junit4
+void	tessellate To Mesh	FUNCTION	V P N	C++	openFrameworks
+int	tex ID	PARAMETER	NM N	Java	openFrameworks
+stringt	text Chopped 2	DECLARATION	N NM D	C	swift
+TextPaintView	Text Paint View	CLASS	NM NM N	Java	Telegram
+InvocationOnMock	the Invocation	PARAMETER	DT N	Java	mockito
+AssignExpr	Then	ATTRIBUTE	N	C++	swift
+int	thread Array Size	DECLARATION	NM NM N	Java	junit4
+void	throw Provision Exception If Errors Exist	FUNCTION	V NM N CJ NPL V	Java	elasticsearch
+double	tick Freq	PARAMETER	NM N	C++	opencv
+uint32	TIFF Current Tile	FUNCTION	NM NM N	C	opencv
+TIFFSizeProc	TIFF Get Size Proc	FUNCTION	NM V NM N	C	opencv
+TileParameterDefaultTypeInternal	Tile Parameter Default Type Internal	CLASS	NM NM NM N NM	C++	opencv
+float	time range	PARAMETER	NM N	C	blender
+TimeSignalCommand	Time Signal Command	CLASS	NM NM N	Java	Telegram
+Timespec	time spec	ATTRIBUTE	NM N	C#	grpc
+Timelapser	Timelapser	CLASS	N	C++	opencv
+Cancellable	timeout Task	PARAMETER	NM N	Java	elasticsearch
+int	times To Append Last Matcher	PARAMETER	NPL P V NM N	Java	mockito
+vector	tlv Symbols	ATTRIBUTE	NM NPL	C++	swift
+float[]	tmp vec	DECLARATION	NM N	C	blender
+ToStringWalker	To String Walker	CLASS	P N N	C++	grpc
+double[]	to XYZ	DECLARATION	P N	C	bullet3
+JSONObject	token Data	DECLARATION	NM N	Java	jenkins
+TokenPropertyRef	Token Property Ref	CLASS	NM NM N	Java	antlr4
+TokenPropertyRef_channel	Token Property Ref channel	CLASS	NM NM NM N	Java	antlr4
+Map	token Store Typed Data	DECLARATION	NM NM NM N	Java	jenkins
+TokenTypeDecl	Token Type Decl	CLASS	NM NM N	Java	antlr4
+String	token Type S	DECLARATION	NM NM N	Java	antlr4
+Token	token Within Action	PARAMETER	N P N	Java	antlr4
+Position	tool View Position	FUNCTION	NM NM N	C++	kdevelop
+bool	Top Dir	PARAMETER	NM N	C++	grpc
+TopNGramRecord	Top NGram Record	CLASS	NM NM N	Java	corenlp
+int totchannel	tot channel	ATTRIBUTE	NM N	C	blender
+sizet	tot elem	ATTRIBUTE	NM N	C	blender
+CounterMetric	total Merge Throttled Time	ATTRIBUTE	NM NM NM N	Java	elasticsearch
+CommodityUnitCost	trade Price	ATTRIBUTE	NM N	C++	QuantLib
+Builder	training Examples	FUNCTION	NM NPL	Java	corenlp
+Real	tranched Loss After	DECLARATION	NM N P	C++	QuantLib
+PathInfo	transform Path	FUNCTION	V N	C++	QuantLib
+Affine3	transform Unique Id	DECLARATION	NM NM N	C++	ogre
+TransportShardRefreshAction	Transport Shard Refresh Action	CLASS	NM NM NM N	Java	elasticsearch
+TreeElement	Tree Element	CLASS	NM N	C++	blender
+TreePostScriptGenerator	Tree Post Script Generator	CLASS	NM NM NM N	Java	antlr4
+bool	trim Parse Trees	DECLARATION	V NM NPL	C#	antlr4
+TsurgeonParseException	Tsurgeon Parse Exception	CLASS	NM NM N	Java	corenlp
+Treebank	tune Treebank	DECLARATION	NM N	Java	corenlp
+TupleLValueEmitter	Tuple LValue Emitter	CLASS	NM NM N	C++	swift
+void	two Factor Response	FUNCTION	NM NM N	C++	kdevelop
+char	txt alias	DECLARATION	NM N	C	grpc
+int	TYPE TEST RULE	ATTRIBUTE	NM NM N	Java	junit4
+byte	TYPE WINDOW UPDATE	ATTRIBUTE	N NM NM	Java	okhttp
+T[]	typed Array	PARAMETER	NM N	Java	mockito
+int	ui Index	DECLARATION	NM N	C++	ogre
+BytesReference	uncompress If Needed	FUNCTION	V CJ V	Java	elasticsearch
+Handle	underlying Fx Correlation	PARAMETER	NM NM N	C++	QuantLib
+Money	undiscounted Amount	PARAMETER	NM N	C++	QuantLib
+String	UNKNOWN USERNAME	ATTRIBUTE	NM N	Java	jenkins
+void	unload Textures	FUNCTION	V NPL	C++	openFrameworks
+void	unpack texture Blend Func	FUNCTION	V NM NM N	C	irrlicht
+requestmatcher	unregistered request matcher	ATTRIBUTE	NM NM N	C++	grpc
+SoloFilePathFilter	UNRESTRICTED	ATTRIBUTE	NM	Java	jenkins
+GeglRectangle	update area	DECLARATION	NM N	C	gimp
+void	update Mouse Pos	FUNCTION	V NM N	C++	calligra
+HttpUrl	url From Json	FUNCTION	N P N	Java	okhttp
+int	usage	PARAMETER	N	C++	openFrameworks
+bool	use Atm Spread	ATTRIBUTE	V NM N	C++	QuantLib
+bool	use mat dirs	DECLARATION	V NM NPL	C++	irrlicht
+bool	use Shadows 1	PARAMETER	V NPL D	C++	bullet3
+bool	use Tabs	PARAMETER	V NPL	C++	kdevelop
+User2InternalIndex	User 2 Internal Index	CLASS	N P NM N	C++	bullet3
+void	user hook 3	ATTRIBUTE	NM N D	C	blender
+long	utc Timestamp Ms	DECLARATION	NM NM NPL	Java	Telegram
+sizet	utf8 size	PARAMETER	NM N	C++	grpc
+Guid	uuid	ATTRIBUTE	N	C#	antlr4
+float	v proj axis	DECLARATION	NM NM N	C	blender
+StringTokenizer	v Tok	DECLARATION	NM N	Java	elasticsearch
+void	V URL Encode	FUNCTION	PRE N V	C++	bullet3
+uint	val 32	ATTRIBUTE	N D	C++	opencv
+sizet	Val Size	DECLARATION	NM N	C++	grpc
+void	validate Class Rules	FUNCTION	V NM NPL	Java	junit4
+u32	validate On	PARAMETER	V P	C++	irrlicht
+void	validate Public Static Void Methods	FUNCTION	V NM NM NM NPL	Java	junit4
+List	validator Strategies	ATTRIBUTE	NM NPL	Java	junit4
+Value	Value	CLASS	N	C++	Telegram
+String	value Count String	DECLARATION	NM NM N	Java	okhttp
+QHash	value Hash	ATTRIBUTE	NM N	C++	calligra
+ValueLabel	Value Label	CLASS	NM N	Java	corenlp
+Real	value X	DECLARATION	NM N	C++	QuantLib
+VanillaForwardPayoff	Vanilla Forward Payoff	CLASS	NM NM N	C++	QuantLib
+Object[]	var Args	DECLARATION	NM NPL	Java	mockito
+vector	variables	ATTRIBUTE	NPL	C++	QuantLib
+Set	vary Fields	DECLARATION	NM NPL	Java	okhttp
+VerificationModeFactory	Verification Mode Factory	CLASS	NM NM N	Java	mockito
+VerificationOverTimeImpl	verification Over Time	DECLARATION	N P N	Java	mockito
+void	verification Started	FUNCTION	N V	Java	mockito
+VerificationStrategy	verification Strategy	ATTRIBUTE	NM N	Java	mockito
+emailkeymapping	verifier get mapping	FUNCTION	N V N	C++	grpc
+VertexPosition	Vertex Position	CLASS	NM N	C++	bullet3
+VideoCapture_DShow	Video Capture DShow	CLASS	NM NM N	C++	opencv
+freenectchunkcb	video chunk cb	ATTRIBUTE	NM NM N	C	openFrameworks
+void	visit SIL Argument	FUNCTION	V NM N	C++	swift
+VoronoiFractureDemo	Voronoi Fracture Demo	CLASS	NM NM N	C++	bullet3
+int	w Width	ATTRIBUTE	NM N	C++	ogre
+long	wait Until	DECLARATION	V P	Java	jenkins
+Set	waiting List	PARAMETER	NM N	Java	jenkins
+int	want x	PARAMETER	V N	C	openFrameworks
+WarningFailureException	Warning Failure Exception	CLASS	NM NM N	C++	openFrameworks
+s32	wat id	DECLARATION	NM N	C	irrlicht
+AtomicInteger	weak Ref Lost	ATTRIBUTE	NM NM N	Java	jenkins
+WebSocketListener	Web Socket Listener	CLASS	NM NM N	Java	okhttp
+vector	weights Multipliers	ATTRIBUTE	NM NPL	C++	opencv
+StringPiece	whole regexp	ATTRIBUTE	NM N	C++	grpc
+void	widget Destroyed	FUNCTION	N V	C++	kdevelop
+boolean	will Return Last Parameter	PARAMETER	V V NM N	Java	mockito
+int	win Error	DECLARATION	NM N	C++	ogre
+Challenge	with Charset	FUNCTION	P N	Java	okhttp
+MakeCms	with Cms Leg Rule	FUNCTION	P NM NM N	C++	QuantLib
+ModelSettings	with Market Rate Accuracy	FUNCTION	P NM NM N	C++	QuantLib
+Settings	with Rate Bound	FUNCTION	P NM N	C++	QuantLib
+MockResponse	with Web Socket Upgrade	FUNCTION	P NM NM N	Java	okhttp
+gboolean	within vertically	DECLARATION	P VM	C	gimp
+WordLemmaTag	word Lemma Tag	PARAMETER	NM NM N	Java	corenlp
+void	worker Thread Wait	FUNCTION	NM N V	C++	bullet3
+WorkspaceFileMask	Workspace File Mask	CLASS	NM NM N	Java	jenkins
+vec3	world To Screen	FUNCTION	N P N	C++	openFrameworks
+int	worst score	DECLARATION	NM N	C	opencv
+RunListener	wrap If Not Thread Safe	FUNCTION	V CJ VM NM N	Java	junit4
+WrapperType	wrapped Verification	PARAMETER	NM N	Java	mockito
+Class	wrapper Class	DECLARATION	NM N	Java	junit4
+WriteContext	Write Context	CLASS	NM N	C++	grpc
+void	write Node Materials	FUNCTION	V NM NPL	C++	irrlicht
+int	write Root	PARAMETER	V N	C++	irrlicht
+void	write tcp data	FUNCTION	V NM N	C	grpc
+WSDLSSolver	WSDLS Solver	CLASS	NM N	C++	blender
+btScalar	x 2	DECLARATION	N D	C++	bullet3
+float	x Distance	DECLARATION	NM N	Java	openFrameworks
+Atom	X dnd Type List	ATTRIBUTE	NM NM NM N	C	blender
+short	x origin	ATTRIBUTE	NM N	C	bullet3
+f32	X scale	ATTRIBUTE	NM N	C	irrlicht
+int	x Tilt	FUNCTION	NM N	C++	calligra
+Real	y In	PARAMETER	NM N	C++	ogre
+S32	ya Bottom	ATTRIBUTE	NM N	C	calligra
+SmallVectorImpl	yield MVs	PARAMETER	NM NPL	C++	swift
+freenectzeroplaneinfo	z p i	PARAMETER	NM NM N	C	openFrameworks
+double[]	z probs	PARAMETER	NM NPL	Java	corenlp
+Real	z weight	ATTRIBUTE	NM N	C++	QuantLib
+int	zero plane res	ATTRIBUTE	NM NM N	C	openFrameworks
+int[]	zoom x y	PARAMETER	NM N N	C	blender
+T	a	PARAMETER	N	C++	drill
+char	a 0	PARAMETER	N D	C	rigraph
+int	a 3	DECLARATION	N D	C	toggldesktop
+int	a cap	PARAMETER	NM N	C	rigraph
+int	a Change	PARAMETER	PRE N	C	ccv
+asn1_ctx_t	a ctx	PARAMETER	NM N	C	wireshark
+int	a len	PARAMETER	NM N	C	naemon-core
+u8	a light	PARAMETER	DT N	C++	freeminer
+int	a low	PARAMETER	NM N	C	rigraph
+u8	a Old Record 1	PARAMETER	PRE NM N D	C	ccv
+sqlite3_value**	a Replace	PARAMETER	PRE V	C	ccv
+Throwable	a Throwable	PARAMETER	DT NM	Java	Spark
+long	a time	PARAMETER	NM N	Java	drill
+ovsdb_type	a type	PARAMETER	NM N	C	ovs
+Void	a Void	PARAMETER	DT N	Java	immutables
+bool	above Base	PARAMETER	P N	C++	proxygen
+class	Abstract SV 2 Copier	CLASS	NM N D N	Java	drill
+void	add before forward	FUNCTION	V P N	C++	caffe
+customvariablesmember*	add custom variable to service	FUNCTION	V NM N P N	C	naemon-core
+void	add Menu For List Nodes	FUNCTION	V N P NM NPL	Java	Spark
+bool	add no exist	PARAMETER	V DT V	C++	s3fs-fuse
+bool	add no truncate cache	PARAMETER	V DT NM N	C++	s3fs-fuse
+int	add parent to host	FUNCTION	V N P N	C	naemon-core
+int	add temp to args	DECLARATION	V N P NPL	C	weechat
+void	adjust to camera	FUNCTION	V P N	C++	panda3d
+uLong	adler 1	DECLARATION	N D	C	mgba
+long	after	DECLARATION	P	Java	drill
+auto	after 1	DECLARATION	P D	C++	meta
+auto	after 2	DECLARATION	P D	C++	meta
+boolean	after Equals	DECLARATION	P N	Java	Openfire
+void	after Filters Closed	FUNCTION	P NPL V	Java	Smack
+boolean	after First Batch	ATTRIBUTE	P NM N	Java	drill
+request	after handle	DECLARATION	P N	C	crow
+void	after Join Send History	FUNCTION	P V V N	Java	Openfire
+void	after Last	FUNCTION	P DT	Java	drill
+boolean	after Last Row	ATTRIBUTE	P NM N	Java	drill
+ClassToInstanceMap	after Processing	ATTRIBUTE	P V	Java	immutables
+gboolean	after release	ATTRIBUTE	P N	C	wireshark
+ClassToInstanceMap	after Round	ATTRIBUTE	P N	Java	immutables
+ebb_after_write_cb	after write cb	ATTRIBUTE	P V N	C	ccv
+AfterXStanzas	after X Stanzas	ATTRIBUTE	P D NPL	Java	Smack
+off_t	alias off	ATTRIBUTE	NM N	C	ccv
+Set	all Annotated Elements	FUNCTION	DT NM NPL	Java	immutables
+EnumSet	all Casts	DECLARATION	DT NPL	Java	drill
+boolean	all Cols Indexed	PARAMETER	DT NPL V	Java	drill
+Map	all Drill bits	DECLARATION	DT NM NPL	Java	drill
+vector	all Errors	DECLARATION	DT NPL	C++	toggldesktop
+List	all Exprs	DECLARATION	DT NPL	Java	drill
+Set	all Fields	ATTRIBUTE	DT NPL	Java	drill
+boolean	all Final	PARAMETER	DT N	Java	immutables
+List	all Labels	ATTRIBUTE	DT NPL	Java	deeplearning4j
+List	all Methods	PARAMETER	DT NPL	Java	cglib
+Set	all Metrics	DECLARATION	DT NPL	Java	drill
+ImmutableList	all Mirrors	FUNCTION	DT NPL	Java	immutables
+String	all Names	PARAMETER	DT NPL	Java	cglib
+Set	all New Schema Paths	FUNCTION	DT NM NM NPL	Java	drill
+List	all Open Workspaces	FUNCTION	DT NM NPL	Java	deeplearning4j
+Iterable	all Options	DECLARATION	DT NPL	Java	drill
+List	all Pools	PARAMETER	DT NPL	Java	drill
+boolean	all Procedures Are Callable	FUNCTION	DT NPL V NM	Java	drill
+String	all Projects	ATTRIBUTE	DT NPL	Java	deeplearning4j
+List	all Room Names	DECLARATION	DT NM NPL	Java	Openfire
+Map	all Service Response	PARAMETER	DT NM N	Java	drill
+gboolean	all set	DECLARATION	DT N	C	wireshark
+bool	all space after	DECLARATION	DT N P	C	crow
+bool	all space before	DECLARATION	DT N P	C	crow
+KeyStore	all Store	ATTRIBUTE	DT N	Java	Spark
+void	all Streams Finished	FUNCTION	DT NPL V	Java	drill
+int*	all synced	FUNCTION	DT V	C	ovs
+bool	all Users	PARAMETER	DT NPL	C++	facebook-repo-ds2
+ELoginRegister	allow login or register	ATTRIBUTE	V V CJ V	C	freeminer
+int	among	PARAMETER	P	C++	rigraph
+i64	an Size	PARAMETER	NM N	C	ccv
+checkout_conflictdata	ancestor out	PARAMETER	NM N	C	git2r
+Object	and	DECLARATION	CJ	Java	immutables
+DruidFilter	and Filter At Index	FUNCTION	NM N P N	Java	drill
+AndNode	and Node	PARAMETER	NM N	Java	drill
+byte	another ID	PARAMETER	DT N	Java	Openfire
+bool	any diffuse	ATTRIBUTE	DT N	C	panda3d
+primitive	any hidden	PARAMETER	DT NM	C++	panda3d
+String	APPLICATION INFO 2	ATTRIBUTE	NM N D	Java	Spark
+class	are Unities in Shape	CLASS	V NPL P N	Java	deeplearning4j
+Control	arg 1	PARAMETER	N D	Java	Openfire
+DoublePointer	arg 18	PARAMETER	N D	Java	deeplearning4j
+long	arg 26	PARAMETER	N D	Java	deeplearning4j
+long	arg 29	PARAMETER	N D	Java	deeplearning4j
+long	arg 31	PARAMETER	N D	Java	deeplearning4j
+boolean	as Array	ATTRIBUTE	P N	Java	drill
+DCArrayParameter*	as array parameter	FUNCTION	P NM N	C++	panda3d
+int	as binary	ATTRIBUTE	P N	C	rigraph
+BoundingBox*	as bounding box	FUNCTION	P NM N	C++	panda3d
+char*	as C String	FUNCTION	P NM N	C++	freeminer
+AnnotationMirror	as Caching	FUNCTION	P V	Java	immutables
+Object	as Diamond	DECLARATION	P N	Java	immutables
+double[]	as Double	FUNCTION	P N	Java	deeplearning4j
+DCField*	as field	FUNCTION	P N	C++	panda3d
+git_diff_file	as file	PARAMETER	P N	C	git2r
+Function	as Function	ATTRIBUTE	P N	Java	guava
+CPPFunctionType*	as function type	FUNCTION	P NM N	C++	panda3d
+ASIdentifiers	as id	PARAMETER	NM N	C	toggldesktop
+int	as in	ATTRIBUTE	P P	C	rigraph
+Int64	as Int64	FUNCTION	P N	C++	toggldesktop
+long	as Long	DECLARATION	P N	Java	guava
+MapWriter	as Map	FUNCTION	P N	Java	drill
+DCMolecularField*	as molecular field	FUNCTION	P NM N	C++	panda3d
+double	as of	PARAMETER	P P	C	panda3d
+void*	as pointer	FUNCTION	P N	C++	panda3d
+ByteBuf	as Read Only	FUNCTION	P NM VM	Java	drill
+DCSimpleParameter*	as simple parameter	FUNCTION	P NM N	C++	panda3d
+List	as Sorted Entry List	FUNCTION	P NM NM N	Java	Singularity
+String	as String	DECLARATION	P N	Java	immutables
+List	as Stripes	DECLARATION	P NPL	Java	guava
+Expression	as Transform Generator Transform	FUNCTION	P NM NM N	Java	immutables
+V	as V	DECLARATION	P N	Java	guava
+Var	as Var	FUNCTION	P N	C++	toggldesktop
+int	as warning	PARAMETER	P N	C	libxo
+int	as within	ATTRIBUTE	P P	C	rigraph
+Writer	as Writer	FUNCTION	P N	Java	guava
+boolean	at Least One Write	ATTRIBUTE	P DT D V	Java	drill
+R	at Most	FUNCTION	P DT	Java	immutables
+int	atalk len	FUNCTION	N NM	C	wireshark
+int	b 1 Index	PARAMETER	N D N	Java	drill
+int	B 1110	ATTRIBUTE	N D	Java	deeplearning4j
+byte	b 3	PARAMETER	N D	Java	guava
+Indexer	b float 16 Indexer	DECLARATION	PRE N D N	Java	deeplearning4j
+double	b float 16 To Double	FUNCTION	PRE N D P N	Java	deeplearning4j
+bool	b Force 16 bpp	PARAMETER	PRE V D N	C++	panda3d
+int	b next	DECLARATION	N DT	C	git2r
+svec	b only	PARAMETER	N VM	C	ovs
+int	b Stat 1	ATTRIBUTE	PRE N D	C	ccv
+uint64_t	bad only	DECLARATION	NM VM	C	toxcore
+class	Base Level 1	CLASS	NM N D	Java	deeplearning4j
+class	Base Level 3	CLASS	NM N D	Java	deeplearning4j
+uint8_t	be32 ofs	PARAMETER	NM N	C	ovs
+long	before	DECLARATION	P	Java	drill
+void	before Execute	FUNCTION	P V	Java	cglib
+boolean	before First	ATTRIBUTE	P DT	Java	drill
+int	before major	ATTRIBUTE	P N	C++	panda3d
+int	before minor	ATTRIBUTE	P N	C++	panda3d
+off_t	behind rem start	DECLARATION	P NM N	C++	s3fs-fuse
+off_t	behind size	PARAMETER	P N	C++	s3fs-fuse
+off_t	behind start	PARAMETER	P N	C++	s3fs-fuse
+LVecBase4	bi 0	DECLARATION	N D	C++	panda3d
+class	Bind 2 Module	CLASS	V D N	Java	Smack
+int	bit Field 0	ATTRIBUTE	NM N D	Java	drill
+ssize_t	bit off	DECLARATION	NM N	C++	facebook-repo-ds2
+int	bits per pixel	ATTRIBUTE	NPL P N	C	panda3d
+map	blob name to last top idx	DECLARATION	NM N P DT NM N	C++	caffe
+String	BLOCK CONTACT 16 x 16	ATTRIBUTE	NM N D P D	Java	Spark
+u32	block count all	DECLARATION	NM N DT	C++	freeminer
+void	body 0	PARAMETER	N D	C	panda3d
+boolean	both Empty Selection	DECLARATION	DT NM N	Java	drill
+boolean	both NonEmpty Selection	DECLARATION	DT NM N	Java	drill
+string	both Or All	FUNCTION	DT CJ DT	C++	freeminer
+UInt32	Bt3Zip Match Finder Get Matches	FUNCTION	NM NM N V NPL	C	mgba
+bool	btn down for dig	ATTRIBUTE	NM VM P N	C++	freeminer
+JButton	btn save	DECLARATION	NM N	Java	Spark
+char	buf 3	DECLARATION	N D	C	naemon-core
+char	buf out	DECLARATION	NM N	C	naemon-core
+X	buff Ptr 2	ATTRIBUTE	NM N D	C++	deeplearning4j
+char	buffer as string	ATTRIBUTE	N P N	C	weechat
+char	buffer out	PARAMETER	NM N	C	git2r
+void	build Schema For 2Dimensional Dataset	FUNCTION	V N P NM N	Java	drill
+String	by	ATTRIBUTE	P	Java	Smack
+class	Bypass Comparison 8192 x 8192	CLASS	NM N D P D	Java	deeplearning4j
+byte	byte I Plus 1	DECLARATION	NM N P D	Java	drill
+long	bytes in	PARAMETER	NPL NM	Java	drill
+long	bytes out	PARAMETER	NPL NM	Java	drill
+int64	bytes to read	DECLARATION	NPL P V	C++	deeplearning4j
+class	C Matrix 33	CLASS	PRE N D	C++	freeminer
+SColor	c outside	DECLARATION	PRE P	C++	freeminer
+igraph_vector_t	c partition 2	DECLARATION	NM N D	C	rigraph
+int	c receive only	ATTRIBUTE	PRE V VM	C	ovs
+class	C Vector 3	CLASS	PRE N D	C++	freeminer
+char	c where	DECLARATION	PRE VM	C	weechat
+Dtype	caffe next after	FUNCTION	PRE DT P	C++	caffe
+int	caps 2	ATTRIBUTE	N D	C++	panda3d
+gboolean	cb service in host group each host	FUNCTION	NM N P NM N DT N	C	naemon-core
+void*	ccv atan 2	FUNCTION	PRE N D	C	ccv
+void*	ccv cnnp batch norm add to output	FUNCTION	PRE PRE PRE PRE V P N	C	ccv
+ccv_numeric_data_t*	ccv get sparse matrix cell from vector	FUNCTION	PRE V NM NM N P N	C	ccv
+void	ccv nnc insert if prior to any	FUNCTION	PRE PRE V CJ NM P DT	C	ccv
+ccv_nnc_tensor_t*	ccv nnc tensor for while count	FUNCTION	PRE PRE N P NM N	C	ccv
+ovs_list	change set for tables	ATTRIBUTE	NM N P NPL	C	ovs
+char	chars 1	PARAMETER	NPL D	C	weechat
+guint	chars per unit	ATTRIBUTE	NPL P N	C	wireshark
+String	CHAT COBROWSE IMAGE 24 x 24	ATTRIBUTE	NM NM N D P D	Java	Spark
+int	check against known hosts	FUNCTION	V P NM NPL	C	git2r
+internal_function*	check arrival add next nodes	FUNCTION	V N V DT NPL	C	git2r
+bool	check content only	PARAMETER	V N VM	C++	s3fs-fuse
+void	check for host flapping	FUNCTION	V P N V	C	naemon-core
+bool	check last arg	FUNCTION	V DT N	C++	panda3d
+int*	checkout action wd only	FUNCTION	V NM N VM	C	git2r
+int*	checkout create the new	FUNCTION	PRE V DT NM	C	git2r
+void	clear all markers	FUNCTION	V DT NPL	C++	rigraph
+Builder	clear Part 1	FUNCTION	V N D	Java	drill
+bool	close fd when done	PARAMETER	V N VM V	C	git2r
+char	cmd 1	PARAMETER	N D	C	weechat
+int	col 1	PARAMETER	N D	C++	deeplearning4j
+LongType	col Stride 1	DECLARATION	NM N D	C++	deeplearning4j
+List	column Statistics V 1s	DECLARATION	NM NPL NM D	Java	drill
+ColumnTypeMetadata_v4	column Type Metadata v 4	DECLARATION	NM NM N NM D	Java	drill
+char	command 2	DECLARATION	N D	C	weechat
+int	commit on success	PARAMETER	V P N	C	git2r
+int	conditional match on branch	FUNCTION	NM N P N	C	git2r
+List	conjuncts 1	DECLARATION	NPL D	Java	drill
+conn	conn in	PARAMETER	NM N	C	ovs
+DrillConnectionImpl	connection 1	DECLARATION	N D	Java	drill
+Contents	contents 2	PARAMETER	NPL D	C++	panda3d
+ccv_cnnp_model_t	conv 0	DECLARATION	N D	C	ccv
+INDArray	conv 2D	FUNCTION	N NM	Java	deeplearning4j
+int	conv in channels	ATTRIBUTE	NM NM NPL	C++	caffe
+int	conv out channels	ATTRIBUTE	NM NM NPL	C++	caffe
+int	conv out spatial dim	ATTRIBUTE	NM NM NM N	C++	caffe
+void	conv rgba4444	FUNCTION	V N	C++	panda3d
+int	convert to 8 bit	PARAMETER	V P D N	C	mgba
+int	CONVERT TO UINT4 LENGTH	ATTRIBUTE	V P NM N	Java	drill
+bool*	copy primitives from	FUNCTION	V NPL P	C++	panda3d
+bool	copy this file	FUNCTION	V DT N	C++	panda3d
+DrillCostBase	cost 1	DECLARATION	N D	Java	drill
+int	count 1	PARAMETER	N D	C	git2r
+uint32_t	count 32	DECLARATION	N D	C	weechat
+class	Cout Stream	CLASS	NM N	C++	freeminer
+float	cp 0	DECLARATION	N D	C	ccv
+ContentParamType2	cpt 2	DECLARATION	N D	C++	freeminer
+class	Cropping 1D	CLASS	N NM	Java	deeplearning4j
+ConvertSupport	cs 2	PARAMETER	N D	C++	drill
+LdapContext	ctx 2	DECLARATION	N D	Java	Openfire
+class	CuDNN Deconvolution Layer	CLASS	PRE NM N	C++	caffe
+curandGenerator_t	curand generator	FUNCTION	NM N	C++	caffe
+WhichMemory	data or diff	PARAMETER	N CJ N	C++	caffe
+SelectionVector4	data Sv 4	PARAMETER	NM N D	Java	drill
+Decimal38DenseWriter	decimal 38 Dense	FUNCTION	N D NM	Java	drill
+int	DECIMAL 38 DENSE VALUE	ATTRIBUTE	NM D NM N	Java	drill
+Class	declared Type 1	PARAMETER	NM N D	Java	guava
+DrillBuf	decompress Page V 1	FUNCTION	V N NM D	Java	drill
+class	Deconvolution 2D	CLASS	N NM	Java	deeplearning4j
+class	Deconvolution 3D	CLASS	N NM	Java	deeplearning4j
+class	Deconvolution 3D Param Initializer	CLASS	NM NM NM N	Java	deeplearning4j
+class	Deconvolution Layer	CLASS	NM N	C++	caffe
+class	Deconvolution Param Initializer	CLASS	NM NM N	Java	deeplearning4j
+String	default S3 Bucket	ATTRIBUTE	NM NM N	Java	Singularity
+class	Depthwise Convolution 2D	CLASS	NM N NM	Java	deeplearning4j
+int	description 2	ATTRIBUTE	N D	C	weechat
+int	DESTINATION OPTIONS V6	ATTRIBUTE	NM NPL NM	Java	drill
+bool	Destroy Usr 1 Handler	FUNCTION	V N D N	C++	s3fs-fuse
+int*	dissect acdr ip or other	FUNCTION	V NM N CJ N	C	wireshark
+PN_stdfloat	dist 2	ATTRIBUTE	N D	C++	panda3d
+igraph_integer_t	distance 12	PARAMETER	N D	C	rigraph
+double	dl now	PARAMETER	V VM	C++	s3fs-fuse
+class	DL4J Invalid Input Exception	CLASS	PRE NM NM N	Java	deeplearning4j
+float32x4_t	dn 1 x 2	DECLARATION	N D P D	C	ccv
+bool	do adjust this size	FUNCTION	V V DT N	C++	panda3d
+void	do all sorted fn	FUNCTION	V DT V N	C	toggldesktop
+void	dof reg handoff dpp 0	FUNCTION	PRE V NM N D	C	wireshark
+uint32_t	dot3 ad Agg Port Attached Agg ID	ATTRIBUTE	PRE PRE PRE PRE NM NM N	C	ovs
+Icon	down Icon	ATTRIBUTE	NM N	Java	Spark
+int	down time	ATTRIBUTE	P N	C	freeminer
+String	downsample	ATTRIBUTE	V	Java	drill
+int	dp if create and open	FUNCTION	PRE CJ V CJ V	C	ovs
+int	dp if index	ATTRIBUTE	PRE NM N	C	ovs
+int*	dps for each	FUNCTION	N P DT	C	ovs
+OpenFlags	ds 2 Flags	PARAMETER	N D NPL	C++	facebook-repo-ds2
+int	ds last	FUNCTION	PRE DT	C	ovs
+PandaNode*	dupe for flatten	FUNCTION	V P V	C++	panda3d
+GUID	DX7 Device GUID	ATTRIBUTE	NM NM N	C	panda3d
+E	e 3	PARAMETER	N D	Java	guava
+E	e 8	PARAMETER	N D	Java	guava
+void	each seen event	FUNCTION	DT NM N	C++	meta
+igraph_vector_int_t	edge color 2	PARAMETER	NM N D	C	rigraph
+igraph_vector_t	edge map 2	PARAMETER	NM N D	C	rigraph
+igraph_inclist_t	edges per node	PARAMETER	NPL P N	C	rigraph
+ASTNodeInfo	else Info	DECLARATION	NM N	C++	cling
+Stmt	else Replacement	DECLARATION	NM N	C++	cling
+MinorType	else Type	DECLARATION	NM N	Java	drill
+boolean	enable Push down	ATTRIBUTE	V V P	Java	drill
+int	ENCAPSULATING SECURITY V6	ATTRIBUTE	NM N NM	Java	drill
+unsigned	encode only	PARAMETER	V VM	C	libxo
+int	end for	DECLARATION	V N	C	freeminer
+char*	end of record	FUNCTION	N P N	C	git2r
+DrillbitEndpoint	endpoint 1	PARAMETER	N D	Java	drill
+DrillbitEndpoint	endpoint 2	PARAMETER	N D	Java	drill
+boolean	enough Memory	FUNCTION	DT N	Java	drill
+Object	entry 1	PARAMETER	N D	Java	guava
+Client_data	entry 2	DECLARATION	N D	C	toxcore
+git_tree_entry	entry out	PARAMETER	NM N	C	git2r
+char*	Err no	FUNCTION	NM N	C++	facebook-repo-ds2
+void*	error 2	FUNCTION	N D	C	rigraph
+boolean	error On 400	ATTRIBUTE	N P D	Java	drill
+auto	even	DECLARATION	NM	C++	meta
+int	even dist	PARAMETER	NM N	C	ccv
+bool	even split	PARAMETER	NM N	C++	meta
+JsonParseException	ex 1	PARAMETER	N D	Java	drill
+Except	except	PARAMETER	N	Java	drill
+__int64	exit 64	DECLARATION	N D	C++	panda3d
+long	expand in	ATTRIBUTE	V N	C	toggldesktop
+CODE*	expression 7	FUNCTION	N D	C	rigraph
+CODE*	expression 8	FUNCTION	N D	C	rigraph
+bool	extend by hexahedron	FUNCTION	V P N	C++	panda3d
+PackOutFunc	f out	ATTRIBUTE	N NM	C++	freeminer
+double	f1 score	FUNCTION	NM N	C++	meta
+int	fan in	DECLARATION	N P	C++	caffe
+uint64_t	features per class	DECLARATION	NPL P N	C	meta
+_NXMapTable	field 37	ATTRIBUTE	N D	C	toggldesktop
+int	field 4	ATTRIBUTE	N D	C	toggldesktop
+int	field 63	ATTRIBUTE	N D	C	toggldesktop
+class	File 2 Page App	CLASS	N P NM N	C++	toggldesktop
+int	file no	PARAMETER	NM N	C++	facebook-repo-ds2
+NodePathCollection	find all matches	FUNCTION	V DT NPL	C++	panda3d
+TextureCollection*	find all textures	FUNCTION	V DT NPL	C++	panda3d
+int	flag true if should convert	PARAMETER	N NM CJ V V	C	panda3d
+unsigned	flag within	ATTRIBUTE	N P	C	git2r
+int	FLOAT4 VALUE	ATTRIBUTE	NM N	Java	drill
+Reporter	for Annotation	FUNCTION	NM N	Java	immutables
+boolean	for Attribute	ATTRIBUTE	NM N	Java	immutables
+linear_model	for avg	DECLARATION	P N	C++	meta
+boolean	for Backprop	PARAMETER	P N	Java	deeplearning4j
+TypeDescriptor 	for Class	FUNCTION	P N	Java	drill
+DrillConfig	for Client	FUNCTION	P N	Java	drill
+Visibility	for Implementation	FUNCTION	P N	Java	immutables
+void*	for num	FUNCTION	NM N	C	freeminer
+MinorType	for Number	FUNCTION	P N	Java	drill
+DeclaringPackage	for Package	FUNCTION	NM N	Java	immutables
+Set	for Resource	FUNCTION	P N	Java	drill
+ProxyInfo	for Socks4 Proxy	FUNCTION	P NM N	Java	Smack
+boolean	for Unknown Schema	PARAMETER	P NM N	Java	drill
+bool	force fog off	ATTRIBUTE	V N VM	C++	freeminer
+bool	force nd im 2 col	ATTRIBUTE	V NM N P N	C++	caffe
+vector	forward time per layer	DECLARATION	NM N P N	C++	caffe
+double	fp irand 224	FUNCTION	NM N D	C	rigraph
+bool	fp on	ATTRIBUTE	N P	C++	rigraph
+void	fprint all protocols for layer types	FUNCTION	V DT NPL P NM NPL	C	wireshark
+int*	friend in close	FUNCTION	N P N	C	toxcore
+state_id	from	PARAMETER	P	C	s3fs-fuse
+char	from	PARAMETER	P	C++	meta
+T	from Bytes	FUNCTION	P NPL	Java	Singularity
+ThreadContext	from context	PARAMETER	P N	C	panda3d
+boolean	from Docker Config	ATTRIBUTE	P NM N	Java	Singularity
+String	from Email	PARAMETER	P N	Java	Openfire
+FromHeader	from Header	ATTRIBUTE	P N	Java	Spark
+uint8_t	from id	PARAMETER	P N	C	toxcore
+boolean	from Inclusive	PARAMETER	P N	Java	guava
+class	from Iterator	CLASS	P N	Java	guava
+JID	from JID	PARAMETER	P N	Java	Openfire
+K	from Key	PARAMETER	P N	Java	guava
+StanzaFilter	from Room Filter	ATTRIBUTE	P NM N	Java	Smack
+boolean	from Server	PARAMETER		Java	Openfire
+SelectionVector4	from SV 4	PARAMETER	P N D	Java	drill
+int	from Y	PARAMETER	P N	Java	Spark
+int*	fts5 MultiIter Do Compare	FUNCTION	PRE PRE V V	C	toggldesktop
+void*	fts5 Seg Iter Clear	FUNCTION	PRE NM N V	C	ccv
+fts5yyParser	fts5 yyp Parser	PARAMETER	PRE NM N	C	ccv
+char*	function and data	DECLARATION	N CJ N	C	weechat
+bool	g curand availability logged	DECLARATION	PRE NM N V	C++	caffe
+objectlist	g next	DECLARATION	PRE DT	C	naemon-core
+int*	generate key or iv	FUNCTION	V N CJ N	C	wireshark
+void	Generate Prolog 1	FUNCTION	V N D	C++	facebook-repo-ds2
+string	get a 1	FUNCTION	V N D	C++	panda3d
+String	get B64 Data	FUNCTION	V NM N	Java	Smack
+LVecBase2d	get data 2d	FUNCTION	V N NM	C++	panda3d
+LVecBase4d	get data 4d	FUNCTION	V N NM	C++	panda3d
+LVecBase4i	get data 4i	FUNCTION	V N NM	C++	panda3d
+int	get Decimal 9 From Big Decimal	FUNCTION	V N D P NM N	Java	drill
+time_t	get last modified	FUNCTION	V DT N	C++	s3fs-fuse
+JLabel	get Look and feel Label	FUNCTION	V NM CJ NM N	Java	Spark
+long	get next comment id	FUNCTION	V DT NM N	C	naemon-core
+xmlChar*	get next marker	FUNCTION	V DT N	C++	s3fs-fuse
+long	get Part 2	FUNCTION	V N D	Java	drill
+LPoint3	get position world on a	FUNCTION	V NM N P N	C++	panda3d
+size_t	get start r 1	FUNCTION	V NM N D	C++	meta
+bool	get U 16 No Ex	FUNCTION	V N D DT N	C++	freeminer
+int*	git delta read header from stream	FUNCTION	PRE PRE V N P N	C	git2r
+int	git diff commit as email	FUNCTION	PRE PRE N P N	C	git2r
+int	git fs path to dir	FUNCTION	PRE NM N P N	C	git2r
+int	git index update all	FUNCTION	PRE PRE V DT	C	git2r
+size_t	git off map size	FUNCTION	PRE NM NM N	C	git2r
+int*	git repository head detached for work tree	FUNCTION	PRE PRE N V P NM N	C	git2r
+void	gl M 3 Inv	FUNCTION	PRE N D N	C++	panda3d
+void	group with	FUNCTION	V P	C++	panda3d
+GsonBuilder	gson Builder	DECLARATION	NM N	Java	immutables
+void*	gui buffer local var remove all	FUNCTION	PRE PRE NM N V DT	C	weechat
+void	gui buffer set time for each line	FUNCTION	PRE PRE V N P DT N	C	weechat
+void*	gui input search next	FUNCTION	PRE PRE V DT	C	weechat
+int*	gui line has tag no filter	FUNCTION	PRE PRE V N DT N	C	weechat
+void*	gui line mixed free all	FUNCTION	PRE PRE NM V DT	C	weechat
+char*	gui mouse event code 2 key	FUNCTION	PRE PRE NM N P N	C	weechat
+void	gui nick hash sum 64	FUNCTION	PRE PRE NM N D	C	weechat
+in6_addr	gw 6	PARAMETER	N D	C	ovs
+auto	h 2 server	DECLARATION	N D N	C++	proxygen
+int	h if index	ATTRIBUTE	PRE NM N	C	ovs
+int*	handle send 2	FUNCTION	V N D	C	toxcore
+bool	has after destruct	ATTRIBUTE	V NM N	C	freeminer
+bool	has each	DECLARATION	V DT	C++	panda3d
+bool	has in band	PARAMETER	V NM N	C	ovs
+bool	has on activate	ATTRIBUTE	V P V	C	freeminer
+bool	has run at least once	ATTRIBUTE	V V VM VM VM	C++	caffe
+bool	has Upgrade Token in Connection	DECLARATION	V NM N P N	C++	proxygen
+class	Hash 32 Functions	CLASS	N D NPL	Java	drill
+class	Hash 64 Functions With Seed	CLASS	N D NPL P N	Java	drill
+int	hash and save	FUNCTION	V CJ V	C	git2r
+float	hbp 1	DECLARATION	N D	C	ccv
+gboolean	header only	PARAMETER	N VM	C	wireshark
+void	hide all switches	FUNCTION	V DT NPL	C++	panda3d
+ObjectMapper	hocon Mapper	ATTRIBUTE	NM N	Java	drill
+void	host 1	PARAMETER	N D	C	naemon-core
+int	hosts down	DECLARATION	NPL VM	C	naemon-core
+gint	how	PARAMETER	VM	C	wireshark
+float	hp 1	DECLARATION	N D	C	ccv
+int	httperf 2	FUNCTION	N D	C++	proxygen
+int	i 1	PARAMETER	N D	Java	Openfire
+igraph_error_t*	i graph all st min cuts	FUNCTION	PRE PRE DT NM NM NPL	C	rigraph
+class	Iax2 Analysis Tree Widget Item	CLASS	PRE NM NM NM N	C++	wireshark
+IDAT	idat	ATTRIBUTE	N	C	mgba
+IDAT	idat var	PARAMETER	NM N	C	mgba
+char	idb 1 if description	DECLARATION	N D NM N	C	wireshark
+LogicalExpression	if Condition	DECLARATION	NM N	Java	drill
+IfElseWidthExpr	if Else Width Expr	PARAMETER	NM NM NM N	Java	drill
+SqlNode	if Exists	ATTRIBUTE	NM N	Java	drill
+IfExpression	if Expr	PARAMETER	NM N	Java	drill
+JBlock	if Found	DECLARATION	CJ V	Java	drill
+int	if index	ATTRIBUTE	NM N	C	ovs
+ifinfomsg	if info	DECLARATION	NM N	C	ovs
+char	if name	ATTRIBUTE	NM N	C	ovs
+JBlock	if No Val	DECLARATION	CJ DT N	Java	drill
+void	if notifier wait	FUNCTION	NM N V	C	ovs
+boolean	if Present	PARAMETER	CJ NM	Java	immutables
+OutputWidthExpression	if Reduced Expr	DECLARATION	CJ NM N	Java	drill
+PMIB_IF_TABLE2	if Table	PARAMETER	NM N	C	ovs
+bool	if Unique	PARAMETER	CJ NM	C++	cling
+int	if Width	DECLARATION	NM N	Java	drill
+int	igraph 2 w heap init	FUNCTION	PRE D VM N V	C	rigraph
+void	igraph err no	PARAMETER	NM NM N	C	rigraph
+int	igraph i get subisomorphisms vf 2 inner	FUNCTION	PRE PRE V NPL N D NM	C	rigraph
+bool	im 2 col	PARAMETER	N P N	C++	caffe
+INDArray	im 2 col 2d	DECLARATION	N P N NM	Java	deeplearning4j
+class	Im 2 col Layer	CLASS	N P N N	C++	caffe
+Image	image 1	PARAMETER	N D	Java	Spark
+String	in Action Code	PARAMETER	PRE NM N	Java	Smack
+InetAddress	in addr	PARAMETER	NM N	Java	Openfire
+bool	in best path	ATTRIBUTE	P NM N	C++	rigraph
+Channel	in channel	PARAMETER	NM N	C++	drill
+verify_context	in ctx	PARAMETER	NM N	C++	drill
+boolean	in Eclipse Compiler	ATTRIBUTE	P NM N	Java	immutables
+Map	in Edges	PARAMETER	NM NPL	Java	guava
+Set	in Eq More Than Once	DECLARATION	P N DT CJ VM	Java	drill
+int	in expected RPC Type	PARAMETER	PRE NM NM N	C++	drill
+TypedFieldId	in Field Id	DECLARATION	NM NM N	Java	drill
+List	in Fields	ATTRIBUTE	NM NPL	Java	drill
+double	in Flow New M	DECLARATION	NM NM NM N	C++	rigraph
+Context	in for	FUNCTION	P N	Java	immutables
+HANDLE	in hand	DECLARATION	NM N	C	toggldesktop
+void	in how	ATTRIBUTE	V VM	C	mgba
+Integer	in Index	PARAMETER	NM N	Java	drill
+ovs_be64	in key	ATTRIBUTE	NM N	C	ovs
+igraph_adjlist_t	in list	DECLARATION	NM N	C	rigraph
+boolean	in Literal	DECLARATION	P N	Java	Openfire
+int	in Mem Count	PARAMETER	P NM N	Java	drill
+string	in name	PARAMETER	NM N	C++	meta
+stbi_uc	in near	PARAMETER	N P	C	panda3d
+bool	in neighbour heap	ATTRIBUTE	P NM N	C++	rigraph
+boolean	in Outer List	ATTRIBUTE	P NM N	Java	drill
+Pipe	in Pipe	PARAMETER	NM N	C++	toggldesktop
+string	in prop Name	PARAMETER	NM NM N	C++	drill
+SizeT	in Size	DECLARATION	NM N	C	mgba
+RelTrait	in Trait	ATTRIBUTE	NM N	Java	drill
+BOOLEAN	in Transaction	DECLARATION	P N	C	ovs
+int	in Vector	DECLARATION	NM N	Java	drill
+bool	include all fetch heads	DECLARATION	V DT NM NPL	C	git2r
+boolean	incoming Has Sv 2	DECLARATION	V V N D	Java	drill
+int	index as child	ATTRIBUTE	V P N	C++	deeplearning4j
+int	index as parent	ATTRIBUTE	V P N	C++	deeplearning4j
+xo_info_t	info p	PARAMETER	NM N	C	libxo
+void	init 2	FUNCTION	N D	C++	toggldesktop
+BIO	inkey bio	DECLARATION	NM N	C	toggldesktop
+Map	inlinables	ATTRIBUTE	NPL	Java	immutables
+int32_t	inp 0	DECLARATION	N D	C	mgba
+int	insert at	PARAMETER	V P	C++	panda3d
+void*	insert V 4 Headers	FUNCTION	V N D NPL	C++	s3fs-fuse
+uint32_t	insn 0	PARAMETER	N D	C++	facebook-repo-ds2
+uint32_t	insn 1	PARAMETER	N D	C++	facebook-repo-ds2
+void	instr max	ATTRIBUTE	NM N	C++	toggldesktop
+String	interval SubString 1	DECLARATION	NM N D	Java	drill
+int	INVERSE COMPUTE FOR WORD OF ALL 1S	ATTRIBUTE	V N P N P DT NPL	Java	guava
+u_int8_t	ip6 h nxt	ATTRIBUTE	PRE N NM	C	ovs
+guint8	ip6r0 slmap	ATTRIBUTE	PRE N	C	wireshark
+void	irc batch free all	FUNCTION	PRE PRE V DT	C	weechat
+int*	irc color convert rgb 2 irc	FUNCTION	PRE PRE V N P N	C	weechat
+int*	irc message split 005	FUNCTION	PRE N V D	C	weechat
+void*	irc notify new for all servers	FUNCTION	PRE PRE NM P DT NPL	C	weechat
+bool	is 1 x 1	ATTRIBUTE	V D P D	C++	caffe
+bool	is 32	ATTRIBUTE	V D	C	facebook-repo-ds2
+bool*	is a ge zero and a lt b	FUNCTION	V N NM D CJ N NM N	C++	caffe
+bool	is all	PARAMETER	V DT	C++	s3fs-fuse
+boolean	is Base32	FUNCTION	V N	Java	Openfire
+bool*	is convertible to	FUNCTION	V NM P	C++	panda3d
+char	is dir 2	PARAMETER	V N D	C	git2r
+bool	is even	PARAMETER	V NM	C++	toggldesktop
+bool	is HTTP11	FUNCTION	V N	C++	proxygen
+bool	is step up	ATTRIBUTE	V N P	C++	freeminer
+boolean	is Supports Limit Push down	FUNCTION	V V N V P	Java	drill
+bool	is this	FUNCTION	V N	C++	panda3d
+int*	is valid escalation for service notification	FUNCTION	V NM N P NM N	C	naemon-core
+bool	is valid position 2	DECLARATION	V NM N D	C++	freeminer
+int	iterations per sample	ATTRIBUTE	NPL P N	C++	freeminer
+class	Java11 Web Socket	CLASS	PRE NM N	Java	Smack
+class	Java11 Web Socket Factory	CLASS	PRE NM NM N	Java	Smack
+Map	join Mj Id 2 Scan Mj Id	DECLARATION	V NM N P V NM N	Java	drill
+K	k 6	PARAMETER	N D	Java	guava
+K	k 7	PARAMETER	N D	Java	guava
+K	k 8	PARAMETER	N D	Java	guava
+int	k Diy Significand Size	ATTRIBUTE	NM NM NM N	C++	panda3d
+uint64_t	k Dp Significand Mask	ATTRIBUTE	NM NM NM N	C++	panda3d
+int	k Dp Significand Size	ATTRIBUTE	NM NM NM N	C++	panda3d
+bool	k Im 2 Col	DECLARATION	NM N P N	C++	caffe
+uint32_t	keep when false	PARAMETER	V VM NM	C	rigraph
+uint32_t	keep when true	PARAMETER	V VM NM	C	rigraph
+class	Keras 2D Embedding	CLASS	PRE NM N	Java	deeplearning4j
+class	Keras Convolution 2D	CLASS	PRE N NM	Java	deeplearning4j
+class	Keras Deconvolution 2D	CLASS	PRE N NM	Java	deeplearning4j
+class	Keras Depthwise Convolution 2D	CLASS	PRE NM N NM	Java	deeplearning4j
+class	Keras Upsampling 1D	CLASS	PRE N NM	Java	deeplearning4j
+class	Keras Zero Padding 1D	CLASS	PRE NM N NM	Java	deeplearning4j
+void*	kill nonused tcp	FUNCTION	V NM N	C	toxcore
+uint16_t	l 4 ofs	ATTRIBUTE	N D N	C	ovs
+int	l get node or nil	FUNCTION	PRE V N CJ NM	C++	freeminer
+int*	l place schematic on vmanip	FUNCTION	PRE V N P N	C++	freeminer
+int	l set last run mod	FUNCTION	PRE V DT V N	C++	freeminer
+integer	l wk 1	DECLARATION	PRE N D	C	rigraph
+double	l1 regularizer	ATTRIBUTE	NM N	C	meta
+void	l2 norm transform	FUNCTION	NM NM V	C	meta
+int	last Access Time	PARAMETER	DT NM N	Java	drill
+guint32	last ack seq	ATTRIBUTE	DT NM N	C	wireshark
+long	last Active	ATTRIBUTE	DT N	Java	Openfire
+Instant	last Activity	DECLARATION	DT N	Java	Openfire
+Date	last Activity Date Range Max	ATTRIBUTE	DT NM NM NM N	Java	Openfire
+long	last Answered Request ID	ATTRIBUTE	DT NM NM N	Java	Openfire
+String	last Argument	DECLARATION	DT N	Java	immutables
+boolean	last Batch Read	ATTRIBUTE	DT NM N	Java	drill
+int	last bucket	DECLARATION	DT N	C	naemon-core
+unique_ptr	last builder	ATTRIBUTE	DT N	C++	meta
+size_t	last bytes	ATTRIBUTE	DT NPL	C	git2r
+AtomicInteger	last Coordination Id	ATTRIBUTE	DT NM N	Java	drill
+time_t	last data purge	ATTRIBUTE	DT N V	C	weechat
+Document	last Document	ATTRIBUTE	DT N	Java	drill
+BatchHolder	last Entry Batch	PARAMETER	DT NM N	Java	drill
+DWORD	last err	PARAMETER	DT N	C	ovs
+SQLException	last Exception	DECLARATION	DT N	Java	Openfire
+QualType	last Expr Ty	DECLARATION	DT NM N	C++	cling
+AtomicLong	last Heartbeat Time	PARAMETER	DT NM N	Java	Singularity
+uint64_t	last id	DECLARATION	DT N	C++	meta
+int	last Idx	ATTRIBUTE	DT N	Java	deeplearning4j
+size_t	last in target	DECLARATION	DT P N	C	git2r
+int	last Index Of Dot	DECLARATION	DT N P N	Java	immutables
+K	last Key	FUNCTION	DT N	Java	guava
+int	last layer index	ATTRIBUTE	DT NM N	C++	caffe
+label_id	last lbl	DECLARATION	DT N	C++	meta
+INDArray	last Mem Cell	ATTRIBUTE	DT NM N	Java	deeplearning4j
+HashMap	last Message	ATTRIBUTE	DT N	Java	Spark
+Date	last Message Date	PARAMETER	DT NM N	Java	Smack
+Mode	last Mode	ATTRIBUTE	DT N	C++	freeminer
+guint	last n	ATTRIBUTE	DT N	C	wireshark
+bool	last part	PARAMETER	DT N	C++	s3fs-fuse
+long	last Pending Task Cache	ATTRIBUTE	DT NM NM N	Java	Singularity
+u16	last percent	ATTRIBUTE	DT N	C++	freeminer
+AtomicLong	last Persister Success	PARAMETER	DT NM N	Java	Singularity
+int	last pos	PARAMETER	DT N	C	toggldesktop
+ScanRange	last Range	DECLARATION	DT N	Java	drill
+RelNode	last Rel Node	DECLARATION	DT NM N	Java	drill
+long	last Request Utilization Cache	ATTRIBUTE	DT NM NM N	Java	Singularity
+IterOutcome	last Right Status	DECLARATION	DT NM N	Java	drill
+int	last Row	ATTRIBUTE	DT N	Java	drill
+t_plugin_script	last script	ATTRIBUTE	DT N	C	weechat
+int	last Segment Index	DECLARATION	DT NM N	Java	drill
+int	last Set	DECLARATION	DT N	Java	drill
+int	last Slash Index	DECLARATION	DT NM N	Java	drill
+StreamID	last Stream	PARAMETER	DT N	C++	proxygen
+auto	last Stream Id Size	DECLARATION	DT NM NM N	C++	proxygen
+Optional	last Task Status	ATTRIBUTE	DT NM N	Java	Singularity
+uint64_t	last term	ATTRIBUTE	DT N	C	ovs
+u64	last time	ATTRIBUTE	DT N	C++	freeminer
+time_t	last time critical	ATTRIBUTE	DT N NM	C	naemon-core
+u64	last time ms	ATTRIBUTE	DT N NM	C++	freeminer
+char	last Transition	ATTRIBUTE	DT N	Java	drill
+long	last Update Time	ATTRIBUTE	DT NM N	Java	deeplearning4j
+SingularityTaskUsage	last Usage	DECLARATION	DT N	Java	Singularity
+long	last used	ATTRIBUTE	DT V	C	ovs
+int	last used Ypos	ATTRIBUTE	DT V N	Java	Spark
+boolean	last Value	PARAMETER	DT N	Java	immutables
+rusage	last wakeup	PARAMETER	DT V	C	ovs
+wint_t	last wc	PARAMETER	DT N	C	git2r
+int	last Write	PARAMETER	DT N	Java	drill
+int	last Write Index	FUNCTION	DT NM N	Java	drill
+JVar	last Writer Idx	ATTRIBUTE	DT NM N	Java	drill
+int	last Y	ATTRIBUTE	DT N	C	mgba
+String	LAYER FIELD POOL 1D SIZE	ATTRIBUTE	NM NM N NM NM	Java	deeplearning4j
+char	least addr	ATTRIBUTE	DT N	C++	panda3d
+Intratype	left Intra type	DECLARATION	NM NM N	Java	immutables
+uint32_t	left to parse	DECLARATION	V P V	C++	proxygen
+size_t	len a	PARAMETER	NM N	C	freeminer
+String	less Terminal Path	ATTRIBUTE	NM NM N	Java	Singularity
+LikeFilter	like Filter	PARAMETER	NM N	C++	drill
+RunQuery	limit 0 Query	DECLARATION	V D N	Java	drill
+int	lines after	ATTRIBUTE	NPL P	C	weechat
+size_t	lines in hunk	DECLARATION	NPL P N	C	git2r
+int	lines per option	DECLARATION	NPL P N	C	weechat
+long	lk 1	DECLARATION	N D	Java	drill
+int	load from lib dir	PARAMETER	V P NM N	C	weechat
+git_str	local path out	PARAMETER	NM NM N	C	git2r
+string	log on wait	PARAMETER	V P V	C++	caffe
+JComboBox	look and feel	ATTRIBUTE	NM CJ NM	Java	Spark
+JLabel	look and feel Label	ATTRIBUTE	NM CJ NM N	Java	Spark
+LPoint3	look at	ATTRIBUTE	V P	C++	panda3d
+double	m 11	ATTRIBUTE	N D	C++	freeminer
+double	m 13	ATTRIBUTE	N D	C++	freeminer
+double	m 21	ATTRIBUTE	N D	C++	freeminer
+double	m 22	ATTRIBUTE	N D	C++	freeminer
+double	m 23	ATTRIBUTE	N D	C++	freeminer
+double	m 31	ATTRIBUTE	N D	C++	freeminer
+double	m 33	ATTRIBUTE	N D	C++	freeminer
+bool	m all Tables Selectable	ATTRIBUTE	PRE DT NPL NM	C++	drill
+QString	m endpoint a	ATTRIBUTE	PRE NM N	C++	wireshark
+ForWhat	m for What	ATTRIBUTE	PRE P DT	C++	freeminer
+double	m in Nanoseconds	ATTRIBUTE	PRE P NPL	C++	freeminer
+AssertionInfo	m last Assertion Info	ATTRIBUTE	PRE DT NM N	C++	freeminer
+bool	m last Assertion Passed	ATTRIBUTE	PRE DT N V	C++	freeminer
+size_t	m last Connection	ATTRIBUTE	PRE DT N	C++	drill
+string	m last Query	ATTRIBUTE	PRE DT N	C++	drill
+Option	m last Result	ATTRIBUTE	PRE DT N	C++	freeminer
+u16	m last used id	ATTRIBUTE	PRE DT NM N	C++	freeminer
+bool	m like Escape Clause Supported	ATTRIBUTE	PRE NM NM N V	C++	drill
+map	m name to id	ATTRIBUTE	PRE N P N	C++	freeminer
+CachedVertexShaderSetting	m perspective bias 1 vertex	ATTRIBUTE	PRE NM NM D N	C++	freeminer
+void	m PSP 2 Load ROM	FUNCTION	PRE N D V N	C	mgba
+string	m redirected Cout	ATTRIBUTE	PRE V N	C++	freeminer
+int	m sbox 4	ATTRIBUTE	PRE N D	Java	Openfire
+T	m to	ATTRIBUTE	PRE P	C++	toggldesktop
+Vector	m to copy	ATTRIBUTE	PRE P N	Java	freeminer
+bool	m used up	ATTRIBUTE	PRE V VM	C++	freeminer
+string	m what	ATTRIBUTE	PRE DT	C++	toggldesktop
+String	MAIL FORWARD 16 x 16	ATTRIBUTE	V N D P D	Java	Spark
+int*	make no n indexed	FUNCTION	V DT N NM	C++	panda3d
+int	max v 4 frag list size	ATTRIBUTE	NM N D NM NM N	C	ovs
+int	md5 out len	DECLARATION	NM NM N	C++	s3fs-fuse
+void	merge chunks by bucket size	FUNCTION	V NPL P NM N	C++	meta
+int*	merge driver name for path	FUNCTION	V NM N P N	C	git2r
+auto	merged 1	ATTRIBUTE	N D	C++	deeplearning4j
+auto	merged 3	ATTRIBUTE	N D	C++	deeplearning4j
+char	message after mod	ATTRIBUTE	N P N	C	weechat
+char	message before mod	ATTRIBUTE	V P N	C	weechat
+char	message no color	DECLARATION	N DT N	C	weechat
+float	mid 1	DECLARATION	N D	C++	freeminer
+LogicalMinus	minus	PARAMETER	P	Java	drill
+bool	monitor everything by default	PARAMETER	V DT P N	C	ovs
+ccv_cnnp_dataframe_data_item_t	more data	DECLARATION	DT N	C	ccv
+ClosingFuture	more Futures	PARAMETER	DT NPL	Java	guava
+Gs	more Generators	PARAMETER	DT NPL	C++	freeminer
+u8	more To Follow	PARAMETER	DT P V	C	ccv
+int	morecore properties	ATTRIBUTE	PRE NPL	C++	panda3d
+long	murmur 3 64	FUNCTION	N D D	Java	drill
+class	Murmur Hash 3	CLASS	NM N D	Java	drill
+class	Murmur3 128 Hash Function	CLASS	PRE D NM N	Java	guava
+MapNode	n 3	DECLARATION	N D	C++	freeminer
+Int	n col 2	PARAMETER	NM N D	C	rigraph
+MapNode	n dirt with grass	DECLARATION	PRE N P N	C++	freeminer
+uint64_t	n frag too small	ATTRIBUTE	NM N VM NM	C	ovs
+MapNode	n from	PARAMETER	N P	C++	freeminer
+MapNode	n water or ice	DECLARATION	N N CJ N	C++	freeminer
+string	name 1	PARAMETER	N D	C++	meta
+char	name what	ATTRIBUTE	N DT	C	freeminer
+void	Net after forward	FUNCTION	PRE P N	C++	caffe
+void	Net before backward	FUNCTION	PRE P N	C++	caffe
+void	Net before forward	FUNCTION	PRE P N	C++	caffe
+int*	netdev dummy queue dump next	FUNCTION	PRE PRE N V DT	C	ovs
+int*	network pass socks5 proxy	FUNCTION	NM NM NM N	C	weechat
+int	new Param 1	ATTRIBUTE	NM N D	C++	freeminer
+int	new Param 2	ATTRIBUTE	NM N D	C++	freeminer
+int	new Shape 2	DECLARATION	NM N D	Java	deeplearning4j
+BatchInfo	next	ATTRIBUTE	DT	C++	toggldesktop
+t_gui_bar	next bar	ATTRIBUTE	DT N	C	weechat
+float	next Cast Cost	DECLARATION	DT NM N	Java	drill
+char	next Char	DECLARATION	DT N	Java	drill
+t_config_file	next config	ATTRIBUTE	DT N	C	weechat
+xodtemplate_daterange	next date range	DECLARATION	DT NM N	C	naemon-core
+double	next Double	FUNCTION	DT N	Java	immutables
+void	next Egress	FUNCTION	DT N	C++	proxygen
+Group	next Element	ATTRIBUTE	DT N	Java	Openfire
+int32_t	next event	ATTRIBUTE	DT N	C	mgba
+String	next Field	ATTRIBUTE	DT N	Java	drill
+String	next Field Name	FUNCTION	DT NM N	Java	immutables
+NextFilter	Next Filter	PARAMETER	DT N	Java	Openfire
+ClassNames	next Generated	DECLARATION	DT V	Java	drill
+t_gui_nick_group	next group	ATTRIBUTE	DT N	C	weechat
+xodtemplate_hostescalation	next he	DECLARATION	DT N	C	naemon-core
+int	next head	FUNCTION	DT N	C	git2r
+int	next Id	ATTRIBUTE	DT N	Java	drill
+t_irc_ignore	next ignore	ATTRIBUTE	DT V	C	weechat
+ImmutableEntry	next In Bucket	FUNCTION	DT P N	Java	guava
+TaskStatus	next In Memory	FUNCTION	DT P N	Java	Singularity
+Object	next Instance	FUNCTION	DT N	Java	cglib
+boolean	next Integer If Not EOF	FUNCTION	DT NM CJ DT N	Java	drill
+char	next Key	DECLARATION	DT N	C++	cling
+Object	next Label	DECLARATION	DT N	Java	guava
+int	next Local	ATTRIBUTE	DT N	Java	cglib
+string	next marker	DECLARATION	DT N	C++	s3fs-fuse
+int	next max	ATTRIBUTE	DT N	C	ovs
+vector	next metadata	FUNCTION	DT N	C++	meta
+List	next Names	DECLARATION	DT NPL	Java	drill
+Cell	next nonsingleton	ATTRIBUTE	DT N	C++	rigraph
+objectlist	next object list	DECLARATION	DT NM N	C	naemon-core
+gint	next offset	DECLARATION	DT N	C	wireshark
+ReadStatus	next Page From Queue	FUNCTION	DT N P N	Java	drill
+Object	next Page Value	DECLARATION	DT NM N	Java	drill
+int	next Partition To Return	ATTRIBUTE	DT N P N	Java	drill
+uint32_t	next PC	DECLARATION	DT N	C++	facebook-repo-ds2
+ClassNames	next Precompiled	DECLARATION	DT NM	Java	drill
+Token*	next Preprocessed	FUNCTION	DT V	C++	toggldesktop
+string	next Protocol	PARAMETER	DT N	C++	proxygen
+string	next Protos	PARAMETER	DT NPL	C++	proxygen
+query_handler	next qh	ATTRIBUTE	DT N	C	naemon-core
+u8	next real face	DECLARATION	DT NM N	C++	freeminer
+Pair	next Row Key Batch	FUNCTION	DT NM NM N	Java	drill
+xodtemplate_serviceextinfo	next se	DECLARATION	DT N	C	naemon-core
+servicesmember	next services member	DECLARATION	DT NM N	C	naemon-core
+ClassSet	next Set	DECLARATION	DT N	Java	drill
+Node*	next Sibling	FUNCTION	DT N	C++	toggldesktop
+FileSplit	next Split	FUNCTION	DT N	Java	drill
+long	next tag	DECLARATION	DT N	C++	s3fs-fuse
+Runnable	next Task	ATTRIBUTE	DT N	Java	guava
+int	next tex	ATTRIBUTE	DT N	C++	panda3d
+char	next Tok Ptr	PARAMETER	DT NM N	C	toggldesktop
+ASN1_GENERALIZEDTIME	next upd	PARAMETER	DT N	C	toggldesktop
+int32_t	next update	ATTRIBUTE	DT N	C	mgba
+long	next Update Time	ATTRIBUTE	DT NM N	Java	drill
+long	next Value	ATTRIBUTE	DT N	Java	metrics
+ImmutableList	no Attributes	ATTRIBUTE	DT NPL	Java	immutables
+bool	no cache	PARAMETER	DT N	C	freeminer
+int	no callback	DECLARATION	DT N	C	git2r
+fdpage_list_t	no data pages	DECLARATION	DT NM NPL	C++	s3fs-fuse
+no_delay	no Delay	DECLARATION	DT N	C++	drill
+float	no dig delay timer	ATTRIBUTE	DT N NM N	C++	freeminer
+bool	no emerge	PARAMETER	VM V	C++	freeminer
+bool	no Error	FUNCTION	DT N	C++	proxygen
+int	no in	DECLARATION	NM N	C	rigraph
+boolean	no Interfaces	ATTRIBUTE	DT NPL	Java	deeplearning4j
+int	no lock Lock	FUNCTION	DT NM N	C	ccv
+char	no log	DECLARATION	DT N	C	weechat
+bool	no logo	PARAMETER	DT N	C	cling
+igraph_integer_t	no of edges 2	DECLARATION	N P NPL D	C	rigraph
+int	no of groups	PARAMETER	N P NPL	C	rigraph
+int	no of nodes	DECLARATION	N P NPL	C	rigraph
+igraph_integer_t	no out types	PARAMETER	NM NM NPL	C	rigraph
+bool	no output	ATTRIBUTE	DT N	C++	freeminer
+bool	no random	PARAMETER	DT N	C++	freeminer
+uint64_t	no replay	DECLARATION	DT N	C	toxcore
+boolean	no Reply	PARAMETER	DT N	Java	Smack
+bool	no Runtime	PARAMETER	DT N	C++	cling
+SourceLocation	no Src Loc	DECLARATION	DT NM N	C++	cling
+int	no text	PARAMETER	DT N	C	toggldesktop
+bool	no truncate	PARAMETER	DT V	C++	s3fs-fuse
+Writable	no Val	ATTRIBUTE	DT N	Java	deeplearning4j
+PandaNode	node 2	PARAMETER	N D	C++	panda3d
+float	noise 2	PARAMETER	N D	C++	freeminer
+auto	none	DECLARATION	DT	C++	meta
+void	normalize by rebuilding	FUNCTION	V P V	C++	panda3d
+int*	not a local branch	FUNCTION	VM DT NM N	C	git2r
+guint16	noti flags number	PARAMETER	NM NM N	C	wireshark
+int	notified on	ATTRIBUTE	V P	C	naemon-core
+int	notify contact of host	FUNCTION	V N P N	C	naemon-core
+Instant	now	DECLARATION	VM	Java	Openfire
+string	now cache	DECLARATION	VM V	C++	s3fs-fuse
+long	now Micros	PARAMETER	VM NPL	Java	guava
+string	now path	DECLARATION	VM N	C++	s3fs-fuse
+time_t	now time	DECLARATION	VM N	C++	s3fs-fuse
+TextureCollection*	ns find all textures	FUNCTION	PRE V DT NPL	C++	panda3d
+bool	null or empty	FUNCTION	NM CJ NM	C++	deeplearning4j
+int	num ascnt	ATTRIBUTE	NM N	C	rigraph
+Blob	num by chans	ATTRIBUTE	N P NPL	C++	caffe
+int	num faces to draw	DECLARATION	NM NPL P V	C++	freeminer
+int	num kernels col 2 im	ATTRIBUTE	NM NPL N P N	C++	caffe
+int	num kernels im 2 col	ATTRIBUTE	NM NPL N P N	C++	caffe
+int	num of after release pdus	ATTRIBUTE	N P P V NPL	C	wireshark
+int	num of gops	ATTRIBUTE	N P NPL	C	wireshark
+size_t	num to check	DECLARATION	N P V	C	mgba
+int	num vertices per primitive	DECLARATION	NM NPL P N	C++	panda3d
+long	number of nodes	DECLARATION	N P NPL	C++	rigraph
+NumericType	numeric type 3	PARAMETER	NM N D	C++	panda3d
+int	nxt in	ATTRIBUTE	P P	C	rigraph
+MultiUserChatService	o 2	PARAMETER	N D	Java	Openfire
+LongType	o Stride 0	DECLARATION	NM N D	C++	deeplearning4j
+btCollisionObject	obj 0	DECLARATION	N D	C++	panda3d
+int	obsess over host	PARAMETER	V P N	C	naemon-core
+odp_key_fitness*	odp nsh key from attr	FUNCTION	PRE PRE N P N	C	ovs
+float	odx 1	DECLARATION	N D	C	rigraph
+class	OF 1515	CLASS	N D	Java	Openfire
+ofbundle	of bundle	PARAMETER	PRE N	C	ovs
+ofservice	of service	DECLARATION	PRE N	C	ovs
+off_t	off	PARAMETER	N	C	meta
+auto	off Arg	DECLARATION	NM N	C++	facebook-repo-ds2
+long	off Bits	PARAMETER	NM NPL	C++	panda3d
+ImageIcon	off Icon	ATTRIBUTE	NM N	Java	Openfire
+int	offset p	PARAMETER	NM N	C	wireshark
+igraph_real_t	offset to left contour	ATTRIBUTE	V P NM N	C	rigraph
+igraph_real_t	offset to right contour	ATTRIBUTE	V P NM N	C	rigraph
+ofpbuf*	ofp buf clone with headroom	FUNCTION	PRE PRE N P N	C	ovs
+git_oid	oid a	PARAMETER	NM N	C	git2r
+int	old Param 2	ATTRIBUTE	NM N D	C++	freeminer
+ObjectName	on	DECLARATION	N	Java	metrics
+void	on Connection Close	FUNCTION	P N V	Java	Openfire
+int	on disk	ATTRIBUTE	P N	C	git2r
+void	on Egress Buffered	FUNCTION	P N V	C++	proxygen
+ErrorCode	on Execute Program	FUNCTION	P V N	C++	facebook-repo-ds2
+ObjectNameFactory	on Factory	PARAMETER	NM N	Java	metrics
+bp::object	on gradients ready	ATTRIBUTE	P NPL NM	C++	caffe
+size_t	on Header Bytes Generated	DECLARATION	P NM NPL V	C	proxygen
+ImageIcon	on Icon	ATTRIBUTE	NM N	Java	Openfire
+void	on Ingress Error	FUNCTION	P NM N	C++	proxygen
+void	on Metric Removed	FUNCTION	P N V	Java	metrics
+ebb_header_cb	on multipart header field	ATTRIBUTE	P NM NM N	C	ccv
+void	on Ping Reply Latency	FUNCTION	P NM NM N	C++	proxygen
+void	on Post Execute	FUNCTION	P N V	Java	freeminer
+ErrorCode	on Query Current Thread	FUNCTION	P NM NM N	C++	facebook-repo-ds2
+ErrorCode	on Query Hardware Watchpoint Count	FUNCTION	P NM NM NM N	C++	facebook-repo-ds2
+ebb_element_cb	on query string	ATTRIBUTE	P NM N	C	ccv
+http_data_cb	on reason	ATTRIBUTE	P N	C	proxygen
+void*	on request response	FUNCTION	P NM N	C	ccv
+void	on Response Content	FUNCTION	P NM N	Java	metrics
+void	on Server Egress Paused	FUNCTION	P NM N V	C++	proxygen
+bool	on Server Side	PARAMETER	P NM N	C++	toggldesktop
+void	on Shutdown Request	FUNCTION	P NM N	Java	drill
+void	on start	FUNCTION	P N	C++	caffe
+object	on start	ATTRIBUTE	P N	C++	caffe
+http_data_cb	on status	ATTRIBUTE	P N	C	crow
+ErrorCode*	on Thread Is Alive	FUNCTION	P N V NM	C++	facebook-repo-ds2
+void	on Tick	FUNCTION	P N	Java	drill
+bool	on Transport Ready Common	FUNCTION	P NM NM N	C++	proxygen
+ovsthread_once	once	DECLARATION	VM	C	ovs
+bool	only amz	PARAMETER	VM N	C++	s3fs-fuse
+boolean	only Done	ATTRIBUTE	VM NM	Java	Smack
+Entry	only Entry	DECLARATION	VM N	Java	guava
+bool	only if existing	PARAMETER	VM CJ V	C	git2r
+boolean	only Impersonation Enabled	ATTRIBUTE	VM N V	Java	drill
+bool	only in ground	ATTRIBUTE	VM P N	C	freeminer
+igraph_bool_t	only indices	PARAMETER	VM NPL	C	rigraph
+boolean	only Local	PARAMETER	VM N	Java	Openfire
+bool	only pool	PARAMETER	VM N	C++	s3fs-fuse
+int	only user	ATTRIBUTE	VM N	C	toggldesktop
+char	open if empty	DECLARATION	V CJ NM	C	libxo
+int	opposite Major Fragment Id	ATTRIBUTE	NM NM NM N	Java	drill
+u8	or conf	PARAMETER	NM N	C	ccv
+DruidFilter	or Filter At Index	FUNCTION	NM N P N	Java	drill
+RexNode	or Pred	PARAMETER	NM N	Java	drill
+double	or Sel	DECLARATION	NM N	Java	drill
+igraph_vector_int_t	order out	PARAMETER	N NM	C	rigraph
+int	out audio samples	DECLARATION	NM NM NPL	C	toxcore
+T	out Buff	DECLARATION	NM N	C++	deeplearning4j
+int	out Buff Posn	DECLARATION	NM NM N	Java	Openfire
+ErrorCode	out Code	PARAMETER	NM N	C++	proxygen
+char	out dev	DECLARATION	NM N	C	ovs
+ExAttributes	out Ex Attributes	PARAMETER	NM NM NPL	C++	proxygen
+RelFieldCollation	out Field Collation	DECLARATION	NM NM N	Java	drill
+ofstream	out file	DECLARATION	NM N	C++	meta
+unique_ptr	out Header Data	DECLARATION	NM NM N	C++	proxygen
+void	out how	PARAMETER	VM VM	C	mgba
+TypedFieldId	out Key Field Ids	PARAMETER	NM NM NM NPL	Java	drill
+uint32_t	out list	PARAMETER	NM N	C	toxcore
+igraph_inclist_t	out list	DECLARATION	NM N	C	rigraph
+bool	out max val	ATTRIBUTE	V NM N	C++	caffe
+AtomicLong	out Messages	ATTRIBUTE	NM NPL	Java	Openfire
+int	out Name Index	DECLARATION	NM NM N	Java	drill
+void*	out of domain	FUNCTION	P P N	C	rigraph
+boolean	out Of Memory	PARAMETER	P P N	Java	drill
+uint64_t	out Opaque Data	PARAMETER	NM NM N	C++	proxygen
+Prel	out Prel	DECLARATION	NM N	Java	drill
+PushId	out Push Id	PARAMETER	NM NM N	C++	proxygen
+igraph_vector_t	out seq	PARAMETER	NM N	C	rigraph
+String	out Stat Name	PARAMETER	NM NM N	Java	drill
+lm_state	out state	PARAMETER	NM N	C++	meta
+int	out Types Offset	DECLARATION	NM NM N	Java	deeplearning4j
+int	out vlan	ATTRIBUTE	NM N	C	ovs
+size_t	over size	DECLARATION	P N	C++	s3fs-fuse
+OVS_WARN_UNUSED_RESULT*	ovs db transient datum from json	FUNCTION	PRE PRE NM N P N	C	ovs
+json*	ovsdb atom string create no copy	FUNCTION	PRE PRE N V DT V	C	ovs
+int	ovsdb datum compare 3way	FUNCTION	PRE N V VM	C	ovs
+int	p 2	DECLARATION	N D	Java	Openfire
+v2s16	p 2 d	PARAMETER	N D N	C++	freeminer
+Fts5Table	p Fts5	ATTRIBUTE	PRE PRE	C	ccv
+Mem	p Mem 1	PARAMETER	PRE N D	C	ccv
+Token	p Name 2	PARAMETER	PRE N D	C	mgba
+double	p save	DECLARATION	PRE V	C	rigraph
+u8	p5 Err msg	PARAMETER	NM NM N	C	toggldesktop
+long	pad 0	ATTRIBUTE	N D	C++	panda3d
+uint8_t	pad 2	ATTRIBUTE	N D	C	ovs
+int	parallel for	FUNCTION	NM N	C++	deeplearning4j
+vector	param propagate down	ATTRIBUTE	N V P	C++	caffe
+NetParameter	param upgraded pad	PARAMETER	N V N	C++	caffe
+long	part 3	DECLARATION	N D	Java	guava
+boolean	partition Filter Push down	ATTRIBUTE	NM N V P	Java	drill
+boolean	partitionby	DECLARATION	N	Java	drill
+char	pass in	DECLARATION	NM N	C	toggldesktop
+bool	pass through	DECLARATION	V P	C++	freeminer
+List	past Threshold	DECLARATION	P N	Java	Singularity
+String	path Name for Logs	PARAMETER	NM N P NPL	Java	Singularity
+ArrayList	paths 2	DECLARATION	NPL D	Java	deeplearning4j
+long	per Ex Train	DECLARATION	P N V	Java	deeplearning4j
+String	period no Period	ATTRIBUTE	N DT N	Java	Spark
+float*	perlin Map 3D	FUNCTION	NM N NM	C++	freeminer
+int	pfcp up function features o9 flags	DECLARATION	PRE NM N V NM NPL	C	wireshark
+void	place all	FUNCTION	V DT	C++	panda3d
+bool	playing Ch 2	ATTRIBUTE	V N D	C	mgba
+int	plfit errno	PARAMETER	NM N	C	rigraph
+char*	plugin api info color rgb 2 term cb	FUNCTION	PRE PRE PRE NM N P NM N	C	weechat
+void*	plugin if mainwindow update toolbars	FUNCTION	PRE PRE PRE V NPL	C++	wireshark
+char	plugin name for upgrade	ATTRIBUTE	NM N P N	C	weechat
+void*	plugin script str 2 ptr	FUNCTION	PRE PRE N P D	C	weechat
+SchemaPlus	plus Of This	PARAMETER	P P DT	Java	drill
+void	pointer 1	PARAMETER	N D	C	weechat
+int	prefix x 1	ATTRIBUTE	NM N D	C	weechat
+ShaderContext*	prepare now	FUNCTION	V VM	C++	panda3d
+Cell	prev nonsingleton	ATTRIBUTE	DT N	C++	rigraph
+UInt32	price 2	DECLARATION	N D	C	mgba
+void	print and free json	FUNCTION	V CJ V N	C	ovs
+Multimap	probe Side Scan 2 hj	ATTRIBUTE	NM NM N P N	Java	drill
+int	process IpV6 Packet	FUNCTION	V NM N	Java	drill
+gboolean*	propagate when not up	FUNCTION	V CJ VM P	C	naemon-core
+CLzmaEncProps	props 2	PARAMETER	NPL D	C	toggldesktop
+ImmutableList	proto classes	DECLARATION	NM NPL	Java	immutables
+set	provided	DECLARATION	V	C++	deeplearning4j
+ColumnMetadata	provided Column	DECLARATION	V N	Java	drill
+String	provided Password	PARAMETER	V N	Java	Openfire
+TupleMetadata	provided Schema	ATTRIBUTE	V N	Java	drill
+void	ptr 1	PARAMETER	N D	C++	proxygen
+void	ptr 2	PARAMETER	N D	C++	proxygen
+t_irc_channel	ptr channel 2	DECLARATION	NM N D	C	weechat
+char	ptr in buf	DECLARATION	NM NM N	C	weechat
+char	ptr next	DECLARATION	N DT	C	weechat
+t_config_option	ptr option 1	DECLARATION	NM N D	C	weechat
+mxArray*	ptr to handle	FUNCTION	N P N	C++	caffe
+node_info	q 0 h	DECLARATION	N D N	C++	meta
+QueryId	q 1	PARAMETER	N D	C++	drill
+QueryId	q 2	PARAMETER	N D	C++	drill
+uint64_t	r 14	ATTRIBUTE	N D	C	facebook-repo-ds2
+uint32_t	r 8	ATTRIBUTE	N D	C	facebook-repo-ds2
+SEXP*	R igraph 0 or vector bool to SEXP	FUNCTION	PRE PRE D CJ NM N P N	C	rigraph
+SEXP	R igraph add myid to env	FUNCTION	PRE PRE V N P N	C	rigraph
+SEXP	R igraph matrix to SEXP	FUNCTION	PRE PRE N P N	C	rigraph
+shared_ptr	rank 0	PARAMETER	N D	C++	caffe
+bool	read only	ATTRIBUTE	V VM	C	ovs
+bool	Read S3fs Passwd File	FUNCTION	V NM NM N	C++	s3fs-fuse
+bool	refine equal to first	ATTRIBUTE	V N P DT	C++	rigraph
+class	Regression 2D Adapter	CLASS	NM NM N	Java	deeplearning4j
+v3f	rel cam up	DECLARATION	NM N P	C++	freeminer
+void*	relay auth parse pbkdf2	FUNCTION	PRE PRE V N	C	weechat
+void*	remove from menu bar	FUNCTION	V P NM N	C++	panda3d
+int*	rename object no copy	FUNCTION	V N DT V	C++	s3fs-fuse
+class	Replace ES419 Language Filter	CLASS	V NM NM N	Java	Singularity
+bool	replace if exists	FUNCTION	V CJ V	C++	meta
+void	restore degs only	FUNCTION	V NPL VM	C++	rigraph
+ProjResult	result 2	DECLARATION	N D	Java	drill
+int*	revwalk next toposort	FUNCTION	PRE DT N	C	git2r
+char	RFC3526 PRIME 4096	DECLARATION	NM N D	C	toggldesktop
+int	rgb 2	DECLARATION	N D	Java	Smack
+double	rmu 0	ATTRIBUTE	N D	C	rigraph
+int	root 1	ATTRIBUTE	N D	C	panda3d
+Point3	row 2	DECLARATION	N D	C++	panda3d
+RelDataType	row Type 1	PARAMETER	NM N D	Java	drill
+uint8_t	rtc Free Page 1	ATTRIBUTE	PRE V N D	C	mgba
+MediaType	RTF UTF8	ATTRIBUTE	N N	Java	guava
+bool	run once	DECLARATION	V VM	C++	s3fs-fuse
+ovs_be64	rx1024 to 1522 packets	ATTRIBUTE	N P D NPL	C	ovs
+ovs_be64	rx128 to 255 packets	ATTRIBUTE	N P D NPL	C	ovs
+auto	s 1	DECLARATION	N D	C++	meta
+ImmutableBitSet	s Gby	DECLARATION	NM N	Java	drill
+sockaddr_in6	s in 6	DECLARATION	NM N D	C++	freeminer
+ObjectFile	s o File	PARAMETER	NM NM N	C++	cling
+int	s o Timeout	DECLARATION	NM NM N	Java	Openfire
+bool	s set find and delete	FUNCTION	NM N V CJ V	C	ovs
+S3Artifact	s3 Artifact	ATTRIBUTE	NM N	Java	Singularity
+Set	s3 Buckets	DECLARATION	PRE NPL	Java	Singularity
+List	s3 Services	ATTRIBUTE	PRE NPL	Java	Singularity
+String	s3 Uploader Key Pattern	DECLARATION	PRE NM NM N	Java	Singularity
+boolean	s3 Use V2 Signing	ATTRIBUTE	NM V NM N	Java	Singularity
+S3fsCurl	s3fs curl	DECLARATION	PRE N	C++	s3fs-fuse
+void*	s3fs exit fuse loop	FUNCTION	PRE NM NM N	C++	s3fs-fuse
+void*	s3fs init	FUNCTION	PRE V	C++	s3fs-fuse
+fuse_operations	s3fs oper	DECLARATION	PRE N	C++	s3fs-fuse
+int*	s3fs read link	FUNCTION	PRE NM N	C++	s3fs-fuse
+bool	s3fs str to offt	FUNCTION	PRE N P N	C++	s3fs-fuse
+int*	s3fs truncate	FUNCTION	PRE V	C++	s3fs-fuse
+int*	s3fs utimens	FUNCTION	PRE N	C++	s3fs-fuse
+int	samples per buffer	ATTRIBUTE	NPL P N	C++	panda3d
+void	save	ATTRIBUTE	V	C	meta
+String	SAVE AS 16 x 16	ATTRIBUTE	V P D P D	Java	Spark
+bool	save before unloading	DECLARATION	V P V	C++	freeminer
+png_size_t	save buffer max	ATTRIBUTE	V NM N	C	toggldesktop
+size_t	save data length	ATTRIBUTE	NM NM N	C	toxcore
+int	save err no	DECLARATION	V NM N	C	ovs
+Long	save Every Ms	ATTRIBUTE	V DT N	Java	deeplearning4j
+boolean	save Every Since Last	ATTRIBUTE	V DT CJ DT	Java	deeplearning4j
+SingularityCreateResult	save Expiring Object	FUNCTION	V NM N	Java	Singularity
+void	save Mail Record	FUNCTION	V NM N	Java	Singularity
+boolean	save Output	ATTRIBUTE	V N	Java	deeplearning4j
+String	save Password	DECLARATION	V N	Java	Spark
+boolean	save Samples	FUNCTION	V NPL	Java	drill
+SingularityCreateResult	save Task History Update	FUNCTION	V NM NM N	Java	Singularity
+int	sbox 4	DECLARATION	N D	Java	Openfire
+void*	scan for sliders	FUNCTION	V P NPL	C++	panda3d
+uint64_t	select in word	FUNCTION	V P N	C	meta
+void	send everything	FUNCTION	V DT	C++	panda3d
+int	send to buffer	PARAMETER	V P N	C	weechat
+class	Separable Convolution 2D	CLASS	NM N NM	Java	deeplearning4j
+guint32	Server 1	ATTRIBUTE	N D	C	wireshark
+string	server and port	DECLARATION	N CJ N	C++	panda3d
+ccv_cnnp_cmd_exec_io_set_by_t	set by	DECLARATION	V P	C	ccv
+void	set dampen on bodies	FUNCTION	V V P NPL	C++	panda3d
+void	set data 4d	FUNCTION	V N NM	C++	panda3d
+String	SET GROUP NAME 1	ATTRIBUTE	V NM N D	Java	Openfire
+void	set has blob included in max row size	FUNCTION	V V N V P NM NM N	C++	drill
+bool	Set IAM v2 API Token	FUNCTION	V NM NM NM N	C++	s3fs-fuse
+Builder	set Part 1	FUNCTION	V N D	Java	drill
+void	set server and port	FUNCTION	V N CJ N	C++	panda3d
+String	SHA256 ALGORITHM	ATTRIBUTE	NM N	Java	metrics
+int	shift by	PARAMETER	V P	C	git2r
+int	short too	PARAMETER	NM VM	C	mgba
+String	show String for Add	DECLARATION	NM N P N	Java	Spark
+uint64_t	significand	ATTRIBUTE	N	C++	toggldesktop
+Date	since	ATTRIBUTE	VM	Java	Smack
+class	Singularity S3 Service	CLASS	PRE PRE N	Java	Singularity
+class	Singularity S3 Services	CLASS	PRE PRE NPL	Java	Singularity
+class	Singularity S3 Uploader	CLASS	PRE PRE N	Java	Singularity
+class	Singularity S3 Uploader Configuration	CLASS	PRE PRE NM N	Java	Singularity
+class	Singularity S3 Uploader Content Headers	CLASS	PRE PRE NM NM NPL	Java	Singularity
+class	Singularity S3 Uploader File	CLASS	PRE PRE NM N	Java	Singularity
+uint32_t	size from ipv4	DECLARATION	N P N	C	ovs
+int	size in datum	DECLARATION	N P N	C++	caffe
+bool	skip im 2 col	PARAMETER	V N P N	C++	caffe
+class	SLF4J Debugger Factory	CLASS	PRE NM N	Java	Smack
+void	SM83 Instruction IRQ Stall	FUNCTION	PRE PRE NM N	C	mgba
+bool	SM83 Tick Internal	FUNCTION	PRE N NM	C	mgba
+sockaddr_in	sock 4	DECLARATION	N D	C	toxcore
+prpack_result*	solve via gs	FUNCTION	V P N	C++	rigraph
+bool	some air	DECLARATION	DT N	C++	freeminer
+boolean	some Columns Indexed	FUNCTION	DT NPL V	Java	drill
+int	some data not displayed	DECLARATION	DT NM VM V	C	weechat
+Class	some Reference	ATTRIBUTE	DT N	Java	drill
+class	Sort Collector Labels 1	CLASS	V NM NPL D	C++	panda3d
+class	Sort Collector Labels 2	CLASS	V NM NPL D	C++	panda3d
+bool	sorts less	FUNCTION	V DT	C++	panda3d
+int	spaces every	PARAMETER	NPL DT	C++	panda3d
+void*	spell speller add dicts to hash	FUNCTION	PRE PRE V NPL P N	C	weechat
+void*	spx nt prod 1	FUNCTION	PRE NM N D	C	rigraph
+void	sqlite3 Expr If True	FUNCTION	PRE N CJ NM	C	mgba
+void	sqlite3 Fts3 Hash Find	DECLARATION	PRE PRE N V	C	toggldesktop
+void*	sqlite3 Fts3 Hash Insert	FUNCTION	PRE PRE N V	C	ccv
+void	sqlite3 Fts3 Seg Reader Free	DECLARATION	PRE PRE NM N V	C	ccv
+int*	sqlite3 Fts5 Parser Fallback	FUNCTION	PRE PRE N V	C	ccv
+void	sqlite3 Put 4 byte	FUNCTION	PRE V D N	C	ccv
+int*	sqlite3 rtree geometry callback	FUNCTION	PRE PRE NM N	C	ccv
+int	sqlite3 Where Trace	DECLARATION	PRE NM N	C	mgba
+With*	sqlite3 With Dup	FUNCTION	PRE P V	C	ccv
+flow_wildcards	src 1	PARAMETER	N D	C	ovs
+re_node_set	src 2	PARAMETER	N D	C	git2r
+ovs_be16	src as	ATTRIBUTE	NM N	C	ovs
+ostringstream	ss all	DECLARATION	N DT	C++	s3fs-fuse
+stnode_t	st arg 2	PARAMETER	NM N D	C	wireshark
+size_t	start R 1	DECLARATION	NM N D	C++	meta
+int	stash update index from diff	FUNCTION	PRE V N P N	C	git2r
+lm_state	state next	DECLARATION	N DT	C++	meta
+boolean	still Waiting	DECLARATION	VM V	Java	Smack
+void	store Last Err no	FUNCTION	V DT NM N	C	ccv
+int	str 2 int	FUNCTION	N P N	C	rigraph
+const_iterator	str 2 it	DECLARATION	N D N	C++	s3fs-fuse
+string	str all	DECLARATION	N DT	C++	s3fs-fuse
+string	str iam v2 token	DECLARATION	NM NM NM N	C++	s3fs-fuse
+string	str now	DECLARATION	N VM	C++	s3fs-fuse
+optional	stream for	FUNCTION	V P	C++	meta
+git_odb_stream	stream out	PARAMETER	V N	C	git2r
+int*	string base16 decode	FUNCTION	N NM V	C	weechat
+int*	string base16 encode	FUNCTION	N NM V	C	weechat
+int	string base32 decode	FUNCTION	N NM V	C	weechat
+void*	string conv base64 6 x 4 to 8 x 3	FUNCTION	N V N D P D P D P D	C	weechat
+void*	string conv base64 8 x 3 to 6 x 4	FUNCTION	N V N D P D P D P D	C	weechat
+char	string p	PARAMETER	NM N	C	naemon-core
+int	subexp to	ATTRIBUTE	N P	C	git2r
+int*	submodule load each	FUNCTION	PRE V DT	C	git2r
+List	subtypes 1	DECLARATION	NPL D	Java	drill
+int	sum 2	DECLARATION	N D	C	rigraph
+boolean	supports Join Push down	ATTRIBUTE	V V V P	Java	drill
+boolean	supports Sort Push down	ATTRIBUTE	V V V P	Java	drill
+void	T 1 Prepare Mun map Code	FUNCTION	N D V NM NM N	C++	facebook-repo-ds2
+PN_stdfloat	t 1 y	DECLARATION	N D N	C++	panda3d
+uint32_t	T 2 MOV 16 Set Immediate	FUNCTION	N D N D V NM	C++	facebook-repo-ds2
+T3	t 3	DECLARATION	N D	Java	immutables
+PushTransactionRAII	T for Deser	DECLARATION	N P N	C++	cling
+timespec	t s now	DECLARATION	NM N VM	C++	s3fs-fuse
+timeval	t v now	DECLARATION	NM N VM	C	weechat
+ParquetTableMetadata_v4	table Metadata V 4	DECLARATION	NM N NM D	Java	drill
+void*	tag all	FUNCTION	V DT	C++	panda3d
+int	target 1	ATTRIBUTE	N D	C	mgba
+double	task Reconciliation Response P 999	PARAMETER	NM NM NM N D	Java	Singularity
+void	temp Data 1	ATTRIBUTE	NM N D	C++	caffe
+void	temp Data 2	ATTRIBUTE	NM N D	C++	caffe
+fsblkcnt_t	ten 00	DECLARATION	D D	C++	s3fs-fuse
+ccv_nnc_tensor_symbol_info_t	tensor a	PARAMETER	NM N	C	ccv
+double	term and class	FUNCTION	N CJ N	C++	meta
+char	text only	PARAMETER	N VM	C	libxo
+int	text search where	ATTRIBUTE	N V VM	C	weechat
+Occupant	that	DECLARATION	DT	Java	Openfire
+DruidStoragePluginConfig	that Config	DECLARATION	DT N	Java	drill
+LogicalExpression	that Expr	PARAMETER	DT N	Java	drill
+Class	the Class	DECLARATION	DT N	Java	Openfire
+LittleEndianBytes	the Getter	ATTRIBUTE	DT N	Java	guava
+keyValuePair	the max	DECLARATION	DT N	C++	rigraph
+Filter	the New Filter	DECLARATION	DT NM N	Java	drill
+expected_counts	this	DECLARATION	DT	C	meta
+int	this bucket	DECLARATION	DT N	C	naemon-core
+PyObject	this class	PARAMETER	DT N	C++	panda3d
+contactgroup	this contact group	DECLARATION	DT NM N	C	naemon-core
+LogicalExpression	this Expr	PARAMETER	DT N	Java	drill
+xodtemplate_host	this host	DECLARATION	DT N	C	naemon-core
+hostescalation	this host escalation	PARAMETER	DT NM N	C	naemon-core
+hostgroup	this host group	DECLARATION	DT NM N	C	naemon-core
+int	this index	DECLARATION	DT N	C++	panda3d
+void	this Instance	PARAMETER	DT N	C	toggldesktop
+bool	this Iteration	PARAMETER	DT N	C++	proxygen
+string	this Key	DECLARATION	DT N	C++	proxygen
+uchar32_t	this Letter	PARAMETER	DT N	C++	freeminer
+N	this Node	PARAMETER	DT N	Java	guava
+T	this Object	PARAMETER	DT N	Java	Smack
+serviceescalation	this service escalation	PARAMETER	DT NM N	C	naemon-core
+xodtemplate_serviceextinfo	this service ext info	PARAMETER	DT NM NM N	C	naemon-core
+servicesmember	this services member	DECLARATION	DT NM N	C	naemon-core
+Thread	thread B to A	ATTRIBUTE	NM N P N	Java	Openfire
+void	throw if error	FUNCTION	V CJ N	C++	meta
+NativeLong	til or since	ATTRIBUTE	P CJ P	Java	Spark
+int	time for each line	ATTRIBUTE	N P DT N	C	weechat
+float	time from last punch	ATTRIBUTE	N P DT N	C++	freeminer
+time_t	time now	DECLARATION	N VM	C	weechat
+float	time of day smooth	ATTRIBUTE	N P N NM	C++	freeminer
+ifstream	titles in	DECLARATION	NM N	C++	meta
+uint32_t	to Ack	DECLARATION	P N	C++	proxygen
+RuntimeFilterWritable	to Aggregate	DECLARATION	P V	Java	drill
+ValueVector	to Alloc	PARAMETER	P V	Java	drill
+String	to Bare JID	FUNCTION	P NM N	Java	Openfire
+X509CertSelector	to Be Validated	DECLARATION	P V V	Java	Spark
+size_t	to Consume	PARAMETER	P V	C++	proxygen
+AttributeBuilderThirdPartyModel	to Copy From	PARAMETER	P V P	Java	immutables
+mp_part_list_t	to copy list	DECLARATION	P NM N	C++	s3fs-fuse
+DataType	to Count	PARAMETER	P N	Java	deeplearning4j
+CoordinateSystem	to cs	PARAMETER	P N	C++	panda3d
+Delete	to Delete	FUNCTION	P V	Java	drill
+double	to Doubles	FUNCTION	P NPL	Java	deeplearning4j
+C	to Element	PARAMETER	P N	Java	guava
+List	to Field List	FUNCTION	P NM N	Java	drill
+String	to Filename	FUNCTION	P N	Java	immutables
+Map	to Filter Conditions	FUNCTION	P NM NPL	Java	drill
+ValueVectorReadExpression	to Hash Field Exp	DECLARATION	P NM NM N	Java	drill
+ToHeader	to Header	DECLARATION	P N	Java	Spark
+double	to height	DECLARATION	P N	C++	panda3d
+int	to Index	DECLARATION	P N	Java	Openfire
+List	to Launch	DECLARATION	P V	Java	Singularity
+vector	to merge	DECLARATION	P V	C++	meta
+FileMetaData	to Merge	PARAMETER	P V	Java	drill
+int	to Read Remaining	DECLARATION	P V NM	Java	drill
+Prel	to Register	PARAMETER	P V	Java	drill
+char	to repo	PARAMETER	P N	C	git2r
+TupleMetadata	to Schema	FUNCTION	P N	Java	drill
+Long	to Snapshot Id	ATTRIBUTE	P NM N	Java	drill
+Function	to Sort Fn	DECLARATION	P NM N	Java	immutables
+Instant	to Time	PARAMETER	P N	Java	metrics
+MinorType	to Types	PARAMETER	P NPL	Java	drill
+string	to upper	FUNCTION	P NM	C++	meta
+Deque	to Visit	ATTRIBUTE	P V	Java	immutables
+auto	to write	DECLARATION	P V	C++	meta
+String	to Yaml	FUNCTION	P N	Java	deeplearning4j
+boolean	too Many Shuffling Tasks	DECLARATION	VM NM V NPL	Java	Singularity
+boolean	too Old	DECLARATION	VM NM	Java	Singularity
+double	total oov only	DECLARATION	NM N VM	C++	meta
+void*	tox self set no spam	FUNCTION	PRE PRE V DT N	C	toxcore
+igraph_bool_t	transpose a	PARAMETER	V N	C	rigraph
+JPanel	tree and Info	ATTRIBUTE	N CJ N	Java	Spark
+timespec	ts 1	PARAMETER	N D	C++	s3fs-fuse
+timespec	ts 2	PARAMETER	N D	C++	s3fs-fuse
+ovs_be64	tx1523 to max packets	ATTRIBUTE	N P NM NPL	C	ovs
+MajorType	type 2	PARAMETER	N D	Java	drill
+uint32_t	u 1 bit count	PARAMETER	N D NM N	C	ovs
+guint32	u32 Pointer	DECLARATION	NM N	C	wireshark
+udpif	udpif	ATTRIBUTE	N	C	ovs
+double	ul now	PARAMETER	V VM	C++	s3fs-fuse
+class	Un7zip App	CLASS	V N	C++	toggldesktop
+String	UNBLOCK CONTACT 16 x 16	ATTRIBUTE	V N D P D	Java	Spark
+void	unbox or zero	FUNCTION	V CJ N	Java	cglib
+int	under Provisioned Requests	PARAMETER	P V NPL	Java	Singularity
+uint32_t	unknown 20	DECLARATION	N D	C++	cling
+uint32_t	unknown 24	DECLARATION	N D	C++	cling
+int	until	DECLARATION	P	Java	drill
+LVector3	up	ATTRIBUTE	P	C++	panda3d
+bool	Update S3fs Credential	FUNCTION	V NM N	C++	s3fs-fuse
+bool	Upgrade V 1 Layer Parameter	FUNCTION	V N D NM N	C++	caffe
+class	Upsampling 2D	CLASS	N NM	Java	deeplearning4j
+SEXP	us	PARAMETER	N	C	rigraph
+bool	use default if empty	PARAMETER	V N CJ NM	C	git2r
+string	username only	DECLARATION	N VM	C++	panda3d
+int32_t	utf8 next code point	FUNCTION	N DT NM N	C++	meta
+int	utf8 only	ATTRIBUTE	N VM	C	weechat
+V1LayerParameter	v 0 layer connection	PARAMETER	N D NM N	C++	caffe
+float	v 00	PARAMETER	N D	C++	freeminer
+int	V 1	ATTRIBUTE	N D	C++	rigraph
+int	v 1 index	PARAMETER	N D N	Java	drill
+float	v 110	PARAMETER	N D	C++	freeminer
+int	V 2	ATTRIBUTE	N D	C++	rigraph
+V	v 5	PARAMETER	N D	Java	guava
+FvalueFromLiteral	val from literal	ATTRIBUTE	N P N	C	wireshark
+int*	validate tree and parents	FUNCTION	V N CJ NPL	C	git2r
+Any	value 6	PARAMETER	N D	C++	toggldesktop
+guint8	value a and front reserved	DECLARATION	NM N CJ N V	C	wireshark
+T	value or	FUNCTION	N CJ	C++	meta
+NoiseParams	value out	PARAMETER	NM N	C++	freeminer
+vector	vector 1	PARAMETER	N D	C++	drill
+vector	vector 2	PARAMETER	N D	C++	drill
+uint32_t*	version bitmap from version	FUNCTION	NM N P N	C	ovs
+bool	vertex 0 2 connected	ATTRIBUTE	N D D V	C++	freeminer
+igraph_vector_t	vertex to the left	PARAMETER	N P DT NM	C	rigraph
+int	vid 1	PARAMETER	N D	C	rigraph
+IntType	vmax over base	DECLARATION	N P N	C++	deeplearning4j
+LongType	vol Stride 1	DECLARATION	NM N D	C++	deeplearning4j
+BigIntVector	vv 0	DECLARATION	N D	Java	drill
+int*	w clique 1	FUNCTION	NM N D	C	rigraph
+atomic_bool	wait for reload	ATTRIBUTE	V P N	C	ovs
+int	wait For S3 Links Seconds	ATTRIBUTE	V P NM NM NPL	Java	Singularity
+void	wait for server start	FUNCTION	V P NM N	C	crow
+int	waiting for dht connection	DECLARATION	V P NM N	C	toxcore
+Duration	warmup time	ATTRIBUTE	NM N	C++	freeminer
+ALenum	warn if error	FUNCTION	V CJ N	C++	freeminer
+uint32_t	wc 10	DECLARATION	N D	C	ovs
+SCM	weechat guile api string input for buffer	FUNCTION	PRE PRE PRE NM N P N	C	weechat
+void*	weechat js unload all	FUNCTION	PRE PRE V DT	C++	weechat
+SEXP	when	DECLARATION	VM	C	git2r
+CountDownLatch	when Closed	ATTRIBUTE	VM V	Java	guava
+SqlNode	where	ATTRIBUTE	N	Java	drill
+SqlNode	where Clause	ATTRIBUTE	NM N	Java	drill
+size_t	where len	PARAMETER	NM N	C	toggldesktop
+int	which Button	DECLARATION	DT N	C++	panda3d
+int64_t	while count	ATTRIBUTE	NM N	C	ccv
+ccv_nnc_symbolic_graph_t	while graph	PARAMETER	NM N	C	ccv
+MediaType	with Charset	DECLARATION	P N	Java	guava
+Builder	with Conf	FUNCTION	P N	Java	drill
+Builder	with Entries	FUNCTION	P NPL	Java	drill
+void	with Implicit Columns	FUNCTION	P NM NPL	Java	drill
+boolean	with Index	ATTRIBUTE	P N	Java	drill
+MaterializedField	with Path And Type	FUNCTION	P N CJ N	Java	drill
+BatchSchemaBuilder	with Schema Builder	FUNCTION	P NM N	Java	drill
+bool	with System	PARAMETER	P N	C++	cling
+Naming	with Unary Operator	ATTRIBUTE	P NM N	Java	immutables
+FieldReference	within	ATTRIBUTE	P	Java	drill
+char	words to add	PARAMETER	NPL P V	C	weechat
+void	work 1	ATTRIBUTE	N D	C	rigraph
+CPPType	wrapped around	PARAMETER	V P	C++	panda3d
+void	write Data Page V 2	FUNCTION	V NM N NM D	Java	drill
+double	x 3 mean	ATTRIBUTE	N D N	C++	deeplearning4j
+uint64_t	x 4	ATTRIBUTE	N D	C	facebook-repo-ds2
+uint64_t	x 8	ATTRIBUTE	N D	C	facebook-repo-ds2
+int	x from	PARAMETER	N P	C++	panda3d
+png_uint_32	x pixels per unit	ATTRIBUTE	NM NPL P N	C	mgba
+int	x to	PARAMETER	N P	C++	panda3d
+int*	X509 set1 not Before	FUNCTION	PRE PRE DT P	C	toggldesktop
+xdfile_t	xdf 2	PARAMETER	N D	C	git2r
+xdfenv_t	xe 2	PARAMETER	N D	C	git2r
+objectlist*	xodtemplate expand host groups and hosts	FUNCTION	PRE V NM NPL CJ NPL	C	naemon-core
+class	Xpp3 Xml Pull Parser	CLASS	PRE NM NM N	Java	Smack
+class	Xpp3 Xml Pull Parser Factory	CLASS	PRE NM NM NM N	Java	Smack
+png_uint_32	y pixels per unit	ATTRIBUTE	D NPL P N	C	mgba
+class	YOLO 2	CLASS	N D	Java	deeplearning4j
+double	z 2 X mag	DECLARATION	N P N N	C++	freeminer
+felem	z in	DECLARATION	NM N	C	toggldesktop
+void	zero or null	FUNCTION	N CJ N	Java	cglib
