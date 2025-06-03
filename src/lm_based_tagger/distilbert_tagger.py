@@ -89,6 +89,10 @@ class DistilBertTagger:
         self.model = DistilBertForTokenClassification.from_pretrained(model_path)
         self.model.eval()
 
+        # ── Extract id2label from the saved config.json ──
+        # model.config.id2label maps string keys ("0", "1", ...) to tag names (e.g. "N", "V", "PRE", ...)
+        self.id2label = { int(k): v for k, v in self.model.config.id2label.items() }
+
     def tag_identifier(self, tokens, context, type_str, language, system_name):
         """
         1) Build the “feature tokens + position tokens + identifier tokens” sequence
@@ -97,8 +101,8 @@ class DistilBertTagger:
         4) Align via `word_ids()`, skipping:
               - Any word_id = None
               - Any word_id < 9 (because first 9 tokens were “feature tokens” => labels = -100)
-              - Repeated word_ids (so we pick only the first sub-token of each “(pos, identifier‐word)” pair)
-        5) Return a list of numeric labels.  (If you want strings, you can map via id2label externally.)
+              - Repeated word_ids (so we pick only the first sub-token of each “(pos, identifier-word)” pair)
+        5) Return a list of string labels by mapping numeric IDs through `self.id2label`.
         """
 
         # 1. Re–compute exactly the same feature tokens as in training:
@@ -173,6 +177,7 @@ class DistilBertTagger:
             pred_labels.append(predictions[idx])
             previous_word_idx = word_idx
 
-        # Now, pred_labels is a list of numeric IDs (length == len(tokens)),
-        # in the same order as your original “tokens” list.
-        return pred_labels
+        # 5. Map numeric IDs → string tags via self.id2label
+        pred_tag_strings = [ self.id2label[label_id] for label_id in pred_labels ]
+
+        return pred_tag_strings

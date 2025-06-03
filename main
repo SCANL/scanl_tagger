@@ -4,6 +4,7 @@ import os, argparse
 from datetime import datetime
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.train_model import train_lm
+from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from src.tag_identifier import start_server
 from src.tree_based_tagger.download_code2vec_vectors import *
 from version import __version__ 
@@ -69,20 +70,29 @@ if __name__ == "__main__":
             train_lm(SCRIPT_DIR)
 
     elif args.mode == "run":
+        if args.model_type == "tree_based":
+            config = load_config_tree()
+            # Inject overrides
+            download_files()
+            config["model_type"] = args.model_type
+            config["model_dir"] = args.model_dir
 
-        # Inject overrides
-        config["model_type"] = args.model_type
-        config["model_dir"] = args.model_dir
+            if args.port:
+                config["port"] = args.port
+            if args.protocol:
+                config["protocol"] = args.protocol
+            if args.word:
+                config["word"] = args.word
+            if args.address:
+                config["address"] = args.address
 
-        if args.port:
-            config["port"] = args.port
-        if args.protocol:
-            config["protocol"] = args.protocol
-        if args.word:
-            config["word"] = args.word
-        if args.address:
-            config["address"] = args.address
+            start_server(temp_config=config)
+        elif args.model_type == "lm_based":
+            start_server(temp_config={
+                'script_dir': SCRIPT_DIR,
+                'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
+                'model_type':'lm_based'
+            })
 
-        start_server(temp_config=config)
     else:
         parser.print_usage()

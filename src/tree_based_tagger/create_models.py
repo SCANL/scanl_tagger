@@ -1,4 +1,3 @@
-import gensim.downloader as api
 import json, os
 import logging
 #'VERB_SCORE', 'DET_SCORE', 'ENGLISHV_SCORE', 'POSITION_RATIO','METHODV_SCORE', 'CONTAINSLISTVERB'
@@ -39,6 +38,7 @@ def createModel(pklFile="", rootDir=""):
                (modelGensimTokens, modelGensimMethods, modelGensimEnglish).
                Models that fail to load are set to None.
     """
+    import gensim.downloader as api
     # Configure logging
     logging.basicConfig(level=logging.INFO, 
                        format='%(asctime)s - %(levelname)s - %(message)s')
