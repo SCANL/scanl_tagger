@@ -13,6 +13,9 @@ from transformers import (
 from datasets import Dataset
 from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
 
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print("Using device:", device)
+
 # === Labels & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -69,26 +72,50 @@ def train_lm(script_dir: str):
         config=config
     )
 
-    # 8) Training arguments
-    training_args = TrainingArguments(
-        output_dir=output_dir,
-        evaluation_strategy="epoch",
-        save_strategy="epoch",
-        learning_rate=5e-5,
-        per_device_train_batch_size=16,
-        per_device_eval_batch_size=16,
-        num_train_epochs=10,
-        weight_decay=0.01,
-        warmup_ratio=0.1,
-        lr_scheduler_type="cosine",
-        load_best_model_at_end=True,
-        metric_for_best_model="eval_macro_f1",
-        greater_is_better=True,
-        save_total_limit=1,
-        logging_dir=os.path.join(output_dir, "logs"),
-        report_to="none",
-        seed=42
-    )
+    if device == "cpu":
+        # 8) Training arguments
+        training_args = TrainingArguments(
+            output_dir=output_dir,
+            evaluation_strategy="epoch",
+            save_strategy="epoch",
+            learning_rate=5e-5,
+            per_device_train_batch_size=16,
+            per_device_eval_batch_size=16,
+            num_train_epochs=10,
+            weight_decay=0.01,
+            warmup_ratio=0.1,
+            lr_scheduler_type="cosine",
+            load_best_model_at_end=True,
+            metric_for_best_model="eval_macro_f1",
+            greater_is_better=True,
+            save_total_limit=1,
+            logging_dir=os.path.join(output_dir, "logs"),
+            report_to="none",
+            seed=42
+        )
+    else:
+        training_args = TrainingArguments(
+            output_dir=output_dir,
+            eval_strategy="epoch",
+            save_strategy="epoch",
+            learning_rate=5e-5,
+            per_device_train_batch_size=4,  # ↓ reduce to fit in VRAM
+            per_device_eval_batch_size=4,
+            gradient_accumulation_steps=4,  # simulates batch size of 16
+            num_train_epochs=10,
+            weight_decay=0.01,
+            warmup_ratio=0.1,
+            lr_scheduler_type="cosine",
+            load_best_model_at_end=True,
+            save_total_limit=1,
+            metric_for_best_model="eval_macro_f1",  # or "eval_loss" if macro F1 isn't computed
+            greater_is_better=True,  # set to False if using loss
+            logging_dir=os.path.join(output_dir, "logs"),
+            report_to="none",
+            seed=42,
+            fp16=False,
+            dataloader_pin_memory=False,  # no benefit if no CUDA pinning
+        )
 
     # 9) Collate Data
     data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
