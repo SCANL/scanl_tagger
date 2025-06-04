@@ -326,6 +326,8 @@ def train_lm(script_dir: str):
 
     print("\nFinal Evaluation on Held-Out Set:")
     print(classification_report(flat_true, flat_pred))
+    with open('holdout_report.txt', 'w') as f:
+        print(classification_report(flat_true, flat_pred), file=f)
 
     # Report inference speed
     total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
