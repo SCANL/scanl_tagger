@@ -158,7 +158,8 @@ def initialize_model(temp_config = {}):
         app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
     elif model_type == "lm_based":
         print("Loading DistilBERT tagger...")
-        lm_model = DistilBertTagger(temp_config['model'])
+        is_local = temp_config.get("local", False)
+        lm_model = DistilBertTagger(temp_config['model'], local=is_local)
         print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):

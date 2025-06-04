@@ -80,12 +80,13 @@ class DistilBertCRFForTokenClassification(nn.Module):
             best_paths = self.crf.decode(emissions, mask=crf_mask)
             return {"logits": emission_scores,
                     "predictions": best_paths}
-
-    from transformers import DistilBertConfig
     @classmethod
-    def from_pretrained(cls, ckpt_dir, **kw):
-        from safetensors import safe_open
-        cfg = DistilBertConfig.from_pretrained(ckpt_dir)
+    def from_pretrained(cls, ckpt_dir, local=False, **kw):
+        from safetensors.torch import load_file as load_safe_file
+        from huggingface_hub import hf_hub_download
+        import os
+        cfg = DistilBertConfig.from_pretrained(ckpt_dir, local_files_only=local)
+
         model = cls(
             num_labels=cfg.num_labels,
             id2label=cfg.id2label,
@@ -94,18 +95,24 @@ class DistilBertCRFForTokenClassification(nn.Module):
             **kw,
         )
 
-        weight_path_pt  = os.path.join(ckpt_dir, "pytorch_model.bin")
-        weight_path_safe = os.path.join(ckpt_dir, "model.safetensors")
+        # Attempt to load model.safetensors only
+        try:
+            if os.path.isdir(ckpt_dir):
+                # Load from local directory
+                weight_path = os.path.join(ckpt_dir, "model.safetensors")
+                if not os.path.exists(weight_path):
+                    raise FileNotFoundError(f"No model.safetensors found in local path: {weight_path}")
+            else:
+                # Load from Hugging Face Hub
+                weight_path = hf_hub_download(
+                    repo_id=ckpt_dir,
+                    filename="model.safetensors",
+                    local_files_only=local
+                )
 
-        if os.path.exists(weight_path_pt):
-            state = torch.load(weight_path_pt, map_location="cpu")
-        elif os.path.exists(weight_path_safe):
-            state = {}
-            with safe_open(weight_path_safe, framework="pt", device="cpu") as f:
-                for k in f.keys():
-                    state[k] = f.get_tensor(k)
-        else:
-            raise FileNotFoundError("No weight file found in checkpoint directory.")
+            state_dict = load_safe_file(weight_path, device="cpu")
+            model.load_state_dict(state_dict)
+            return model
 
-        model.load_state_dict(state)
-        return model
+        except Exception as e:
+            raise RuntimeError(f"Failed to load model.safetensors from {ckpt_dir}: {e}")

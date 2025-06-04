@@ -43,6 +43,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
+    parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
     parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run' the model")
     parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
@@ -88,11 +89,17 @@ if __name__ == "__main__":
 
             start_server(temp_config=config)
         elif args.model_type == "lm_based":
-            start_server(temp_config={
-                'script_dir': SCRIPT_DIR,
-                'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
-                'model_type':'lm_based'
-            })
-
+            if not args.local:
+                start_server(temp_config={
+                    'script_dir': SCRIPT_DIR,
+                    'model': 'sourceslicer/scalar_lm_best',
+                    'model_type':'lm_based',
+                })
+            else:
+                start_server(temp_config={
+                    'script_dir': SCRIPT_DIR,
+                    'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
+                    'model_type':'lm_based',
+                })
     else:
         parser.print_usage()

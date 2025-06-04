@@ -81,26 +81,15 @@ def system_prefix_similarity(first_token, system_name):
 
 
 class DistilBertTagger:
-    def __init__(self, model_path: str):
-        """
-        `model_path` must contain:
-          • config.json
-          • model.safetensors  OR  pytorch_model.bin
-          • tokenizer files (tokenizer.json, vocab.txt, …)
-        """
-        self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path)
+    def __init__(self, model_path: str, local: bool = False):
+        self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)
 
-        # Try CRF wrapper first (it can load .safetensors or .bin)
         try:
-            self.model = DistilBertCRFForTokenClassification.from_pretrained(model_path)
+            self.model = DistilBertCRFForTokenClassification.from_pretrained(model_path, local=local)
         except Exception:
-            # Fallback: plain DistilBERT head (no CRF layer present)
-            from transformers import DistilBertForTokenClassification
-            self.model = DistilBertForTokenClassification.from_pretrained(model_path)
+            self.model = DistilBertForTokenClassification.from_pretrained(model_path, local_files_only=local)
 
-        self.model.eval()                      # inference mode
-
-        # id2label keys can be strings → convert to int
+        self.model.eval()
         self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}
 
     def tag_identifier(self, tokens, context, type_str, language, system_name):
