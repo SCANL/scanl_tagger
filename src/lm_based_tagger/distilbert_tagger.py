@@ -4,6 +4,7 @@ from nltk import pos_tag
 import nltk
 from difflib import SequenceMatcher
 from transformers import DistilBertTokenizerFast, DistilBertForTokenClassification
+from .distilbert_crf import DistilBertCRFForTokenClassification 
 
 # Make sure we have the same NLTK tagset
 nltk.download('averaged_perceptron_tagger_eng', quiet=True)
@@ -82,16 +83,25 @@ def system_prefix_similarity(first_token, system_name):
 class DistilBertTagger:
     def __init__(self, model_path: str):
         """
-        Expects `model_path` to be a folder where the fine-tuned DistilBertForTokenClassification
-        (and its tokenizer) have been saved via `trainer.save_model(...)` and `tokenizer.save_pretrained(...)`.
+        `model_path` must contain:
+          • config.json
+          • model.safetensors  OR  pytorch_model.bin
+          • tokenizer files (tokenizer.json, vocab.txt, …)
         """
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path)
-        self.model = DistilBertForTokenClassification.from_pretrained(model_path)
-        self.model.eval()
 
-        # ── Extract id2label from the saved config.json ──
-        # model.config.id2label maps string keys ("0", "1", ...) to tag names (e.g. "N", "V", "PRE", ...)
-        self.id2label = { int(k): v for k, v in self.model.config.id2label.items() }
+        # Try CRF wrapper first (it can load .safetensors or .bin)
+        try:
+            self.model = DistilBertCRFForTokenClassification.from_pretrained(model_path)
+        except Exception:
+            # Fallback: plain DistilBERT head (no CRF layer present)
+            from transformers import DistilBertForTokenClassification
+            self.model = DistilBertForTokenClassification.from_pretrained(model_path)
+
+        self.model.eval()                      # inference mode
+
+        # id2label keys can be strings → convert to int
+        self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}
 
     def tag_identifier(self, tokens, context, type_str, language, system_name):
         """
@@ -138,9 +148,7 @@ class DistilBertTagger:
             cvr_token,
             digit_token,
             sim_token,
-            type_token,
-            lang_token,
-            nltk_feature
+            nltk_feature,
         ] + tokens_with_pos
 
         # 2. Tokenize
@@ -152,32 +160,44 @@ class DistilBertTagger:
             padding=True
         )
 
-        # 3. Inference
+        # ─── 3. Inference ───────────────────────────────────────────
         with torch.no_grad():
-            logits = self.model(
+            out = self.model(
                 input_ids=encoded["input_ids"],
-                attention_mask=encoded["attention_mask"]
-            )[0]
+                attention_mask=encoded["attention_mask"],
+            )
 
-        # 4. Take argmax, then align via word_ids()
-        predictions = torch.argmax(logits, dim=-1).squeeze().tolist()
-        word_ids = encoded.word_ids()
+        # One label per *input* token
+        if isinstance(out, dict) and "predictions" in out:        # CRF path
+            labels_per_token = out["predictions"][0]              # list[int]
+        else:                                                     # logits
+            logits = out[0] if isinstance(out, (tuple, list)) else out
+            labels_per_token = torch.argmax(logits, dim=-1).squeeze().tolist()
 
-        pred_labels = []
-        previous_word_idx = None
+        # ─── 4. Re‑align to identifier words ──────────────────────
+        pred_labels, previous_word_idx = [], None
+        word_ids = encoded.word_ids()           # same length as labels_per_token
 
         for idx, word_idx in enumerate(word_ids):
-            # Skip if special token (None), or if it's part of the first 9 “feature tokens”
-            if word_idx is None or word_idx < 9:
+            # a) skip special tokens ([CLS]/[SEP])
+            if word_idx is None:
                 continue
-            # Skip if it’s the same word_idx as the previous (to avoid sub-token duplicates)
+            # b) skip the 7 leading feature tokens
+            if word_idx < 7:
+                continue
+            # c) skip every @pos_* placeholder   (@pos tokens sit at even
+            #    offsets after the 7 features: 7,9,11, … so (w‑7)%2 == 0)
+            if (word_idx - 7) % 2 == 0:
+                continue
+            # d) skip duplicate word‑pieces
             if word_idx == previous_word_idx:
                 continue
 
-            pred_labels.append(predictions[idx])
+            label_idx = idx - 1          # shift because [CLS] was removed
+            if label_idx < len(labels_per_token):
+                pred_labels.append(labels_per_token[label_idx])
             previous_word_idx = word_idx
 
-        # 5. Map numeric IDs → string tags via self.id2label
-        pred_tag_strings = [ self.id2label[label_id] for label_id in pred_labels ]
-
+        # Map numeric IDs → tag strings
+        pred_tag_strings = [self.id2label[i] for i in pred_labels]
         return pred_tag_strings

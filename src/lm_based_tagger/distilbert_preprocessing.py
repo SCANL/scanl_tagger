@@ -143,7 +143,7 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
         #    - First 7 entries → -100 (because they are feature tokens)
         #    - Then for each identifier token, [-100, label2id[tag]]
         ner_tags_with_pos = [val for tag in tags for val in (-100, label2id[tag])]
-        full_labels = [-100] * 7 + ner_tags_with_pos
+        full_labels = [0] * 7 + ner_tags_with_pos      # ← use 0, not -100
 
         rows.append({
             "tokens":   full_tokens,
@@ -163,7 +163,7 @@ def tokenize_and_align_labels(example, tokenizer):
       - "ner_tags" : List[int] (same length as above)
 
     We run `tokenizer(example["tokens"], is_split_into_words=True, truncation=True)`,
-    then align `word_ids()` with `example["ner_tags"]` exactly as in test.py.
+    then align `word_ids()` with `example["ner_tags"]`
     """
     tokenized = tokenizer(
         example["tokens"],

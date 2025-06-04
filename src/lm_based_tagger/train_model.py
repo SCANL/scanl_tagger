@@ -1,5 +1,3 @@
-# train_model.py
-
 import os
 import time
 import random
@@ -7,6 +5,7 @@ import random
 import numpy as np
 import pandas as pd
 import torch
+from .distilbert_crf import DistilBertCRFForTokenClassification
 
 from sklearn.model_selection import train_test_split, KFold
 from sklearn.metrics import f1_score, accuracy_score, classification_report
@@ -29,7 +28,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
 # === Random Seeds ===
-# Match test.py’s seed settings for reproducibility :contentReference[oaicite:0]{index=0}
 RAND_STATE = 209
 random.seed(RAND_STATE)
 np.random.seed(RAND_STATE)
@@ -39,13 +37,13 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # === Hyperparameters / Config ===
-K = 2                     # number of CV folds
+K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.15      # 15% held out for final evaluation
-EPOCHS = 5               # number of epochs per fold
+EPOCHS = 10            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
-# === Label List & Mappings (unchanged from your original) :contentReference[oaicite:1]{index=1} ===
+# === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
 ID2LABEL   = {i: label for label, i in LABEL2ID.items()}
@@ -57,7 +55,7 @@ def train_lm(script_dir: str):
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
 
-    # 2) Read the TSV & build “tokens” / “tags” columns :contentReference[oaicite:2]{index=2}
+    # 2) Read the TSV & build “tokens” / “tags” columns 
     df = pd.read_csv(input_path, sep="\t", dtype=str).dropna(subset=["SPLIT", "GRAMMAR_PATTERN"])
     df = df[df["SPLIT"].str.strip().astype(bool)]
     df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
@@ -65,7 +63,7 @@ def train_lm(script_dir: str):
     # Keep only rows where len(tokens) == len(tags)
     df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)]
 
-    # 3) Initial Train/Val Split (15% hold-out) :contentReference[oaicite:3]{index=3}
+    # 3) Initial Train/Val Split (15% hold-out) 
     train_df, val_df = train_test_split(
         df,
         test_size=HOLDOUT_RATIO,
@@ -73,14 +71,14 @@ def train_lm(script_dir: str):
         stratify=df["CONTEXT"]
     )
 
-    # 4) Upsample low-frequency tags **in the training set only** :contentReference[oaicite:4]{index=4}
+    # 4) Upsample low-frequency tags **in the training set only** 
     low_freq_df = train_df[train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
     train_df_upsampled = pd.concat([train_df] + [low_freq_df] * 2, ignore_index=True)
 
-    # 5) Tokenizer (uncased, matching test.py) 
+    # 5) Tokenizer
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
 
-    # 6) Prepare final hold-out “validation” Dataset :contentReference[oaicite:5]{index=5}
+    # 6) Prepare final hold-out “validation” Dataset 
     val_dataset = prepare_dataset(val_df, LABEL2ID)
     tokenized_val = val_dataset.map(
         lambda ex: tokenize_and_align_labels(ex, tokenizer),
@@ -100,11 +98,11 @@ def train_lm(script_dir: str):
         fold_train_df = train_df_upsampled.iloc[train_idx].reset_index(drop=True)
         fold_test_df  = train_df_upsampled.iloc[test_idx].reset_index(drop=True)
 
-        # 7b) Build HuggingFace Datasets via prepare_dataset(...) :contentReference[oaicite:6]{index=6}
+        # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
         fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID)
         fold_test_dataset  = prepare_dataset(fold_test_df, LABEL2ID)
 
-        # 7c) Tokenize + align labels (exactly as before) :contentReference[oaicite:7]{index=7}
+        # 7c) Tokenize + align labels (exactly as before) 
         tokenized_train = fold_train_dataset.map(
             lambda ex: tokenize_and_align_labels(ex, tokenizer),
             batched=False
@@ -114,20 +112,23 @@ def train_lm(script_dir: str):
             batched=False
         )
 
-        # 8) Build fresh model + config for this fold :contentReference[oaicite:8]{index=8}
+        # 8) Build fresh model + config for this fold 
         config = DistilBertConfig.from_pretrained(
             "distilbert-base-uncased",
             num_labels=len(LABEL_LIST),
             id2label=ID2LABEL,
             label2id=LABEL2ID
         )
-        model = DistilBertForTokenClassification.from_pretrained(
-            "distilbert-base-uncased",
-            config=config
-        )
+        model = DistilBertCRFForTokenClassification(
+            num_labels=len(LABEL_LIST),
+            id2label=ID2LABEL,
+            label2id=LABEL2ID,
+            pretrained_name="distilbert-base-uncased",
+            dropout_prob=0.1
+        ).to(device)
         model.to(device)
 
-        # 9) TrainingArguments (with early stopping) :contentReference[oaicite:9]{index=9}
+        # 9) TrainingArguments (with early stopping) 
         if device.type == "cpu":
             training_args = TrainingArguments(
                 output_dir=os.path.join(output_dir, f"fold_{fold}"),
@@ -172,26 +173,74 @@ def train_lm(script_dir: str):
                 dataloader_pin_memory=False
             )
 
-        # 10) Data collator (dynamic padding) :contentReference[oaicite:10]{index=10}
+        # 10) Data collator (dynamic padding) 
         data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
 
-        # 11) compute_metrics function (macro-F1) :contentReference[oaicite:11]{index=11}
+        # 11) compute_metrics function (macro-F1) 
+
         def compute_metrics(eval_pred):
-            logits, labels = eval_pred
-            preds = logits.argmax(axis=-1)
+            """
+            Works for both:
+                • Plain classifier logits  → argmax along last dim
+                • CRF Viterbi paths (list/2‑D ndarray) → use directly
+            Returns:
+                - eval_macro_f1
+                - eval_token_accuracy
+                - eval_identifier_accuracy
+            """
+            # ── 1. Unpack ────────────────────────────────────────────────────
+            if isinstance(eval_pred, tuple):          # older HF (<4.38)
+                preds, labels = eval_pred
+            else:                                     # EvalPrediction obj
+                preds  = eval_pred.predictions
+                labels = eval_pred.label_ids
 
-            true_preds = []
-            true_labels = []
+            # ── 2. Convert logits → label IDs if needed ─────────────────────
+            #    * 3‑D tensor  : [B, T, C]  → argmax(C)
+            #    * 2‑D tensor  : already IDs
+            #    * list/obj‑nd : variable‑length decode paths
+            if isinstance(preds, np.ndarray) and preds.ndim == 3:
+                preds = np.argmax(preds, axis=-1)     # [B, T]
+            elif isinstance(preds, list):
+                preds = np.array(preds, dtype=object) # each row is a list
+
+            # ── 3. Accumulate token & identifier stats ──────────────────────
+            all_true, all_pred, id_correct_flags = [], [], []
+
             for pred_row, label_row in zip(preds, labels):
-                for p, l in zip(pred_row, label_row):
-                    if l != -100:
-                        true_preds.append(p)
-                        true_labels.append(l)
+                ptr = 0
+                example_correct = True
 
-            macro_f1 = f1_score(true_labels, true_preds, average="macro")
-            return {"eval_macro_f1": macro_f1}
+                for lbl in label_row:                 # iterate gold labels
+                    if lbl == -100:                   # skip padding / specials
+                        continue
 
-        # 12) Trainer for this fold (with EarlyStopping) :contentReference[oaicite:12]{index=12}
+                    # pick the corresponding prediction
+                    if isinstance(pred_row, (list, np.ndarray)):
+                        pred_lbl = pred_row[ptr]
+                    else:                             # pred_row is scalar
+                        pred_lbl = pred_row
+                    ptr += 1
+
+                    all_true.append(lbl)
+                    all_pred.append(pred_lbl)
+                    if pred_lbl != lbl:
+                        example_correct = False
+
+                id_correct_flags.append(example_correct)
+
+            # ── 4. Metrics ──────────────────────────────────────────────────
+            macro_f1  = f1_score(all_true, all_pred, average="macro")
+            token_acc = accuracy_score(all_true, all_pred)
+            id_acc    = float(sum(id_correct_flags)) / len(id_correct_flags)
+
+            return {
+                "eval_macro_f1":          macro_f1,
+                "eval_token_accuracy":    token_acc,
+                "eval_identifier_accuracy": id_acc,
+            }
+
+        # 12) Trainer for this fold (with EarlyStopping) 
         trainer = Trainer(
             model=model,
             args=training_args,
@@ -242,7 +291,7 @@ def train_lm(script_dir: str):
     print(f"\nBest fold model saved at: {best_model_dir}, Macro F1 = {best_macro_f1:.4f}")
 
     # 17) Final Evaluation on held-out val_df
-    best_model = DistilBertForTokenClassification.from_pretrained(best_model_dir)
+    best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
 
     # Build a fresh set of TrainingArguments that never runs evaluation epochs:
@@ -295,3 +344,42 @@ def train_lm(script_dir: str):
 
     final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
     print(f"\nFinal Macro F1 on Held-Out Set: {final_macro_f1:.4f}")
+    final_accuracy = accuracy_score(flat_true, flat_pred)
+    print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}")
+    
+    # 18) Write hold-out predictions to CSV so that each row contains
+    #     (tokens, true_tags, pred_tags) for sanity checking.
+    from .distilbert_tagger import DistilBertTagger
+
+    # Re-instantiate the exact same DistilBERT tagger we saved
+    tagger = DistilBertTagger(best_model_dir)
+
+    rows = []
+    for _, row in val_df.iterrows():
+        tokens     = row["tokens"]            # e.g. ["my", "Identifier", "Name"]
+        true_tags  = row["tags"]              # e.g. ["NM", "DT", "DT"]
+        context    = row.get("CONTEXT", "")   # e.g. "FUNCTION"
+        type_str   = row.get("TYPE", "")      # if present; otherwise ""
+        language   = row.get("LANGUAGE", "")  # if present; otherwise ""
+        system_name= row.get("SYSTEM_NAME", "")  # if present; otherwise ""
+
+        # `tag_identifier` now returns a list of string labels, not IDs
+        pred_tags = tagger.tag_identifier(tokens, context, type_str, language, system_name)
+
+        rows.append({
+            "tokens":      " ".join(tokens),
+            "true_tags":   " ".join(true_tags),
+            "pred_tags":   " ".join(pred_tags)
+        })
+
+    preds_df = pd.DataFrame(rows)
+    csv_path = os.path.join(output_dir, "holdout_predictions.csv")
+    preds_df.to_csv(csv_path, index=False)
+    print(f"\nWrote hold-out predictions to: {csv_path}")
+
+    # Now also compute identifier-level accuracy from the “flat_true/flat_pred” folds:
+    # We need to compare per-example (not flattened) again, so re-run a grouping logic.
+    df = pd.read_csv(os.path.join(output_dir, "holdout_predictions.csv"))
+    df["row_correct"] = df["true_tags"] == df["pred_tags"]
+    id_level_acc = df["row_correct"].mean()
+    print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}")
