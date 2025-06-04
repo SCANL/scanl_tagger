@@ -109,11 +109,11 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
 
         # 1. Build 7 feature tokens (context, system, hungarian, cvr, digit, sim, nltk)
         context_token   = CONTEXT_MAP.get(row["CONTEXT"].strip().upper(), "@unknown")
-        system_token    = f"@system_{row['SYSTEM_NAME'].strip().lower().replace(' ', '_')}"
+        # system_token    = f"@system_{row['SYSTEM_NAME'].strip().lower().replace(' ', '_')}"
         hungarian_token = detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none"
         cvr_token       = consonant_vowel_ratio_bucket(tokens)
         digit_token     = detect_digit_feature(tokens)
-        sim_token       = system_prefix_similarity(tokens[0], row["SYSTEM_NAME"]) if tokens else "@sim_none"
+        # sim_token       = system_prefix_similarity(tokens[0], row["SYSTEM_NAME"]) if tokens else "@sim_none"
 
         # 2. NLTK POS tags (universal tagset)
         nltk_tags = pos_tag(tokens, tagset="universal")
@@ -131,11 +131,11 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
         # 4. Build the “full” token list (7 feature tokens + 2*len(tokens) position‐identifier tokens)
         full_tokens = [
             context_token,
-            system_token,
+            # system_token,
             hungarian_token,
             cvr_token,
             digit_token,
-            sim_token,
+            # sim_token,
             nltk_feature,
         ] + tokens_with_pos
 
@@ -143,7 +143,7 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
         #    - First 7 entries → -100 (because they are feature tokens)
         #    - Then for each identifier token, [-100, label2id[tag]]
         ner_tags_with_pos = [val for tag in tags for val in (-100, label2id[tag])]
-        full_labels = [-100] * 7 + ner_tags_with_pos      # ← use 0, not -100
+        full_labels = [-100] * 5 + ner_tags_with_pos      # ← use 0, not -100
 
         rows.append({
             "tokens":   full_tokens,

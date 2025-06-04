@@ -143,11 +143,11 @@ class DistilBertTagger:
         # Build the full input token sequence (exactly what training saw):
         input_tokens = [
             context_token,
-            system_token,
+            # system_token,
             hungarian_token,
             cvr_token,
             digit_token,
-            sim_token,
+            # sim_token,
             nltk_feature,
         ] + tokens_with_pos
 
@@ -183,11 +183,11 @@ class DistilBertTagger:
             if word_idx is None:
                 continue
             # b) skip the 7 leading feature tokens
-            if word_idx < 7:
+            if word_idx < 5:
                 continue
             # c) skip every @pos_* placeholder   (@pos tokens sit at even
             #    offsets after the 7 features: 7,9,11, … so (w‑7)%2 == 0)
-            if (word_idx - 7) % 2 == 0:
+            if (word_idx - 5) % 2 == 0:
                 continue
             # d) skip duplicate word‑pieces
             if word_idx == previous_word_idx:
