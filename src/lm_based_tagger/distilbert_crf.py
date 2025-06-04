@@ -1,7 +1,7 @@
 # distilbert_crf.py
-import torch, os
+import torch
+from torchcrf import CRF
 import torch.nn as nn
-from TorchCRF import CRF
 from transformers import DistilBertModel, DistilBertConfig
 
 class DistilBertCRFForTokenClassification(nn.Module):

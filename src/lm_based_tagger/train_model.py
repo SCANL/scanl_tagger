@@ -113,12 +113,6 @@ def train_lm(script_dir: str):
         )
 
         # 8) Build fresh model + config for this fold 
-        config = DistilBertConfig.from_pretrained(
-            "distilbert-base-uncased",
-            num_labels=len(LABEL_LIST),
-            id2label=ID2LABEL,
-            label2id=LABEL2ID
-        )
         model = DistilBertCRFForTokenClassification(
             num_labels=len(LABEL_LIST),
             id2label=ID2LABEL,
@@ -126,7 +120,6 @@ def train_lm(script_dir: str):
             pretrained_name="distilbert-base-uncased",
             dropout_prob=0.1
         ).to(device)
-        model.to(device)
 
         # 9) TrainingArguments (with early stopping) 
         if device.type == "cpu":
