@@ -52,8 +52,6 @@ class DistilBertCRFForTokenClassification(nn.Module):
         sequence_output = self.dropout(outputs[0])          # [B, T, H]
         emission_scores = self.classifier(sequence_output)  # [B, T, C]
 
-        seq_len = emission_scores.size(1)                   # original token length
-
         # ============================== TRAINING ==============================
         if labels is not None:
             # 1. Drop [CLS] (idx 0) and [SEP] (idx –1)
