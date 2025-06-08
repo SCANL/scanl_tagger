@@ -48,6 +48,9 @@ LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
 ID2LABEL   = {i: label for label, i in LABEL2ID.items()}
 
+def dual_print(*args, file, **kwargs):
+    print(*args, **kwargs)         # stdout
+    print(*args, file=file, **kwargs)  # file
 
 def train_lm(script_dir: str):
     # 1) Paths
@@ -276,6 +279,7 @@ def train_lm(script_dir: str):
             best_macro_f1 = fold_macro_f1
             best_model_dir = os.path.join(output_dir, "best_model")
             trainer.save_model(best_model_dir)
+            model.config.save_pretrained(best_model_dir)
             tokenizer.save_pretrained(best_model_dir)
 
         fold += 1
@@ -324,24 +328,6 @@ def train_lm(script_dir: str):
         if l != -100
     ]
 
-    print("\nFinal Evaluation on Held-Out Set:")
-    print(classification_report(flat_true, flat_pred))
-    with open('holdout_report.txt', 'w') as f:
-        print(classification_report(flat_true, flat_pred), file=f)
-
-    # Report inference speed
-    total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
-    total_examples = len(val_dataset)
-    elapsed = end_time - start_time
-    print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)")
-    print(f"Tokens/sec: {total_tokens / elapsed:.2f}")
-    print(f"Identifiers/sec: {total_examples / elapsed:.2f}")
-
-    final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
-    print(f"\nFinal Macro F1 on Held-Out Set: {final_macro_f1:.4f}")
-    final_accuracy = accuracy_score(flat_true, flat_pred)
-    print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}")
-    
     # 18) Write hold-out predictions to CSV so that each row contains
     #     (tokens, true_tags, pred_tags) for sanity checking.
     from .distilbert_tagger import DistilBertTagger
@@ -377,4 +363,20 @@ def train_lm(script_dir: str):
     df = pd.read_csv(os.path.join(output_dir, "holdout_predictions.csv"))
     df["row_correct"] = df["true_tags"] == df["pred_tags"]
     id_level_acc = df["row_correct"].mean()
-    print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}")
+    
+    # Report inference speed
+    total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
+    total_examples = len(val_dataset)
+    elapsed = end_time - start_time
+    final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
+    final_accuracy = accuracy_score(flat_true, flat_pred)
+    print("\nFinal Evaluation on Held-Out Set:")
+    with open('holdout_report.txt', 'w') as f:
+        report = classification_report(flat_true, flat_pred)
+        dual_print(report, file=f)
+        dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
+        dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)
+        dual_print(f"Identifiers/sec: {total_examples / elapsed:.2f}", file=f)
+        dual_print(f"\nFinal Macro F1 on Held-Out Set: {final_macro_f1:.4f}", file=f)
+        dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}", file=f)
+        dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)

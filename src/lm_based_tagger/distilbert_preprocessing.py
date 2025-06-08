@@ -27,7 +27,7 @@ FEATURES = [
     "hungarian",
     "cvr",
     "digit",
-    "nltk"
+    #"nltk"
 ]
 
 FEATURE_FUNCTIONS = {
