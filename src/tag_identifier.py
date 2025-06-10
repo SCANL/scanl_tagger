@@ -3,16 +3,21 @@ import time
 import joblib
 import nltk
 import pandas as pd
-from src.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
-from flask import Flask
+from flask import Flask, request
 from waitress import serve
 from spiral import ronin
 import json
 import sqlite3
-from src.create_models import createModel, stable_features, mutable_feature_list
+from src.tree_based_tagger.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
+from src.tree_based_tagger.create_models import createModel, stable_features, mutable_feature_list
+from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
+
 app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+model_type = None
+lm_model = None
+
 class ModelData:
     def __init__(self, modelTokens, modelMethods, modelGensimEnglish, wordCount) -> None:
         """
@@ -28,7 +33,6 @@ class ModelData:
         self.ModelMethods = modelMethods
         self.ModelGensimEnglish = modelGensimEnglish
         self.wordCount = wordCount
-        # self.ModelClassifier = joblib.load('output/model_RandomForestClassifier.pkl')
 
 class AppCache:
     def __init__(self, Path) -> None:
@@ -127,7 +131,7 @@ class WordList:
     def find(self, item):
         return item in self.Words
 
-def initialize_model():
+def initialize_model(temp_config = {}):
     """
     Initialize and load word vectors for the application, and load a word count DataFrame.
 
@@ -137,23 +141,26 @@ def initialize_model():
     Returns:
         tuple: (ModelData, WORD_COUNT DataFrame)
     """
-    print("Loading word vectors!!")
-    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    print("Word vectors loaded!!")
-    
-    # Load the word count JSON file into a DataFrame
-    word_count_path = os.path.join("input", "word_count.json")
-    if os.path.exists(word_count_path):
-        print(f"Loading word count data from {word_count_path}...")
-        word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
-        word_count_df.columns = ['word', 'log_frequency']
-        print("Word count data loaded!")
-    else:
-        print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
-        word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
-    
-    # Create and store model data
-    app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
+    global model_type, lm_model
+    model_type = temp_config.get("model_type", "tree_based")
+    if model_type == "tree_based":
+        print("Loading word vectors!!")
+        modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
+        print("Word vectors loaded!!")
+        word_count_path = os.path.join("input", "word_count.json")
+        if os.path.exists(word_count_path):
+            print(f"Loading word count data from {word_count_path}...")
+            word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
+            word_count_df.columns = ['word', 'log_frequency']
+        else:
+            print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
+            word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
+        app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
+    elif model_type == "lm_based":
+        print("Loading DistilBERT tagger...")
+        is_local = temp_config.get("local", False)
+        lm_model = DistilBertTagger(temp_config['model'], local=is_local)
+        print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):
     """
@@ -169,12 +176,13 @@ def start_server(temp_config = {}):
         None
     """
     print('initializing model...')
-    initialize_model()
+    selected_model = temp_config.get("model_type", "tree_based")
+    initialize_model(temp_config)
 
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
 
-    print("laoding dictionary")
+    print("loading dictionary")
     app.english_words = set(w.lower() for w in nltk.corpus.words.words())
 
     #insert english words from words/en.txt
@@ -232,115 +240,99 @@ def probe(cache_id: str):
 @app.route('/<identifier_name>/<identifier_context>')
 @app.route('/<identifier_name>/<identifier_context>/<cache_id>')
 def listen(identifier_name: str, identifier_context: str, cache_id: str = None) -> list[dict]:
-    #check if identifier name has already been used
+    # --- Cache lookup (unchanged) ---
     cache = None
-    #find the existing cache in app.caches or create a new one if it doesn't exist
-    if cache_id != None:
-        if os.path.exists("cache/"+cache_id+".db3"):
-            #check if the identifier name is in this cache and return it if so
-            cache = AppCache("cache/"+cache_id+".db3")
+    if cache_id is not None:
+        if os.path.exists("cache/" + cache_id + ".db3"):
+            cache = AppCache("cache/" + cache_id + ".db3")
             data = cache.retrieve(identifier_name, identifier_context)
-            if data != False:
+            if data is not False:
                 cache.encounter(identifier_name, identifier_context)
                 return data
         else:
-            #create the cache
-            cache = AppCache("cache/"+cache_id+".db3")
+            cache = AppCache("cache/" + cache_id + ".db3")
             cache.load()
-    
-    #TODO: update this documentation
-    """
-    Process a web request to analyze an identifier within a specific context.
 
-    This route function takes two URL parameters (identifier_name, and identifier_context) from an
-    incoming HTTP request and performs data preprocessing and feature extraction on the identifier_name.
-    It then uses a trained classifier to annotate the identifier with part-of-speech tags and other linguistic features.
+    # Pull query‐string parameters
+    system_name = request.args.get("system_name", default="")
+    programming_language = request.args.get("language", default="")
+    data_type = request.args.get("type", default="")
 
-    Args:
-        identifier_name (str): The name of the identifier to be analyzed.
-        identifier_context (str): The context in which the identifier appears.
-
-    Returns:
-        List[dict]: A list of dictionaries containing words and their predicted POS tags.
-    """
     print(f"INPUT: {identifier_name} {identifier_context}")
-   
-    # get the start time
     start_time = time.perf_counter()
 
-    # Split identifier_name into words
+    # 1) Split the identifier into tokens for **both** modes
     words = ronin.split(identifier_name)
-    
-    # # Create initial data frame
+
+    # 2) If we asked for the LM‐based (DistilBERT) tagger, use it
+    if model_type == "lm_based":
+        result = { "words": [] }
+
+        tags = lm_model.tag_identifier(
+            tokens=words,
+            context=identifier_context,
+            type_str=data_type,
+            language=programming_language,
+            system_name=system_name
+        )
+
+        for word, tag in zip(words, tags):
+            dictionary = dictionary_lookup(word)
+            result["words"].append({
+                word: { "tag": tag, "dictionary": dictionary }
+            })
+
+        tag_time = time.perf_counter() - start_time
+        if cache_id:
+            AppCache(f"cache/{cache_id}.db3").add(identifier_name, result, identifier_context, tag_time)
+        return result
+
+    # 3) Else: use the existing tree‐based tagger
+    # Create initial DataFrame
     data = pd.DataFrame({
         'WORD': words,
         'SPLIT_IDENTIFIER': ' '.join(words),
-        'CONTEXT_NUMBER': context_to_number(identifier_context),  # Predefined context number
+        'CONTEXT_NUMBER': context_to_number(identifier_context),
     })
 
-    # create response JSON
-    # tags = list(annotate_identifier(app.model_data.ModelClassifier, data))
-    result = {
-        "words" : []
-    }
-
-    # Add features to the data
+    # Build features
     data = createFeatures(
         data,
         mutable_feature_list,
         modelGensimEnglish=app.model_data.ModelGensimEnglish,
     )
-    
-    categorical_features = ['NLTK_POS','PREV_POS', 'NEXT_POS']
-    category_variables = []
 
+    # Convert any categorical features to numeric
+    categorical_features = ['NLTK_POS', 'PREV_POS', 'NEXT_POS']
     for category_column in categorical_features:
         if category_column in data.columns:
-            category_variables.append(category_column)
-            data.loc[:, category_column] = data[category_column].astype(str)
+            data[category_column] = data[category_column].astype(str)
+            unique_vals = data[category_column].unique()
+            category_map = {}
+            for val in unique_vals:
+                if val in universal_to_custom:
+                    category_map[val] = custom_to_numeric[universal_to_custom[val]]
+                else:
+                    category_map[val] = custom_to_numeric['NOUN']
+            data[category_column] = data[category_column].map(category_map)
 
-    for category_column in category_variables:
-        # Explicitly handle categorical conversion
-        unique_values = data[category_column].unique()
-        category_map = {}
-        for value in unique_values:
-            if value in universal_to_custom:
-                category_map[value] = custom_to_numeric[universal_to_custom[value]]
-            else:
-                category_map[value] = custom_to_numeric['NOUN']  # Assign 'NM' (8) for unknown categories
-
-        data.loc[:, category_column] = data[category_column].map(category_map)
-
-    # Convert categorical variables to numeric
-    # Load and apply the classifier
+    # Load classifier and annotate
     clf = joblib.load(os.path.join(SCRIPT_DIR, '..', 'models', 'model_GradientBoostingClassifier.pkl'))
     predicted_tags = annotate_identifier(clf, data)
 
-    # Combine words and their POS tags into a parseable format
-    #result = [{'word': word, 'pos_tag': tag} for word, tag in zip(words, predicted_tags)]
-
-    for i in range(len(words)):
-        #check dictionary
-        dictionary = "UC" #uncategorized
-        word = words[i]
+    result = { "words": [] }
+    for i, word in enumerate(words):
         dictionary = dictionary_lookup(word)
-        result["words"].append(
-            {
-                words[i] : {
-                    "tag" : predicted_tags[i],
-                    "dictionary" : dictionary
-                }
-            }
-        )
+        result["words"].append({
+            word: { "tag": predicted_tags[i], "dictionary": dictionary }
+        })
 
-    # get time it took to tag the identifier
     tag_time = time.perf_counter() - start_time
-
-    # append result to cache
-    if cache_id != None:
+    if cache_id is not None:
         cache.add(identifier_name, result, identifier_context, tag_time)
 
     return result
+
     
 def context_to_number(context):
     """

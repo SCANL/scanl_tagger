@@ -2,7 +2,7 @@ name: SCALAR Tagger CI
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, distilbert ]
   pull_request:
     branches: [ master, develop ]
 
@@ -78,12 +78,12 @@ jobs:
       
       - name: Start tagger server
         run: |
-          ./main -r &
+          python main --mode run --model_type lm_based &
           
           # Wait for up to 5 minutes for the service to start and load models
           timeout=300
           while [ $timeout -gt 0 ]; do
-            if curl -s "http://localhost:8080/cache/numberArray/DECLARATION" > /dev/null; then
+            if curl -s "http://localhost:8080/numberArray/DECLARATION" > /dev/null; then
               echo "Service is ready"
               break
             fi
@@ -101,7 +101,7 @@ jobs:
       
       - name: Test tagger endpoint
         run: |
-          response=$(curl -s "http://localhost:8080/cache/numberArray/DECLARATION")
+          response=$(curl -s "http://localhost:8080/numberArray/DECLARATION")
           if [ -z "$response" ]; then
             echo "No response from tagger"
             exit 1

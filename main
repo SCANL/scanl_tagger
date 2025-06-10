@@ -1,138 +1,20 @@
 #!/usr/bin/env python
 
-import os, sqlite3, random, argparse
+import os, argparse
 from datetime import datetime
-from src.classifier_multiclass import perform_classification, TrainingAlgorithm
-import pandas as pd
-import numpy as np
+from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
+from src.lm_based_tagger.train_model import train_lm
+from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from src.tag_identifier import start_server
-from src.download_code2vec_vectors import *
-from src.feature_generator import custom_to_numeric, universal_to_custom, createFeatures
-from src.create_models import createModel, stable_features, mutable_feature_list, columns_to_drop
+from src.tree_based_tagger.download_code2vec_vectors import *
 from version import __version__ 
+from datasets import Dataset
 
-# Get the directory of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_version():
     """Return the current version of SCANL Tagger."""
     return f"SCANL Tagger version {__version__}"
-
-def read_input(sql, features, conn):
-    """
-    Read input data from an SQLite database and preprocess it.
-
-    This function reads data from the specified SQL query and database connection, shuffles the rows, and then applies
-    a preprocessing function called 'createFeatures' to create additional features.
-
-    Args:
-        sql (str): The SQL query to fetch data from the database.
-        conn (sqlite3.Connection): The SQLite database connection.
-
-    Returns:
-        pandas.DataFrame: A DataFrame containing the preprocessed input data.
-    """
-    input_data = pd.read_sql_query(sql, conn)
-    print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
-    print(input_data.columns)
-    input_data_copy = input_data.copy()
-    rows = input_data_copy.values.tolist()
-    random.shuffle(rows)
-    shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
-    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-    input_data = createFeatures(shuffled_input_data, features, modelGensimEnglish=modelGensimEnglish, modelTokens=modelTokens, modelMethods=modelMethods)
-    return input_data
-
-def train(config):
-    """
-    Train a part of speech tagger model using specified features and a training dataset.
-    This function reads data from an SQLite database, preprocesses it, and performs classification using a specified set
-    of features. The results are written to an output file, including information about the training process and the
-    distribution of labels in the training data.
-    Args:
-        config (dict): A dictionary containing configuration data.
-    Returns:
-        None
-    """
-   
-    # Extract configuration values from the 'config' dictionary
-    input_file = config['input_file']
-    sql_statement = config['sql_statement']
-    identifier_column = config['identifier_column']
-    dependent_variable = config['dependent_variable']
-    pyrandom_seed = config['pyrandom_seed']
-    trainingSeed = config['trainingSeed']
-    classifierSeed = config['classifierSeed']
-   
-    np.random.seed(config['npseed'])
-    random.seed(pyrandom_seed)
-    independent_variables = config['independent_variables']
-    
-    # ###############################################################
-    print(" --  -- Started: Reading Database --  -- ")
-    connection = sqlite3.connect(input_file)
-    df_input = read_input(sql_statement, independent_variables, connection)
-    print(" --  -- Completed: Reading Input --  -- ")
-    # ###############################################################
-    
-    # Create an explicit copy to avoid SettingWithCopyWarning
-    #independent_variables.remove("EMB_FEATURES")
-    df_features = df_input[independent_variables].copy()
-    df_class = df_input[[dependent_variable]].copy()
-    
-    category_variables = []
-    categorical_columns = ['NLTK_POS', 'PREV_POS', 'NEXT_POS']
-    
-    # Safely handle categorical variables
-    for category_column in categorical_columns:
-        if category_column in df_features.columns:
-            category_variables.append(category_column)
-            df_features.loc[:, category_column] = df_features[category_column].astype(str)
-    
-    # Ensure output directories exist
-    output_dir = os.path.join(SCRIPT_DIR, 'output')
-    os.makedirs(output_dir, exist_ok=True)
-    
-    filename = os.path.join(output_dir, 'results.txt')
-    mode = 'a' if os.path.exists(filename) else 'w'
-   
-    with open(filename, mode) as results_text_file:
-        results_text_file.write(datetime.now().strftime("%H:%M:%S") + "\n")
-       
-        # Print config in a readable fashion
-        results_text_file.write("Configuration:\n")
-        for key, value in config.items():
-            results_text_file.write(f"{key}: {value}\n")
-        results_text_file.write("\n")
-
-        for category_column in category_variables:
-            # Explicitly handle categorical conversion
-            unique_values = df_features[category_column].unique()
-            category_map = {}
-            for value in unique_values:
-                print(value)
-                if value in universal_to_custom:
-                    category_map[value] = custom_to_numeric[universal_to_custom[value]]
-                else:
-                    category_map[value] = custom_to_numeric['NOUN']  # Assign 'NM' (8) for unknown categories
-
-            df_features.loc[:, category_column] = df_features[category_column].map(category_map)
-       
-        print(" --  -- Distribution of labels in corpus --  -- ")
-        print(df_class[dependent_variable].value_counts())
-        results_text_file.write(f"SQL: {sql_statement}\n")
-        results_text_file.write(f"Features: {df_features}\n")
-       
-        algorithms = [TrainingAlgorithm.XGBOOST]
-        #pd.set_option('display.max_rows', None)  # Show all rows
-        pd.set_option('display.max_columns', None)  # Show all columns
-        pd.set_option('display.width', None)  # Prevent line wrapping
-        pd.set_option('display.max_colwidth', None)  # Show full content of each cell
-
-        print(df_features)
-        perform_classification(df_features, df_class, results_text_file,
-                                                    output_dir, algorithms, trainingSeed,
-                                                    classifierSeed, columns_to_drop)
 
 if __name__ == "__main__":
     """
@@ -155,47 +37,69 @@ if __name__ == "__main__":
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
-
-    Author: Christian Newman
+    
     Version: 2.0.0
     """
-    parser = argparse.ArgumentParser()
-    
+
+    parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
-    parser.add_argument("-r", "--run", action="store_true", help="run server for part of speech tagging requests") 
-    parser.add_argument("-t", "--train", action="store_true", help="run training set to retrain the model")
-    parser.add_argument("-a", "--address", nargs=1, action="store", help="configure server address", )
-    parser.add_argument("--port", nargs=1, action="store", help="configure server port")
-    parser.add_argument("--protocol", nargs=1, action="store", help="configure whether the server uses http or https")
-    parser.add_argument("--words", nargs=1, action="store", help="provide path to a list of acceptable abbreviations")
+    parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
+    # Core run/train model arguments
+    parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run' the model")
+    parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
+    parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
+    parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
+    parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
+
+    # Run-specific options
+    parser.add_argument("--port", type=int, help="Port to bind server")
+    parser.add_argument("--protocol", type=str, help="Protocol (http/https)")
+    parser.add_argument("--word", type=str, help="Word used in config")
+    parser.add_argument("--address", type=str, help="Server address")
 
     args = parser.parse_args()
-
+    
     if args.version:
         print(get_version())
-    elif args.run:
-        download_files()
-        temp_config = {}
-        print(args)
-        if args.address != None: temp_config["address"] = args.address[0]
-        if args.port != None: temp_config["port"] = args.port[0]
-        if args.protocol != None: temp_config["protocol"] = args.protocol[0]
-        if args.words != None: temp_config["words"] = args.words[0]
-        start_server(temp_config)
-    elif args.train:
-        download_files()
-        # Define a configuration dictionary and pass it to the train function
-        config = {
-            'input_file': os.path.join(SCRIPT_DIR, 'input', 'scanl_tagger_training_db_11_29_2024.db'),
-            'sql_statement': 'select * from training_set',
-            'identifier_column': "ID",
-            'dependent_variable': 'CORRECT_TAG',
-            'pyrandom_seed': random.randint(0, 2**32 - 1),
-            'trainingSeed': random.randint(0, 2**32 - 1),
-            'classifierSeed': random.randint(0, 2**32 - 1),
-            'npseed': random.randint(0, 2**32 - 1),
-            'independent_variables': stable_features + mutable_feature_list
-        }
-        train(config)
+    elif args.mode == "train":
+        if args.model_type == "tree_based":
+            config = load_config_tree(SCRIPT_DIR)
+            download_files()
+            train_tree(config)
+        elif args.model_type == "lm_based":
+            train_lm(SCRIPT_DIR)
+
+    elif args.mode == "run":
+        if args.model_type == "tree_based":
+            config = load_config_tree(SCRIPT_DIR)
+            # Inject overrides
+            download_files()
+            config["model_type"] = args.model_type
+            config["model_dir"] = args.model_dir
+
+            if args.port:
+                config["port"] = args.port
+            if args.protocol:
+                config["protocol"] = args.protocol
+            if args.word:
+                config["word"] = args.word
+            if args.address:
+                config["address"] = args.address
+
+            start_server(temp_config=config)
+        elif args.model_type == "lm_based":
+            download_files()
+            if not args.local:
+                start_server(temp_config={
+                    'script_dir': SCRIPT_DIR,
+                    'model': 'sourceslicer/scalar_lm_best',
+                    'model_type':'lm_based',
+                })
+            else:
+                start_server(temp_config={
+                    'script_dir': SCRIPT_DIR,
+                    'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
+                    'model_type':'lm_based',
+                })
     else:
         parser.print_usage()
