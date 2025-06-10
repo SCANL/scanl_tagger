@@ -8,4 +8,5 @@ spiral @ git+https://github.com/cnewman/spiral.git@dff537320c15849c10e583968036d
 torch==2.7.1
 waitress==3.0.2
 gensim==4.3.3
+nltk==3.9.1
 transformers[torch]
