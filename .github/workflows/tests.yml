@@ -78,7 +78,7 @@ jobs:
       
       - name: Start tagger server
         run: |
-          python main --mode run --model_type lm_based
+          python main --mode run --model_type lm_based &
           
           # Wait for up to 5 minutes for the service to start and load models
           timeout=300
