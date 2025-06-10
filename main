@@ -88,6 +88,7 @@ if __name__ == "__main__":
 
             start_server(temp_config=config)
         elif args.model_type == "lm_based":
+            download_files()
             if not args.local:
                 start_server(temp_config={
                     'script_dir': SCRIPT_DIR,
