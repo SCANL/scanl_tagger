@@ -67,12 +67,11 @@ if __name__ == "__main__":
             download_files()
             train_tree(config)
         elif args.model_type == "lm_based":
-            download_files()
             train_lm(SCRIPT_DIR)
 
     elif args.mode == "run":
         if args.model_type == "tree_based":
-            config = load_config_tree()
+            config = load_config_tree(SCRIPT_DIR)
             # Inject overrides
             download_files()
             config["model_type"] = args.model_type

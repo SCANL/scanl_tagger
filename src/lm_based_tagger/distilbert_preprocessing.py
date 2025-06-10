@@ -1,13 +1,7 @@
 import re
-from nltk import pos_tag
-import nltk
 from difflib import SequenceMatcher
 import pandas as pd
 from datasets import Dataset
-
-# Download once (we’ll just do it quietly here)
-nltk.download('averaged_perceptron_tagger_eng', quiet=True)
-nltk.download('universal_tagset', quiet=True)
 
 # === Constants ===
 VOWELS = set("aeiou")
@@ -27,7 +21,6 @@ FEATURES = [
     "hungarian",
     "cvr",
     "digit",
-    #"nltk"
 ]
 
 FEATURE_FUNCTIONS = {
@@ -35,7 +28,6 @@ FEATURE_FUNCTIONS = {
     "hungarian": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
     "cvr": lambda row, tokens: consonant_vowel_ratio_bucket(tokens),
     "digit": lambda row, tokens: detect_digit_feature(tokens),
-    "nltk": lambda row, tokens: "@nltk_" + '-'.join(tag.lower() for _, tag in pos_tag(tokens, tagset="universal"))
 }
 
 def get_feature_tokens(row, tokens):
@@ -99,6 +91,38 @@ def normalize_language(lang_str):
     return "@lang_" + lang_str.strip().lower().replace("++", "pp").replace("#", "sharp")
 
 def prepare_dataset(df: pd.DataFrame, label2id: dict):
+    """
+    Converts a DataFrame of identifier tokens and grammar tags into a HuggingFace Dataset
+    formatted for NER training with feature and position tokens.
+
+    Each row in the input DataFrame should contain:
+        - tokens: List[str] (e.g., ['get', 'Employee', 'Name'])
+        - tags:   List[str] (e.g., ['V', 'NM', 'N'])
+        - CONTEXT: str (e.g., 'function')
+
+    The function adds:
+        - Feature tokens: ['@hung_get', '@no_digit', '@cvr_mid', '@func']
+        - Interleaved position and real tokens:
+            ['@pos_0', 'get', '@pos_1', 'Employee', '@pos_2', 'Name']
+
+    The NER tags are aligned so that:
+        - Feature tokens and position markers get label -100 (ignored in loss)
+        - Real tokens are converted from grammar tags using `label2id`
+
+    Example Input:
+        df = pd.DataFrame([{
+            "tokens": ["get", "Employee", "Name"],
+            "tags": ["V", "NM", "N"],
+            "CONTEXT": "function"
+        }])
+
+    Example Output:
+        Dataset with:
+            tokens:    ['@hung_get', '@no_digit', '@cvr_mid', '@func',
+                        '@pos_0', 'get', '@pos_1', 'Employee', '@pos_2', 'Name']
+            ner_tags:  [-100, -100, -100, -100,
+                        -100, 1, -100, 2, -100, 3]  # assuming label2id = {"V": 1, "NM": 2, "N": 3}
+    """
     rows = []
     for _, row in df.iterrows():
         tokens = row["tokens"]
@@ -123,9 +147,34 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
         "ner_tags": [r["ner_tags"] for r in rows]
     })
 
-def tokenize_and_align_labels(example, tokenizer):
+def tokenize_and_align_labels(sample, tokenizer):
+    """
+    Tokenizes an example and aligns NER labels with subword tokens.
+
+    The input `example` comes from `prepare_dataset()` and contains:
+        - tokens: List[str], including feature and position tokens
+        - ner_tags: List[int], aligned with `tokens`, with -100 for ignored tokens
+
+    This function:
+        - Uses `is_split_into_words=True` to tokenize each item in `tokens`
+        - Uses `tokenizer.word_ids()` to map each subword back to its original token index
+        - Assigns the corresponding label (or -100) for each subword token
+
+    Example Input:
+        example = {
+            "tokens": ['@hung_get', '@no_digit', '@cvr_mid', '@func',
+                       '@pos_0', 'get', '@pos_1', 'Employee', '@pos_2', 'Name'],
+            "ner_tags": [-100, -100, -100, -100,
+                         -100, 1, -100, 2, -100, 3]
+        }
+
+    Assuming 'Employee' is tokenized to ['Em', '##ployee'],
+    Example Output:
+        tokenized["labels"] = [-100, -100, -100, -100,
+                               -100, 1, -100, 2, 2, -100, 3]
+    """
     tokenized = tokenizer(
-        example["tokens"],
+        sample["tokens"],
         truncation=True,
         is_split_into_words=True
     )
@@ -136,8 +185,8 @@ def tokenize_and_align_labels(example, tokenizer):
     for word_id in word_ids:
         if word_id is None:
             labels.append(-100)
-        elif word_id < len(example["ner_tags"]):
-            labels.append(example["ner_tags"][word_id])
+        elif word_id < len(sample["ner_tags"]):
+            labels.append(sample["ner_tags"][word_id])
         else:
             labels.append(-100)
 

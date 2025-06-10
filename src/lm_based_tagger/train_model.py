@@ -14,8 +14,6 @@ from transformers import (
     Trainer,
     TrainingArguments,
     DistilBertTokenizerFast,
-    DistilBertConfig,
-    DistilBertForTokenClassification,
     DataCollatorForTokenClassification,
     EarlyStoppingCallback
 )
@@ -52,7 +50,120 @@ def dual_print(*args, file, **kwargs):
     print(*args, **kwargs)         # stdout
     print(*args, file=file, **kwargs)  # file
 
+
+# 11) compute_metrics function (macro-F1) 
+def compute_metrics(eval_pred):
+    """
+    Computes macro-F1, token-level accuracy, and identifier-level accuracy.
+
+    Supports both:
+    - Raw logits from the model (shape [B, T, C])
+    - Viterbi-decoded label paths from CRF models (List[List[int]])
+
+    Args:
+        eval_pred: Either a tuple (preds, labels) or a HuggingFace EvalPrediction object.
+                   `preds` can be:
+                       • [B, T, C] logits (e.g., output of a classifier head)
+                       • [B, T] label IDs
+                       • List[List[int]] variable-length decoded paths (CRF)
+
+    Returns:
+        dict with:
+            - "eval_macro_f1": F1 averaged over classes (not tokens)
+            - "eval_token_accuracy": token-level accuracy (ignores -100)
+            - "eval_identifier_accuracy": percentage of rows where all tokens matched
+
+    Example (logits of shape [B=2, T=3, C=4]):
+        preds = np.array([
+            [  # Example 1 (B=0)
+                [0.1, 2.5, 0.3, -1.0],  # Token 1 → class 1 (NM)
+                [1.5, 0.4, 0.2, -0.5], # Token 2 → class 0 (V)
+                [0.3, 0.1, 3.2, 0.0],  # Token 3 → class 2 (N)
+            ],
+            [  # Example 2 (B=1)
+                [0.2, 0.1, 0.4, 2.1],  # Token 1 → class 3 (P)
+                [0.9, 1.0, 0.3, 0.0],  # Token 2 → class 1 (NM)
+                [1.1, 1.1, 1.1, 1.1],  # Token 3 → tie (say model picks class 0)
+            ]
+        ])
+
+        Converted via argmax(preds, axis=-1):
+            → [[1, 0, 2],  # Example 1 predictions
+               [3, 1, 0]]  # Example 2 predictions
+
+        Gold:  [V, NM, N]    → label_row = [-100, 1, -100, 2, -100, 3]
+        Pred:  [V, NM, N]    → pred_row  =         [1,        2,       3]
+        All tokens match → example_correct = True
+    """
+    # 1) Extract predictions and labels
+    if isinstance(eval_pred, tuple):  # older HuggingFace versions
+        preds, labels = eval_pred
+    else:  # EvalPrediction object
+        preds = eval_pred.predictions
+        labels = eval_pred.label_ids
+
+    # 2) Normalize predictions format
+    # Convert [B, T, C] logits → [B, T] class IDs
+    if isinstance(preds, np.ndarray) and preds.ndim == 3:
+        preds = np.argmax(preds, axis=-1)
+    # Convert CRF list-of-lists → numpy object array
+    elif isinstance(preds, list):
+        preds = np.array(preds, dtype=object)
+
+    # 3) Compare predictions to labels, ignoring -100
+    all_true, all_pred, id_correct_flags = [], [], []
+
+    for pred_row, label_row in zip(preds, labels):
+        ptr = 0
+        example_correct = True
+
+        for lbl in label_row:                 # iterate gold labels
+            if lbl == -100:                   # skip padding / specials
+                continue
+
+            # pick the corresponding prediction
+            if isinstance(pred_row, (list, np.ndarray)):
+                pred_lbl = pred_row[ptr]
+            else:                             # pred_row is scalar
+                pred_lbl = pred_row
+            ptr += 1
+
+            all_true.append(lbl)
+            all_pred.append(pred_lbl)
+            if pred_lbl != lbl:
+                example_correct = False
+
+        id_correct_flags.append(example_correct)
+
+    # 4) Compute metrics from flattened predictions
+    macro_f1  = f1_score(all_true, all_pred, average="macro")
+    token_acc = accuracy_score(all_true, all_pred)
+    id_acc    = float(sum(id_correct_flags)) / len(id_correct_flags)
+
+    return {
+        "eval_macro_f1":          macro_f1,
+        "eval_token_accuracy":    token_acc,
+        "eval_identifier_accuracy": id_acc,
+    }
+
 def train_lm(script_dir: str):
+    """
+    Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
+    Performs model selection based on macro F1 score, and evaluates the best model on a final hold-out set.
+
+    Input TSV must contain:
+        - SPLIT: tokenized identifier as space-separated subtokens (e.g., "get Employee Name")
+        - GRAMMAR_PATTERN: space-separated labels (e.g., "V NM N")
+        - CONTEXT: usage context string (e.g., FUNCTION, PARAMETER, ...)
+
+    Example input row:
+        SPLIT="get Employee Name", GRAMMAR_PATTERN="V NM N", CONTEXT="FUNCTION"
+
+    Output:
+        - Trained model checkpoints (best fold + final eval)
+        - Hold-out predictions and metrics (saved to output/holdout_predictions.csv)
+        - Text report of macro-F1, token-level and identifier-level accuracy
+    """
     # 1) Paths
     input_path = os.path.join(script_dir, "input", "tagger_data.tsv")
     output_dir = os.path.join(script_dir, "output")
@@ -107,11 +218,11 @@ def train_lm(script_dir: str):
 
         # 7c) Tokenize + align labels (exactly as before) 
         tokenized_train = fold_train_dataset.map(
-            lambda ex: tokenize_and_align_labels(ex, tokenizer),
+            lambda sample: tokenize_and_align_labels(sample, tokenizer),
             batched=False
         )
         tokenized_test = fold_test_dataset.map(
-            lambda ex: tokenize_and_align_labels(ex, tokenizer),
+            lambda sample: tokenize_and_align_labels(sample, tokenizer),
             batched=False
         )
 
@@ -169,74 +280,18 @@ def train_lm(script_dir: str):
                 dataloader_pin_memory=False
             )
 
-        # 10) Data collator (dynamic padding) 
+        # 10) Define collator that handles dynamic padding + label alignment
+        #     For example, if two tokenized examples have:
+        #         input_ids = [[101, 2121, 5661, 2171, 102], [101, 2064, 102]]
+        #     the collator will pad them to the same length and align
+        #     their attention_mask and labels accordingly.
         data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
 
-        # 11) compute_metrics function (macro-F1) 
 
-        def compute_metrics(eval_pred):
-            """
-            Works for both:
-                • Plain classifier logits  → argmax along last dim
-                • CRF Viterbi paths (list/2‑D ndarray) → use directly
-            Returns:
-                - eval_macro_f1
-                - eval_token_accuracy
-                - eval_identifier_accuracy
-            """
-            # ── 1. Unpack ────────────────────────────────────────────────────
-            if isinstance(eval_pred, tuple):          # older HF (<4.38)
-                preds, labels = eval_pred
-            else:                                     # EvalPrediction obj
-                preds  = eval_pred.predictions
-                labels = eval_pred.label_ids
-
-            # ── 2. Convert logits → label IDs if needed ─────────────────────
-            #    * 3‑D tensor  : [B, T, C]  → argmax(C)
-            #    * 2‑D tensor  : already IDs
-            #    * list/obj‑nd : variable‑length decode paths
-            if isinstance(preds, np.ndarray) and preds.ndim == 3:
-                preds = np.argmax(preds, axis=-1)     # [B, T]
-            elif isinstance(preds, list):
-                preds = np.array(preds, dtype=object) # each row is a list
-
-            # ── 3. Accumulate token & identifier stats ──────────────────────
-            all_true, all_pred, id_correct_flags = [], [], []
-
-            for pred_row, label_row in zip(preds, labels):
-                ptr = 0
-                example_correct = True
-
-                for lbl in label_row:                 # iterate gold labels
-                    if lbl == -100:                   # skip padding / specials
-                        continue
-
-                    # pick the corresponding prediction
-                    if isinstance(pred_row, (list, np.ndarray)):
-                        pred_lbl = pred_row[ptr]
-                    else:                             # pred_row is scalar
-                        pred_lbl = pred_row
-                    ptr += 1
-
-                    all_true.append(lbl)
-                    all_pred.append(pred_lbl)
-                    if pred_lbl != lbl:
-                        example_correct = False
-
-                id_correct_flags.append(example_correct)
-
-            # ── 4. Metrics ──────────────────────────────────────────────────
-            macro_f1  = f1_score(all_true, all_pred, average="macro")
-            token_acc = accuracy_score(all_true, all_pred)
-            id_acc    = float(sum(id_correct_flags)) / len(id_correct_flags)
-
-            return {
-                "eval_macro_f1":          macro_f1,
-                "eval_token_accuracy":    token_acc,
-                "eval_identifier_accuracy": id_acc,
-            }
-
-        # 12) Trainer for this fold (with EarlyStopping) 
+        # 11) Initialize Trainer for this fold with early stopping
+        #     Trainer handles batching, optimizer, eval, LR scheduling, logging, etc.
+        #     We also assign the tokenizer to `trainer.tokenizer` so that
+        #     it is correctly saved with the model and used during predict().
         trainer = Trainer(
             model=model,
             args=training_args,
@@ -250,10 +305,19 @@ def train_lm(script_dir: str):
         # Avoid deprecation warning (explicitly set tokenizer on trainer)
         trainer.tokenizer = tokenizer
 
-        # 13) Train this fold
+        # 12) Train model on this fold
+        #     During training, the CRF computes loss using both:
+        #         - emission scores (per-token label likelihoods from DistilBERT)
+        #         - transition scores (likelihoods of label sequences)
+        #     It uses the Viterbi algorithm to find the most likely label path
+        #     and compares it to the true label sequence to compute loss.
         trainer.train()
 
-        # 14) Evaluate on this fold’s held-out split
+
+        # 13) Evaluate fold performance on validation split
+        #     We run inference and obtain predictions as either logits (softmax) or Viterbi-decoded paths.
+        #     Here, since we use CRF; 'preds_logits' contains Viterbi sequences of label IDs.
+        #     We then flatten and decode both true and predicted labels for macro-F1 calculation.
         preds_logits, labels, _ = trainer.predict(tokenized_test)
         preds = np.argmax(preds_logits, axis=-1)
 
@@ -264,6 +328,7 @@ def train_lm(script_dir: str):
             for (l, p) in zip(sent_labels, sent_preds)
             if l != -100
         ]
+        
         pred_labels_list = [
             ID2LABEL[p]
             for sent_labels, sent_preds in zip(labels, preds)
@@ -274,7 +339,8 @@ def train_lm(script_dir: str):
         fold_macro_f1 = f1_score(true_labels_list, pred_labels_list, average="macro")
         print(f"Fold {fold} Macro F1: {fold_macro_f1:.4f}")
 
-        # 15) If this fold’s model is the best so far, save it
+        # 14) Save model checkpoint if this fold is the best so far
+        #     This ensures we retain the model with highest validation performance
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
             best_model_dir = os.path.join(output_dir, "best_model")
@@ -284,14 +350,15 @@ def train_lm(script_dir: str):
 
         fold += 1
 
-    # 16) After all folds, report best fold‐score & load best model for final evaluation
+    # 15) Final summary after cross-validation
+    #     Reports where the best model is saved and its macro F1 on fold validation data
     print(f"\nBest fold model saved at: {best_model_dir}, Macro F1 = {best_macro_f1:.4f}")
 
-    # 17) Final Evaluation on held-out val_df
+    # 16) Load best model and prepare for final evaluation on held-out set
     best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
 
-    # Build a fresh set of TrainingArguments that never runs evaluation epochs:
+    # Use new TrainingArguments to disable evaluation during predict
     final_args = TrainingArguments(
         output_dir=os.path.join(output_dir, "final_eval"),
         per_device_eval_batch_size=16,
@@ -301,6 +368,8 @@ def train_lm(script_dir: str):
         report_to="none",
         seed=RAND_STATE
     )
+    
+    # Set up Trainer to run inference on hold-out set
     val_trainer = Trainer(
         model=best_model,
         args=final_args,
@@ -308,7 +377,8 @@ def train_lm(script_dir: str):
         data_collator=DataCollatorForTokenClassification(tokenizer=tokenizer)
         # ← note: no eval_dataset here, because we’ll call .predict(...) manually
     )
-
+    
+    # 17) Run prediction on hold-out set and record inference time
     start_time = time.perf_counter()
     val_preds_logits, val_labels, _ = val_trainer.predict(tokenized_val)
     end_time = time.perf_counter()
@@ -328,8 +398,7 @@ def train_lm(script_dir: str):
         if l != -100
     ]
 
-    # 18) Write hold-out predictions to CSV so that each row contains
-    #     (tokens, true_tags, pred_tags) for sanity checking.
+    # 18) Output predictions per row to CSV for inspection or error analysis
     from .distilbert_tagger import DistilBertTagger
 
     # Re-instantiate the exact same DistilBERT tagger we saved
@@ -364,12 +433,13 @@ def train_lm(script_dir: str):
     df["row_correct"] = df["true_tags"] == df["pred_tags"]
     id_level_acc = df["row_correct"].mean()
     
-    # Report inference speed
+    # Report evaluation metrics and timing info
     total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
     total_examples = len(val_dataset)
     elapsed = end_time - start_time
     final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
     final_accuracy = accuracy_score(flat_true, flat_pred)
+    
     print("\nFinal Evaluation on Held-Out Set:")
     with open('holdout_report.txt', 'w') as f:
         report = classification_report(flat_true, flat_pred)
