@@ -2,10 +2,11 @@ FROM python:3.12-slim
 
 # Install (and build) requirements
 COPY requirements.txt /requirements.txt
-RUN apt-get update && \
-    apt-get install -y git curl && \
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get update --fix-missing && \
+    apt-get install --allow-unauthenticated -y git curl && \
     pip install -r requirements.txt && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 RUN pip install -e .
@@ -69,6 +70,6 @@ CMD date; \
     fi; \
     date; \
     echo "Running..."; \
-    /main -r --words words/abbreviationList.csv
+    /main --mode train --model_type lm_based --words words/abbreviationList.csv
 
 ENV TZ=US/Michigan

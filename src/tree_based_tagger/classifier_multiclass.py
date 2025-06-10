@@ -7,14 +7,19 @@ from sklearn.metrics import make_scorer, accuracy_score, f1_score, balanced_accu
 from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 from sklearn.metrics import make_scorer
-from sklearn.metrics import classification_report, precision_recall_fscore_support
-from sklearn.model_selection import GridSearchCV, cross_validate, StratifiedKFold, cross_val_predict
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV, StratifiedKFold, cross_val_predict
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
+from src.tree_based_tagger.feature_generator import custom_to_numeric, universal_to_custom, createFeatures
+from src.tree_based_tagger.create_models import createModel, stable_features, mutable_feature_list, columns_to_drop
 import pandas as pd
 from enum import Enum
-import src.feature_generator
 import multiprocessing
+import os, sqlite3, random
+import pandas as pd
+import numpy as np
+from datetime import datetime
 
 class TrainingAlgorithm(Enum):
     RANDOM_FOREST = "RandomForest"
@@ -62,6 +67,138 @@ class TrainTestvalidationData:
         self.X_test_original = X_test_original
         self.labels = labels
 
+def load_config_tree(SCRIPT_DIR):
+    # Mimic Python-based config instead of JSON
+    config = {
+        'script_dir': SCRIPT_DIR,
+        'input_file': os.path.join(SCRIPT_DIR, 'input', 'scanl_tagger_training_db_11_29_2024.db'),
+        'sql_statement': 'select * from training_set',
+        'identifier_column': "ID",
+        'dependent_variable': 'CORRECT_TAG',
+        'pyrandom_seed': random.randint(0, 2**32 - 1),
+        'trainingSeed': random.randint(0, 2**32 - 1),
+        'classifierSeed': random.randint(0, 2**32 - 1),
+        'npseed': random.randint(0, 2**32 - 1),
+        'independent_variables': stable_features + mutable_feature_list
+    }
+    print(config)
+    return config
+
+def read_input(sql, features, conn, config):
+    """
+    Read input data from an SQLite database and preprocess it.
+
+    This function reads data from the specified SQL query and database connection, shuffles the rows, and then applies
+    a preprocessing function called 'createFeatures' to create additional features.
+
+    Args:
+        sql (str): The SQL query to fetch data from the database.
+        conn (sqlite3.Connection): The SQLite database connection.
+
+    Returns:
+        pandas.DataFrame: A DataFrame containing the preprocessed input data.
+    """
+    input_data = pd.read_sql_query(sql, conn)
+    print(" --  --  --  -- Read " + str(len(input_data)) + " input rows --  --  --  -- ")
+    print(input_data.columns)
+    input_data_copy = input_data.copy()
+    rows = input_data_copy.values.tolist()
+    random.shuffle(rows)
+    shuffled_input_data = pd.DataFrame(rows, columns=input_data.columns)
+    modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=config['script_dir'])
+    input_data = createFeatures(shuffled_input_data, features, modelGensimEnglish=modelGensimEnglish, modelTokens=modelTokens, modelMethods=modelMethods)
+    return input_data
+
+def train_tree(config):
+    """
+    Train a part of speech tagger model using specified features and a training dataset.
+    This function reads data from an SQLite database, preprocesses it, and performs classification using a specified set
+    of features. The results are written to an output file, including information about the training process and the
+    distribution of labels in the training data.
+    Args:
+        config (dict): A dictionary containing configuration data.
+    Returns:
+        None
+    """
+   
+    # Extract configuration values from the 'config' dictionary
+    input_file = config['input_file']
+    sql_statement = config['sql_statement']
+    identifier_column = config['identifier_column']
+    dependent_variable = config['dependent_variable']
+    pyrandom_seed = config['pyrandom_seed']
+    trainingSeed = config['trainingSeed']
+    classifierSeed = config['classifierSeed']
+   
+    np.random.seed(config['npseed'])
+    random.seed(pyrandom_seed)
+    independent_variables = config['independent_variables']
+    
+    # ###############################################################
+    print(" --  -- Started: Reading Database --  -- ")
+    connection = sqlite3.connect(input_file)
+    df_input = read_input(sql_statement, independent_variables, connection, config)
+    print(" --  -- Completed: Reading Input --  -- ")
+    # ###############################################################
+    
+    # Create an explicit copy to avoid SettingWithCopyWarning
+    #independent_variables.remove("EMB_FEATURES")
+    df_features = df_input[independent_variables].copy()
+    df_class = df_input[[dependent_variable]].copy()
+    
+    category_variables = []
+    categorical_columns = ['NLTK_POS', 'PREV_POS', 'NEXT_POS']
+    
+    # Safely handle categorical variables
+    for category_column in categorical_columns:
+        if category_column in df_features.columns:
+            category_variables.append(category_column)
+            df_features.loc[:, category_column] = df_features[category_column].astype(str)
+    
+    # Ensure output directories exist
+    output_dir = os.path.join(config['script_dir'], 'output')
+    os.makedirs(output_dir, exist_ok=True)
+    
+    filename = os.path.join(output_dir, 'results.txt')
+    mode = 'a' if os.path.exists(filename) else 'w'
+   
+    with open(filename, mode) as results_text_file:
+        results_text_file.write(datetime.now().strftime("%H:%M:%S") + "\n")
+       
+        # Print config in a readable fashion
+        results_text_file.write("Configuration:\n")
+        for key, value in config.items():
+            results_text_file.write(f"{key}: {value}\n")
+        results_text_file.write("\n")
+
+        for category_column in category_variables:
+            # Explicitly handle categorical conversion
+            unique_values = df_features[category_column].unique()
+            category_map = {}
+            for value in unique_values:
+                print(value)
+                if value in universal_to_custom:
+                    category_map[value] = custom_to_numeric[universal_to_custom[value]]
+                else:
+                    category_map[value] = custom_to_numeric['NOUN']  # Assign 'NM' (8) for unknown categories
+
+            df_features.loc[:, category_column] = df_features[category_column].map(category_map)
+       
+        print(" --  -- Distribution of labels in corpus --  -- ")
+        print(df_class[dependent_variable].value_counts())
+        results_text_file.write(f"SQL: {sql_statement}\n")
+        results_text_file.write(f"Features: {df_features}\n")
+       
+        algorithms = [TrainingAlgorithm.XGBOOST]
+        #pd.set_option('display.max_rows', None)  # Show all rows
+        pd.set_option('display.max_columns', None)  # Show all columns
+        pd.set_option('display.width', None)  # Prevent line wrapping
+        pd.set_option('display.max_colwidth', None)  # Show full content of each cell
+
+        print(df_features)
+        perform_classification(df_features, df_class, results_text_file,
+                                                    output_dir, algorithms, trainingSeed,
+                                                    classifierSeed, columns_to_drop)
 def build_datasets(X, y, output_directory, trainingSeed):
     # Ensure the output directory exists
     os.makedirs(output_directory, exist_ok=True)
@@ -121,10 +258,12 @@ def perform_classification(X, y, results_text_file, output_directory, TrainingAl
     Returns:
         None
     """
+
     X_train, X_test, y_train, y_test, X_train_original, X_test_original = build_datasets(X, y, output_directory, trainingSeed)
     labels = np.unique(y_train, return_counts=False)
     
     algoData = TrainTestvalidationData(X_train, X_test, y_train, y_test, X_train_original, X_test_original, labels)
+    
     results_text_file.write("Training Seed: %s\n" % trainingSeed)
     results_text_file.write("Classifier Seed: %s\n" % classifierSeed)
 
@@ -150,7 +289,6 @@ def write_importances(results_text_file, feature_names, presult, metric_name):
     for feature, value in zip(feature_names, presult.importances_mean):
         results_text_file.write(f"{feature},{value}\n")
     results_text_file.write("\n")
-
 
 def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoData, classifierSeed, trainingSeed, columns_to_drop):
     """
@@ -180,6 +318,7 @@ def analyzeGradientBoost(results_text_file, output_directory, scorersKey, algoDa
         print("GradientBoostingClassifier")
 
         # Drop SPLIT_IDENTIFIER and WORD columns from X_train
+
         X_train_dropped = algoData.X_train.drop(columns=columns_to_drop, errors='ignore')
         
         max_threads = max(1, multiprocessing.cpu_count() - 3)

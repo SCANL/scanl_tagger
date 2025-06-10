@@ -18,6 +18,6 @@ setup(
         ],
     },
     python_requires='>=3.12',
-    author="Christian Newman",
+    author="Christian Newman, Anthony Peruma, Brandon Scholten, Syreen Banabilah",
     description="A machine learning based tagger for source code analysis",
 )
