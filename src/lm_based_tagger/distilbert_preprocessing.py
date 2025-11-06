@@ -21,6 +21,9 @@ FEATURES = [
     "hungarian",
     "cvr",
     "digit",
+    "type",           # NEW
+    "language",       # NEW
+    "sys_sim"         # NEW
 ]
 
 FEATURE_FUNCTIONS = {
@@ -28,6 +31,9 @@ FEATURE_FUNCTIONS = {
     "hungarian": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
     "cvr": lambda row, tokens: consonant_vowel_ratio_bucket(tokens),
     "digit": lambda row, tokens: detect_digit_feature(tokens),
+    "type":      lambda r,t: normalize_type(r.get("TYPE","")) ,
+    "language":  lambda r,t: normalize_language(r.get("LANGUAGE","")) ,
+    "sys_sim":   lambda r,t: system_prefix_similarity(t[0], r.get("SYSTEM_NAME",""))
 }
 
 def get_feature_tokens(row, tokens):

@@ -236,6 +236,7 @@ def train_lm(script_dir: str):
         ).to(device)
 
         # 9) TrainingArguments (with early stopping) 
+        # 9) TrainingArguments (with early stopping) 
         if device.type == "cpu":
             training_args = TrainingArguments(
                 output_dir=os.path.join(output_dir, f"fold_{fold}"),
@@ -262,22 +263,28 @@ def train_lm(script_dir: str):
                 eval_strategy="epoch",
                 save_strategy="epoch",
                 learning_rate=5e-5,
-                per_device_train_batch_size=4,   # smaller per-GPU batch size
-                per_device_eval_batch_size=4,
-                gradient_accumulation_steps=4,   # to simulate batch size = 16
+
+                # Use more of your VRAM — try 8 or even 16 depending on sequence length
+                per_device_train_batch_size=8,
+                per_device_eval_batch_size=8,
+                gradient_accumulation_steps=2,  # adjust if needed to match total batch size
+
                 num_train_epochs=EPOCHS,
                 weight_decay=0.01,
                 warmup_ratio=0.1,
                 lr_scheduler_type="cosine",
+
                 load_best_model_at_end=True,
                 metric_for_best_model="eval_macro_f1",
                 greater_is_better=True,
                 save_total_limit=1,
+
                 logging_dir=os.path.join(output_dir, "logs", f"fold_{fold}"),
                 report_to="none",
                 seed=RAND_STATE,
-                fp16=False,
-                dataloader_pin_memory=False
+
+                fp16=True,                     # ✅ Enable mixed-precision training
+                dataloader_pin_memory=True    # ✅ Enable pinned memory for faster host-device transfers
             )
 
         # 10) Define collator that handles dynamic padding + label alignment
