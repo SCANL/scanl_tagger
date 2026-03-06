@@ -1,0 +1,1709 @@
+﻿TYPE,SPLIT,CONTEXT,GRAMMAR_PATTERN,LANGUAGE,SYSTEM_NAME
+CLASS,Message Broker,CLASS,NM N,Java,netpulse
+CLASS,Task Scheduler,CLASS,NM N,Java,cloudkit
+CLASS,Type Checker,CLASS,NM N,C++,helix
+CLASS,Code Generator,CLASS,NM N,C++,prism
+CLASS,Garbage Collector,CLASS,NM N,Java,javelin
+CLASS,Connection Wrapper,CLASS,NM N,Java,beanworks
+CLASS,Stream Processor,CLASS,NM N,Java,cloudkit
+CLASS,Plugin Manager,CLASS,NM N,C++,oxide
+CLASS,Resource Loader,CLASS,NM N,Java,webstack
+CLASS,Dependency Resolver,CLASS,NM N,Java,beanworks
+CLASS,Permission Guard,CLASS,NM N,Java,webstack
+CLASS,Schema Validator,CLASS,NM N,Java,beanworks
+CLASS,Pixel Shader,CLASS,NM N,C++,prism
+CLASS,Sound Mixer,CLASS,NM N,C++,titan
+CLASS,Mesh Renderer,CLASS,NM N,C++,prism
+CLASS,Archive Reader,CLASS,NM N,C++,oxide
+CLASS,Font Rasterizer,CLASS,NM N,C++,titan
+CLASS,Layout Engine,CLASS,NM N,Java,webstack
+CLASS,Bitmap Encoder,CLASS,NM N,C++,prism
+CLASS,Digest Calculator,CLASS,NM N,Java,netpulse
+CLASS,Cursor Adapter,CLASS,NM N,Java,webstack
+CLASS,Gesture Recognizer,CLASS,NM N,swift,webstack
+CLASS,Proxy Server,CLASS,NM N,Java,netpulse
+CLASS,Retry Policy,CLASS,NM N,Java,cloudkit
+CLASS,Circuit Breaker,CLASS,NM N,Java,cloudkit
+CLASS,Rate Limiter,CLASS,NM N,Java,netpulse
+CLASS,Health Monitor,CLASS,NM N,Java,cloudkit
+CLASS,Batch Processor,CLASS,NM N,Java,beanworks
+CLASS,Signal Emitter,CLASS,NM N,C++,titan
+CLASS,Pipeline Stage,CLASS,NM N,C++,prism
+CLASS,Byte Stream,CLASS,NM N,C++,oxide
+CLASS,Color Picker,CLASS,NM N,Java,webstack
+CLASS,Dialog Fragment,CLASS,NM N,Java,webstack
+CLASS,Scroll View,CLASS,NM N,swift,webstack
+CLASS,Tab Controller,CLASS,NM N,swift,webstack
+CLASS,Progress Indicator,CLASS,NM N,Java,webstack
+CLASS,Toolbar Button,CLASS,NM N,Java,webstack
+CLASS,Status Indicator,CLASS,NM N,Java,webstack
+DECLARATION,cursor Position,DECLARATION,NM N,C++,prism
+DECLARATION,stack Pointer,DECLARATION,NM N,C,trak
+DECLARATION,heap Size,DECLARATION,NM N,C,aeon
+DECLARATION,segment Offset,DECLARATION,NM N,C,bolt
+DECLARATION,page Fault,DECLARATION,NM N,C,trak
+DECLARATION,cache Line,DECLARATION,NM N,C++,quark
+DECLARATION,register Count,DECLARATION,NM N,C,bolt
+DECLARATION,interrupt Vector,DECLARATION,NM N,C,trak
+DECLARATION,pipe Handle,DECLARATION,NM N,C,coda
+DECLARATION,mutex Lock,DECLARATION,NM N,C++,oxide
+DECLARATION,signal Mask,DECLARATION,NM N,C,dusk
+DECLARATION,timer Interval,DECLARATION,NM N,C,grip
+DECLARATION,scroll Delta,DECLARATION,NM N,C++,titan
+DECLARATION,zoom Factor,DECLARATION,NM N,C++,prism
+DECLARATION,anchor Point,DECLARATION,NM N,C++,titan
+DECLARATION,clip Rect,DECLARATION,NM N,C,moth
+DECLARATION,stroke Width,DECLARATION,NM N,C,moth
+DECLARATION,gradient Stop,DECLARATION,NM N,C++,prism
+DECLARATION,animation Duration,DECLARATION,NM N,Java,webstack
+DECLARATION,padding Top,DECLARATION,NM N,Java,webstack
+DECLARATION,margin Left,DECLARATION,NM N,Java,webstack
+DECLARATION,border Radius,DECLARATION,NM N,Java,webstack
+DECLARATION,font Family,DECLARATION,NM N,C++,titan
+DECLARATION,glyph Index,DECLARATION,NM N,C++,titan
+DECLARATION,sample Count,DECLARATION,NM N,C,plex
+DECLARATION,frequency Band,DECLARATION,NM N,C,plex
+DECLARATION,amplitude Peak,DECLARATION,NM N,C,plex
+DECLARATION,waveform Type,DECLARATION,NM N,C,plex
+DECLARATION,packet Length,DECLARATION,NM N,C,volt
+DECLARATION,checksum Value,DECLARATION,NM N,C,volt
+DECLARATION,payload Size,DECLARATION,NM N,C,volt
+DECLARATION,header Offset,DECLARATION,NM N,C,volt
+DECLARATION,cipher Mode,DECLARATION,NM N,C,zeno
+DECLARATION,digest Length,DECLARATION,NM N,C,zeno
+DECLARATION,salt Value,DECLARATION,NM N,C,zeno
+DECLARATION,nonce Size,DECLARATION,NM N,C,zeno
+DECLARATION,token Expiry,DECLARATION,NM N,Java,cloudkit
+DECLARATION,session Duration,DECLARATION,NM N,Java,cloudkit
+DECLARATION,request Latency,DECLARATION,NM N,Java,netpulse
+DECLARATION,response Code,DECLARATION,NM N,Java,netpulse
+DECLARATION,tenant Id,DECLARATION,NM N,Java,cloudkit
+DECLARATION,shard Index,DECLARATION,NM N,Java,beanworks
+DECLARATION,replica Count,DECLARATION,NM N,Java,cloudkit
+DECLARATION,partition Key,DECLARATION,NM N,Java,beanworks
+DECLARATION,consumer Group,DECLARATION,NM N,Java,netpulse
+DECLARATION,producer Rate,DECLARATION,NM N,Java,netpulse
+DECLARATION,snapshot Version,DECLARATION,NM N,Java,beanworks
+DECLARATION,migration Status,DECLARATION,NM N,Java,beanworks
+PARAMETER,read Timeout,PARAMETER,NM N,Java,netpulse
+PARAMETER,write Timeout,PARAMETER,NM N,Java,netpulse
+PARAMETER,pool Size,PARAMETER,NM N,Java,cloudkit
+PARAMETER,retry Interval,PARAMETER,NM N,Java,cloudkit
+PARAMETER,chunk Size,PARAMETER,NM N,C,coda
+PARAMETER,buffer Offset,PARAMETER,NM N,C,bolt
+PARAMETER,stride Length,PARAMETER,NM N,C++,prism
+PARAMETER,vertex Count,PARAMETER,NM N,C++,prism
+PARAMETER,index Count,PARAMETER,NM N,C++,prism
+PARAMETER,texture Width,PARAMETER,NM N,C++,titan
+PARAMETER,texture Height,PARAMETER,NM N,C++,titan
+PARAMETER,mipmap Level,PARAMETER,NM N,C++,prism
+PARAMETER,precision Mode,PARAMETER,NM N,C++,quark
+PARAMETER,tolerance Value,PARAMETER,NM N,C++,quark
+PARAMETER,seed Value,PARAMETER,NM N,C,zeno
+PARAMETER,iteration Count,PARAMETER,NM N,C++,quark
+PARAMETER,convergence Threshold,PARAMETER,NM N,C++,quark
+PARAMETER,locale String,PARAMETER,NM N,Java,webstack
+PARAMETER,charset Name,PARAMETER,NM N,Java,netpulse
+PARAMETER,mime Type,PARAMETER,NM N,Java,netpulse
+PARAMETER,content Length,PARAMETER,NM N,Java,netpulse
+PARAMETER,status Code,PARAMETER,NM N,Java,webstack
+PARAMETER,error Description,PARAMETER,NM N,Java,cloudkit
+PARAMETER,log Level,PARAMETER,NM N,Java,cloudkit
+PARAMETER,priority Value,PARAMETER,NM N,C,trak
+PARAMETER,signal Number,PARAMETER,NM N,C,dusk
+PARAMETER,descriptor Index,PARAMETER,NM N,C,coda
+PARAMETER,allocation Size,PARAMETER,NM N,C,aeon
+PARAMETER,alignment Value,PARAMETER,NM N,C,bolt
+ATTRIBUTE,start Time,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,end Time,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,update Frequency,ATTRIBUTE,NM N,Java,netpulse
+ATTRIBUTE,polling Interval,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,socket Timeout,ATTRIBUTE,NM N,Java,netpulse
+ATTRIBUTE,read Position,ATTRIBUTE,NM N,C++,oxide
+ATTRIBUTE,write Position,ATTRIBUTE,NM N,C++,oxide
+ATTRIBUTE,file Size,ATTRIBUTE,NM N,C,coda
+ATTRIBUTE,directory Path,ATTRIBUTE,NM N,C,coda
+ATTRIBUTE,owner Name,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,group Id,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,permission Mask,ATTRIBUTE,NM N,C,trak
+ATTRIBUTE,access Time,ATTRIBUTE,NM N,C,coda
+ATTRIBUTE,block Count,ATTRIBUTE,NM N,C,aeon
+ATTRIBUTE,inode Number,ATTRIBUTE,NM N,C,trak
+ATTRIBUTE,device Id,ATTRIBUTE,NM N,C,dusk
+ATTRIBUTE,vendor Name,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,product Code,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,serial Number,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,firmware Version,ATTRIBUTE,NM N,C++,oxide
+ATTRIBUTE,batch Id,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,correlation Id,ATTRIBUTE,NM N,Java,netpulse
+ATTRIBUTE,trace Id,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,span Id,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,priority Level,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,severity Code,ATTRIBUTE,NM N,Java,cloudkit
+ATTRIBUTE,category Name,ATTRIBUTE,NM N,Java,beanworks
+ATTRIBUTE,tag Value,ATTRIBUTE,NM N,Java,webstack
+DECLARATION,mutex,DECLARATION,N,C++,oxide
+DECLARATION,semaphore,DECLARATION,N,C,trak
+DECLARATION,socket,DECLARATION,N,C,volt
+DECLARATION,pipeline,DECLARATION,N,C++,prism
+DECLARATION,viewport,DECLARATION,N,C++,prism
+DECLARATION,epoch,DECLARATION,N,Java,cloudkit
+DECLARATION,schema,DECLARATION,N,Java,beanworks
+DECLARATION,payload,DECLARATION,N,C,volt
+DECLARATION,digest,DECLARATION,N,C,zeno
+DECLARATION,nonce,DECLARATION,N,C,zeno
+DECLARATION,kernel,DECLARATION,N,C,trak
+DECLARATION,driver,DECLARATION,N,C,dusk
+DECLARATION,daemon,DECLARATION,N,C,trak
+CLASS,Scheduler,CLASS,N,Java,cloudkit
+CLASS,Dispatcher,CLASS,N,Java,netpulse
+CLASS,Resolver,CLASS,N,Java,beanworks
+CLASS,Transformer,CLASS,N,Java,beanworks
+CLASS,Validator,CLASS,N,Java,beanworks
+CLASS,Allocator,CLASS,N,C++,quark
+CLASS,Comparator,CLASS,N,Java,javelin
+CLASS,Accumulator,CLASS,N,C++,quark
+CLASS,Interceptor,CLASS,N,Java,webstack
+CLASS,Formatter,CLASS,N,Java,beanworks
+PARAMETER,renderer,PARAMETER,N,C++,prism
+PARAMETER,predicate,PARAMETER,N,Java,javelin
+PARAMETER,delimiter,PARAMETER,N,Java,beanworks
+PARAMETER,separator,PARAMETER,N,Java,beanworks
+PARAMETER,prefix,PARAMETER,N,Java,beanworks
+PARAMETER,suffix,PARAMETER,N,Java,beanworks
+ATTRIBUTE,origin,ATTRIBUTE,N,C++,prism
+ATTRIBUTE,radius,ATTRIBUTE,N,C++,titan
+ATTRIBUTE,rotation,ATTRIBUTE,N,C++,titan
+ATTRIBUTE,scale,ATTRIBUTE,N,C++,titan
+ATTRIBUTE,weight,ATTRIBUTE,N,C++,quark
+ATTRIBUTE,bias,ATTRIBUTE,N,C++,quark
+ATTRIBUTE,momentum,ATTRIBUTE,N,C++,quark
+ATTRIBUTE,variance,ATTRIBUTE,N,C++,quark
+CLASS,Abstract Message Broker,CLASS,NM NM N,Java,netpulse
+CLASS,Default Plugin Loader,CLASS,NM NM N,Java,beanworks
+CLASS,Custom Retry Policy,CLASS,NM NM N,Java,cloudkit
+CLASS,Shared Resource Pool,CLASS,NM NM N,C++,oxide
+CLASS,Abstract Pipeline Stage,CLASS,NM NM N,C++,prism
+CLASS,Volatile Memory Region,CLASS,NM NM N,C++,quark
+CLASS,Cached Schema Registry,CLASS,NM NM N,Java,beanworks
+CLASS,Distributed Lock Manager,CLASS,NM NM N,Java,cloudkit
+CLASS,Async Event Loop,CLASS,NM NM N,C++,helix
+CLASS,Persistent Storage Engine,CLASS,NM NM N,Java,beanworks
+DECLARATION,max Heap Capacity,DECLARATION,NM NM N,C,aeon
+DECLARATION,min Stack Depth,DECLARATION,NM NM N,C,trak
+DECLARATION,default Timeout Duration,DECLARATION,NM NM N,Java,cloudkit
+DECLARATION,current Animation Frame,DECLARATION,NM NM N,C++,titan
+DECLARATION,total Byte Count,DECLARATION,NM NM N,C,volt
+DECLARATION,active Session Count,DECLARATION,NM NM N,Java,cloudkit
+DECLARATION,remaining Disk Space,DECLARATION,NM NM N,C,coda
+DECLARATION,expected Packet Length,DECLARATION,NM NM N,C,volt
+DECLARATION,cached Token Value,DECLARATION,NM NM N,Java,netpulse
+DECLARATION,compressed Block Size,DECLARATION,NM NM N,C,coda
+PARAMETER,max Shard Count,PARAMETER,NM NM N,Java,beanworks
+PARAMETER,initial Pool Capacity,PARAMETER,NM NM N,Java,cloudkit
+PARAMETER,default Polling Interval,PARAMETER,NM NM N,Java,netpulse
+PARAMETER,min Allocation Unit,PARAMETER,NM NM N,C,aeon
+PARAMETER,target Frame Rate,PARAMETER,NM NM N,C++,prism
+ATTRIBUTE,max Payload Size,ATTRIBUTE,NM NM N,C,volt
+ATTRIBUTE,default Cipher Mode,ATTRIBUTE,NM NM N,C,zeno
+ATTRIBUTE,current Trace Context,ATTRIBUTE,NM NM N,Java,cloudkit
+ATTRIBUTE,total Allocation Size,ATTRIBUTE,NM NM N,C,aeon
+ATTRIBUTE,last Heartbeat Time,ATTRIBUTE,NM NM N,Java,cloudkit
+CLASS,Distributed Cached Hash Table,CLASS,NM NM NM N,Java,cloudkit
+CLASS,Abstract Async Event Handler,CLASS,NM NM NM N,Java,netpulse
+CLASS,Default Serialized Object Factory,CLASS,NM NM NM N,Java,beanworks
+DECLARATION,max Allowed Heap Capacity,DECLARATION,NM NM NM N,C,aeon
+DECLARATION,default Initial Pool Size,DECLARATION,NM NM NM N,Java,cloudkit
+DECLARATION,total Compressed Block Count,DECLARATION,NM NM NM N,C,coda
+DECLARATION,current Active Worker Count,DECLARATION,NM NM NM N,Java,netpulse
+FUNCTION,acquire Lock,FUNCTION,V N,C++,oxide
+FUNCTION,release Semaphore,FUNCTION,V N,C,trak
+FUNCTION,schedule Task,FUNCTION,V N,Java,cloudkit
+FUNCTION,dispatch Event,FUNCTION,V N,Java,netpulse
+FUNCTION,transform Node,FUNCTION,V N,C++,helix
+FUNCTION,validate Schema,FUNCTION,V N,Java,beanworks
+FUNCTION,serialize Object,FUNCTION,V N,Java,beanworks
+FUNCTION,deserialize Payload,FUNCTION,V N,Java,netpulse
+FUNCTION,compress Block,FUNCTION,V N,C,coda
+FUNCTION,decompress Stream,FUNCTION,V N,C,coda
+FUNCTION,encrypt Message,FUNCTION,V N,C,zeno
+FUNCTION,decrypt Cipher,FUNCTION,V N,C,zeno
+FUNCTION,hash Password,FUNCTION,V N,C,zeno
+FUNCTION,verify Signature,FUNCTION,V N,C,zeno
+FUNCTION,rotate Matrix,FUNCTION,V N,C++,prism
+FUNCTION,scale Texture,FUNCTION,V N,C++,titan
+FUNCTION,translate Vertex,FUNCTION,V N,C++,prism
+FUNCTION,interpolate Color,FUNCTION,V N,C++,prism
+FUNCTION,rasterize Polygon,FUNCTION,V N,C++,prism
+FUNCTION,clip Rectangle,FUNCTION,V N,C,moth
+FUNCTION,sample Texture,FUNCTION,V N,C++,prism
+FUNCTION,blend Pixel,FUNCTION,V N,C,moth
+FUNCTION,register Callback,FUNCTION,V N,C,dusk
+FUNCTION,unregister Handler,FUNCTION,V N,C,dusk
+FUNCTION,publish Message,FUNCTION,V N,Java,netpulse
+FUNCTION,consume Record,FUNCTION,V N,Java,netpulse
+FUNCTION,throttle Request,FUNCTION,V N,Java,cloudkit
+FUNCTION,retry Operation,FUNCTION,V N,Java,cloudkit
+FUNCTION,migrate Schema,FUNCTION,V N,Java,beanworks
+FUNCTION,rebalance Partition,FUNCTION,V N,Java,cloudkit
+FUNCTION,acknowledge Receipt,FUNCTION,V N,Java,netpulse
+FUNCTION,broadcast Signal,FUNCTION,V N,C,dusk
+FUNCTION,drain Queue,FUNCTION,V N,C++,oxide
+FUNCTION,enqueue Task,FUNCTION,V N,Java,cloudkit
+FUNCTION,dequeue Item,FUNCTION,V N,C++,oxide
+FUNCTION,evict Entry,FUNCTION,V N,Java,cloudkit
+FUNCTION,inspect Element,FUNCTION,V N,Java,webstack
+FUNCTION,measure Latency,FUNCTION,V N,Java,netpulse
+FUNCTION,profile Function,FUNCTION,V N,C++,helix
+FUNCTION,benchmark Algorithm,FUNCTION,V N,C++,quark
+FUNCTION,trace Execution,FUNCTION,V N,Java,cloudkit
+FUNCTION,annotate Source,FUNCTION,V N,C++,helix
+FUNCTION,memoize Result,FUNCTION,V N,C++,quark
+FUNCTION,flatten Tree,FUNCTION,V N,C++,helix
+FUNCTION,prune Branch,FUNCTION,V N,C++,helix
+FUNCTION,rewind Stream,FUNCTION,V N,C,coda
+FUNCTION,truncate Table,FUNCTION,V N,Java,beanworks
+FUNCTION,compact Database,FUNCTION,V N,Java,beanworks
+FUNCTION,vacuum Index,FUNCTION,V N,Java,beanworks
+FUNCTION,checkpoint State,FUNCTION,V N,Java,beanworks
+FUNCTION,snapshot Heap,FUNCTION,V N,C,aeon
+FUNCTION,finalize Object,FUNCTION,V N,Java,javelin
+FUNCTION,reclaim Memory,FUNCTION,V N,C,aeon
+FUNCTION,coalesce Blocks,FUNCTION,V N,C,aeon
+FUNCTION,yield Processor,FUNCTION,V N,C,trak
+FUNCTION,preempt Thread,FUNCTION,V N,C,trak
+FUNCTION,suspend Fiber,FUNCTION,V N,C++,oxide
+FUNCTION,resume Coroutine,FUNCTION,V N,C++,oxide
+FUNCTION,upload Artifact,FUNCTION,V N,Java,cloudkit
+FUNCTION,download Resource,FUNCTION,V N,Java,webstack
+FUNCTION,poll Status,FUNCTION,V N,Java,netpulse
+FUNCTION,ping Server,FUNCTION,V N,Java,netpulse
+FUNCTION,get Stack Trace,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,set Cache Policy,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,build Syntax Tree,FUNCTION,V NM N,C++,helix
+FUNCTION,get Current Frame,FUNCTION,V NM N,C++,prism
+FUNCTION,set Blend Factor,FUNCTION,V NM N,C++,prism
+FUNCTION,read Config Entry,FUNCTION,V NM N,C++,oxide
+FUNCTION,write Binary Data,FUNCTION,V NM N,C,coda
+FUNCTION,parse XML Document,FUNCTION,V NM N,Java,beanworks
+FUNCTION,get Retry Interval,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,set Polling Rate,FUNCTION,V NM N,Java,netpulse
+FUNCTION,get Shard Count,FUNCTION,V NM N,Java,beanworks
+FUNCTION,create Worker Thread,FUNCTION,V NM N,C++,oxide
+FUNCTION,build Render Pass,FUNCTION,V NM N,C++,prism
+FUNCTION,get Heap Usage,FUNCTION,V NM N,C,aeon
+FUNCTION,set Cipher Key,FUNCTION,V NM N,C,zeno
+FUNCTION,get Packet Header,FUNCTION,V NM N,C,volt
+FUNCTION,validate Access Token,FUNCTION,V NM N,Java,webstack
+FUNCTION,get Tenant Config,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,set Compression Level,FUNCTION,V NM N,C,coda
+FUNCTION,build Dependency Graph,FUNCTION,V NM N,Java,beanworks
+FUNCTION,get Signal Mask,FUNCTION,V NM N,C,dusk
+FUNCTION,set Timer Resolution,FUNCTION,V NM N,C,grip
+FUNCTION,create Socket Pair,FUNCTION,V NM N,C,volt
+FUNCTION,get Glyph Metrics,FUNCTION,V NM N,C++,titan
+FUNCTION,set Viewport Size,FUNCTION,V NM N,C++,prism
+FUNCTION,get Trace Context,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,parse Content Type,FUNCTION,V NM N,Java,netpulse
+FUNCTION,build Index Segment,FUNCTION,V NM N,Java,beanworks
+FUNCTION,get Replica Status,FUNCTION,V NM N,Java,cloudkit
+FUNCTION,set Consumer Offset,FUNCTION,V NM N,Java,netpulse
+FUNCTION,read Sensor Data,FUNCTION,V NM N,C,dusk
+FUNCTION,get Plugin Metadata,FUNCTION,V NM N,Java,beanworks
+FUNCTION,set Gradient Color,FUNCTION,V NM N,C++,prism
+FUNCTION,build Abstract Tree,FUNCTION,V NM N,C++,helix
+FUNCTION,validate Request Body,FUNCTION,V NM N,Java,webstack
+FUNCTION,calculate Bounding Box,FUNCTION,V NM N,C++,titan
+FUNCTION,get Max Heap Capacity,FUNCTION,V NM NM N,C,aeon
+FUNCTION,set Default Cipher Mode,FUNCTION,V NM NM N,C,zeno
+FUNCTION,get Active Session Count,FUNCTION,V NM NM N,Java,cloudkit
+FUNCTION,get Current Animation Frame,FUNCTION,V NM NM N,C++,titan
+FUNCTION,set Default Timeout Duration,FUNCTION,V NM NM N,Java,cloudkit
+FUNCTION,get Total Byte Count,FUNCTION,V NM NM N,C,volt
+FUNCTION,build Cached Schema Registry,FUNCTION,V NM NM N,Java,beanworks
+FUNCTION,get Remaining Disk Space,FUNCTION,V NM NM N,C,coda
+FUNCTION,get Expected Packet Length,FUNCTION,V NM NM N,C,volt
+FUNCTION,set Compressed Block Size,FUNCTION,V NM NM N,C,coda
+FUNCTION,flush Buffers,FUNCTION,V NPL,C,coda
+FUNCTION,drain Messages,FUNCTION,V NPL,Java,netpulse
+FUNCTION,compact Segments,FUNCTION,V NPL,Java,beanworks
+FUNCTION,reclaim Pages,FUNCTION,V NPL,C,aeon
+FUNCTION,broadcast Notifications,FUNCTION,V NPL,Java,cloudkit
+FUNCTION,discover Peers,FUNCTION,V NPL,Java,netpulse
+FUNCTION,enumerate Devices,FUNCTION,V NPL,C,dusk
+FUNCTION,parse Arguments,FUNCTION,V NPL,C++,oxide
+FUNCTION,collect Metrics,FUNCTION,V NPL,Java,cloudkit
+FUNCTION,aggregate Samples,FUNCTION,V NPL,Java,netpulse
+FUNCTION,serialize Fields,FUNCTION,V NPL,Java,beanworks
+FUNCTION,deserialize Records,FUNCTION,V NPL,Java,beanworks
+FUNCTION,shuffle Elements,FUNCTION,V NPL,Java,javelin
+FUNCTION,partition Chunks,FUNCTION,V NPL,Java,cloudkit
+FUNCTION,revoke Permissions,FUNCTION,V NPL,Java,webstack
+FUNCTION,grant Privileges,FUNCTION,V NPL,Java,webstack
+FUNCTION,export Settings,FUNCTION,V NPL,Java,webstack
+FUNCTION,import Modules,FUNCTION,V NPL,C++,helix
+FUNCTION,reindex Documents,FUNCTION,V NPL,Java,beanworks
+FUNCTION,purge Artifacts,FUNCTION,V NPL,Java,cloudkit
+FUNCTION,get Active Sessions,FUNCTION,V NM NPL,Java,cloudkit
+FUNCTION,remove Expired Tokens,FUNCTION,V NM NPL,Java,netpulse
+FUNCTION,find Unresolved Dependencies,FUNCTION,V NM NPL,Java,beanworks
+FUNCTION,load Cached Modules,FUNCTION,V NM NPL,C++,helix
+FUNCTION,get Registered Plugins,FUNCTION,V NM NPL,Java,beanworks
+FUNCTION,clear Stale Entries,FUNCTION,V NM NPL,Java,cloudkit
+FUNCTION,collect Garbage Roots,FUNCTION,V NM NPL,C,aeon
+FUNCTION,find Dangling Pointers,FUNCTION,V NM NPL,C,aeon
+FUNCTION,get Pending Transactions,FUNCTION,V NM NPL,Java,beanworks
+FUNCTION,update Dirty Pages,FUNCTION,V NM NPL,C,aeon
+FUNCTION,scan Open Ports,FUNCTION,V NM NPL,C,volt
+FUNCTION,get Available Workers,FUNCTION,V NM NPL,Java,cloudkit
+FUNCTION,remove Orphaned Records,FUNCTION,V NM NPL,Java,beanworks
+FUNCTION,get Blocked Threads,FUNCTION,V NM NPL,Java,cloudkit
+FUNCTION,flush Pending Writes,FUNCTION,V NM NPL,C,coda
+FUNCTION,validate Input Parameters,FUNCTION,V NM NPL,Java,webstack
+FUNCTION,get Mapped Regions,FUNCTION,V NM NPL,C,aeon
+FUNCTION,refresh Expired Certificates,FUNCTION,V NM NPL,Java,netpulse
+FUNCTION,release Acquired Locks,FUNCTION,V NM NPL,C++,oxide
+FUNCTION,get Completed Tasks,FUNCTION,V NM NPL,Java,cloudkit
+FUNCTION,connect,FUNCTION,V,Java,netpulse
+FUNCTION,disconnect,FUNCTION,V,Java,netpulse
+FUNCTION,subscribe,FUNCTION,V,Java,netpulse
+FUNCTION,unsubscribe,FUNCTION,V,Java,netpulse
+FUNCTION,authenticate,FUNCTION,V,Java,webstack
+FUNCTION,authorize,FUNCTION,V,Java,webstack
+FUNCTION,rollback,FUNCTION,V,Java,beanworks
+FUNCTION,checkpoint,FUNCTION,V,Java,beanworks
+FUNCTION,defragment,FUNCTION,V,C,aeon
+FUNCTION,rebalance,FUNCTION,V,Java,cloudkit
+DECLARATION,shards,DECLARATION,NPL,Java,cloudkit
+DECLARATION,partitions,DECLARATION,NPL,Java,beanworks
+DECLARATION,replicas,DECLARATION,NPL,Java,cloudkit
+DECLARATION,segments,DECLARATION,NPL,C,coda
+DECLARATION,vertices,DECLARATION,NPL,C++,prism
+DECLARATION,normals,DECLARATION,NPL,C++,prism
+DECLARATION,textures,DECLARATION,NPL,C++,titan
+DECLARATION,shaders,DECLARATION,NPL,C++,prism
+DECLARATION,plugins,DECLARATION,NPL,Java,beanworks
+DECLARATION,migrations,DECLARATION,NPL,Java,beanworks
+PARAMETER,headers,PARAMETER,NPL,C,volt
+PARAMETER,credentials,PARAMETER,NPL,Java,webstack
+PARAMETER,constraints,PARAMETER,NPL,Java,beanworks
+PARAMETER,dimensions,PARAMETER,NPL,C++,prism
+PARAMETER,weights,PARAMETER,NPL,C++,quark
+ATTRIBUTE,endpoints,ATTRIBUTE,NPL,Java,netpulse
+ATTRIBUTE,subscribers,ATTRIBUTE,NPL,Java,netpulse
+ATTRIBUTE,dependencies,ATTRIBUTE,NPL,Java,beanworks
+ATTRIBUTE,snapshots,ATTRIBUTE,NPL,Java,cloudkit
+ATTRIBUTE,annotations,ATTRIBUTE,NPL,Java,beanworks
+DECLARATION,active Sessions,DECLARATION,NM NPL,Java,cloudkit
+DECLARATION,pending Writes,DECLARATION,NM NPL,C,coda
+DECLARATION,dirty Pages,DECLARATION,NM NPL,C,aeon
+DECLARATION,open Sockets,DECLARATION,NM NPL,C,volt
+DECLARATION,blocked Threads,DECLARATION,NM NPL,Java,cloudkit
+DECLARATION,expired Tokens,DECLARATION,NM NPL,Java,netpulse
+DECLARATION,failed Attempts,DECLARATION,NM NPL,Java,webstack
+DECLARATION,mapped Regions,DECLARATION,NM NPL,C,aeon
+DECLARATION,queued Tasks,DECLARATION,NM NPL,Java,cloudkit
+DECLARATION,orphaned Handles,DECLARATION,NM NPL,C,coda
+ATTRIBUTE,registered Plugins,ATTRIBUTE,NM NPL,Java,beanworks
+ATTRIBUTE,pending Transactions,ATTRIBUTE,NM NPL,Java,beanworks
+ATTRIBUTE,connected Clients,ATTRIBUTE,NM NPL,Java,netpulse
+ATTRIBUTE,allocated Blocks,ATTRIBUTE,NM NPL,C,aeon
+ATTRIBUTE,bound Textures,ATTRIBUTE,NM NPL,C++,prism
+ATTRIBUTE,enabled Features,ATTRIBUTE,NM NPL,Java,cloudkit
+PARAMETER,weighted Samples,PARAMETER,NM NPL,C++,quark
+PARAMETER,sorted Results,PARAMETER,NM NPL,Java,beanworks
+PARAMETER,compressed Bytes,PARAMETER,NM NPL,C,coda
+PARAMETER,filtered Events,PARAMETER,NM NPL,Java,netpulse
+DECLARATION,max Concurrent Workers,DECLARATION,NM NM NPL,Java,cloudkit
+DECLARATION,total Allocated Pages,DECLARATION,NM NM NPL,C,aeon
+DECLARATION,default Cipher Suites,DECLARATION,NM NM NPL,C,zeno
+DECLARATION,active Polling Threads,DECLARATION,NM NM NPL,Java,netpulse
+ATTRIBUTE,last Modified Records,ATTRIBUTE,NM NM NPL,Java,beanworks
+ATTRIBUTE,current Bound Textures,ATTRIBUTE,NM NM NPL,C++,prism
+FUNCTION,send To Queue,FUNCTION,V P N,Java,netpulse
+FUNCTION,read From Disk,FUNCTION,V P N,C,coda
+FUNCTION,write To Socket,FUNCTION,V P N,C,volt
+FUNCTION,subscribe To Topic,FUNCTION,V P N,Java,netpulse
+FUNCTION,connect To Broker,FUNCTION,V P N,Java,netpulse
+FUNCTION,listen For Events,FUNCTION,V P N,Java,cloudkit
+FUNCTION,wait For Signal,FUNCTION,V P N,C,dusk
+FUNCTION,bind To Address,FUNCTION,V P N,C,volt
+FUNCTION,map To Offset,FUNCTION,V P N,C,aeon
+FUNCTION,convert To Bytes,FUNCTION,V P N,Java,netpulse
+FUNCTION,compile From Source,FUNCTION,V P N,C++,helix
+FUNCTION,dispatch To Worker,FUNCTION,V P N,Java,cloudkit
+FUNCTION,export To Stream,FUNCTION,V P N,Java,beanworks
+FUNCTION,import From File,FUNCTION,V P N,Java,beanworks
+FUNCTION,migrate To Version,FUNCTION,V P N,Java,beanworks
+FUNCTION,revert To Snapshot,FUNCTION,V P N,Java,beanworks
+FUNCTION,scale To Fit,FUNCTION,V P N,C++,prism
+FUNCTION,snap To Grid,FUNCTION,V P N,C++,titan
+FUNCTION,assign To Group,FUNCTION,V P N,Java,cloudkit
+FUNCTION,delegate To Handler,FUNCTION,V P N,Java,webstack
+FUNCTION,project Onto Plane,FUNCTION,V P N,C++,prism
+FUNCTION,align To Boundary,FUNCTION,V P N,C,aeon
+FUNCTION,publish Message To Topic,FUNCTION,V N P N,Java,netpulse
+FUNCTION,copy Region To Buffer,FUNCTION,V N P N,C,aeon
+FUNCTION,bind Texture To Slot,FUNCTION,V N P N,C++,prism
+FUNCTION,move Widget To Container,FUNCTION,V N P N,Java,webstack
+FUNCTION,save State To Disk,FUNCTION,V N P N,C,coda
+FUNCTION,read Chunk From Stream,FUNCTION,V N P N,C,coda
+FUNCTION,flush Cache To Memory,FUNCTION,V N P N,C,aeon
+FUNCTION,emit Signal To Listener,FUNCTION,V N P N,C++,titan
+FUNCTION,route Request To Handler,FUNCTION,V N P N,Java,webstack
+FUNCTION,push Frame To Stack,FUNCTION,V N P N,C,trak
+FUNCTION,pop Item From Queue,FUNCTION,V N P N,C++,oxide
+FUNCTION,send Packet To Peer,FUNCTION,V N P N,C,volt
+FUNCTION,map Address To Region,FUNCTION,V N P N,C,aeon
+FUNCTION,dispatch Job To Pool,FUNCTION,V N P N,Java,cloudkit
+FUNCTION,migrate Table To Schema,FUNCTION,V N P N,Java,beanworks
+FUNCTION,publish Event To Message Queue,FUNCTION,V N P NM N,Java,netpulse
+FUNCTION,copy Data To Shared Buffer,FUNCTION,V N P NM N,C,aeon
+FUNCTION,bind Socket To Local Address,FUNCTION,V N P NM N,C,volt
+FUNCTION,migrate Data To New Schema,FUNCTION,V N P NM N,Java,beanworks
+FUNCTION,route Traffic To Backend Server,FUNCTION,V N P NM N,Java,cloudkit
+FUNCTION,convert To JSON String,FUNCTION,V P NM N,Java,netpulse
+FUNCTION,subscribe To Event Stream,FUNCTION,V P NM N,Java,cloudkit
+FUNCTION,compile From Source File,FUNCTION,V P NM N,C++,helix
+FUNCTION,dispatch To Worker Pool,FUNCTION,V P NM N,Java,cloudkit
+FUNCTION,migrate To Latest Version,FUNCTION,V P NM N,Java,beanworks
+FUNCTION,bind To Local Address,FUNCTION,V P NM N,C,volt
+DECLARATION,pointer To Node,DECLARATION,N P N,C,trak
+DECLARATION,array Of Bytes,DECLARATION,N P N,C,aeon
+DECLARATION,queue Of Messages,DECLARATION,N P N,Java,netpulse
+DECLARATION,map Of Strings,DECLARATION,N P N,Java,beanworks
+DECLARATION,stack Of Frames,DECLARATION,N P N,C,trak
+PARAMETER,list Of Entries,PARAMETER,N P N,Java,beanworks
+PARAMETER,set Of Keys,PARAMETER,N P N,Java,javelin
+PARAMETER,pair Of Values,PARAMETER,N P N,C++,quark
+ATTRIBUTE,degree Of Freedom,ATTRIBUTE,N P N,C++,prism
+ATTRIBUTE,depth Of Field,ATTRIBUTE,N P N,C++,prism
+DECLARATION,path To Output File,DECLARATION,N P NM N,C,coda
+DECLARATION,offset From Base Address,DECLARATION,N P NM N,C,aeon
+ATTRIBUTE,distance To Focal Point,ATTRIBUTE,N P NM N,C++,prism
+PARAMETER,index Of First Match,PARAMETER,N P NM N,Java,javelin
+PARAMETER,as Integer,PARAMETER,P N,Java,beanworks
+PARAMETER,as Double,PARAMETER,P N,C++,quark
+PARAMETER,as Text,PARAMETER,P N,Java,beanworks
+PARAMETER,by Timestamp,PARAMETER,P N,Java,cloudkit
+PARAMETER,by Priority,PARAMETER,P N,Java,cloudkit
+PARAMETER,with Context,PARAMETER,P N,Java,webstack
+PARAMETER,for Reading,PARAMETER,P N,C,coda
+DECLARATION,from Disk,DECLARATION,P N,C,coda
+DECLARATION,at Index,DECLARATION,P N,C++,oxide
+DECLARATION,in Memory,DECLARATION,P N,C,aeon
+FUNCTION,on Connect,FUNCTION,P N,Java,netpulse
+FUNCTION,on Close,FUNCTION,P N,Java,netpulse
+FUNCTION,on Message,FUNCTION,P N,Java,netpulse
+FUNCTION,on Render,FUNCTION,P N,C++,prism
+FUNCTION,on Update,FUNCTION,P N,Java,cloudkit
+FUNCTION,on Submit,FUNCTION,P N,Java,webstack
+FUNCTION,on Scroll,FUNCTION,P N,Java,webstack
+FUNCTION,on Focus,FUNCTION,P N,Java,webstack
+FUNCTION,on Resize,FUNCTION,P N,Java,webstack
+FUNCTION,on Load,FUNCTION,P N,Java,webstack
+FUNCTION,to Integer,FUNCTION,P N,Java,beanworks
+FUNCTION,to Float,FUNCTION,P N,C++,quark
+FUNCTION,to Boolean,FUNCTION,P N,Java,beanworks
+FUNCTION,from String,FUNCTION,P N,Java,beanworks
+FUNCTION,before Execute,FUNCTION,P V,Java,beanworks
+FUNCTION,after Execute,FUNCTION,P V,Java,beanworks
+FUNCTION,before Save,FUNCTION,P V,Java,beanworks
+FUNCTION,after Load,FUNCTION,P V,Java,beanworks
+FUNCTION,on Attach,FUNCTION,P V,Java,webstack
+FUNCTION,on Detach,FUNCTION,P V,Java,webstack
+FUNCTION,before Compile,FUNCTION,P V,C++,helix
+FUNCTION,after Link,FUNCTION,P V,C++,helix
+FUNCTION,on Activate,FUNCTION,P V,Java,webstack
+FUNCTION,on Deactivate,FUNCTION,P V,Java,webstack
+PARAMETER,with Default Options,PARAMETER,P NM N,Java,cloudkit
+PARAMETER,by Shard Key,PARAMETER,P NM N,Java,beanworks
+PARAMETER,from Source Stream,PARAMETER,P NM N,Java,netpulse
+FUNCTION,on State Change,FUNCTION,P NM N,Java,webstack
+FUNCTION,on Property Change,FUNCTION,P NM N,Java,webstack
+FUNCTION,on Size Change,FUNCTION,P NM N,Java,webstack
+FUNCTION,from Bytes_fn,FUNCTION,P NPL,C,volt
+FUNCTION,to Bytes,FUNCTION,P NPL,C,volt
+FUNCTION,as Strings,FUNCTION,P NPL,Java,beanworks
+PARAMETER,with Headers,PARAMETER,P NPL,Java,netpulse
+FUNCTION,from Records,FUNCTION,P NPL,Java,beanworks
+DECLARATION,reader And Writer,DECLARATION,N CJ N,C,coda
+DECLARATION,producer And Consumer,DECLARATION,N CJ N,Java,netpulse
+DECLARATION,client And Server,DECLARATION,N CJ N,Java,netpulse
+DECLARATION,parent Or Child,DECLARATION,N CJ N,C++,helix
+DECLARATION,success Or Failure,DECLARATION,N CJ N,Java,cloudkit
+DECLARATION,pitch And Yaw,DECLARATION,N CJ N,C++,prism
+PARAMETER,row And Column,PARAMETER,N CJ N,Java,webstack
+PARAMETER,offset And Length,PARAMETER,N CJ N,C,aeon
+PARAMETER,address And Port,PARAMETER,N CJ N,C,volt
+PARAMETER,key Or Default,PARAMETER,N CJ N,Java,javelin
+ATTRIBUTE,sender And Receiver,ATTRIBUTE,N CJ N,Java,netpulse
+ATTRIBUTE,lock Or Condition,ATTRIBUTE,N CJ N,C++,oxide
+FUNCTION,compress And Encrypt,FUNCTION,V CJ V,C,zeno
+FUNCTION,decrypt And Decompress,FUNCTION,V CJ V,C,zeno
+FUNCTION,marshal And Send,FUNCTION,V CJ V,Java,netpulse
+FUNCTION,receive And Unmarshal,FUNCTION,V CJ V,Java,netpulse
+FUNCTION,acquire Or Block,FUNCTION,V CJ V,C++,oxide
+FUNCTION,try Or Fail,FUNCTION,V CJ V,Java,cloudkit
+FUNCTION,check And Repair,FUNCTION,V CJ V,Java,beanworks
+FUNCTION,backup And Restore,FUNCTION,V CJ V,Java,beanworks
+FUNCTION,compile And Link,FUNCTION,V CJ V,C++,helix
+FUNCTION,scan And Parse,FUNCTION,V CJ V,C++,helix
+FUNCTION,close If Idle,FUNCTION,V CJ NM,Java,cloudkit
+FUNCTION,evict If Full,FUNCTION,V CJ NM,Java,cloudkit
+FUNCTION,commit If Dirty,FUNCTION,V CJ NM,Java,beanworks
+FUNCTION,reconnect If Lost,FUNCTION,V CJ NM,Java,netpulse
+FUNCTION,flush If Pending,FUNCTION,V CJ NM,C,coda
+FUNCTION,get Address And Port,FUNCTION,V N CJ N,C,volt
+FUNCTION,set Offset And Length,FUNCTION,V N CJ N,C,aeon
+FUNCTION,read Header And Body,FUNCTION,V N CJ N,Java,netpulse
+FUNCTION,check Reader And Writer,FUNCTION,V N CJ N,C,coda
+FUNCTION,parse And Validate Schema,FUNCTION,V CJ V N,Java,beanworks
+FUNCTION,compress And Write Block,FUNCTION,V CJ V N,C,coda
+FUNCTION,acquire And Lock Mutex,FUNCTION,V CJ V N,C++,oxide
+DECLARATION,next Entry,DECLARATION,DT N,C++,oxide
+DECLARATION,last Packet,DECLARATION,DT N,C,volt
+DECLARATION,first Shard,DECLARATION,DT N,Java,cloudkit
+DECLARATION,each Partition,DECLARATION,DT N,Java,beanworks
+DECLARATION,every Tick,DECLARATION,DT N,C++,titan
+DECLARATION,this Worker,DECLARATION,DT N,Java,cloudkit
+DECLARATION,that Endpoint,DECLARATION,DT N,Java,netpulse
+DECLARATION,all Traffic,DECLARATION,DT N,Java,netpulse
+DECLARATION,next Frame,DECLARATION,DT N,C++,prism
+DECLARATION,last Snapshot,DECLARATION,DT N,Java,beanworks
+PARAMETER,this Replica,PARAMETER,DT N,Java,cloudkit
+PARAMETER,each Segment,PARAMETER,DT N,C,coda
+PARAMETER,other Thread,PARAMETER,DT N,C++,oxide
+PARAMETER,next Vertex,PARAMETER,DT N,C++,prism
+ATTRIBUTE,last Response,ATTRIBUTE,DT N,Java,netpulse
+ATTRIBUTE,next Epoch,ATTRIBUTE,DT N,Java,cloudkit
+ATTRIBUTE,first Replica,ATTRIBUTE,DT N,Java,cloudkit
+DECLARATION,last Received Packet,DECLARATION,DT NM N,C,volt
+DECLARATION,next Scheduled Task,DECLARATION,DT NM N,Java,cloudkit
+DECLARATION,first Available Worker,DECLARATION,DT NM N,Java,cloudkit
+DECLARATION,each Active Session,DECLARATION,DT NM N,Java,cloudkit
+DECLARATION,last Committed Offset,DECLARATION,DT NM N,Java,netpulse
+DECLARATION,next Pending Migration,DECLARATION,DT NM N,Java,beanworks
+PARAMETER,other Connected Peer,PARAMETER,DT NM N,C,volt
+PARAMETER,this Current Frame,PARAMETER,DT NM N,C++,prism
+ATTRIBUTE,last Known Replica,ATTRIBUTE,DT NM N,Java,cloudkit
+ATTRIBUTE,next Polling Interval,ATTRIBUTE,DT NM N,Java,netpulse
+DECLARATION,all Partitions,DECLARATION,DT NPL,Java,beanworks
+DECLARATION,these Segments,DECLARATION,DT NPL,C,coda
+ATTRIBUTE,all Replicas,ATTRIBUTE,DT NPL,Java,cloudkit
+DECLARATION,all Subscribers,DECLARATION,DT NPL,Java,netpulse
+FUNCTION,get Next Entry,FUNCTION,V DT N,C++,oxide
+FUNCTION,get Last Packet,FUNCTION,V DT N,C,volt
+FUNCTION,find First Shard,FUNCTION,V DT N,Java,cloudkit
+FUNCTION,get Next Frame,FUNCTION,V DT N,C++,prism
+FUNCTION,remove Last Snapshot,FUNCTION,V DT N,Java,beanworks
+FUNCTION,get Each Partition,FUNCTION,V DT N,Java,beanworks
+FUNCTION,find Next Vertex,FUNCTION,V DT N,C++,prism
+FUNCTION,select First Replica,FUNCTION,V DT N,Java,cloudkit
+FUNCTION,get Last Received Packet,FUNCTION,V DT NM N,C,volt
+FUNCTION,get Next Scheduled Task,FUNCTION,V DT NM N,Java,cloudkit
+FUNCTION,find First Available Worker,FUNCTION,V DT NM N,Java,cloudkit
+FUNCTION,get Last Committed Offset,FUNCTION,V DT NM N,Java,netpulse
+FUNCTION,get Next Pending Migration,FUNCTION,V DT NM N,Java,beanworks
+FUNCTION,get All Partitions,FUNCTION,V DT NPL,Java,beanworks
+FUNCTION,remove All Replicas,FUNCTION,V DT NPL,Java,cloudkit
+FUNCTION,find All Subscribers,FUNCTION,V DT NPL,Java,netpulse
+FUNCTION,get All Endpoints,FUNCTION,V DT NPL,Java,netpulse
+FUNCTION,list All Migrations,FUNCTION,V DT NPL,Java,beanworks
+FUNCTION,get All Active Sessions,FUNCTION,V DT NM NPL,Java,cloudkit
+FUNCTION,remove All Expired Tokens,FUNCTION,V DT NM NPL,Java,netpulse
+FUNCTION,find All Pending Migrations,FUNCTION,V DT NM NPL,Java,beanworks
+FUNCTION,get All Connected Clients,FUNCTION,V DT NM NPL,Java,netpulse
+PARAMETER,arg 3,PARAMETER,N D,C,trak
+PARAMETER,arg 4,PARAMETER,N D,C,trak
+DECLARATION,channel 0,DECLARATION,N D,C,plex
+DECLARATION,channel 1,DECLARATION,N D,C,plex
+DECLARATION,register 0,DECLARATION,N D,C,trak
+DECLARATION,register 1,DECLARATION,N D,C,trak
+DECLARATION,color 4,DECLARATION,N D,C++,prism
+DECLARATION,axis 3,DECLARATION,N D,C++,prism
+CLASS,Matrix 3,CLASS,N D,C++,quark
+CLASS,Tuple 2,CLASS,N D,C++,quark
+CLASS,Tuple 3,CLASS,N D,C++,quark
+CLASS,CRC 32,CLASS,N D,C,zeno
+CLASS,MD 5,CLASS,N D,C,zeno
+DECLARATION,layer 1,DECLARATION,N D,C++,prism
+DECLARATION,level 0,DECLARATION,N D,C++,titan
+DECLARATION,phase 1,DECLARATION,N D,C,trak
+DECLARATION,phase 2,DECLARATION,N D,C,trak
+PARAMETER,step 0,PARAMETER,N D,C++,quark
+ATTRIBUTE,zone 1,ATTRIBUTE,N D,Java,cloudkit
+DECLARATION,r 0,DECLARATION,NM D,C,trak
+DECLARATION,r 1,DECLARATION,NM D,C,trak
+DECLARATION,tx 0,DECLARATION,NM D,C,volt
+DECLARATION,rx 0,DECLARATION,NM D,C,volt
+DECLARATION,gl 1,DECLARATION,NM D,C,prism
+DECLARATION,ch 2,DECLARATION,NM D,C,plex
+PARAMETER,x 1,PARAMETER,NM D,C,quark
+PARAMETER,y 2,PARAMETER,NM D,C,quark
+CLASS,AES Key 256,CLASS,NM N D,C,zeno
+CLASS,SHA Hash 512,CLASS,NM N D,C,zeno
+DECLARATION,pixel Buffer 32,DECLARATION,NM N D,C,moth
+PARAMETER,0xFF,PARAMETER,D,C,bolt
+PARAMETER,0x00,PARAMETER,D,C,bolt
+DECLARATION,42,DECLARATION,D,C,aeon
+FUNCTION,atomically Update Counter,FUNCTION,VM V N,C++,oxide
+FUNCTION,concurrently Process Queue,FUNCTION,VM V N,Java,cloudkit
+FUNCTION,asynchronously Fetch Resource,FUNCTION,VM V N,Java,netpulse
+FUNCTION,synchronously Write Block,FUNCTION,VM V N,C,coda
+FUNCTION,partially Apply Function,FUNCTION,VM V N,C++,helix
+FUNCTION,initialize Lazily,FUNCTION,V VM,Java,cloudkit
+FUNCTION,dispatch Asynchronously,FUNCTION,V VM,Java,netpulse
+FUNCTION,process Sequentially,FUNCTION,V VM,Java,beanworks
+FUNCTION,update Atomically,FUNCTION,V VM,C++,oxide
+FUNCTION,render Immediately,FUNCTION,V VM,C++,prism
+FUNCTION,publish Message Asynchronously,FUNCTION,V N VM,Java,netpulse
+FUNCTION,commit Transaction Atomically,FUNCTION,V N VM,Java,beanworks
+FUNCTION,evict Cache Immediately,FUNCTION,V N VM,Java,cloudkit
+FUNCTION,concurrently Drain Workers,FUNCTION,VM V NPL,Java,cloudkit
+DECLARATION,recently Expired,DECLARATION,VM NM,Java,cloudkit
+DECLARATION,partially Loaded,DECLARATION,VM NM,Java,webstack
+ATTRIBUTE,atomically Updated,ATTRIBUTE,VM NM,C++,oxide
+ATTRIBUTE,eagerly Initialized,ATTRIBUTE,VM NM,Java,beanworks
+ATTRIBUTE,lazily Computed,ATTRIBUTE,VM NM,Java,cloudkit
+DECLARATION,eventually Consistent Replica,DECLARATION,VM NM N,Java,cloudkit
+ATTRIBUTE,lazily Initialized Proxy,ATTRIBUTE,VM NM N,Java,beanworks
+FUNCTION,trak context,FUNCTION,PRE N,C,trak
+FUNCTION,trak mutex,FUNCTION,PRE N,C,trak
+FUNCTION,aeon heap,FUNCTION,PRE N,C,aeon
+FUNCTION,bolt register,FUNCTION,PRE N,C,bolt
+FUNCTION,coda stream,FUNCTION,PRE N,C,coda
+FUNCTION,dusk signal,FUNCTION,PRE N,C,dusk
+FUNCTION,grip timer,FUNCTION,PRE N,C,grip
+FUNCTION,moth canvas,FUNCTION,PRE N,C,moth
+FUNCTION,plex sample,FUNCTION,PRE N,C,plex
+FUNCTION,volt packet,FUNCTION,PRE N,C,volt
+FUNCTION,zeno cipher,FUNCTION,PRE N,C,zeno
+DECLARATION,trak pid,DECLARATION,PRE N,C,trak
+DECLARATION,aeon block,DECLARATION,PRE N,C,aeon
+DECLARATION,coda file,DECLARATION,PRE N,C,coda
+DECLARATION,volt socket,DECLARATION,PRE N,C,volt
+DECLARATION,zeno key,DECLARATION,PRE N,C,zeno
+DECLARATION,dusk irq,DECLARATION,PRE N,C,dusk
+DECLARATION,grip clock,DECLARATION,PRE N,C,grip
+DECLARATION,moth pixel,DECLARATION,PRE N,C,moth
+DECLARATION,plex freq,DECLARATION,PRE N,C,plex
+ATTRIBUTE,m Parent,ATTRIBUTE,PRE N,C++,helix
+ATTRIBUTE,m Children,ATTRIBUTE,PRE N,C++,helix
+ATTRIBUTE,m Flags,ATTRIBUTE,PRE N,C++,oxide
+ATTRIBUTE,m State,ATTRIBUTE,PRE N,C++,titan
+ATTRIBUTE,m Pointer,ATTRIBUTE,PRE N,C++,quark
+ATTRIBUTE,m Handle,ATTRIBUTE,PRE N,C++,prism
+FUNCTION,trak create process,FUNCTION,PRE V N,C,trak
+FUNCTION,trak destroy thread,FUNCTION,PRE V N,C,trak
+FUNCTION,aeon allocate block,FUNCTION,PRE V N,C,aeon
+FUNCTION,aeon free region,FUNCTION,PRE V N,C,aeon
+FUNCTION,coda open stream,FUNCTION,PRE V N,C,coda
+FUNCTION,coda close file,FUNCTION,PRE V N,C,coda
+FUNCTION,dusk register handler,FUNCTION,PRE V N,C,dusk
+FUNCTION,dusk mask interrupt,FUNCTION,PRE V N,C,dusk
+FUNCTION,volt send datagram,FUNCTION,PRE V N,C,volt
+FUNCTION,volt receive packet,FUNCTION,PRE V N,C,volt
+FUNCTION,zeno generate key,FUNCTION,PRE V N,C,zeno
+FUNCTION,zeno verify hash,FUNCTION,PRE V N,C,zeno
+FUNCTION,moth fill region,FUNCTION,PRE V N,C,moth
+FUNCTION,moth stroke path,FUNCTION,PRE V N,C,moth
+FUNCTION,plex mix channel,FUNCTION,PRE V N,C,plex
+FUNCTION,grip schedule alarm,FUNCTION,PRE V N,C,grip
+FUNCTION,trak process table,FUNCTION,PRE NM N,C,trak
+FUNCTION,aeon heap manager,FUNCTION,PRE NM N,C,aeon
+FUNCTION,coda file descriptor,FUNCTION,PRE NM N,C,coda
+DECLARATION,volt packet header,DECLARATION,PRE NM N,C,volt
+DECLARATION,zeno cipher context,DECLARATION,PRE NM N,C,zeno
+DECLARATION,dusk signal handler,DECLARATION,PRE NM N,C,dusk
+DECLARATION,moth render context,DECLARATION,PRE NM N,C,moth
+DECLARATION,plex sample buffer,DECLARATION,PRE NM N,C,plex
+DECLARATION,grip timer resolution,DECLARATION,PRE NM N,C,grip
+FUNCTION,trak get process table,FUNCTION,PRE V NM N,C,trak
+FUNCTION,aeon set heap size,FUNCTION,PRE V NM N,C,aeon
+FUNCTION,coda read file descriptor,FUNCTION,PRE V NM N,C,coda
+FUNCTION,volt get packet header,FUNCTION,PRE V NM N,C,volt
+FUNCTION,zeno set cipher context,FUNCTION,PRE V NM N,C,zeno
+FUNCTION,dusk get signal handler,FUNCTION,PRE V NM N,C,dusk
+FUNCTION,moth set render context,FUNCTION,PRE V NM N,C,moth
+FUNCTION,plex get sample buffer,FUNCTION,PRE V NM N,C,plex
+FUNCTION,trak init,FUNCTION,PRE V,C,trak
+FUNCTION,aeon init,FUNCTION,PRE V,C,aeon
+FUNCTION,coda init,FUNCTION,PRE V,C,coda
+FUNCTION,volt init,FUNCTION,PRE V,C,volt
+FUNCTION,zeno init,FUNCTION,PRE V,C,zeno
+FUNCTION,dusk init,FUNCTION,PRE V,C,dusk
+FUNCTION,moth init,FUNCTION,PRE V,C,moth
+FUNCTION,plex init,FUNCTION,PRE V,C,plex
+FUNCTION,grip init,FUNCTION,PRE V,C,grip
+FUNCTION,trak shutdown,FUNCTION,PRE V,C,trak
+DECLARATION,trak threads,DECLARATION,PRE NPL,C,trak
+DECLARATION,aeon pages,DECLARATION,PRE NPL,C,aeon
+DECLARATION,coda buffers,DECLARATION,PRE NPL,C,coda
+DECLARATION,volt sockets,DECLARATION,PRE NPL,C,volt
+FUNCTION,trak list threads,FUNCTION,PRE V NPL,C,trak
+FUNCTION,aeon reclaim pages,FUNCTION,PRE V NPL,C,aeon
+FUNCTION,coda flush buffers,FUNCTION,PRE V NPL,C,coda
+FUNCTION,volt close sockets,FUNCTION,PRE V NPL,C,volt
+DECLARATION,trak default stack size,DECLARATION,PRE NM NM N,C,trak
+DECLARATION,aeon max heap capacity,DECLARATION,PRE NM NM N,C,aeon
+DECLARATION,volt max packet size,DECLARATION,PRE NM NM N,C,volt
+DECLARATION,zeno default key length,DECLARATION,PRE NM NM N,C,zeno
+FUNCTION,trak get default stack size,FUNCTION,PRE V NM NM N,C,trak
+FUNCTION,aeon set max heap capacity,FUNCTION,PRE V NM NM N,C,aeon
+FUNCTION,trak get active threads,FUNCTION,PRE V NM NPL,C,trak
+FUNCTION,coda flush pending buffers,FUNCTION,PRE V NM NPL,C,coda
+FUNCTION,volt scan open sockets,FUNCTION,PRE V NM NPL,C,volt
+DECLARATION,is Authenticated,DECLARATION,V NM,Java,webstack
+DECLARATION,is Compressed,DECLARATION,V NM,C,coda
+DECLARATION,is Encrypted,DECLARATION,V NM,C,zeno
+DECLARATION,is Reachable,DECLARATION,V NM,Java,netpulse
+DECLARATION,is Mutable,DECLARATION,V NM,Java,javelin
+DECLARATION,is Sorted,DECLARATION,V NM,C++,quark
+DECLARATION,is Expired,DECLARATION,V NM,Java,cloudkit
+DECLARATION,is Pending,DECLARATION,V NM,Java,cloudkit
+DECLARATION,was Evicted,DECLARATION,V NM,Java,cloudkit
+DECLARATION,is Bound,DECLARATION,V NM,C++,prism
+ATTRIBUTE,is Stale,ATTRIBUTE,V NM,Java,cloudkit
+ATTRIBUTE,is Dirty,ATTRIBUTE,V NM,C,aeon
+ATTRIBUTE,is Cached,ATTRIBUTE,V NM,Java,cloudkit
+ATTRIBUTE,is Writable,ATTRIBUTE,V NM,C,coda
+ATTRIBUTE,is Readable,ATTRIBUTE,V NM,C,coda
+FUNCTION,is Alive,FUNCTION,V NM,Java,cloudkit
+FUNCTION,is Complete,FUNCTION,V NM,Java,beanworks
+FUNCTION,is Healthy,FUNCTION,V NM,Java,cloudkit
+FUNCTION,can Connect,FUNCTION,V V,Java,netpulse
+FUNCTION,should Evict,FUNCTION,V V,Java,cloudkit
+FUNCTION,will Restart,FUNCTION,V V,C++,oxide
+FUNCTION,may Proceed,FUNCTION,V V,Java,webstack
+DECLARATION,can Allocate,DECLARATION,V V,C,aeon
+DECLARATION,should Compact,DECLARATION,V V,Java,beanworks
+DECLARATION,must Authenticate,DECLARATION,V V,Java,webstack
+DECLARATION,can Subscribe,DECLARATION,V V,Java,netpulse
+FUNCTION,can Accept Connection,FUNCTION,V V N,Java,netpulse
+FUNCTION,should Retry Operation,FUNCTION,V V N,Java,cloudkit
+FUNCTION,will Close Socket,FUNCTION,V V N,C,volt
+FUNCTION,must Validate Schema,FUNCTION,V V N,Java,beanworks
+FUNCTION,can Allocate Memory,FUNCTION,V V N,C,aeon
+FUNCTION,has Some,FUNCTION,V DT,Java,javelin
+FUNCTION,has All,FUNCTION,V DT,Java,javelin
+FUNCTION,carry Over,FUNCTION,V P,Java,beanworks
+FUNCTION,phase Out,FUNCTION,V P,Java,cloudkit
+FUNCTION,roll Back,FUNCTION,V P,Java,beanworks
+FUNCTION,scale Up,FUNCTION,V P,Java,cloudkit
+FUNCTION,scale Down,FUNCTION,V P,Java,cloudkit
+FUNCTION,pipe Through,FUNCTION,V P,C,coda
+FUNCTION,break Out,FUNCTION,V P,C,trak
+FUNCTION,plug In,FUNCTION,V P,Java,beanworks
+DECLARATION,has Lock,DECLARATION,V N,C++,oxide
+DECLARATION,needs Compaction,DECLARATION,V N,Java,beanworks
+DECLARATION,has Payload,DECLARATION,V N,C,volt
+DECLARATION,has Permission_decl,DECLARATION,V N,Java,webstack
+DECLARATION,needs Rebalance,DECLARATION,V N,Java,cloudkit
+DECLARATION,has Subscribers,DECLARATION,V N,Java,netpulse
+DECLARATION,has Replicas,DECLARATION,V NPL,Java,cloudkit
+FUNCTION,bulk Insert Row,FUNCTION,NM V N,Java,beanworks
+FUNCTION,fast Forward Iterator,FUNCTION,NM V N,C++,oxide
+FUNCTION,reverse Sort List,FUNCTION,NM V N,C++,quark
+FUNCTION,binary Search Key,FUNCTION,NM V N,C++,quark
+FUNCTION,lazy Evaluate Expression,FUNCTION,NM V N,C++,helix
+FUNCTION,eager Load Texture,FUNCTION,NM V N,C++,prism
+FUNCTION,shallow Copy Object,FUNCTION,NM V N,C++,oxide
+FUNCTION,partial Match Query,FUNCTION,NM V N,Java,beanworks
+FUNCTION,bulk Delete Records,FUNCTION,NM V NPL,Java,beanworks
+FUNCTION,parallel Merge Segments,FUNCTION,NM V NPL,Java,beanworks
+FUNCTION,async Fetch Resources,FUNCTION,NM V NPL,Java,cloudkit
+DECLARATION,frames Per Second,DECLARATION,NPL P N,C++,prism
+DECLARATION,samples Per Buffer,DECLARATION,NPL P N,C,plex
+DECLARATION,bits Per Pixel,DECLARATION,NPL P N,C,moth
+PARAMETER,connections Per Worker,PARAMETER,NPL P N,Java,cloudkit
+PARAMETER,bytes Per Block,PARAMETER,NPL P N,C,aeon
+ATTRIBUTE,tasks Per Thread,ATTRIBUTE,NPL P N,Java,cloudkit
+FUNCTION,migrate To New Storage Engine,FUNCTION,V P NM NM N,Java,beanworks
+FUNCTION,subscribe To Default Event Stream,FUNCTION,V P NM NM N,Java,cloudkit
+FUNCTION,on Did Appear,FUNCTION,P V V,swift,webstack
+FUNCTION,on Will Disappear,FUNCTION,P V V,swift,webstack
+FUNCTION,on Did Finish,FUNCTION,P V V,swift,webstack
+FUNCTION,get Max Concurrent Workers,FUNCTION,V NM NM NPL,Java,cloudkit
+FUNCTION,find All Expired Certificates,FUNCTION,V NM NM NPL,Java,netpulse
+FUNCTION,update Total Allocated Pages,FUNCTION,V NM NM NPL,C,aeon
+FUNCTION,get Default Initial Pool Size,FUNCTION,V NM NM NM N,Java,cloudkit
+FUNCTION,set Max Allowed Heap Capacity,FUNCTION,V NM NM NM N,C,aeon
+DECLARATION,last Known Good Snapshot,DECLARATION,DT NM NM N,Java,beanworks
+DECLARATION,next Available Worker Thread,DECLARATION,DT NM NM N,Java,cloudkit
+DECLARATION,first Committed Offset Value,DECLARATION,DT NM NM N,Java,netpulse
+CLASS,Custom Abstract Plugin Loader Factory,CLASS,NM NM NM NM N,Java,beanworks
+DECLARATION,default Max Concurrent Worker Count,DECLARATION,NM NM NM NM N,Java,cloudkit
+DECLARATION,read Or Write Mode,DECLARATION,N CJ N N,C,coda
+PARAMETER,host Or IP Address,PARAMETER,N CJ N N,C,volt
+FUNCTION,on Data Available,FUNCTION,P N NM,Java,netpulse
+DECLARATION,read Or Write Flag,DECLARATION,V CJ V N,C,coda
+CLASS,Event Handler,CLASS,NM N,Java,springcore
+CLASS,Linked List,CLASS,NM N,Java,bytecraft
+CLASS,Token Parser,CLASS,NM N,C++,sigma
+CLASS,Buffer Pool,CLASS,NM N,C++,apex
+CLASS,Data Source,CLASS,NM N,Java,dataforge
+CLASS,Thread Manager,CLASS,NM N,C++,vortex
+CLASS,File Reader,CLASS,NM N,Java,springcore
+CLASS,Socket Factory,CLASS,NM N,Java,nodelink
+CLASS,Cache Provider,CLASS,NM N,C++,corelib
+CLASS,Error Handler,CLASS,NM N,Java,gridview
+CLASS,Request Builder,CLASS,NM N,Java,springcore
+CLASS,Memory Allocator,CLASS,NM N,C++,neutron
+CLASS,Config Loader,CLASS,NM N,C++,apex
+CLASS,State Machine,CLASS,NM N,C++,sigma
+CLASS,Log Writer,CLASS,NM N,Java,dataforge
+CLASS,Query Builder,CLASS,NM N,Java,dataforge
+CLASS,Result Set,CLASS,NM N,Java,dataforge
+CLASS,Packet Handler,CLASS,NM N,C++,nexus
+CLASS,Protocol Factory,CLASS,NM N,Java,nodelink
+CLASS,Shader Program,CLASS,NM N,C++,apex
+CLASS,Render Pipeline,CLASS,NM N,C++,apex
+CLASS,Texture Atlas,CLASS,NM N,C++,apex
+CLASS,Token Stream,CLASS,NM N,C++,corelib
+CLASS,Abstract Visitor,CLASS,NM N,C++,corelib
+CLASS,HTTP Client,CLASS,NM N,Java,springcore
+CLASS,Session Manager,CLASS,NM N,Java,springcore
+CLASS,Response Builder,CLASS,NM N,Java,springcore
+CLASS,Neural Network,CLASS,NM N,C++,neutron
+CLASS,Feature Extractor,CLASS,NM N,Java,dataforge
+CLASS,Process Manager,CLASS,NM N,C++,kron
+CLASS,Scene Graph,CLASS,NM N,C++,apex
+CLASS,Collision Detector,CLASS,NM N,C++,apex
+CLASS,Particle Emitter,CLASS,NM N,C++,apex
+CLASS,Abstract Handler,CLASS,NM N,Java,springcore
+CLASS,Sorted Map,CLASS,NM N,Java,bytecraft
+CLASS,Compressed Stream,CLASS,NM N,Java,bytecraft
+CLASS,Cached Repository,CLASS,NM N,Java,dataforge
+CLASS,Async Executor,CLASS,NM N,Java,springcore
+CLASS,Priority Queue,CLASS,NM N,Java,bytecraft
+CLASS,Blocking Queue,CLASS,NM N,Java,bytecraft
+CLASS,Immutable Set,CLASS,NM N,Java,bytecraft
+CLASS,Observable List,CLASS,NM N,Java,gridview
+CLASS,Lazy Proxy,CLASS,NM N,Java,springcore
+CLASS,View Controller,CLASS,NM N,swift,gridview
+CLASS,Navigation Bar,CLASS,NM N,swift,gridview
+DECLARATION,max Size,DECLARATION,NM N,Java,springcore
+DECLARATION,buffer Length,DECLARATION,NM N,C++,neutron
+DECLARATION,current Index,DECLARATION,NM N,C,libvx
+DECLARATION,total Count,DECLARATION,NM N,C++,sigma
+DECLARATION,error Code,DECLARATION,NM N,C,blitz
+DECLARATION,default Value,DECLARATION,NM N,Java,bytecraft
+DECLARATION,file Path,DECLARATION,NM N,C++,apex
+DECLARATION,line Number,DECLARATION,NM N,Java,gridview
+DECLARATION,column Width,DECLARATION,NM N,C,nexus
+DECLARATION,start Offset,DECLARATION,NM N,C++,vortex
+DECLARATION,input Stream,DECLARATION,NM N,Java,springcore
+DECLARATION,output Buffer,DECLARATION,NM N,C,forge
+DECLARATION,pixel Format,DECLARATION,NM N,C,pixl
+DECLARATION,frame Rate,DECLARATION,NM N,C++,corelib
+DECLARATION,hash Code,DECLARATION,NM N,Java,dataforge
+DECLARATION,node Type,DECLARATION,NM N,C++,sigma
+DECLARATION,retry Delay,DECLARATION,NM N,Java,nodelink
+DECLARATION,block Size,DECLARATION,NM N,C,blitz
+DECLARATION,event Mask,DECLARATION,NM N,C,nexus
+DECLARATION,render Target,DECLARATION,NM N,C++,apex
+DECLARATION,connection Timeout,DECLARATION,NM N,Java,dataforge
+DECLARATION,query String,DECLARATION,NM N,Java,dataforge
+DECLARATION,tcp Socket,DECLARATION,NM N,C,nexus
+DECLARATION,udp Port,DECLARATION,NM N,C,nexus
+DECLARATION,remote Address,DECLARATION,NM N,C,nexus
+DECLARATION,vertex Buffer,DECLARATION,NM N,C++,apex
+DECLARATION,fragment Shader,DECLARATION,NM N,C++,apex
+DECLARATION,texture Handle,DECLARATION,NM N,C,pixl
+DECLARATION,blend Factor,DECLARATION,NM N,C++,apex
+DECLARATION,symbol Table,DECLARATION,NM N,C++,corelib
+DECLARATION,syntax Tree,DECLARATION,NM N,C++,corelib
+DECLARATION,parse State,DECLARATION,NM N,C++,corelib
+DECLARATION,http Status,DECLARATION,NM N,Java,springcore
+DECLARATION,response Body,DECLARATION,NM N,Java,springcore
+DECLARATION,request Method,DECLARATION,NM N,Java,springcore
+DECLARATION,content Type,DECLARATION,NM N,Java,springcore
+DECLARATION,learning Rate,DECLARATION,NM N,C++,neutron
+DECLARATION,batch Size,DECLARATION,NM N,C++,neutron
+DECLARATION,weight Matrix,DECLARATION,NM N,C++,neutron
+DECLARATION,loss Value,DECLARATION,NM N,C++,neutron
+DECLARATION,epoch Count,DECLARATION,NM N,Java,dataforge
+DECLARATION,process Id,DECLARATION,NM N,C,kron
+DECLARATION,exit Code,DECLARATION,NM N,C,kron
+DECLARATION,file Descriptor,DECLARATION,NM N,C,kron
+DECLARATION,semaphore Count,DECLARATION,NM N,C,kron
+DECLARATION,player Position,DECLARATION,NM N,C++,apex
+DECLARATION,enemy Count,DECLARATION,NM N,C++,apex
+DECLARATION,spawn Rate,DECLARATION,NM N,C++,apex
+DECLARATION,gravity Force,DECLARATION,NM N,C++,apex
+DECLARATION,table View,DECLARATION,NM N,swift,gridview
+DECLARATION,navigation Controller,DECLARATION,NM N,swift,gridview
+DECLARATION,selected Index,DECLARATION,NM N,swift,gridview
+PARAMETER,input Size,PARAMETER,NM N,C++,neutron
+PARAMETER,output Path,PARAMETER,NM N,Java,springcore
+PARAMETER,row Index,PARAMETER,NM N,C++,sigma
+PARAMETER,column Count,PARAMETER,NM N,Java,gridview
+PARAMETER,font Name,PARAMETER,NM N,C++,vortex
+PARAMETER,color Space,PARAMETER,NM N,C,pixl
+PARAMETER,key Length,PARAMETER,NM N,C,forge
+PARAMETER,time Stamp,PARAMETER,NM N,Java,dataforge
+PARAMETER,thread Id,PARAMETER,NM N,C++,corelib
+PARAMETER,socket Port,PARAMETER,NM N,C,nexus
+PARAMETER,cache Key,PARAMETER,NM N,Java,bytecraft
+PARAMETER,queue Depth,PARAMETER,NM N,C++,apex
+PARAMETER,batch Number,PARAMETER,NM N,Java,springcore
+PARAMETER,sample Rate,PARAMETER,NM N,C,blitz
+PARAMETER,target Node,PARAMETER,NM N,C++,sigma
+PARAMETER,table Name,PARAMETER,NM N,Java,dataforge
+PARAMETER,schema Name,PARAMETER,NM N,Java,dataforge
+PARAMETER,request Body,PARAMETER,NM N,Java,springcore
+PARAMETER,header Name,PARAMETER,NM N,Java,springcore
+PARAMETER,training Data,PARAMETER,NM N,Java,dataforge
+PARAMETER,label Vector,PARAMETER,NM N,C++,neutron
+PARAMETER,animated Flag,PARAMETER,NM N,swift,gridview
+PARAMETER,search Query,PARAMETER,NM N,Java,dataforge
+PARAMETER,page Number,PARAMETER,NM N,Java,gridview
+PARAMETER,sort Order,PARAMETER,NM N,Java,dataforge
+PARAMETER,filter Expression,PARAMETER,NM N,Java,dataforge
+PARAMETER,encoding Type,PARAMETER,NM N,Java,bytecraft
+PARAMETER,auth Header,PARAMETER,NM N,Java,springcore
+PARAMETER,redirect URL,PARAMETER,NM N,Java,springcore
+PARAMETER,callback Function,PARAMETER,NM N,C,libvx
+PARAMETER,delimiter Character,PARAMETER,NM N,Java,bytecraft
+PARAMETER,timeout Duration,PARAMETER,NM N,Java,nodelink
+ATTRIBUTE,first Name,ATTRIBUTE,NM N,Java,springcore
+ATTRIBUTE,last Name,ATTRIBUTE,NM N,Java,springcore
+ATTRIBUTE,creation Date,ATTRIBUTE,NM N,Java,dataforge
+ATTRIBUTE,access Level,ATTRIBUTE,NM N,C++,sigma
+ATTRIBUTE,parent Node,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,child Count,ATTRIBUTE,NM N,C++,neutron
+ATTRIBUTE,display Mode,ATTRIBUTE,NM N,Java,gridview
+ATTRIBUTE,connection String,ATTRIBUTE,NM N,Java,nodelink
+ATTRIBUTE,pixel Density,ATTRIBUTE,NM N,C,pixl
+ATTRIBUTE,scroll Position,ATTRIBUTE,NM N,Java,gridview
+ATTRIBUTE,compression Level,ATTRIBUTE,NM N,C++,apex
+ATTRIBUTE,auth Token,ATTRIBUTE,NM N,Java,springcore
+ATTRIBUTE,session Id,ATTRIBUTE,NM N,Java,bytecraft
+ATTRIBUTE,border Style,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,font Weight,ATTRIBUTE,NM N,C++,corelib
+ATTRIBUTE,delegate Reference,ATTRIBUTE,NM N,swift,gridview
+ATTRIBUTE,attack Damage,ATTRIBUTE,NM N,C++,apex
+ATTRIBUTE,defense Rating,ATTRIBUTE,NM N,C++,apex
+ATTRIBUTE,creation Time,ATTRIBUTE,NM N,Java,dataforge
+ATTRIBUTE,expiration Date,ATTRIBUTE,NM N,Java,springcore
+ATTRIBUTE,modification Count,ATTRIBUTE,NM N,Java,dataforge
+ATTRIBUTE,error Message,ATTRIBUTE,NM N,Java,springcore
+ATTRIBUTE,retry Count,ATTRIBUTE,NM N,Java,nodelink
+ATTRIBUTE,max Width,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,min Height,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,background Color,ATTRIBUTE,NM N,Java,gridview
+ATTRIBUTE,foreground Color,ATTRIBUTE,NM N,Java,gridview
+ATTRIBUTE,line Count,ATTRIBUTE,NM N,C++,corelib
+ATTRIBUTE,reference Count,ATTRIBUTE,NM N,C++,neutron
+ATTRIBUTE,total Revenue,ATTRIBUTE,NM N,Java,dataforge
+ATTRIBUTE,average Score,ATTRIBUTE,NM N,Java,dataforge
+ATTRIBUTE,max Depth,ATTRIBUTE,NM N,C++,sigma
+ATTRIBUTE,opacity Value,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,z Index,ATTRIBUTE,NM N,C++,vortex
+ATTRIBUTE,tab Order,ATTRIBUTE,NM N,Java,gridview
+ATTRIBUTE,tool Tip,ATTRIBUTE,NM N,Java,gridview
+CLASS,Node,CLASS,N,C++,sigma
+CLASS,Stack,CLASS,N,C++,corelib
+CLASS,Iterator,CLASS,N,Java,bytecraft
+CLASS,Controller,CLASS,N,Java,springcore
+CLASS,Widget,CLASS,N,C++,vortex
+CLASS,Serializer,CLASS,N,Java,dataforge
+CLASS,Lexer,CLASS,N,C++,corelib
+DECLARATION,count,DECLARATION,N,C,libvx
+DECLARATION,index,DECLARATION,N,C,blitz
+DECLARATION,buffer,DECLARATION,N,C++,neutron
+DECLARATION,result,DECLARATION,N,Java,springcore
+DECLARATION,offset,DECLARATION,N,C,nexus
+DECLARATION,length,DECLARATION,N,C++,sigma
+DECLARATION,status,DECLARATION,N,C,forge
+DECLARATION,capacity,DECLARATION,N,Java,bytecraft
+DECLARATION,depth,DECLARATION,N,C++,apex
+DECLARATION,width,DECLARATION,N,C,pixl
+DECLARATION,height,DECLARATION,N,C,pixl
+DECLARATION,threshold,DECLARATION,N,C++,vortex
+DECLARATION,interval,DECLARATION,N,Java,springcore
+DECLARATION,priority,DECLARATION,N,C++,corelib
+DECLARATION,version,DECLARATION,N,Java,dataforge
+DECLARATION,x,DECLARATION,N,C,libvx
+DECLARATION,y,DECLARATION,N,C,libvx
+DECLARATION,z,DECLARATION,N,C,libvx
+DECLARATION,i,DECLARATION,N,C,libvx
+DECLARATION,j,DECLARATION,N,C,blitz
+DECLARATION,n,DECLARATION,N,C,nexus
+PARAMETER,size,PARAMETER,N,C,libvx
+PARAMETER,name,PARAMETER,N,Java,springcore
+PARAMETER,type,PARAMETER,N,C++,sigma
+PARAMETER,value,PARAMETER,N,Java,bytecraft
+PARAMETER,key,PARAMETER,N,C,forge
+PARAMETER,port,PARAMETER,N,C,nexus
+PARAMETER,mode,PARAMETER,N,C++,apex
+PARAMETER,level,PARAMETER,N,Java,gridview
+PARAMETER,flags,PARAMETER,N,C,blitz
+PARAMETER,handle,PARAMETER,N,C,kron
+PARAMETER,context,PARAMETER,N,C++,vortex
+PARAMETER,callback,PARAMETER,N,C,libvx
+PARAMETER,token,PARAMETER,N,Java,springcore
+PARAMETER,s,PARAMETER,N,C,forge
+PARAMETER,c,PARAMETER,N,C,pixl
+PARAMETER,t,PARAMETER,N,C,kron
+ATTRIBUTE,id,ATTRIBUTE,N,Java,dataforge
+ATTRIBUTE,width_attr,ATTRIBUTE,N,C++,vortex
+ATTRIBUTE,height_attr,ATTRIBUTE,N,C++,vortex
+ATTRIBUTE,color,ATTRIBUTE,N,C,pixl
+ATTRIBUTE,state,ATTRIBUTE,N,C++,sigma
+ATTRIBUTE,type_attr,ATTRIBUTE,N,Java,bytecraft
+ATTRIBUTE,label,ATTRIBUTE,N,Java,gridview
+ATTRIBUTE,cursor,ATTRIBUTE,N,C++,corelib
+ATTRIBUTE,status_attr,ATTRIBUTE,N,Java,nodelink
+CLASS,Abstract Base Class,CLASS,NM NM N,Java,springcore
+CLASS,Simple Hash Map,CLASS,NM NM N,Java,bytecraft
+CLASS,Remote File System,CLASS,NM NM N,Java,dataforge
+CLASS,Custom Event Dispatcher,CLASS,NM NM N,Java,springcore
+CLASS,Binary Search Tree,CLASS,NM NM N,C++,sigma
+CLASS,Static Memory Pool,CLASS,NM NM N,C++,neutron
+CLASS,Circular Buffer Queue,CLASS,NM NM N,C++,apex
+CLASS,Default Config Provider,CLASS,NM NM N,Java,springcore
+CLASS,Shared Mutex Lock,CLASS,NM NM N,C++,vortex
+CLASS,Abstract Syntax Tree,CLASS,NM NM N,C++,corelib
+CLASS,Connection Pool Manager,CLASS,NM NM N,Java,dataforge
+CLASS,Concurrent Hash Map,CLASS,NM NM N,Java,bytecraft
+CLASS,Doubly Linked List,CLASS,NM NM N,C++,sigma
+CLASS,Table View Cell,CLASS,NM NM N,swift,gridview
+CLASS,Red Black Tree,CLASS,NM NM N,C++,sigma
+CLASS,Least Recently Used,CLASS,NM NM N,C++,corelib
+CLASS,Single Linked List,CLASS,NM NM N,C++,sigma
+CLASS,Abstract Event Processor,CLASS,NM NM N,Java,springcore
+CLASS,Bounded Thread Pool,CLASS,NM NM N,Java,vortex
+CLASS,Secure Socket Layer,CLASS,NM NM N,Java,nodelink
+CLASS,Custom Memory Manager,CLASS,NM NM N,C++,neutron
+DECLARATION,max Retry Count,DECLARATION,NM NM N,Java,springcore
+DECLARATION,min Buffer Size,DECLARATION,NM NM N,C++,neutron
+DECLARATION,default Font Size,DECLARATION,NM NM N,Java,gridview
+DECLARATION,max Thread Count,DECLARATION,NM NM N,C++,vortex
+DECLARATION,initial Capacity Factor,DECLARATION,NM NM N,Java,bytecraft
+DECLARATION,total Elapsed Time,DECLARATION,NM NM N,C++,sigma
+DECLARATION,current Page Index,DECLARATION,NM NM N,Java,gridview
+DECLARATION,max File Length,DECLARATION,NM NM N,C,forge
+DECLARATION,global Error State,DECLARATION,NM NM N,C,libvx
+DECLARATION,expected Token Type,DECLARATION,NM NM N,C++,corelib
+PARAMETER,max Retry Limit,PARAMETER,NM NM N,Java,nodelink
+PARAMETER,initial Buffer Capacity,PARAMETER,NM NM N,C++,apex
+PARAMETER,default Timeout Value,PARAMETER,NM NM N,Java,springcore
+PARAMETER,target Pixel Format,PARAMETER,NM NM N,C,pixl
+PARAMETER,source File Path,PARAMETER,NM NM N,C++,sigma
+ATTRIBUTE,max Connection Pool,ATTRIBUTE,NM NM N,Java,dataforge
+ATTRIBUTE,total Request Count,ATTRIBUTE,NM NM N,Java,springcore
+ATTRIBUTE,current Scroll Offset,ATTRIBUTE,NM NM N,Java,gridview
+ATTRIBUTE,default Background Color,ATTRIBUTE,NM NM N,C++,vortex
+ATTRIBUTE,primary Key Column,ATTRIBUTE,NM NM N,Java,dataforge
+CLASS,Abstract Syntax Tree Node,CLASS,NM NM NM N,C++,corelib
+CLASS,Custom Thread Pool Executor,CLASS,NM NM NM N,Java,springcore
+CLASS,Default HTTP Request Handler,CLASS,NM NM NM N,Java,nodelink
+CLASS,Static Final Constant Value,CLASS,NM NM NM N,Java,bytecraft
+CLASS,Simple Bounded Blocking Queue,CLASS,NM NM NM N,Java,dataforge
+DECLARATION,max Allowed Retry Count,DECLARATION,NM NM NM N,Java,springcore
+DECLARATION,default Max Buffer Size,DECLARATION,NM NM NM N,C++,neutron
+DECLARATION,total Active Connection Count,DECLARATION,NM NM NM N,Java,nodelink
+DECLARATION,initial Page Load Time,DECLARATION,NM NM NM N,Java,gridview
+FUNCTION,get Value,FUNCTION,V N,Java,springcore
+FUNCTION,set Mode,FUNCTION,V N,C++,sigma
+FUNCTION,read File,FUNCTION,V N,C,libvx
+FUNCTION,write Buffer,FUNCTION,V N,C,blitz
+FUNCTION,close Connection,FUNCTION,V N,Java,nodelink
+FUNCTION,create Thread,FUNCTION,V N,C++,vortex
+FUNCTION,delete Node,FUNCTION,V N,C++,sigma
+FUNCTION,parse Token,FUNCTION,V N,C++,corelib
+FUNCTION,send Message,FUNCTION,V N,Java,springcore
+FUNCTION,update Cache,FUNCTION,V N,Java,bytecraft
+FUNCTION,flush Stream,FUNCTION,V N,C,forge
+FUNCTION,load Config,FUNCTION,V N,C++,apex
+FUNCTION,dump Stack,FUNCTION,V N,C,nexus
+FUNCTION,allocate Memory,FUNCTION,V N,C,kron
+FUNCTION,release Lock,FUNCTION,V N,C++,vortex
+FUNCTION,process Request,FUNCTION,V N,Java,springcore
+FUNCTION,validate Input,FUNCTION,V N,Java,dataforge
+FUNCTION,execute Query,FUNCTION,V N,Java,dataforge
+FUNCTION,render Frame,FUNCTION,V N,C++,apex
+FUNCTION,compute Hash,FUNCTION,V N,C,forge
+FUNCTION,encode String,FUNCTION,V N,Java,bytecraft
+FUNCTION,decode Packet,FUNCTION,V N,C,nexus
+FUNCTION,spawn Process,FUNCTION,V N,C,kron
+FUNCTION,join Thread,FUNCTION,V N,C++,vortex
+FUNCTION,resize Window,FUNCTION,V N,C++,corelib
+FUNCTION,destroy Context,FUNCTION,V N,C,libvx
+FUNCTION,bind Socket,FUNCTION,V N,C,nexus
+FUNCTION,accept Connection,FUNCTION,V N,C,blitz
+FUNCTION,initialize Module,FUNCTION,V N,C++,neutron
+FUNCTION,traverse Tree,FUNCTION,V N,C++,sigma
+FUNCTION,execute Transaction,FUNCTION,V N,Java,dataforge
+FUNCTION,rollback Transaction,FUNCTION,V N,Java,dataforge
+FUNCTION,save Entity,FUNCTION,V N,Java,dataforge
+FUNCTION,resolve Hostname,FUNCTION,V N,C,nexus
+FUNCTION,send Heartbeat,FUNCTION,V N,C,nexus
+FUNCTION,draw Rectangle,FUNCTION,V N,C,pixl
+FUNCTION,fill Polygon,FUNCTION,V N,C,pixl
+FUNCTION,update Viewport,FUNCTION,V N,C++,apex
+FUNCTION,lex Token,FUNCTION,V N,C++,corelib
+FUNCTION,emit Instruction,FUNCTION,V N,C++,corelib
+FUNCTION,resolve Symbol,FUNCTION,V N,C++,corelib
+FUNCTION,generate Code,FUNCTION,V N,C++,corelib
+FUNCTION,optimize Pass,FUNCTION,V N,C++,corelib
+FUNCTION,handle Request,FUNCTION,V N,Java,springcore
+FUNCTION,send Response,FUNCTION,V N,Java,springcore
+FUNCTION,parse Header,FUNCTION,V N,Java,springcore
+FUNCTION,set Cookie,FUNCTION,V N,Java,springcore
+FUNCTION,get Session,FUNCTION,V N,Java,springcore
+FUNCTION,authenticate User,FUNCTION,V N,Java,springcore
+FUNCTION,train Model,FUNCTION,V N,Java,dataforge
+FUNCTION,predict Label,FUNCTION,V N,Java,dataforge
+FUNCTION,evaluate Accuracy,FUNCTION,V N,Java,dataforge
+FUNCTION,fork Process,FUNCTION,V N,C,kron
+FUNCTION,set Priority,FUNCTION,V N,C,kron
+FUNCTION,mount Filesystem,FUNCTION,V N,C,kron
+FUNCTION,spawn Entity,FUNCTION,V N,C++,apex
+FUNCTION,update Physics,FUNCTION,V N,C++,apex
+FUNCTION,detect Collision,FUNCTION,V N,C++,apex
+FUNCTION,render Scene,FUNCTION,V N,C++,apex
+FUNCTION,play Sound,FUNCTION,V N,C++,apex
+FUNCTION,configure Cell,FUNCTION,V N,swift,gridview
+FUNCTION,contains Key,FUNCTION,V N,Java,bytecraft
+FUNCTION,equals Object,FUNCTION,V N,Java,springcore
+FUNCTION,get Max Size,FUNCTION,V NM N,Java,springcore
+FUNCTION,set Default Value,FUNCTION,V NM N,Java,bytecraft
+FUNCTION,get Error Code,FUNCTION,V NM N,C++,sigma
+FUNCTION,read Input Stream,FUNCTION,V NM N,Java,springcore
+FUNCTION,create New Thread,FUNCTION,V NM N,C++,vortex
+FUNCTION,get Node Type,FUNCTION,V NM N,C++,corelib
+FUNCTION,set Pixel Format,FUNCTION,V NM N,C,pixl
+FUNCTION,get Cache Entry,FUNCTION,V NM N,Java,bytecraft
+FUNCTION,build Query String,FUNCTION,V NM N,Java,dataforge
+FUNCTION,load Resource Bundle,FUNCTION,V NM N,Java,springcore
+FUNCTION,get Frame Rate,FUNCTION,V NM N,C++,apex
+FUNCTION,set Scroll Position,FUNCTION,V NM N,Java,gridview
+FUNCTION,write Error Log,FUNCTION,V NM N,C,forge
+FUNCTION,update Render Target,FUNCTION,V NM N,C++,apex
+FUNCTION,get Connection Pool,FUNCTION,V NM N,Java,nodelink
+FUNCTION,set Thread Priority,FUNCTION,V NM N,C++,vortex
+FUNCTION,get Display Mode,FUNCTION,V NM N,Java,gridview
+FUNCTION,parse Config File,FUNCTION,V NM N,C++,apex
+FUNCTION,get Session Id,FUNCTION,V NM N,Java,springcore
+FUNCTION,set Font Size,FUNCTION,V NM N,C++,vortex
+FUNCTION,accept Incoming Connection,FUNCTION,V NM N,C,nexus
+FUNCTION,set Blend Mode,FUNCTION,V NM N,C,pixl
+FUNCTION,clear Depth Buffer,FUNCTION,V NM N,C++,apex
+FUNCTION,create Index Entry,FUNCTION,V NM N,Java,dataforge
+FUNCTION,reset Global State,FUNCTION,V NM N,C,libvx
+FUNCTION,check Disk Space,FUNCTION,V NM N,C,kron
+FUNCTION,validate Auth Token,FUNCTION,V NM N,Java,springcore
+FUNCTION,encode UTF String,FUNCTION,V NM N,Java,bytecraft
+FUNCTION,flush Output Stream,FUNCTION,V NM N,Java,springcore
+FUNCTION,resolve DNS Name,FUNCTION,V NM N,C,nexus
+FUNCTION,compile Shader Source,FUNCTION,V NM N,C++,apex
+FUNCTION,allocate GPU Memory,FUNCTION,V NM N,C++,apex
+FUNCTION,register Event Listener,FUNCTION,V NM N,Java,springcore
+FUNCTION,fetch Weather Data,FUNCTION,V NM N,swift,gridview
+FUNCTION,present Alert Controller,FUNCTION,V NM N,swift,gridview
+FUNCTION,dismiss View Controller,FUNCTION,V NM N,swift,gridview
+FUNCTION,get Max Buffer Size,FUNCTION,V NM NM N,C++,neutron
+FUNCTION,set Default Font Name,FUNCTION,V NM NM N,Java,gridview
+FUNCTION,get Active Thread Count,FUNCTION,V NM NM N,Java,springcore
+FUNCTION,get Current Page Index,FUNCTION,V NM NM N,Java,gridview
+FUNCTION,set Max Retry Count,FUNCTION,V NM NM N,Java,nodelink
+FUNCTION,get Total Elapsed Time,FUNCTION,V NM NM N,C++,sigma
+FUNCTION,create New Render Context,FUNCTION,V NM NM N,C++,apex
+FUNCTION,load Default Config Path,FUNCTION,V NM NM N,C++,corelib
+FUNCTION,get Expected Token Type,FUNCTION,V NM NM N,C++,corelib
+FUNCTION,set Initial Capacity Factor,FUNCTION,V NM NM N,Java,bytecraft
+FUNCTION,get Items,FUNCTION,V NPL,Java,springcore
+FUNCTION,remove Duplicates,FUNCTION,V NPL,Java,bytecraft
+FUNCTION,count Elements,FUNCTION,V NPL,C++,sigma
+FUNCTION,load Resources,FUNCTION,V NPL,Java,springcore
+FUNCTION,clear Caches,FUNCTION,V NPL,Java,bytecraft
+FUNCTION,validate Fields,FUNCTION,V NPL,Java,dataforge
+FUNCTION,fetch Records,FUNCTION,V NPL,Java,dataforge
+FUNCTION,list Files,FUNCTION,V NPL,C,forge
+FUNCTION,process Events,FUNCTION,V NPL,C++,vortex
+FUNCTION,update Listeners,FUNCTION,V NPL,Java,springcore
+FUNCTION,resolve Dependencies,FUNCTION,V NPL,Java,springcore
+FUNCTION,refresh Tokens,FUNCTION,V NPL,Java,nodelink
+FUNCTION,merge Results,FUNCTION,V NPL,Java,dataforge
+FUNCTION,sort Entries,FUNCTION,V NPL,C++,sigma
+FUNCTION,register Handlers,FUNCTION,V NPL,Java,springcore
+FUNCTION,commit Changes,FUNCTION,V NPL,Java,dataforge
+FUNCTION,normalize Features,FUNCTION,V NPL,Java,dataforge
+FUNCTION,get Active Users,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,remove Dead Threads,FUNCTION,V NM NPL,C++,vortex
+FUNCTION,load Cached Resources,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,find Matching Nodes,FUNCTION,V NM NPL,C++,sigma
+FUNCTION,get Open Connections,FUNCTION,V NM NPL,Java,nodelink
+FUNCTION,update Pending Tasks,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,clear Expired Entries,FUNCTION,V NM NPL,Java,bytecraft
+FUNCTION,fetch Remote Files,FUNCTION,V NM NPL,Java,dataforge
+FUNCTION,validate Required Fields,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,get Visible Columns,FUNCTION,V NM NPL,Java,gridview
+FUNCTION,scan Available Ports,FUNCTION,V NM NPL,C,nexus
+FUNCTION,resolve Circular Dependencies,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,get Selected Items,FUNCTION,V NM NPL,Java,gridview
+FUNCTION,remove Stale Locks,FUNCTION,V NM NPL,C++,vortex
+FUNCTION,process Queued Messages,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,get Sorted Keys,FUNCTION,V NM NPL,Java,bytecraft
+FUNCTION,find Orphaned Nodes,FUNCTION,V NM NPL,C++,sigma
+FUNCTION,load External Resources,FUNCTION,V NM NPL,Java,springcore
+FUNCTION,update Modified Records,FUNCTION,V NM NPL,Java,dataforge
+FUNCTION,collect Unused References,FUNCTION,V NM NPL,C++,neutron
+FUNCTION,run,FUNCTION,V,Java,springcore
+FUNCTION,execute,FUNCTION,V,Java,springcore
+FUNCTION,initialize,FUNCTION,V,C++,neutron
+FUNCTION,shutdown,FUNCTION,V,C,libvx
+FUNCTION,dispose,FUNCTION,V,Java,gridview
+FUNCTION,flush,FUNCTION,V,C,forge
+FUNCTION,reset,FUNCTION,V,C++,sigma
+FUNCTION,compile,FUNCTION,V,C++,corelib
+DECLARATION,items,DECLARATION,NPL,Java,springcore
+DECLARATION,children,DECLARATION,NPL,C++,sigma
+DECLARATION,results,DECLARATION,NPL,Java,dataforge
+DECLARATION,entries,DECLARATION,NPL,C++,corelib
+DECLARATION,values,DECLARATION,NPL,Java,bytecraft
+DECLARATION,listeners,DECLARATION,NPL,Java,springcore
+DECLARATION,handlers,DECLARATION,NPL,C++,vortex
+DECLARATION,tokens,DECLARATION,NPL,C++,corelib
+DECLARATION,nodes,DECLARATION,NPL,C++,sigma
+DECLARATION,rows,DECLARATION,NPL,Java,gridview
+PARAMETER,args,PARAMETER,NPL,Java,springcore
+PARAMETER,params,PARAMETER,NPL,C++,apex
+PARAMETER,options,PARAMETER,NPL,C++,sigma
+PARAMETER,indices,PARAMETER,NPL,C,libvx
+PARAMETER,attributes,PARAMETER,NPL,Java,gridview
+ATTRIBUTE,columns,ATTRIBUTE,NPL,Java,gridview
+ATTRIBUTE,records,ATTRIBUTE,NPL,Java,dataforge
+ATTRIBUTE,elements,ATTRIBUTE,NPL,C++,sigma
+ATTRIBUTE,fields,ATTRIBUTE,NPL,Java,springcore
+ATTRIBUTE,properties,ATTRIBUTE,NPL,Java,springcore
+DECLARATION,active Users,DECLARATION,NM NPL,Java,springcore
+DECLARATION,pending Tasks,DECLARATION,NM NPL,Java,springcore
+DECLARATION,cached Items,DECLARATION,NM NPL,Java,bytecraft
+DECLARATION,sorted Indices,DECLARATION,NM NPL,C++,sigma
+DECLARATION,open Connections,DECLARATION,NM NPL,Java,nodelink
+DECLARATION,visible Columns,DECLARATION,NM NPL,Java,gridview
+DECLARATION,loaded Modules,DECLARATION,NM NPL,C++,neutron
+DECLARATION,error Messages,DECLARATION,NM NPL,Java,springcore
+DECLARATION,selected Rows,DECLARATION,NM NPL,Java,gridview
+DECLARATION,child Nodes,DECLARATION,NM NPL,C++,sigma
+ATTRIBUTE,active Fields,ATTRIBUTE,NM NPL,Java,springcore
+ATTRIBUTE,registered Listeners,ATTRIBUTE,NM NPL,Java,springcore
+ATTRIBUTE,cached Entries,ATTRIBUTE,NM NPL,Java,bytecraft
+ATTRIBUTE,required Parameters,ATTRIBUTE,NM NPL,Java,dataforge
+ATTRIBUTE,available Options,ATTRIBUTE,NM NPL,C++,apex
+ATTRIBUTE,health Points,ATTRIBUTE,NM NPL,C++,apex
+PARAMETER,input Files,PARAMETER,NM NPL,C,forge
+PARAMETER,target Nodes,PARAMETER,NM NPL,C++,sigma
+PARAMETER,filter Conditions,PARAMETER,NM NPL,Java,dataforge
+PARAMETER,excluded Fields,PARAMETER,NM NPL,Java,springcore
+PARAMETER,source Paths,PARAMETER,NM NPL,C++,apex
+CLASS,Config Properties,CLASS,NM NPL,Java,springcore
+CLASS,Bound Parameters,CLASS,NM NPL,Java,dataforge
+DECLARATION,max Active Connections,DECLARATION,NM NM NPL,Java,nodelink
+DECLARATION,total Pending Requests,DECLARATION,NM NM NPL,Java,springcore
+DECLARATION,default Column Widths,DECLARATION,NM NM NPL,Java,gridview
+ATTRIBUTE,current Open Handles,ATTRIBUTE,NM NM NPL,C,kron
+ATTRIBUTE,all Visible Rows,ATTRIBUTE,NM NM NPL,Java,gridview
+DECLARATION,active Visible Rows,DECLARATION,NM NM NPL,Java,gridview
+ATTRIBUTE,cached Remote Files,ATTRIBUTE,NM NM NPL,Java,dataforge
+DECLARATION,sorted Unique Keys,DECLARATION,NM NM NPL,C++,sigma
+FUNCTION,add To List,FUNCTION,V P N,Java,bytecraft
+FUNCTION,write To File,FUNCTION,V P N,C,forge
+FUNCTION,read From Socket,FUNCTION,V P N,C,nexus
+FUNCTION,convert To String,FUNCTION,V P N,Java,springcore
+FUNCTION,subscribe To Channel,FUNCTION,V P N,Java,nodelink
+FUNCTION,attach To Parent,FUNCTION,V P N,C++,vortex
+FUNCTION,bind To Port,FUNCTION,V P N,C,blitz
+FUNCTION,listen On Socket,FUNCTION,V P N,C,nexus
+FUNCTION,map To Index,FUNCTION,V P N,Java,bytecraft
+FUNCTION,connect To Server,FUNCTION,V P N,Java,nodelink
+FUNCTION,save To Disk,FUNCTION,V P N,C,forge
+FUNCTION,add To Queue,FUNCTION,V P N,C++,vortex
+FUNCTION,move To Front,FUNCTION,V P N,C++,sigma
+FUNCTION,find By Id,FUNCTION,V P N,Java,dataforge
+FUNCTION,delete By Id,FUNCTION,V P N,Java,dataforge
+FUNCTION,wait For Child,FUNCTION,V P N,C,kron
+FUNCTION,adjust To Camera,FUNCTION,V P N,C++,apex
+FUNCTION,format As JSON,FUNCTION,V P N,Java,springcore
+FUNCTION,cast To Integer,FUNCTION,V P N,Java,springcore
+FUNCTION,split By Delimiter,FUNCTION,V P N,Java,bytecraft
+FUNCTION,group By Category,FUNCTION,V P N,Java,dataforge
+FUNCTION,sort By Name,FUNCTION,V P N,Java,springcore
+FUNCTION,filter By Type,FUNCTION,V P N,Java,dataforge
+FUNCTION,search By Keyword,FUNCTION,V P N,Java,dataforge
+FUNCTION,send Data To Server,FUNCTION,V N P N,Java,nodelink
+FUNCTION,read Bytes From Stream,FUNCTION,V N P N,Java,springcore
+FUNCTION,copy File To Directory,FUNCTION,V N P N,C,forge
+FUNCTION,write Record To Database,FUNCTION,V N P N,Java,dataforge
+FUNCTION,move Cursor To Position,FUNCTION,V N P N,C++,vortex
+FUNCTION,add Item To Cache,FUNCTION,V N P N,Java,bytecraft
+FUNCTION,send Event To Handler,FUNCTION,V N P N,Java,springcore
+FUNCTION,load Image From Path,FUNCTION,V N P N,C,pixl
+FUNCTION,map Key To Value,FUNCTION,V N P N,Java,bytecraft
+FUNCTION,remove Entry From Map,FUNCTION,V N P N,Java,bytecraft
+FUNCTION,load Data From Cache,FUNCTION,V N P N,Java,bytecraft
+FUNCTION,write Bytes To Stream,FUNCTION,V N P N,Java,springcore
+FUNCTION,remove Node From Tree,FUNCTION,V N P N,C++,sigma
+FUNCTION,insert Row At Index,FUNCTION,V N P N,Java,gridview
+FUNCTION,append Text To Buffer,FUNCTION,V N P N,C,forge
+FUNCTION,send Data To Remote Server,FUNCTION,V N P NM N,Java,nodelink
+FUNCTION,write Log To Error File,FUNCTION,V N P NM N,C,forge
+FUNCTION,copy Buffer To Shared Memory,FUNCTION,V N P NM N,C++,neutron
+FUNCTION,move Node To Parent Tree,FUNCTION,V N P NM N,C++,sigma
+FUNCTION,load Config From Default Path,FUNCTION,V N P NM N,C++,apex
+FUNCTION,convert To Byte Array,FUNCTION,V P NM N,Java,springcore
+FUNCTION,listen On Local Port,FUNCTION,V P NM N,C,nexus
+FUNCTION,subscribe To Event Channel,FUNCTION,V P NM N,Java,springcore
+FUNCTION,attach To Parent Node,FUNCTION,V P NM N,C++,vortex
+FUNCTION,connect To Remote Host,FUNCTION,V P NM N,Java,nodelink
+DECLARATION,path To File,DECLARATION,N P N,C,forge
+DECLARATION,number Of Items,DECLARATION,N P N,Java,springcore
+DECLARATION,list Of Tokens,DECLARATION,N P N,C++,corelib
+DECLARATION,pointer To Buffer,DECLARATION,N P N,C,libvx
+DECLARATION,map Of Values,DECLARATION,N P N,Java,bytecraft
+PARAMETER,index Of Element,PARAMETER,N P N,Java,bytecraft
+PARAMETER,path To Resource,PARAMETER,N P N,Java,springcore
+PARAMETER,number Of Rows,PARAMETER,N P N,Java,gridview
+ATTRIBUTE,count Of Errors,ATTRIBUTE,N P N,Java,springcore
+ATTRIBUTE,time Of Creation,ATTRIBUTE,N P N,Java,dataforge
+DECLARATION,action To Index Map,DECLARATION,N P NM N,Java,springcore
+DECLARATION,path To Config File,DECLARATION,N P NM N,C++,apex
+ATTRIBUTE,time For Each Line,ATTRIBUTE,N P NM N,Java,gridview
+PARAMETER,offset From Start Position,PARAMETER,N P NM N,C++,sigma
+PARAMETER,as String,PARAMETER,P N,Java,springcore
+PARAMETER,as Binary,PARAMETER,P N,Java,dataforge
+PARAMETER,as Float,PARAMETER,P N,C++,sigma
+PARAMETER,by Name,PARAMETER,P N,Java,springcore
+PARAMETER,by Index,PARAMETER,P N,Java,bytecraft
+PARAMETER,in Order,PARAMETER,P N,C++,sigma
+DECLARATION,from Source,DECLARATION,P N,Java,dataforge
+DECLARATION,by Value,DECLARATION,P N,C++,corelib
+DECLARATION,on Click,DECLARATION,P N,Java,gridview
+DECLARATION,on Error,DECLARATION,P N,C,nexus
+DECLARATION,on Success,DECLARATION,P N,Java,nodelink
+DECLARATION,for Loop,DECLARATION,P N,C,libvx
+DECLARATION,in Queue,DECLARATION,P N,C++,vortex
+FUNCTION,on Start,FUNCTION,P N,Java,springcore
+FUNCTION,on Error_fn,FUNCTION,P N,Java,nodelink
+FUNCTION,on Complete,FUNCTION,P N,Java,springcore
+FUNCTION,on Timeout,FUNCTION,P N,Java,nodelink
+FUNCTION,to String,FUNCTION,P N,Java,springcore
+FUNCTION,to Array,FUNCTION,P N,Java,bytecraft
+FUNCTION,to Map,FUNCTION,P N,Java,bytecraft
+FUNCTION,from JSON,FUNCTION,P N,Java,springcore
+FUNCTION,as List,FUNCTION,P N,Java,bytecraft
+FUNCTION,on Destroy,FUNCTION,P V,Java,gridview
+FUNCTION,on Create,FUNCTION,P V,Java,gridview
+FUNCTION,on Resume,FUNCTION,P V,Java,gridview
+FUNCTION,on Pause,FUNCTION,P V,Java,gridview
+FUNCTION,on Disconnect,FUNCTION,P V,Java,nodelink
+FUNCTION,before Render,FUNCTION,P V,C++,apex
+FUNCTION,after Initialize,FUNCTION,P V,Java,springcore
+FUNCTION,before Commit,FUNCTION,P V,Java,dataforge
+FUNCTION,after Delete,FUNCTION,P V,Java,dataforge
+PARAMETER,from Remote Server,PARAMETER,P NM N,Java,nodelink
+PARAMETER,by Column Index,PARAMETER,P NM N,Java,gridview
+DECLARATION,on Mouse Click,DECLARATION,P NM N,Java,gridview
+FUNCTION,on Key Press,FUNCTION,P NM N,Java,gridview
+FUNCTION,on Button Click,FUNCTION,P NM N,Java,gridview
+FUNCTION,from Bytes,FUNCTION,P NPL,Java,springcore
+DECLARATION,server And Port,DECLARATION,N CJ N,Java,nodelink
+DECLARATION,key And Value,DECLARATION,N CJ N,Java,bytecraft
+DECLARATION,width And Height,DECLARATION,N CJ N,C++,vortex
+DECLARATION,request And Response,DECLARATION,N CJ N,Java,springcore
+DECLARATION,host And Port,DECLARATION,N CJ N,C,nexus
+PARAMETER,name And Type,PARAMETER,N CJ N,Java,springcore
+PARAMETER,source And Target,PARAMETER,N CJ N,C++,sigma
+ATTRIBUTE,data Or Logger,ATTRIBUTE,N CJ N,Java,springcore
+ATTRIBUTE,input Or Output,ATTRIBUTE,N CJ N,C++,apex
+DECLARATION,min And Max,DECLARATION,N CJ N,C++,sigma
+DECLARATION,input And Output,DECLARATION,N CJ N,C,forge
+DECLARATION,lock And Condition,DECLARATION,N CJ N,Java,vortex
+PARAMETER,start And End,PARAMETER,N CJ N,C++,apex
+ATTRIBUTE,latitude And Longitude,ATTRIBUTE,N CJ N,Java,gridview
+FUNCTION,read And Write,FUNCTION,V CJ V,C,forge
+FUNCTION,lock And Wait,FUNCTION,V CJ V,C++,vortex
+FUNCTION,serialize And Send,FUNCTION,V CJ V,Java,nodelink
+FUNCTION,parse And Validate,FUNCTION,V CJ V,Java,dataforge
+FUNCTION,load Or Create,FUNCTION,V CJ V,Java,springcore
+FUNCTION,encode And Compress,FUNCTION,V CJ V,Java,bytecraft
+FUNCTION,validate And Save,FUNCTION,V CJ V,Java,dataforge
+FUNCTION,fetch Or Create,FUNCTION,V CJ V,Java,springcore
+FUNCTION,lock Or Wait,FUNCTION,V CJ V,C++,vortex
+FUNCTION,open And Initialize,FUNCTION,V CJ V,C,libvx
+FUNCTION,open If Empty,FUNCTION,V CJ NM,C,forge
+FUNCTION,warn If Null,FUNCTION,V CJ NM,Java,springcore
+FUNCTION,skip If Disabled,FUNCTION,V CJ NM,Java,springcore
+FUNCTION,retry If Failed,FUNCTION,V CJ NM,Java,nodelink
+FUNCTION,get Name And Type,FUNCTION,V N CJ N,Java,springcore
+FUNCTION,set Width And Height,FUNCTION,V N CJ N,C++,vortex
+FUNCTION,read Key And Value,FUNCTION,V N CJ N,Java,bytecraft
+DECLARATION,last Error,DECLARATION,DT N,C,libvx
+DECLARATION,next Token,DECLARATION,DT N,C++,corelib
+DECLARATION,this Instance,DECLARATION,DT N,Java,springcore
+DECLARATION,each Item,DECLARATION,DT N,Java,springcore
+DECLARATION,all Data,DECLARATION,DT N,Java,dataforge
+DECLARATION,first Element,DECLARATION,DT N,C++,sigma
+DECLARATION,other Node,DECLARATION,DT N,C++,sigma
+DECLARATION,that Widget,DECLARATION,DT N,Java,gridview
+DECLARATION,every Listener,DECLARATION,DT N,Java,springcore
+PARAMETER,this Context,PARAMETER,DT N,Java,springcore
+PARAMETER,that Object,PARAMETER,DT N,Java,bytecraft
+PARAMETER,each Entry,PARAMETER,DT N,Java,springcore
+PARAMETER,other Value,PARAMETER,DT N,C++,sigma
+ATTRIBUTE,last Update,ATTRIBUTE,DT N,Java,springcore
+ATTRIBUTE,next Page,ATTRIBUTE,DT N,Java,gridview
+ATTRIBUTE,first Child,ATTRIBUTE,DT N,C++,vortex
+ATTRIBUTE,next Sibling,ATTRIBUTE,DT N,C++,sigma
+ATTRIBUTE,previous Sibling,ATTRIBUTE,DT N,C++,sigma
+DECLARATION,last Known Position,DECLARATION,DT NM N,C++,apex
+DECLARATION,next Available Slot,DECLARATION,DT NM N,Java,springcore
+DECLARATION,first Valid Index,DECLARATION,DT NM N,C++,sigma
+DECLARATION,each Active Thread,DECLARATION,DT NM N,C++,vortex
+DECLARATION,last Modified Time,DECLARATION,DT NM N,Java,dataforge
+PARAMETER,other Input Stream,PARAMETER,DT NM N,Java,springcore
+PARAMETER,this Config File,PARAMETER,DT NM N,C++,apex
+ATTRIBUTE,last Login Date,ATTRIBUTE,DT NM N,Java,springcore
+ATTRIBUTE,next Retry Time,ATTRIBUTE,DT NM N,Java,nodelink
+DECLARATION,next Available Port,DECLARATION,DT NM N,C,nexus
+DECLARATION,last Processed Index,DECLARATION,DT NM N,Java,dataforge
+DECLARATION,last Known Good Config,DECLARATION,DT NM NM N,C++,apex
+DECLARATION,next Available Free Slot,DECLARATION,DT NM NM N,Java,springcore
+DECLARATION,all Tokens,DECLARATION,DT NPL,C++,corelib
+DECLARATION,these Items,DECLARATION,DT NPL,Java,springcore
+ATTRIBUTE,all Children,ATTRIBUTE,DT NPL,C++,sigma
+FUNCTION,get Last Error,FUNCTION,V DT N,C,libvx
+FUNCTION,get Next Token,FUNCTION,V DT N,C++,corelib
+FUNCTION,find First Element,FUNCTION,V DT N,C++,sigma
+FUNCTION,remove Last Entry,FUNCTION,V DT N,Java,bytecraft
+FUNCTION,get All Items,FUNCTION,V DT N,Java,springcore
+FUNCTION,find Next Match,FUNCTION,V DT N,C++,corelib
+FUNCTION,get This Instance,FUNCTION,V DT N,Java,springcore
+FUNCTION,find Each Occurrence,FUNCTION,V DT N,Java,dataforge
+FUNCTION,get Last Known Position,FUNCTION,V DT NM N,C++,apex
+FUNCTION,get Next Available Slot,FUNCTION,V DT NM N,Java,springcore
+FUNCTION,find First Valid Index,FUNCTION,V DT NM N,C++,sigma
+FUNCTION,get Last Modified Date,FUNCTION,V DT NM N,Java,dataforge
+FUNCTION,set Next Execution Time,FUNCTION,V DT NM N,Java,springcore
+FUNCTION,find All Textures,FUNCTION,V DT NPL,Java,gridview
+FUNCTION,get All Connections,FUNCTION,V DT NPL,Java,nodelink
+FUNCTION,remove All Listeners,FUNCTION,V DT NPL,Java,springcore
+FUNCTION,get All Properties,FUNCTION,V DT NPL,Java,springcore
+FUNCTION,remove These Elements,FUNCTION,V DT NPL,Java,bytecraft
+FUNCTION,find All Matches,FUNCTION,V DT NPL,Java,dataforge
+FUNCTION,remove All Expired Entries,FUNCTION,V DT NM NPL,Java,bytecraft
+FUNCTION,get All Active Connections,FUNCTION,V DT NM NPL,Java,nodelink
+FUNCTION,get All Active Users,FUNCTION,V DT NM NPL,Java,springcore
+FUNCTION,remove All Cached Entries,FUNCTION,V DT NM NPL,Java,bytecraft
+PARAMETER,arg 1,PARAMETER,N D,C,libvx
+PARAMETER,arg 2,PARAMETER,N D,C,libvx
+PARAMETER,param 0,PARAMETER,N D,C++,sigma
+DECLARATION,buffer 1,DECLARATION,N D,C,blitz
+DECLARATION,buffer 2,DECLARATION,N D,C,blitz
+DECLARATION,value 0,DECLARATION,N D,C++,neutron
+DECLARATION,channel 3,DECLARATION,N D,C,pixl
+CLASS,Vector 2,CLASS,N D,C++,apex
+CLASS,Vector 3,CLASS,N D,C++,apex
+CLASS,Matrix 4,CLASS,N D,C++,sigma
+CLASS,SHA 256,CLASS,N D,Java,rune
+CLASS,AES 128,CLASS,N D,C,rune
+CLASS,Base 64,CLASS,N D,Java,bytecraft
+DECLARATION,port 8080,DECLARATION,N D,Java,nodelink
+DECLARATION,version 2,DECLARATION,N D,Java,springcore
+PARAMETER,dimension 3,PARAMETER,N D,C++,sigma
+DECLARATION,layer 0,DECLARATION,N D,C++,apex
+DECLARATION,pass 2,DECLARATION,N D,C++,corelib
+PARAMETER,vertex 1,PARAMETER,N D,C++,apex
+PARAMETER,vertex 2,PARAMETER,N D,C++,apex
+CLASS,Quaternion 4,CLASS,N D,C++,sigma
+ATTRIBUTE,stride 4,ATTRIBUTE,N D,C++,apex
+ATTRIBUTE,m 11,ATTRIBUTE,NM D,C++,sigma
+ATTRIBUTE,m 22,ATTRIBUTE,NM D,C++,sigma
+ATTRIBUTE,m 33,ATTRIBUTE,NM D,C++,sigma
+ATTRIBUTE,m 44,ATTRIBUTE,NM D,C++,sigma
+DECLARATION,cp 437,DECLARATION,NM D,C,libvx
+PARAMETER,v 0,PARAMETER,NM D,C++,apex
+DECLARATION,rgba 32,DECLARATION,NM D,C,pixl
+PARAMETER,tile Size 64,PARAMETER,NM N D,C,pixl
+DECLARATION,hash Seed 42,DECLARATION,NM N D,C,forge
+CLASS,UTF Encoder 8,CLASS,NM N D,Java,bytecraft
+PARAMETER,0xAF,PARAMETER,D,C,libvx
+FUNCTION,safely Close Connection,FUNCTION,VM V N,Java,nodelink
+FUNCTION,lazily Load Resource,FUNCTION,VM V N,Java,springcore
+FUNCTION,recursively Traverse Tree,FUNCTION,VM V N,C++,sigma
+FUNCTION,eagerly Fetch Data,FUNCTION,VM V N,Java,dataforge
+FUNCTION,internally Handle Error,FUNCTION,VM V N,C++,apex
+FUNCTION,lazily Initialize Cache,FUNCTION,VM V N,Java,bytecraft
+FUNCTION,sort Recursively,FUNCTION,V VM,C++,sigma
+FUNCTION,load Lazily,FUNCTION,V VM,Java,springcore
+FUNCTION,execute Concurrently,FUNCTION,V VM,Java,vortex
+FUNCTION,connect Securely,FUNCTION,V VM,Java,nodelink
+FUNCTION,run Asynchronously,FUNCTION,V VM,Java,springcore
+FUNCTION,process Request Asynchronously,FUNCTION,V N VM,Java,springcore
+FUNCTION,update Cache Immediately,FUNCTION,V N VM,Java,bytecraft
+FUNCTION,render Frame Quickly,FUNCTION,V N VM,C++,apex
+FUNCTION,eagerly Load Dependencies,FUNCTION,VM V NPL,Java,springcore
+DECLARATION,eventually Consistent State,DECLARATION,VM NM N,Java,dataforge
+DECLARATION,newly Created,DECLARATION,VM NM,Java,springcore
+DECLARATION,previously Loaded,DECLARATION,VM NM,Java,dataforge
+ATTRIBUTE,currently Active,ATTRIBUTE,VM NM,Java,springcore
+ATTRIBUTE,recently Updated,ATTRIBUTE,VM NM,Java,dataforge
+FUNCTION,vx context,FUNCTION,PRE N,C,libvx
+FUNCTION,vx buffer,FUNCTION,PRE N,C,libvx
+FUNCTION,blitz socket,FUNCTION,PRE N,C,blitz
+FUNCTION,nexus port,FUNCTION,PRE N,C,nexus
+FUNCTION,forge writer,FUNCTION,PRE N,C,forge
+FUNCTION,pixl canvas,FUNCTION,PRE N,C,pixl
+FUNCTION,kron handle,FUNCTION,PRE N,C,kron
+DECLARATION,vx status,DECLARATION,PRE N,C,libvx
+DECLARATION,blitz result,DECLARATION,PRE N,C,blitz
+DECLARATION,nexus config,DECLARATION,PRE N,C,nexus
+DECLARATION,pixl format,DECLARATION,PRE N,C,pixl
+DECLARATION,kron timer,DECLARATION,PRE N,C,kron
+DECLARATION,n Count,DECLARATION,PRE N,C,libvx
+DECLARATION,p Buffer,DECLARATION,PRE N,C,blitz
+DECLARATION,dw Flags,DECLARATION,PRE N,C,nexus
+DECLARATION,lpsz String,DECLARATION,PRE N,C,forge
+DECLARATION,h Window,DECLARATION,PRE N,C,kron
+DECLARATION,lp Data,DECLARATION,PRE N,C,nexus
+DECLARATION,w Param,DECLARATION,PRE N,C,kron
+DECLARATION,f Scale,DECLARATION,PRE N,C,pixl
+DECLARATION,i Index,DECLARATION,PRE N,C,libvx
+DECLARATION,g Instance,DECLARATION,PRE N,C,libvx
+DECLARATION,m Member,DECLARATION,PRE N,C++,sigma
+DECLARATION,s Instance,DECLARATION,PRE N,C++,apex
+ATTRIBUTE,m Value,ATTRIBUTE,PRE N,C++,sigma
+ATTRIBUTE,m Offset,ATTRIBUTE,PRE N,C++,vortex
+ATTRIBUTE,m Buffer,ATTRIBUTE,PRE N,C++,neutron
+ATTRIBUTE,m Count,ATTRIBUTE,PRE N,C++,apex
+FUNCTION,vx create context,FUNCTION,PRE V N,C,libvx
+FUNCTION,vx destroy buffer,FUNCTION,PRE V N,C,libvx
+FUNCTION,blitz read socket,FUNCTION,PRE V N,C,blitz
+FUNCTION,nexus bind port,FUNCTION,PRE V N,C,nexus
+FUNCTION,forge write file,FUNCTION,PRE V N,C,forge
+FUNCTION,pixl draw rect,FUNCTION,PRE V N,C,pixl
+FUNCTION,kron start timer,FUNCTION,PRE V N,C,kron
+FUNCTION,zyra parse token,FUNCTION,PRE V N,C,zyra
+FUNCTION,qore load module,FUNCTION,PRE V N,C,qore
+FUNCTION,rune encrypt key,FUNCTION,PRE V N,C,rune
+FUNCTION,flux send packet,FUNCTION,PRE V N,C,flux
+FUNCTION,vx default context,FUNCTION,PRE NM N,C,libvx
+FUNCTION,blitz network socket,FUNCTION,PRE NM N,C,blitz
+FUNCTION,nexus local port,FUNCTION,PRE NM N,C,nexus
+DECLARATION,vx error code,DECLARATION,PRE NM N,C,libvx
+DECLARATION,forge file handle,DECLARATION,PRE NM N,C,forge
+DECLARATION,pixl pixel format,DECLARATION,PRE NM N,C,pixl
+DECLARATION,kron event mask,DECLARATION,PRE NM N,C,kron
+DECLARATION,sz File Name,DECLARATION,PRE NM N,C,libvx
+DECLARATION,cb Buffer Size,DECLARATION,PRE NM N,C,kron
+DECLARATION,b Is Valid,DECLARATION,PRE NM N,C,libvx
+FUNCTION,vx get error code,FUNCTION,PRE V NM N,C,libvx
+FUNCTION,blitz set buffer size,FUNCTION,PRE V NM N,C,blitz
+FUNCTION,nexus get local port,FUNCTION,PRE V NM N,C,nexus
+FUNCTION,forge read config file,FUNCTION,PRE V NM N,C,forge
+FUNCTION,pixl set pixel format,FUNCTION,PRE V NM N,C,pixl
+FUNCTION,vx create shader program,FUNCTION,PRE V NM N,C,libvx
+FUNCTION,flux register event listener,FUNCTION,PRE V NM N,C,flux
+FUNCTION,rune decrypt data block,FUNCTION,PRE V NM N,C,rune
+FUNCTION,qore validate config entry,FUNCTION,PRE V NM N,C,qore
+FUNCTION,zyra resolve symbol table,FUNCTION,PRE V NM N,C,zyra
+FUNCTION,vx default error handler,FUNCTION,PRE NM NM N,C,libvx
+DECLARATION,blitz max buffer size,DECLARATION,PRE NM NM N,C,blitz
+DECLARATION,nexus default retry count,DECLARATION,PRE NM NM N,C,nexus
+DECLARATION,sz Default File Name,DECLARATION,PRE NM NM N,C,libvx
+DECLARATION,p Next Free Block,DECLARATION,PRE NM NM N,C,blitz
+FUNCTION,vx get max buffer size,FUNCTION,PRE V NM NM N,C,libvx
+FUNCTION,nexus set max retry count,FUNCTION,PRE V NM NM N,C,nexus
+FUNCTION,vx listeners,FUNCTION,PRE NPL,C,libvx
+DECLARATION,blitz connections,DECLARATION,PRE NPL,C,blitz
+DECLARATION,forge handles,DECLARATION,PRE NPL,C,forge
+FUNCTION,vx get listeners,FUNCTION,PRE V NPL,C,libvx
+FUNCTION,blitz close connections,FUNCTION,PRE V NPL,C,blitz
+FUNCTION,forge release handles,FUNCTION,PRE V NPL,C,forge
+FUNCTION,vx init,FUNCTION,PRE V,C,libvx
+FUNCTION,blitz shutdown,FUNCTION,PRE V,C,blitz
+FUNCTION,nexus connect,FUNCTION,PRE V,C,nexus
+FUNCTION,kron reset,FUNCTION,PRE V,C,kron
+FUNCTION,forge flush,FUNCTION,PRE V,C,forge
+FUNCTION,pixl clear,FUNCTION,PRE V,C,pixl
+FUNCTION,vx get active listeners,FUNCTION,PRE V NM NPL,C,libvx
+FUNCTION,blitz remove stale connections,FUNCTION,PRE V NM NPL,C,blitz
+FUNCTION,forge list open handles,FUNCTION,PRE V NM NPL,C,forge
+DECLARATION,is Empty,DECLARATION,V NM,Java,bytecraft
+DECLARATION,is Connected,DECLARATION,V NM,Java,nodelink
+DECLARATION,is Visible,DECLARATION,V NM,Java,gridview
+DECLARATION,is Locked,DECLARATION,V NM,C++,vortex
+DECLARATION,is Final,DECLARATION,V NM,Java,bytecraft
+DECLARATION,is Null,DECLARATION,V NM,Java,springcore
+DECLARATION,was Deleted,DECLARATION,V NM,C++,sigma
+DECLARATION,is Initialized,DECLARATION,V NM,C++,neutron
+ATTRIBUTE,is Active,ATTRIBUTE,V NM,Java,springcore
+ATTRIBUTE,is Deleted,ATTRIBUTE,V NM,Java,dataforge
+ATTRIBUTE,is Focused,ATTRIBUTE,V NM,Java,gridview
+ATTRIBUTE,is Hovered,ATTRIBUTE,V NM,Java,gridview
+FUNCTION,is Ready,FUNCTION,V NM,Java,springcore
+FUNCTION,is Enabled,FUNCTION,V NM,Java,gridview
+FUNCTION,can Execute,FUNCTION,V V,Java,springcore
+FUNCTION,should Retry,FUNCTION,V V,Java,nodelink
+FUNCTION,will Terminate,FUNCTION,V V,C++,vortex
+FUNCTION,may Override,FUNCTION,V V,Java,springcore
+DECLARATION,can Read,DECLARATION,V V,Java,springcore
+DECLARATION,should Continue,DECLARATION,V V,C++,apex
+DECLARATION,can Write,DECLARATION,V V,C,forge
+DECLARATION,should Refresh,DECLARATION,V V,Java,gridview
+FUNCTION,can Execute Query,FUNCTION,V V N,Java,dataforge
+FUNCTION,should Update Display,FUNCTION,V V N,Java,gridview
+FUNCTION,will Invalidate Cache,FUNCTION,V V N,Java,bytecraft
+FUNCTION,must Validate Input,FUNCTION,V V N,Java,springcore
+FUNCTION,has Next,FUNCTION,V DT,Java,bytecraft
+FUNCTION,starts With,FUNCTION,V P,Java,springcore
+FUNCTION,ends With,FUNCTION,V P,Java,springcore
+FUNCTION,send To,FUNCTION,V P,Java,nodelink
+FUNCTION,read From,FUNCTION,V P,C,forge
+FUNCTION,log In,FUNCTION,V P,Java,springcore
+FUNCTION,log Out,FUNCTION,V P,Java,springcore
+FUNCTION,opt In,FUNCTION,V P,Java,springcore
+FUNCTION,opt Out,FUNCTION,V P,Java,springcore
+FUNCTION,sign Up,FUNCTION,V P,Java,springcore
+FUNCTION,tear Down,FUNCTION,V P,Java,springcore
+DECLARATION,is Valid,DECLARATION,V N,Java,springcore
+DECLARATION,is Running,DECLARATION,V N,C++,vortex
+DECLARATION,has Error,DECLARATION,V N,Java,springcore
+DECLARATION,needs Update,DECLARATION,V N,Java,springcore
+DECLARATION,has Permission,DECLARATION,V N,Java,springcore
+DECLARATION,has Focus,DECLARATION,V N,Java,gridview
+ATTRIBUTE,has Permission_attr,ATTRIBUTE,V N,Java,springcore
+ATTRIBUTE,can Edit,ATTRIBUTE,V V,Java,gridview
+DECLARATION,has Children,DECLARATION,V NPL,C++,sigma
+FUNCTION,signal Handler,FUNCTION,NM N,C,kron
+FUNCTION,deep Copy Object,FUNCTION,NM V N,Java,bytecraft
+FUNCTION,safe Delete Pointer,FUNCTION,NM V N,C++,neutron
+FUNCTION,quick Sort Array,FUNCTION,NM V N,C,blitz
+FUNCTION,lazy Load Image,FUNCTION,NM V N,Java,gridview
+FUNCTION,parallel Sort Array,FUNCTION,NM V N,Java,bytecraft
+FUNCTION,async Load Resource,FUNCTION,NM V N,Java,springcore
+FUNCTION,auto Detect Encoding,FUNCTION,NM V N,Java,bytecraft
+FUNCTION,batch Insert Records,FUNCTION,NM V NPL,Java,dataforge
+FUNCTION,read And Process Data,FUNCTION,V CJ V N,Java,dataforge
+FUNCTION,on Did Load,FUNCTION,P V V,swift,gridview
+FUNCTION,on Will Appear,FUNCTION,P V V,swift,gridview
+FUNCTION,find Dead Thread Groups,FUNCTION,V NM NM NPL,C++,vortex
+FUNCTION,validate Required Input Fields,FUNCTION,V NM NM NPL,Java,dataforge
+FUNCTION,get Max Allowed Retry Count,FUNCTION,V NM NM NM N,Java,nodelink
+FUNCTION,set Default Max Buffer Size,FUNCTION,V NM NM NM N,C++,neutron
+DECLARATION,bytes In Buffer,DECLARATION,NPL P N,C,forge
+DECLARATION,items In Queue,DECLARATION,NPL P N,Java,springcore
+DECLARATION,rows Per Page,DECLARATION,NPL P N,Java,gridview
+PARAMETER,pixels Per Inch,PARAMETER,NPL P N,C,pixl
+PARAMETER,threads Per Core,PARAMETER,NPL P N,C++,vortex
+DECLARATION,input Or Output Mode,DECLARATION,N CJ N N,C++,apex
+ATTRIBUTE,min And Max Range,ATTRIBUTE,N CJ N N,C++,sigma
+FUNCTION,on Data Received,FUNCTION,P N NM,Java,nodelink
+FUNCTION,convert To Fixed Point Format,FUNCTION,V P NM NM N,C++,sigma
+CLASS,Default Abstract Factory Method Pattern,CLASS,NM NM NM NM N,Java,springcore
+DECLARATION,max Allowed Concurrent Thread Count,DECLARATION,NM NM NM NM N,Java,vortex
+DECLARATION,read Or Write,DECLARATION,V CJ V,C,forge

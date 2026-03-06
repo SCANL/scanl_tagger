@@ -56,6 +56,15 @@ python main --mode train --model_type lm_based
 python main --mode train --model_type tree_based
 ```
 
+For LM training, you can choose which datasets to include:
+
+```bash
+python main --mode train --model_type lm_based
+python main --mode train --model_type lm_based --no-synthetic-data
+python main --mode train --model_type lm_based --no-tagger-data
+python main --mode train --model_type lm_based --tagger-data --synthetic-data
+```
+
 ---
 
 ## Evaluation Results

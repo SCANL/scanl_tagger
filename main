@@ -50,6 +50,20 @@ if __name__ == "__main__":
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
+    parser.add_argument(
+        "--tagger-data",
+        dest="use_tagger_data",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Include input/tagger_data.tsv when training the lm_based model",
+    )
+    parser.add_argument(
+        "--synthetic-data",
+        dest="use_synthetic_data",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Include input/synthetic_pos_data_full.csv when training the lm_based model",
+    )
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
@@ -67,7 +81,14 @@ if __name__ == "__main__":
             download_files()
             train_tree(config)
         elif args.model_type == "lm_based":
-            train_lm(SCRIPT_DIR)
+            if not args.use_tagger_data and not args.use_synthetic_data:
+                parser.error("At least one of --tagger-data or --synthetic-data must be enabled for lm_based training.")
+
+            train_lm(
+                SCRIPT_DIR,
+                use_tagger_data=args.use_tagger_data,
+                use_synthetic_data=args.use_synthetic_data,
+            )
 
     elif args.mode == "run":
         if args.model_type == "tree_based":

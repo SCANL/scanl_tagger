@@ -1,0 +1,25 @@
+              precision    recall  f1-score   support
+
+          CJ       0.95      0.91      0.93        22
+           D       0.94      1.00      0.97        50
+          DT       0.85      0.94      0.89        62
+           N       0.94      0.96      0.95       541
+          NM       0.93      0.93      0.93       500
+         NPL       0.96      0.95      0.95        91
+           P       0.98      0.95      0.96       126
+         PRE       0.85      0.86      0.85        71
+           V       0.94      0.90      0.92       228
+          VM       0.80      0.67      0.73        12
+
+    accuracy                           0.93      1703
+   macro avg       0.91      0.91      0.91      1703
+weighted avg       0.93      0.93      0.93      1703
+
+
+Inference Time: 1.92s for 648 identifiers (7942 tokens)
+Tokens/sec: 4142.27
+Identifiers/sec: 337.97
+
+Final Macro F1 on Held-Out Set: 0.9090
+Final Token-level Accuracy on Held-Out Set: 0.9342
+Final Identifier-level Accuracy on Held-Out Set: 0.8472

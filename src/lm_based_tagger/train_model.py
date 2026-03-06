@@ -1,6 +1,7 @@
 import os
 import time
 import random
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -27,7 +28,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
 # === Random Seeds ===
-RAND_STATE = 209
+RAND_STATE = 69
 random.seed(RAND_STATE)
 np.random.seed(RAND_STATE)
 torch.manual_seed(RAND_STATE)
@@ -36,9 +37,9 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # === Hyperparameters / Config ===
-K = 2                     # number of CV folds
+K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.15      # 15% held out for final evaluation
-EPOCHS = 2            # number of epochs per fold
+EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
@@ -183,12 +184,69 @@ def viterbi_predict(model, dataset, data_collator, batch_size=16):
     return all_preds, all_labels
 
 
-def train_lm(script_dir: str):
+def _load_lm_training_dataframe(
+    script_dir: str,
+    use_tagger_data: bool = True,
+    use_synthetic_data: bool = True,
+) -> Tuple[pd.DataFrame, List[str]]:
+    """
+    Load and combine the requested LM training sources.
+
+    Returns:
+        A tuple of:
+        - combined training dataframe
+        - list of source names that were included
+    """
+    source_configs = [
+        {
+            "enabled": use_tagger_data,
+            "name": "tagger_data",
+            "path": os.path.join(script_dir, "input", "tagger_data.tsv"),
+            "read_kwargs": {"sep": "\t", "dtype": str},
+        },
+        {
+            "enabled": use_synthetic_data,
+            "name": "synthetic_pos_data_full",
+            "path": os.path.join(script_dir, "input", "synthetic_pos_data_full.csv"),
+            "read_kwargs": {"dtype": str},
+        },
+    ]
+
+    selected_sources = [cfg for cfg in source_configs if cfg["enabled"]]
+    if not selected_sources:
+        raise ValueError("At least one LM training dataset must be enabled.")
+
+    required_columns = ["SPLIT", "GRAMMAR_PATTERN"]
+    dataframes = []
+    source_names = []
+
+    for source in selected_sources:
+        df = pd.read_csv(source["path"], **source["read_kwargs"])
+        df.columns = [str(col).replace("\ufeff", "").strip() for col in df.columns]
+        df = df.dropna(subset=required_columns)
+        df = df[df["SPLIT"].str.strip().astype(bool)].copy()
+        df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
+        df["tags"] = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
+        df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)].copy()
+        df["DATA_SOURCE"] = source["name"]
+
+        dataframes.append(df)
+        source_names.append(source["name"])
+
+    combined_df = pd.concat(dataframes, ignore_index=True)
+    return combined_df, source_names
+
+
+def train_lm(
+    script_dir: str,
+    use_tagger_data: bool = True,
+    use_synthetic_data: bool = True,
+):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
     Performs model selection based on macro F1 score, and evaluates the best model on a final hold-out set.
 
-    Input TSV must contain:
+    Enabled input datasets must contain:
         - SPLIT: tokenized identifier as space-separated subtokens (e.g., "get Employee Name")
         - GRAMMAR_PATTERN: space-separated labels (e.g., "V NM N")
         - CONTEXT: usage context string (e.g., FUNCTION, PARAMETER, ...)
@@ -202,17 +260,21 @@ def train_lm(script_dir: str):
         - Text report of macro-F1, token-level and identifier-level accuracy
     """
     # 1) Paths
-    input_path = os.path.join(script_dir, "input", "tagger_data.tsv")
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
 
-    # 2) Read the TSV & build “tokens” / “tags” columns 
-    df = pd.read_csv(input_path, sep="\t", dtype=str).dropna(subset=["SPLIT", "GRAMMAR_PATTERN"])
-    df = df[df["SPLIT"].str.strip().astype(bool)]
-    df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
-    df["tags"]   = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
-    # Keep only rows where len(tokens) == len(tags)
-    df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)]
+    # 2) Read the requested datasets and build “tokens” / “tags” columns
+    df, source_names = _load_lm_training_dataframe(
+        script_dir=script_dir,
+        use_tagger_data=use_tagger_data,
+        use_synthetic_data=use_synthetic_data,
+    )
+    print(
+        "Loaded LM training data from "
+        f"{', '.join(source_names)}: {len(df)} total examples"
+    )
+    if "DATA_SOURCE" in df.columns:
+        print(df["DATA_SOURCE"].value_counts().sort_index().to_string())
 
     # 3) Initial Train/Val Split (15% hold-out) 
     train_df, val_df = train_test_split(
