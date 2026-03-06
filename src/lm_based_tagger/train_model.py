@@ -5,6 +5,7 @@ import random
 import numpy as np
 import pandas as pd
 import torch
+from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
 
 from sklearn.model_selection import train_test_split, KFold
@@ -114,19 +115,17 @@ def compute_metrics(eval_pred):
     all_true, all_pred, id_correct_flags = [], [], []
 
     for pred_row, label_row in zip(preds, labels):
-        ptr = 0
         example_correct = True
 
-        for lbl in label_row:                 # iterate gold labels
+        for i, lbl in enumerate(label_row):   # iterate gold labels with position index
             if lbl == -100:                   # skip padding / specials
                 continue
 
-            # pick the corresponding prediction
+            # Use the same position index into pred_row for correct alignment
             if isinstance(pred_row, (list, np.ndarray)):
-                pred_lbl = pred_row[ptr]
+                pred_lbl = pred_row[i]
             else:                             # pred_row is scalar
                 pred_lbl = pred_row
-            ptr += 1
 
             all_true.append(lbl)
             all_pred.append(pred_lbl)
@@ -145,6 +144,38 @@ def compute_metrics(eval_pred):
         "eval_token_accuracy":    token_acc,
         "eval_identifier_accuracy": id_acc,
     }
+
+def viterbi_predict(model, dataset, data_collator, batch_size=16):
+    """
+    Run CRF Viterbi decoding over a dataset without using the HuggingFace Trainer.
+
+    Returns:
+        all_preds:  List[List[int]] — Viterbi-decoded label IDs per example,
+                    length T-2 (inner tokens, no CLS/SEP), shorter for padded sequences.
+        all_labels: List[List[int]] — padded label IDs per example, length T
+                    (with -100 for CLS, SEP, padding, and ignored tokens).
+
+    Caller is responsible for aligning: use sent_labels[1:-1] to strip CLS/SEP
+    before zipping with sent_preds.
+    """
+    loader = DataLoader(dataset, batch_size=batch_size, collate_fn=data_collator)
+    model.eval()
+    all_preds, all_labels = [], []
+
+    with torch.no_grad():
+        for batch in loader:
+            batch_labels = batch.pop("labels").tolist()
+            batch = {k: v.to(device) for k, v in batch.items()}
+            out = model(**batch)
+            if "predictions" in out:
+                all_preds.extend(out["predictions"])
+            else:
+                # Fallback for non-CRF models
+                all_preds.extend(torch.argmax(out["logits"], dim=-1).tolist())
+            all_labels.extend(batch_labels)
+
+    return all_preds, all_labels
+
 
 def train_lm(script_dir: str):
     """
@@ -185,11 +216,7 @@ def train_lm(script_dir: str):
         stratify=df["CONTEXT"]
     )
 
-    # 4) Upsample low-frequency tags **in the training set only** 
-    low_freq_df = train_df[train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
-    train_df_upsampled = pd.concat([train_df] + [low_freq_df] * 2, ignore_index=True)
-
-    # 5) Tokenizer
+    # 4) Tokenizer (upsampling now happens per-fold to prevent cross-fold leakage)
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
 
     # 6) Prepare final hold-out “validation” Dataset 
@@ -205,12 +232,16 @@ def train_lm(script_dir: str):
     best_model_dir = None
 
     fold = 1
-    for train_idx, test_idx in kf.split(train_df_upsampled):
+    for train_idx, test_idx in kf.split(train_df):
         print(f"\n=== Fold {fold} ===")
 
-        # 7a) Split the upsampled DataFrame into this fold’s train/test
-        fold_train_df = train_df_upsampled.iloc[train_idx].reset_index(drop=True)
-        fold_test_df  = train_df_upsampled.iloc[test_idx].reset_index(drop=True)
+        # 7a) Split this fold’s train/test from the base training set
+        fold_train_df = train_df.iloc[train_idx].reset_index(drop=True)
+        fold_test_df  = train_df.iloc[test_idx].reset_index(drop=True)
+
+        # Upsample low-frequency tags inside the fold to prevent cross-fold leakage
+        low_freq_fold = fold_train_df[fold_train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
+        fold_train_df = pd.concat([fold_train_df] + [low_freq_fold] * 2, ignore_index=True)
 
         # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
         fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID)
@@ -321,25 +352,21 @@ def train_lm(script_dir: str):
         trainer.train()
 
 
-        # 13) Evaluate fold performance on validation split
-        #     We run inference and obtain predictions as either logits (softmax) or Viterbi-decoded paths.
-        #     Here, since we use CRF; 'preds_logits' contains Viterbi sequences of label IDs.
-        #     We then flatten and decode both true and predicted labels for macro-F1 calculation.
-        preds_logits, labels, _ = trainer.predict(tokenized_test)
-        preds = np.argmax(preds_logits, axis=-1)
+        # 13) Evaluate fold performance using CRF Viterbi decoding
+        viterbi_preds, fold_labels = viterbi_predict(model, tokenized_test, data_collator)
 
-        # Convert to (flattened) label strings for F1
+        # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels
         true_labels_list = [
             ID2LABEL[l]
-            for sent_labels, sent_preds in zip(labels, preds)
-            for (l, p) in zip(sent_labels, sent_preds)
+            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
+            for (l, p) in zip(sent_labels[1:-1], sent_preds)
             if l != -100
         ]
-        
+
         pred_labels_list = [
             ID2LABEL[p]
-            for sent_labels, sent_preds in zip(labels, preds)
-            for (l, p) in zip(sent_labels, sent_preds)
+            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
+            for (l, p) in zip(sent_labels[1:-1], sent_preds)
             if l != -100
         ]
 
@@ -365,43 +392,23 @@ def train_lm(script_dir: str):
     best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
 
-    # Use new TrainingArguments to disable evaluation during predict
-    final_args = TrainingArguments(
-        output_dir=os.path.join(output_dir, "final_eval"),
-        per_device_eval_batch_size=16,
-        eval_strategy="no",
-        save_strategy="no",
-        logging_dir=os.path.join(output_dir, "logs", "final_eval"),
-        report_to="none",
-        seed=RAND_STATE
-    )
-    
-    # Set up Trainer to run inference on hold-out set
-    val_trainer = Trainer(
-        model=best_model,
-        args=final_args,
-        tokenizer=tokenizer,
-        data_collator=DataCollatorForTokenClassification(tokenizer=tokenizer)
-        # ← note: no eval_dataset here, because we’ll call .predict(...) manually
-    )
-    
     # 17) Run prediction on hold-out set and record inference time
+    holdout_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
     start_time = time.perf_counter()
-    val_preds_logits, val_labels, _ = val_trainer.predict(tokenized_val)
+    val_preds, val_labels = viterbi_predict(best_model, tokenized_val, holdout_collator)
     end_time = time.perf_counter()
 
-    val_preds = np.argmax(val_preds_logits, axis=-1)
-
+    # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels
     flat_true = [
         ID2LABEL[l]
         for sent_labels, sent_preds in zip(val_labels, val_preds)
-        for (l, p) in zip(sent_labels, sent_preds)
+        for (l, p) in zip(sent_labels[1:-1], sent_preds)
         if l != -100
     ]
     flat_pred = [
         ID2LABEL[p]
         for sent_labels, sent_preds in zip(val_labels, val_preds)
-        for (l, p) in zip(sent_labels, sent_preds)
+        for (l, p) in zip(sent_labels[1:-1], sent_preds)
         if l != -100
     ]
 

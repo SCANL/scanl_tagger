@@ -187,14 +187,20 @@ def tokenize_and_align_labels(sample, tokenizer):
 
     labels = []
     word_ids = tokenized.word_ids()
+    prev_word_id = None
 
     for word_id in word_ids:
         if word_id is None:
+            # Special tokens (CLS, SEP, PAD)
+            labels.append(-100)
+        elif word_id == prev_word_id:
+            # Continuation subword token (e.g. ##ployee) — ignore in loss/metrics
             labels.append(-100)
         elif word_id < len(sample["ner_tags"]):
             labels.append(sample["ner_tags"][word_id])
         else:
             labels.append(-100)
+        prev_word_id = word_id
 
     tokenized["labels"] = labels
     return tokenized
