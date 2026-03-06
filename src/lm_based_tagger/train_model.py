@@ -36,9 +36,9 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 
 # === Hyperparameters / Config ===
-K = 5                     # number of CV folds
+K = 2                     # number of CV folds
 HOLDOUT_RATIO = 0.15      # 15% held out for final evaluation
-EPOCHS = 10            # number of epochs per fold
+EPOCHS = 2            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
@@ -158,6 +158,12 @@ def viterbi_predict(model, dataset, data_collator, batch_size=16):
     Caller is responsible for aligning: use sent_labels[1:-1] to strip CLS/SEP
     before zipping with sent_preds.
     """
+    # Strip raw string columns (tokens, ner_tags) that the collator cannot tensorise
+    COLLATABLE = {"input_ids", "attention_mask", "labels", "token_type_ids"}
+    extra_cols = [c for c in dataset.column_names if c not in COLLATABLE]
+    if extra_cols:
+        dataset = dataset.remove_columns(extra_cols)
+
     loader = DataLoader(dataset, batch_size=batch_size, collate_fn=data_collator)
     model.eval()
     all_preds, all_labels = [], []
@@ -266,8 +272,14 @@ def train_lm(script_dir: str):
             dropout_prob=0.1
         ).to(device)
 
-        # 9) TrainingArguments (with early stopping) 
-        # 9) TrainingArguments (with early stopping) 
+        # 9) TrainingArguments (with early stopping)
+        # Compute warmup_steps as ~10% of total training steps for this fold
+        if device.type == "cpu":
+            _effective_batch = 16
+        else:
+            _effective_batch = 8 * 2  # per_device_batch * gradient_accumulation_steps
+        _warmup_steps = max(1, int(0.1 * (len(fold_train_df) / _effective_batch) * EPOCHS))
+
         if device.type == "cpu":
             training_args = TrainingArguments(
                 output_dir=os.path.join(output_dir, f"fold_{fold}"),
@@ -278,13 +290,12 @@ def train_lm(script_dir: str):
                 per_device_eval_batch_size=16,
                 num_train_epochs=EPOCHS,
                 weight_decay=0.01,
-                warmup_ratio=0.1,
+                warmup_steps=_warmup_steps,
                 lr_scheduler_type="cosine",
                 load_best_model_at_end=True,
                 metric_for_best_model="eval_macro_f1",
                 greater_is_better=True,
                 save_total_limit=1,
-                logging_dir=os.path.join(output_dir, "logs", f"fold_{fold}"),
                 report_to="none",
                 seed=RAND_STATE
             )
@@ -302,7 +313,7 @@ def train_lm(script_dir: str):
 
                 num_train_epochs=EPOCHS,
                 weight_decay=0.01,
-                warmup_ratio=0.1,
+                warmup_steps=_warmup_steps,
                 lr_scheduler_type="cosine",
 
                 load_best_model_at_end=True,
@@ -310,7 +321,6 @@ def train_lm(script_dir: str):
                 greater_is_better=True,
                 save_total_limit=1,
 
-                logging_dir=os.path.join(output_dir, "logs", f"fold_{fold}"),
                 report_to="none",
                 seed=RAND_STATE,
 
@@ -328,20 +338,16 @@ def train_lm(script_dir: str):
 
         # 11) Initialize Trainer for this fold with early stopping
         #     Trainer handles batching, optimizer, eval, LR scheduling, logging, etc.
-        #     We also assign the tokenizer to `trainer.tokenizer` so that
-        #     it is correctly saved with the model and used during predict().
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=tokenized_train,
             eval_dataset=tokenized_test,
-            tokenizer=tokenizer,
+            processing_class=tokenizer,
             data_collator=data_collator,
             callbacks=[EarlyStoppingCallback(early_stopping_patience=EARLY_STOP)],
             compute_metrics=compute_metrics
         )
-        # Avoid deprecation warning (explicitly set tokenizer on trainer)
-        trainer.tokenizer = tokenizer
 
         # 12) Train model on this fold
         #     During training, the CRF computes loss using both:
@@ -378,6 +384,10 @@ def train_lm(script_dir: str):
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
             best_model_dir = os.path.join(output_dir, "best_model")
+            # Clear stale files (e.g. added_tokens.json from prior runs) before saving
+            if os.path.exists(best_model_dir):
+                import shutil
+                shutil.rmtree(best_model_dir)
             trainer.save_model(best_model_dir)
             model.config.save_pretrained(best_model_dir)
             tokenizer.save_pretrained(best_model_dir)

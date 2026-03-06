@@ -168,6 +168,14 @@ class DistilBertCRFForTokenClassification(nn.Module):
                 )
 
             state_dict = load_safe_file(weight_path, device="cpu")
+
+            # Resize embeddings if vocab changed (e.g. special tokens added during training)
+            emb_key = "bert.embeddings.word_embeddings.weight"
+            if emb_key in state_dict:
+                saved_vocab = state_dict[emb_key].shape[0]
+                if saved_vocab != model.bert.embeddings.word_embeddings.num_embeddings:
+                    model.bert.resize_token_embeddings(saved_vocab)
+
             model.load_state_dict(state_dict)
             return model
 
