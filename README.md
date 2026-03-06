@@ -63,6 +63,7 @@ python main --mode train --model_type lm_based
 python main --mode train --model_type lm_based --no-synthetic-data
 python main --mode train --model_type lm_based --no-tagger-data
 python main --mode train --model_type lm_based --tagger-data --synthetic-data
+python main --mode train --model_type lm_based --features context hungarian digit
 ```
 
 ---

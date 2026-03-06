@@ -1,5 +1,6 @@
 import re
 from difflib import SequenceMatcher
+from typing import Iterable, List, Optional
 import pandas as pd
 from datasets import Dataset
 
@@ -16,7 +17,7 @@ CONTEXT_MAP = {
     "CLASS": "@class"
 }
 
-FEATURES = [
+AVAILABLE_FEATURES = [
     "context",
     "hungarian",
     "cvr",
@@ -25,6 +26,8 @@ FEATURES = [
     "language",       # NEW
     "sys_sim"         # NEW
 ]
+
+DEFAULT_FEATURES = list(AVAILABLE_FEATURES)
 
 FEATURE_FUNCTIONS = {
     "context": lambda row, tokens: CONTEXT_MAP.get(row["CONTEXT"].strip().upper(), "@unknown"),
@@ -36,10 +39,39 @@ FEATURE_FUNCTIONS = {
     "sys_sim":   lambda r,t: system_prefix_similarity(t[0], r.get("SYSTEM_NAME",""))
 }
 
-def get_feature_tokens(row, tokens):
-    return [FEATURE_FUNCTIONS[feat](row, tokens) for feat in FEATURES]
+def normalize_selected_features(selected_features: Optional[Iterable[str]] = None) -> List[str]:
+    """
+    Validate and canonicalize a selected feature list.
 
-NUMBER_OF_FEATURES = len(FEATURES)
+    Args:
+        selected_features: Iterable of feature names, or ``None`` to use all features.
+
+    Returns:
+        A feature list ordered according to ``AVAILABLE_FEATURES``.
+    """
+    if selected_features is None:
+        return list(DEFAULT_FEATURES)
+
+    selected_list = [feature.strip() for feature in selected_features if str(feature).strip()]
+    selected_set = set(selected_list)
+    invalid_features = sorted(selected_set - set(AVAILABLE_FEATURES))
+    if invalid_features:
+        raise ValueError(
+            "Unknown lm_based feature(s): "
+            f"{', '.join(invalid_features)}. "
+            f"Available features: {', '.join(AVAILABLE_FEATURES)}"
+        )
+
+    return [feature for feature in AVAILABLE_FEATURES if feature in selected_set]
+
+
+def get_feature_tokens(row, tokens, selected_features: Optional[Iterable[str]] = None):
+    active_features = normalize_selected_features(selected_features)
+    return [FEATURE_FUNCTIONS[feat](row, tokens) for feat in active_features]
+
+
+def get_number_of_features(selected_features: Optional[Iterable[str]] = None) -> int:
+    return len(normalize_selected_features(selected_features))
 
 def detect_hungarian_prefix(first_token):
     m = re.match(r'^([a-zA-Z]{1,3})[A-Z_]', first_token)
@@ -96,7 +128,11 @@ def normalize_type(type_str):
 def normalize_language(lang_str):
     return "@lang_" + lang_str.strip().lower().replace("++", "pp").replace("#", "sharp")
 
-def prepare_dataset(df: pd.DataFrame, label2id: dict):
+def prepare_dataset(
+    df: pd.DataFrame,
+    label2id: dict,
+    selected_features: Optional[Iterable[str]] = None,
+):
     """
     Converts a DataFrame of identifier tokens and grammar tags into a HuggingFace Dataset
     formatted for NER training with feature and position tokens.
@@ -129,11 +165,14 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
             ner_tags:  [-100, -100, -100, -100,
                         -100, 1, -100, 2, -100, 3]  # assuming label2id = {"V": 1, "NM": 2, "N": 3}
     """
+    active_features = normalize_selected_features(selected_features)
+    num_features = len(active_features)
+
     rows = []
     for _, row in df.iterrows():
         tokens = row["tokens"]
         tags = row["tags"]
-        feature_tokens = get_feature_tokens(row, tokens)
+        feature_tokens = get_feature_tokens(row, tokens, active_features)
 
         length = len(tokens)
         pos_tokens = ["@pos_2"] if length == 1 else ["@pos_0"] + ["@pos_1"] * (length - 2) + ["@pos_2"]
@@ -141,7 +180,7 @@ def prepare_dataset(df: pd.DataFrame, label2id: dict):
 
         full_tokens = feature_tokens + tokens_with_pos
         ner_tags_with_pos = [val for tag in tags for val in (-100, label2id[tag])]
-        full_labels = [-100] * NUMBER_OF_FEATURES + ner_tags_with_pos
+        full_labels = [-100] * num_features + ner_tags_with_pos
 
         rows.append({
             "tokens": full_tokens,

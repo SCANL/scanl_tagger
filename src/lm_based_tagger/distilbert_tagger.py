@@ -26,6 +26,11 @@ class DistilBertTagger:
 
         # disable dropout, etc. for inference
         self.model.eval()
+
+        self.selected_features = normalize_selected_features(
+            getattr(self.model.config, "selected_features", None)
+        )
+        self.number_of_features = get_number_of_features(self.selected_features)
         
         # map label IDs to strings
         self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}
@@ -57,7 +62,7 @@ class DistilBertTagger:
         }
         
         # Step 1: Feature tokens + alternating position/word tokens
-        feature_tokens = get_feature_tokens(row, tokens)
+        feature_tokens = get_feature_tokens(row, tokens, self.selected_features)
 
         length = len(tokens)
         pos_tokens = ["@pos_2"] if length == 1 else ["@pos_0"] + ["@pos_1"] * (length - 2) + ["@pos_2"]
@@ -95,9 +100,9 @@ class DistilBertTagger:
         for idx, word_idx in enumerate(word_ids):
             if word_idx is None:
                 continue  # special token (CLS, SEP, PAD, etc.)
-            if word_idx < NUMBER_OF_FEATURES:
+            if word_idx < self.number_of_features:
                 continue  # feature tokens (shouldn't be labeled)
-            if (word_idx - NUMBER_OF_FEATURES) % 2 == 0:
+            if (word_idx - self.number_of_features) % 2 == 0:
                 continue  # position tokens (e.g., @pos_0)
             if word_idx == previous_word_idx:
                 continue  # skip repeated subword tokens

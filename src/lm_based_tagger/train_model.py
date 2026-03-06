@@ -21,7 +21,12 @@ from transformers import (
 )
 
 from datasets import Dataset
-from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
+from src.lm_based_tagger.distilbert_preprocessing import (
+    AVAILABLE_FEATURES,
+    normalize_selected_features,
+    prepare_dataset,
+    tokenize_and_align_labels,
+)
 
 # If CUDA is available, use it; otherwise fallback to CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -241,6 +246,7 @@ def train_lm(
     script_dir: str,
     use_tagger_data: bool = True,
     use_synthetic_data: bool = True,
+    selected_features: List[str] | None = None,
 ):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
@@ -262,6 +268,7 @@ def train_lm(
     # 1) Paths
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
+    selected_features = normalize_selected_features(selected_features)
 
     # 2) Read the requested datasets and build “tokens” / “tags” columns
     df, source_names = _load_lm_training_dataframe(
@@ -273,6 +280,7 @@ def train_lm(
         "Loaded LM training data from "
         f"{', '.join(source_names)}: {len(df)} total examples"
     )
+    print(f"Active LM features: {', '.join(selected_features) if selected_features else '<none>'}")
     if "DATA_SOURCE" in df.columns:
         print(df["DATA_SOURCE"].value_counts().sort_index().to_string())
 
@@ -288,7 +296,7 @@ def train_lm(
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
 
     # 6) Prepare final hold-out “validation” Dataset 
-    val_dataset = prepare_dataset(val_df, LABEL2ID)
+    val_dataset = prepare_dataset(val_df, LABEL2ID, selected_features=selected_features)
     tokenized_val = val_dataset.map(
         lambda ex: tokenize_and_align_labels(ex, tokenizer),
         batched=False
@@ -312,8 +320,8 @@ def train_lm(
         fold_train_df = pd.concat([fold_train_df] + [low_freq_fold] * 2, ignore_index=True)
 
         # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
-        fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID)
-        fold_test_dataset  = prepare_dataset(fold_test_df, LABEL2ID)
+        fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID, selected_features=selected_features)
+        fold_test_dataset  = prepare_dataset(fold_test_df, LABEL2ID, selected_features=selected_features)
 
         # 7c) Tokenize + align labels (exactly as before) 
         tokenized_train = fold_train_dataset.map(
@@ -333,6 +341,7 @@ def train_lm(
             pretrained_name="distilbert-base-uncased",
             dropout_prob=0.1
         ).to(device)
+        model.config.selected_features = selected_features
 
         # 9) TrainingArguments (with early stopping)
         # Compute warmup_steps as ~10% of total training steps for this fold

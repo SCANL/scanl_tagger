@@ -3,6 +3,7 @@
 import os, argparse
 from datetime import datetime
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
+from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
 from src.lm_based_tagger.train_model import train_lm
 from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from src.tag_identifier import start_server
@@ -64,6 +65,12 @@ if __name__ == "__main__":
         default=True,
         help="Include input/synthetic_pos_data_full.csv when training the lm_based model",
     )
+    parser.add_argument(
+        "--features",
+        nargs="+",
+        choices=AVAILABLE_FEATURES,
+        help="Feature tokens to include for lm_based training",
+    )
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
@@ -88,6 +95,7 @@ if __name__ == "__main__":
                 SCRIPT_DIR,
                 use_tagger_data=args.use_tagger_data,
                 use_synthetic_data=args.use_synthetic_data,
+                selected_features=args.features,
             )
 
     elif args.mode == "run":
