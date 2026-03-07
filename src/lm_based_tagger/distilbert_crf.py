@@ -152,6 +152,12 @@ class DistilBertCRFForTokenClassification(nn.Module):
             **kw,
         )
 
+        # Preserve custom config metadata saved with the fine-tuned checkpoint.
+        # This is required so inference uses the same feature layout as training.
+        if hasattr(cfg, "selected_features"):
+            model.config.selected_features = cfg.selected_features
+            model.bert.config.selected_features = cfg.selected_features
+
         # Attempt to load model.safetensors only
         try:
             if os.path.isdir(ckpt_dir):

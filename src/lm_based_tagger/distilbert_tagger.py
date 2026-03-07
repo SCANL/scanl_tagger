@@ -46,7 +46,7 @@ class DistilBertTagger:
         3) Run the model forward pass (handles CRF or logits automatically)
         4) Use word_ids() to align predictions back to full words
               - Skip special tokens (None)
-              - Skip feature tokens (index < NUMBER_OF_FEATURES)
+              - Skip feature tokens (index < configured feature count)
               - Use only the *second* token in each [@pos_X, word] pair (the word)
               - Skip repeated subword tokens (only use the first subtoken per word)
         5) Return a list of string labels corresponding to the original identifier tokens.
