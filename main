@@ -2,6 +2,7 @@
 
 import os, argparse, shlex, sys
 from datetime import datetime
+from error_analysis_scripts.lm_error_analysis import run_lm_diagnostics
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
 from src.lm_based_tagger.train_model import train_lm
@@ -46,11 +47,14 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run' the model")
+    parser.add_argument("--mode", choices=["train", "run", "diagnostics"], required=True, help="Choose to 'train', 'run', or 'diagnostics'")
     parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
+    parser.add_argument("--predictions_path", type=str, default="output/holdout_predictions.csv", help="Path to holdout predictions CSV used by diagnostics mode")
+    parser.add_argument("--report_path", type=str, default="holdout_report.txt", help="Path to holdout report used by diagnostics mode")
+    parser.add_argument("--diagnostics_output_dir", type=str, default="output/error_analysis", help="Directory for diagnostics outputs")
     parser.add_argument(
         "--tagger-data",
         dest="use_tagger_data",
@@ -105,6 +109,28 @@ if __name__ == "__main__":
                 selected_features=args.features,
                 run_metadata=run_metadata,
             )
+
+    elif args.mode == "diagnostics":
+        if args.model_type != "lm_based":
+            parser.error("Diagnostics mode is currently only supported for lm_based.")
+
+        predictions_path = args.predictions_path
+        if not os.path.isabs(predictions_path):
+            predictions_path = os.path.join(SCRIPT_DIR, predictions_path)
+
+        report_path = args.report_path
+        if not os.path.isabs(report_path):
+            report_path = os.path.join(SCRIPT_DIR, report_path)
+
+        diagnostics_output_dir = args.diagnostics_output_dir
+        if not os.path.isabs(diagnostics_output_dir):
+            diagnostics_output_dir = os.path.join(SCRIPT_DIR, diagnostics_output_dir)
+
+        run_lm_diagnostics(
+            predictions_path=predictions_path,
+            output_dir=diagnostics_output_dir,
+            report_path=report_path,
+        )
 
     elif args.mode == "run":
         if args.model_type == "tree_based":

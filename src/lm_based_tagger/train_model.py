@@ -43,7 +43,7 @@ torch.backends.cudnn.benchmark = False
 
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
-HOLDOUT_RATIO = 0.15      # 15% held out for final evaluation
+HOLDOUT_RATIO = 0.30      # 30% held out for final evaluation
 EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
@@ -538,7 +538,12 @@ def train_lm(
         rows.append({
             "tokens":      " ".join(tokens),
             "true_tags":   " ".join(true_tags),
-            "pred_tags":   " ".join(pred_tags)
+            "pred_tags":   " ".join(pred_tags),
+            "context":     context,
+            "type":        type_str,
+            "language":    language,
+            "system_name": system_name,
+            "data_source": row.get("DATA_SOURCE", ""),
         })
 
     preds_df = pd.DataFrame(rows)

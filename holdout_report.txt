@@ -1,25 +1,49 @@
               precision    recall  f1-score   support
 
-          CJ       0.95      0.91      0.93        22
-           D       0.94      1.00      0.97        50
-          DT       0.87      0.94      0.90        62
-           N       0.93      0.94      0.94       541
-          NM       0.93      0.92      0.92       500
-         NPL       0.98      0.91      0.94        91
-           P       0.97      0.97      0.97       126
-         PRE       0.86      0.86      0.86        71
-           V       0.90      0.89      0.89       228
-          VM       0.82      0.75      0.78        12
+          CJ       0.86      0.95      0.90        38
+           D       0.96      0.98      0.97       102
+          DT       0.89      0.95      0.92       140
+           N       0.93      0.94      0.94      1083
+          NM       0.92      0.92      0.92      1001
+         NPL       0.92      0.94      0.93       190
+           P       0.97      0.96      0.96       228
+         PRE       0.89      0.77      0.82       141
+           V       0.92      0.89      0.91       452
+          VM       0.83      0.67      0.74        36
 
-    accuracy                           0.92      1703
-   macro avg       0.91      0.91      0.91      1703
-weighted avg       0.92      0.92      0.92      1703
+    accuracy                           0.92      3411
+   macro avg       0.91      0.90      0.90      3411
+weighted avg       0.92      0.92      0.92      3411
 
 
-Inference Time: 1.31s for 648 identifiers (4702 tokens)
-Tokens/sec: 3587.90
-Identifiers/sec: 494.46
+Run Configuration:
+Command: python3 main --mode train --model_type lm_based --features context sys_sim language
+Seed: 69
+Datasets: tagger_data, synthetic_pos_data_full
+Features: context, language, sys_sim
+CLI options:
+  address: None
+  config_path: serve.json
+  diagnostics_output_dir: output/error_analysis
+  features: ['context', 'sys_sim', 'language']
+  input_path: None
+  local: False
+  mode: train
+  model_dir: models
+  model_type: lm_based
+  port: None
+  predictions_path: output/holdout_predictions.csv
+  protocol: None
+  report_path: holdout_report.txt
+  use_synthetic_data: True
+  use_tagger_data: True
+  version: False
+  word: None
 
-Final Macro F1 on Held-Out Set: 0.9104
-Final Token-level Accuracy on Held-Out Set: 0.9243
-Final Identifier-level Accuracy on Held-Out Set: 0.8287
+Inference Time: 3.10s for 1295 identifiers (10707 tokens)
+Tokens/sec: 3451.24
+Identifiers/sec: 417.42
+
+Final Macro F1 on Held-Out Set: 0.9008
+Final Token-level Accuracy on Held-Out Set: 0.9229
+Final Identifier-level Accuracy on Held-Out Set: 0.8309
