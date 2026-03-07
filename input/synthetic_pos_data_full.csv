@@ -1707,3 +1707,93 @@ FUNCTION,convert To Fixed Point Format,FUNCTION,V P NM NM N,C++,sigma
 CLASS,Default Abstract Factory Method Pattern,CLASS,NM NM NM NM N,Java,springcore
 DECLARATION,max Allowed Concurrent Thread Count,DECLARATION,NM NM NM NM N,Java,vortex
 DECLARATION,read Or Write,DECLARATION,V CJ V,C,forge
+CLASS,Aurora Event Router,CLASS,PRE NM N,Java,aurora
+CLASS,Halcyon Buffer Catalog,CLASS,PRE NM N,C++,halcyon
+CLASS,Byteforge Retry Policy,CLASS,PRE NM N,Java,byteforge
+DECLARATION,aurora context,DECLARATION,PRE N,C,aurora
+DECLARATION,ember socket,DECLARATION,PRE N,C,ember
+DECLARATION,m Retry Count,DECLARATION,PRE NM N,C++,halcyon
+DECLARATION,p Input Buffer,DECLARATION,PRE NM N,C,byteforge
+DECLARATION,b Is Ready,DECLARATION,PRE NM N,C++,northstar
+DECLARATION,recently Flushed,DECLARATION,VM NM,C,ember
+DECLARATION,currently Bound,DECLARATION,VM NM,C++,halcyon
+DECLARATION,next Worker,DECLARATION,DT N,C,aurora
+DECLARATION,last Known Status,DECLARATION,DT NM N,Java,pulseforge
+DECLARATION,reader And Parser,DECLARATION,N CJ N,C++,halcyon
+DECLARATION,owner And Group,DECLARATION,N CJ N,C,drift
+PARAMETER,p Buffer,PARAMETER,PRE N,C,ember
+PARAMETER,b Enabled,PARAMETER,PRE NM,C++,halcyon
+PARAMETER,m Current Owner,PARAMETER,PRE NM N,C++,northstar
+PARAMETER,first Record,PARAMETER,DT N,Java,quill
+PARAMETER,next Token,PARAMETER,DT N,C++,halcyon
+PARAMETER,host And Service,PARAMETER,N CJ N,C,drift
+ATTRIBUTE,m Current Frame,ATTRIBUTE,PRE NM N,C++,halcyon
+ATTRIBUTE,p Data,ATTRIBUTE,PRE N,C,drift
+ATTRIBUTE,partially Loaded,ATTRIBUTE,VM NM,Java,northstar
+ATTRIBUTE,eagerly Cached,ATTRIBUTE,VM NM,Java,byteforge
+ATTRIBUTE,last Retry,ATTRIBUTE,DT N,Java,northstar
+ATTRIBUTE,next Pending Retry,ATTRIBUTE,DT NM N,Java,byteforge
+ATTRIBUTE,state Or Error,ATTRIBUTE,N CJ N,Java,pulseforge
+FUNCTION,aurora init,FUNCTION,PRE V,C,aurora
+FUNCTION,rivet shutdown,FUNCTION,PRE V,C,rivet
+FUNCTION,ember open stream,FUNCTION,PRE V N,C,ember
+FUNCTION,drift close handle,FUNCTION,PRE V N,C,drift
+FUNCTION,aurora get event mask,FUNCTION,PRE V NM N,C,aurora
+FUNCTION,halcyon set render state,FUNCTION,PRE V NM N,C++,halcyon
+FUNCTION,byteforge list handles,FUNCTION,PRE V NPL,C,byteforge
+FUNCTION,pulseforge flush buffers,FUNCTION,PRE V NPL,C,pulseforge
+FUNCTION,lazily Refresh Cache,FUNCTION,VM V N,Java,northstar
+FUNCTION,atomically Swap Pointer,FUNCTION,VM V N,C++,halcyon
+FUNCTION,asynchronously Persist Event,FUNCTION,VM V N,Java,pulseforge
+FUNCTION,eagerly Merge Results,FUNCTION,VM V NPL,Java,byteforge
+FUNCTION,retry Automatically,FUNCTION,V VM,Java,northstar
+FUNCTION,flush Immediately,FUNCTION,V VM,C,ember
+FUNCTION,get Next Worker,FUNCTION,V DT N,C,aurora
+FUNCTION,find First Session,FUNCTION,V DT N,Java,byteforge
+FUNCTION,get Last Error Code,FUNCTION,V DT NM N,C,drift
+FUNCTION,lock And Signal,FUNCTION,V CJ V,C,aurora
+FUNCTION,parse Or Reject,FUNCTION,V CJ V,Java,quill
+FUNCTION,retry If Busy,FUNCTION,V CJ NM,Java,pulseforge
+FUNCTION,get Host And Port,FUNCTION,V N CJ N,C,drift
+DECLARATION,k Cache Line,DECLARATION,PRE NM N,C,aurora
+DECLARATION,dw Retry Count,DECLARATION,PRE NM N,C,byteforge
+DECLARATION,lp Error Text,DECLARATION,PRE NM N,C,ember
+DECLARATION,b Is Visible,DECLARATION,PRE NM N,C++,halcyon
+DECLARATION,next Retry Slot,DECLARATION,DT NM N,Java,pulseforge
+DECLARATION,last Active Panel,DECLARATION,DT NM N,C++,northstar
+DECLARATION,current And Pending Owner,DECLARATION,N CJ NM N,Java,quill
+DECLARATION,recently Synced,DECLARATION,VM NM,Java,aurora
+DECLARATION,currently Selected,DECLARATION,VM NM,C++,halcyon
+PARAMETER,p Buffer,PARAMETER,PRE N,C,ember
+PARAMETER,m Current Index,PARAMETER,PRE NM N,C++,northstar
+PARAMETER,next Bucket,PARAMETER,DT N,C++,halcyon
+PARAMETER,owner And Group,PARAMETER,N CJ N,C,drift
+PARAMETER,with Retry Policy,PARAMETER,P NM N,Java,pulseforge
+ATTRIBUTE,m Pending Queue,ATTRIBUTE,PRE NM N,C++,halcyon
+ATTRIBUTE,p Active Node,ATTRIBUTE,PRE NM N,C,aurora
+ATTRIBUTE,last Retry Slot,ATTRIBUTE,DT NM N,Java,pulseforge
+ATTRIBUTE,eagerly Loaded,ATTRIBUTE,VM NM,Java,quill
+ATTRIBUTE,state And Mode,ATTRIBUTE,N CJ N,C++,northstar
+FUNCTION,aurora reset queue,FUNCTION,PRE V N,C,aurora
+FUNCTION,ember read header,FUNCTION,PRE V N,C,ember
+FUNCTION,halcyon get cache line,FUNCTION,PRE V NM N,C++,halcyon
+FUNCTION,byteforge set owner name,FUNCTION,PRE V NM N,C,byteforge
+FUNCTION,northstar flush buffers,FUNCTION,PRE V NPL,C++,northstar
+FUNCTION,rivet close handles,FUNCTION,PRE V NPL,C,rivet
+FUNCTION,quietly Merge Results,FUNCTION,VM V NPL,Java,quill
+FUNCTION,safely Release Handle,FUNCTION,VM V N,C++,halcyon
+FUNCTION,roughly Align Buffer,FUNCTION,VM V N,C,ember
+FUNCTION,update Quietly,FUNCTION,V VM,Java,pulseforge
+FUNCTION,get Next Bucket,FUNCTION,V DT N,C++,halcyon
+FUNCTION,find Last Token,FUNCTION,V DT N,C,ember
+FUNCTION,get Last Error Message,FUNCTION,V DT NM N,Java,pulseforge
+FUNCTION,lock And Flush,FUNCTION,V CJ V,C,ember
+FUNCTION,parse And Retry,FUNCTION,V CJ V,Java,aurora
+FUNCTION,skip If Missing,FUNCTION,V CJ NM,Java,quill
+FUNCTION,get Reader And Writer,FUNCTION,V N CJ N,C++,northstar
+FUNCTION,on Retry,FUNCTION,P N,Java,pulseforge
+FUNCTION,on Worker Exit,FUNCTION,P NM N,Java,quill
+FUNCTION,before Render,FUNCTION,P V,C++,halcyon
+FUNCTION,after Commit,FUNCTION,P V,Java,quill
+FUNCTION,on Did Retry,FUNCTION,P V V,Java,pulseforge
+FUNCTION,on Will Flush,FUNCTION,P V V,Java,byteforge
