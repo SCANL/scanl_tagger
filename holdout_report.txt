@@ -1,31 +1,31 @@
               precision    recall  f1-score   support
 
-          CJ       0.86      0.95      0.90        38
-           D       0.96      0.98      0.97       102
-          DT       0.89      0.95      0.92       140
-           N       0.93      0.94      0.94      1083
-          NM       0.92      0.92      0.92      1001
-         NPL       0.92      0.94      0.93       190
-           P       0.97      0.96      0.96       228
-         PRE       0.89      0.77      0.82       141
-           V       0.92      0.89      0.91       452
-          VM       0.83      0.67      0.74        36
+          CJ       0.98      0.91      0.94        54
+           D       0.99      0.94      0.96       112
+          DT       0.90      0.96      0.92       135
+           N       0.93      0.95      0.94      1102
+          NM       0.92      0.91      0.91       979
+         NPL       0.95      0.95      0.95       194
+           P       0.93      0.95      0.94       223
+         PRE       0.85      0.87      0.86       151
+           V       0.90      0.87      0.89       459
+          VM       0.84      0.86      0.85        49
 
-    accuracy                           0.92      3411
-   macro avg       0.91      0.90      0.90      3411
-weighted avg       0.92      0.92      0.92      3411
+    accuracy                           0.92      3458
+   macro avg       0.92      0.91      0.92      3458
+weighted avg       0.92      0.92      0.92      3458
 
 
 Run Configuration:
-Command: python3 main --mode train --model_type lm_based --features context sys_sim language
-Seed: 69
+Command: python3 main --mode train --model_type lm_based --features context sys_sim
+Seed: 209
 Datasets: tagger_data, synthetic_pos_data_full
-Features: context, language, sys_sim
+Features: context, sys_sim
 CLI options:
   address: None
   config_path: serve.json
   diagnostics_output_dir: output/error_analysis
-  features: ['context', 'sys_sim', 'language']
+  features: ['context', 'sys_sim']
   input_path: None
   local: False
   mode: train
@@ -40,10 +40,10 @@ CLI options:
   version: False
   word: None
 
-Inference Time: 3.10s for 1295 identifiers (10707 tokens)
-Tokens/sec: 3451.24
-Identifiers/sec: 417.42
+Inference Time: 2.54s for 1322 identifiers (9560 tokens)
+Tokens/sec: 3765.21
+Identifiers/sec: 520.67
 
-Final Macro F1 on Held-Out Set: 0.9008
-Final Token-level Accuracy on Held-Out Set: 0.9229
-Final Identifier-level Accuracy on Held-Out Set: 0.8309
+Final Macro F1 on Held-Out Set: 0.9165
+Final Token-level Accuracy on Held-Out Set: 0.9208
+Final Identifier-level Accuracy on Held-Out Set: 0.8275

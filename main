@@ -3,6 +3,7 @@
 import os, argparse, shlex, sys
 from datetime import datetime
 from error_analysis_scripts.lm_error_analysis import run_lm_diagnostics
+from error_analysis_scripts.fix_impact_analysis import analyze_fix_impact
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
 from src.lm_based_tagger.train_model import train_lm
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run", "diagnostics"], required=True, help="Choose to 'train', 'run', or 'diagnostics'")
+    parser.add_argument("--mode", choices=["train", "run", "diagnostics", "fix-impact"], required=True, help="Choose to 'train', 'run', 'diagnostics', or 'fix-impact'")
     parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
@@ -109,6 +110,22 @@ if __name__ == "__main__":
                 selected_features=args.features,
                 run_metadata=run_metadata,
             )
+
+    elif args.mode == "fix-impact":
+        predictions_path = args.predictions_path
+        if not os.path.isabs(predictions_path):
+            predictions_path = os.path.join(SCRIPT_DIR, predictions_path)
+        fix_impact_dir = os.path.join(SCRIPT_DIR, "output", "fix_impact")
+        result = analyze_fix_impact(
+            predictions_path=predictions_path,
+            output_dir=fix_impact_dir,
+        )
+        if result:
+            n = result["one_off_count"]
+            total = result["total_identifiers"]
+            correct = result["correct_identifiers"]
+            print(f"\nCurrent identifier accuracy: {correct / total:.1%} ({correct}/{total})")
+            print(f"One-off errors: {n}  — fixing all would raise accuracy to {(correct + n) / total:.1%}")
 
     elif args.mode == "diagnostics":
         if args.model_type != "lm_based":

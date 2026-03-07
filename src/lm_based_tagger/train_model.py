@@ -33,7 +33,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
 # === Random Seeds ===
-RAND_STATE = 69
+RAND_STATE = 209
 random.seed(RAND_STATE)
 np.random.seed(RAND_STATE)
 torch.manual_seed(RAND_STATE)
