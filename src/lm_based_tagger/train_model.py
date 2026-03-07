@@ -1,7 +1,7 @@
 import os
 import time
 import random
-from typing import List, Tuple
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -56,6 +56,29 @@ ID2LABEL   = {i: label for label, i in LABEL2ID.items()}
 def dual_print(*args, file, **kwargs):
     print(*args, **kwargs)         # stdout
     print(*args, file=file, **kwargs)  # file
+
+
+def _write_run_metadata(
+    file,
+    source_names: List[str],
+    selected_features: List[str],
+    run_metadata: Dict[str, Any] | None = None,
+):
+    """Write reproducibility metadata for the current LM training run."""
+    run_metadata = run_metadata or {}
+    cli_options = run_metadata.get("cli_options", {})
+
+    dual_print("\nRun Configuration:", file=file)
+    dual_print(f"Command: {run_metadata.get('command', '<unknown>')}", file=file)
+    dual_print(f"Seed: {RAND_STATE}", file=file)
+    dual_print(f"Datasets: {', '.join(source_names)}", file=file)
+    dual_print(
+        f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
+        file=file,
+    )
+    dual_print("CLI options:", file=file)
+    for key, value in cli_options.items():
+        dual_print(f"  {key}: {value}", file=file)
 
 
 # 11) compute_metrics function (macro-F1) 
@@ -247,6 +270,7 @@ def train_lm(
     use_tagger_data: bool = True,
     use_synthetic_data: bool = True,
     selected_features: List[str] | None = None,
+    run_metadata: Dict[str, Any] | None = None,
 ):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
@@ -539,6 +563,12 @@ def train_lm(
     with open('holdout_report.txt', 'w') as f:
         report = classification_report(flat_true, flat_pred)
         dual_print(report, file=f)
+        _write_run_metadata(
+            file=f,
+            source_names=source_names,
+            selected_features=selected_features,
+            run_metadata=run_metadata,
+        )
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
         dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)
         dual_print(f"Identifiers/sec: {total_examples / elapsed:.2f}", file=f)

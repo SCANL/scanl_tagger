@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, argparse
+import os, argparse, shlex, sys
 from datetime import datetime
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
@@ -91,11 +91,19 @@ if __name__ == "__main__":
             if not args.use_tagger_data and not args.use_synthetic_data:
                 parser.error("At least one of --tagger-data or --synthetic-data must be enabled for lm_based training.")
 
+            run_metadata = {
+                "command": " ".join(
+                    shlex.quote(arg) for arg in getattr(sys, "orig_argv", sys.argv)
+                ),
+                "cli_options": dict(sorted(vars(args).items())),
+            }
+
             train_lm(
                 SCRIPT_DIR,
                 use_tagger_data=args.use_tagger_data,
                 use_synthetic_data=args.use_synthetic_data,
                 selected_features=args.features,
+                run_metadata=run_metadata,
             )
 
     elif args.mode == "run":
