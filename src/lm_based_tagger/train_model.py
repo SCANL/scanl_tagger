@@ -48,6 +48,204 @@ EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
+# Curated mapping: common programming verbs → synonyms that are also clearly verbs.
+# Only words that are rarely ambiguous as NM/N in identifier naming are included.
+# Used by _augment_verb_examples() to synthesise new V-tagged training rows.
+VERB_SYNONYMS: Dict[str, List[str]] = {
+    # Read / Load / Fetch
+    "read":        ["load", "fetch", "parse"],
+    "load":        ["read", "fetch", "import"],
+    "fetch":       ["get", "retrieve", "load"],
+    "get":         ["fetch", "retrieve", "obtain"],
+    "parse":       ["read", "decode", "extract"],
+    "retrieve":    ["fetch", "get", "load"],
+    "import":      ["load", "read", "fetch"],
+    # Write / Save / Store
+    "write":       ["save", "store", "output"],
+    "save":        ["write", "store", "persist"],
+    "store":       ["save", "write", "persist"],
+    "output":      ["write", "emit", "print"],
+    "export":      ["save", "write", "output"],
+    "emit":        ["send", "dispatch", "publish"],
+    # Compute
+    "compute":     ["calculate", "evaluate", "process"],
+    "calculate":   ["compute", "evaluate", "solve"],
+    "calc":        ["compute", "calculate", "evaluate"],
+    "evaluate":    ["compute", "calculate", "check"],
+    "process":     ["compute", "handle", "transform"],
+    "solve":       ["compute", "calculate", "resolve"],
+    # Transform / Convert
+    "convert":     ["transform", "encode", "decode"],
+    "transform":   ["convert", "encode", "map"],
+    "encode":      ["convert", "serialize", "pack"],
+    "decode":      ["parse", "convert", "deserialize"],
+    "serialize":   ["encode", "convert", "write"],
+    "deserialize": ["decode", "parse", "read"],
+    "transpose":   ["transform", "convert", "rotate"],
+    "invert":      ["negate", "reverse", "flip"],
+    # Search / Filter / Sort
+    "find":        ["search", "locate", "lookup"],
+    "search":      ["find", "scan", "lookup"],
+    "filter":      ["select", "prune", "screen"],
+    "sort":        ["order", "arrange", "rank"],
+    "select":      ["filter", "choose", "pick"],
+    "scan":        ["search", "parse", "traverse"],
+    # Create / Build
+    "create":      ["build", "make", "generate"],
+    "build":       ["create", "make", "construct"],
+    "make":        ["create", "build", "generate"],
+    "generate":    ["create", "produce", "build"],
+    "compile":     ["build", "assemble"],
+    "clone":       ["copy", "duplicate", "replicate"],
+    # CRUD
+    "add":         ["insert", "append", "attach"],
+    "insert":      ["add", "append", "push"],
+    "remove":      ["delete", "detach", "erase"],
+    "delete":      ["remove", "erase", "purge"],
+    "update":      ["modify", "refresh", "change"],
+    "modify":      ["update", "change", "alter"],
+    "change":      ["update", "modify", "alter"],
+    "set":         ["assign", "update", "put"],
+    # Init / Setup / Clear
+    "init":        ["initialize", "setup", "create"],
+    "initialize":  ["init", "setup", "create"],
+    "setup":       ["init", "initialize", "configure"],
+    "configure":   ["setup", "initialize", "set"],
+    "reset":       ["clear", "reinitialize"],
+    "clear":       ["reset", "flush", "purge"],
+    # Messaging / Events
+    "send":        ["transmit", "dispatch", "publish"],
+    "dispatch":    ["send", "emit", "route"],
+    "publish":     ["emit", "send", "broadcast"],
+    "receive":     ["accept", "collect", "handle"],
+    "handle":      ["process", "manage", "respond"],
+    "trigger":     ["invoke", "dispatch", "emit"],
+    # Render / Display
+    "render":      ["draw", "display", "paint"],
+    "draw":        ["render", "paint", "display"],
+    "display":     ["render", "show", "print"],
+    "print":       ["output", "display", "log"],
+    "show":        ["display", "render", "print"],
+    "preview":     ["show", "display", "render"],
+    # Validate
+    "validate":    ["check", "verify", "assert"],
+    "check":       ["validate", "verify", "test"],
+    "verify":      ["validate", "check", "confirm"],
+    "test":        ["check", "validate", "verify"],
+    # Execute / Run
+    "run":         ["execute", "invoke", "call"],
+    "execute":     ["run", "invoke", "call"],
+    "invoke":      ["call", "run", "execute"],
+    "call":        ["invoke", "execute", "run"],
+    "start":       ["begin", "launch", "run"],
+    "stop":        ["end", "halt", "terminate"],
+    "launch":      ["start", "run", "execute"],
+    # Connect / Register
+    "open":        ["connect", "launch"],
+    "close":       ["disconnect", "terminate"],
+    "connect":     ["link", "attach", "bind"],
+    "disconnect":  ["unlink", "detach", "unbind"],
+    "register":    ["add", "bind", "attach"],
+    "unregister":  ["remove", "detach", "deregister"],
+    "attach":      ["connect", "link", "bind"],
+    "detach":      ["disconnect", "unlink", "unbind"],
+    "link":        ["connect", "attach", "bind"],
+    # IO / Streams
+    "stream":      ["transmit", "pipe", "transfer"],
+    "echo":        ["print", "output", "display"],
+    "log":         ["record", "trace", "output"],
+    # Misc
+    "copy":        ["clone", "duplicate", "replicate"],
+    "move":        ["transfer", "relocate"],
+    "merge":       ["combine", "join", "concat"],
+    "split":       ["divide", "separate", "partition"],
+    "compare":     ["match", "check", "evaluate"],
+    "hash":        ["digest", "compute"],
+    "format":      ["serialize", "convert", "encode"],
+    "compress":    ["pack", "encode"],
+    "decompress":  ["unpack", "decode"],
+    "upload":      ["send", "push", "transfer"],
+    "download":    ["fetch", "pull", "retrieve"],
+    "backup":      ["copy", "archive", "save"],
+    "restore":     ["recover", "reload"],
+    "release":     ["free", "dispose"],
+    "free":        ["release", "dispose"],
+    "allocate":    ["create", "reserve"],
+    "resize":      ["scale", "adjust"],
+    "swap":        ["exchange", "replace"],
+    "defragment":  ["compact", "reorganize"],
+    "downsample":  ["reduce", "scale"],
+    "aggregate":   ["collect", "combine", "merge"],
+    "reload":      ["refresh", "restart", "reinitialize"],
+    "refresh":     ["reload", "update", "redraw"],
+    "sync":        ["synchronize", "update", "align"],
+    "synchronize": ["sync", "update", "align"],
+    "zip":         ["compress", "pack"],
+    "unzip":       ["decompress", "unpack"],
+    "encrypt":     ["encode", "protect"],
+    "decrypt":     ["decode", "decipher"],
+}
+
+
+def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame:
+    """
+    Generate synthetic training rows by substituting V-tagged tokens with synonyms.
+
+    For each row containing at least one V-tagged token whose lowercase form appears
+    in VERB_SYNONYMS, produce up to MAX_SYNS new rows where that token is replaced
+    by a randomly sampled synonym.  The rest of the row (context, tags, other tokens)
+    is unchanged, so the new rows are valid training examples.
+
+    Applied across all contexts (FUNCTION, PARAMETER, ATTRIBUTE, DECLARATION, CLASS)
+    to improve V recall outside the previously-dominant FUNCTION context.
+
+    Args:
+        df:  Fold training DataFrame with 'tokens' (List[str]) and 'tags' (List[str]).
+        rng: Seeded Random instance for reproducibility.
+
+    Returns:
+        DataFrame of newly-synthesised rows (may be empty if nothing is substitutable).
+    """
+    MAX_SYNS = 2  # max new synthetic examples per original row
+
+    new_rows = []
+    for _, row in df.iterrows():
+        tokens: List[str] = list(row["tokens"])
+        tags:   List[str] = list(row["tags"])
+
+        # Positions that are V-tagged and whose lowercase token has synonyms
+        substitutable = [
+            (i, tokens[i])
+            for i, tag in enumerate(tags)
+            if tag == "V" and tokens[i].lower() in VERB_SYNONYMS
+        ]
+        if not substitutable:
+            continue
+
+        generated = 0
+        for pos, token in substitutable:
+            if generated >= MAX_SYNS:
+                break
+            synonyms = VERB_SYNONYMS[token.lower()]
+            # Preserve original casing style (Title-case → Title-case, lower → lower)
+            capitalize = token[0].isupper() if token else False
+            n_to_sample = min(MAX_SYNS - generated, len(synonyms))
+            sampled = rng.sample(synonyms, n_to_sample)
+            for syn in sampled:
+                if generated >= MAX_SYNS:
+                    break
+                syn_tok = syn[0].upper() + syn[1:] if capitalize else syn
+                new_tokens = tokens.copy()
+                new_tokens[pos] = syn_tok
+                new_row = row.copy()
+                new_row["tokens"] = new_tokens
+                new_rows.append(new_row)
+                generated += 1
+
+    if not new_rows:
+        return pd.DataFrame(columns=df.columns)
+    return pd.DataFrame(new_rows)
+
 # === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -342,6 +540,16 @@ def train_lm(
         # Upsample low-frequency tags inside the fold to prevent cross-fold leakage
         low_freq_fold = fold_train_df[fold_train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
         fold_train_df = pd.concat([fold_train_df] + [low_freq_fold] * 2, ignore_index=True)
+
+        # Verb synonym augmentation: synthesise new rows by substituting V-tagged tokens
+        # with synonyms drawn from VERB_SYNONYMS.  Applied across all contexts so the model
+        # sees V signal in DECLARATION, PARAMETER, ATTRIBUTE, and CLASS frames, not just FUNCTION.
+        _fold_rng = random.Random(RAND_STATE + fold)
+        verb_aug_df = _augment_verb_examples(fold_train_df, _fold_rng)
+        if not verb_aug_df.empty:
+            fold_train_df = pd.concat([fold_train_df, verb_aug_df], ignore_index=True)
+            print(f"  Verb augmentation added {len(verb_aug_df)} synthetic rows "
+                  f"(fold train size: {len(fold_train_df)})")
 
         # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
         fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID, selected_features=selected_features)

@@ -22,9 +22,10 @@ AVAILABLE_FEATURES = [
     "hungarian",
     "cvr",
     "digit",
-    "type",           # NEW
-    "language",       # NEW
-    "sys_sim"         # NEW
+    "type",
+    "type_overlap",
+    "language",
+    "sys_sim"
 ]
 
 DEFAULT_FEATURES = list(AVAILABLE_FEATURES)
@@ -34,10 +35,37 @@ FEATURE_FUNCTIONS = {
     "hungarian": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
     "cvr": lambda row, tokens: consonant_vowel_ratio_bucket(tokens),
     "digit": lambda row, tokens: detect_digit_feature(tokens),
-    "type":      lambda r,t: normalize_type(r.get("TYPE","")) ,
-    "language":  lambda r,t: normalize_language(r.get("LANGUAGE","")) ,
-    "sys_sim":   lambda r,t: system_prefix_similarity(t[0], r.get("SYSTEM_NAME",""))
+    "type": lambda row, tokens: get_type_feature_tokens(row.get("TYPE", "")),
+    "type_overlap": lambda row, tokens: get_type_overlap_feature_tokens(tokens, row.get("TYPE", "")),
+    "language": lambda row, tokens: normalize_language(row.get("LANGUAGE", "")),
+    "sys_sim": lambda row, tokens: get_system_overlap_feature_tokens(tokens, row.get("SYSTEM_NAME", "")),
 }
+
+TYPE_BOOL_TOKENS = {"bool", "boolean", "glboolean", "boolean_t"}
+TYPE_VOID_TOKENS = {"void"}
+TYPE_INT_TOKENS = {
+    "int", "integer", "byte", "word", "dword", "qword", "short", "long",
+    "size_t", "ssize_t", "ptrdiff_t", "int8_t", "int16_t", "int32_t", "int64_t",
+    "uint8_t", "uint16_t", "uint32_t", "uint64_t", "u8", "u16", "u32", "u64",
+    "i8", "i16", "i32", "i64", "usize", "isize"
+}
+TYPE_FLOAT_TOKENS = {"float", "double", "decimal", "real", "numeric", "number"}
+TYPE_CHAR_TOKENS = {"char", "wchar", "tchar", "char16_t", "char32_t", "rune"}
+TYPE_STRING_TOKENS = {"string", "str", "text", "utf8", "utf16", "utf32", "cstring"}
+TYPE_CONTAINER_TOKENS = {
+    "list", "array", "vector", "map", "set", "queue", "stack", "deque",
+    "collection", "iterator", "iterable", "stream", "buffer", "slice"
+}
+TYPE_FUNCTION_TOKENS = {"func", "function", "callback", "predicate", "consumer", "supplier", "runnable", "lambda"}
+TYPE_QUALIFIER_TOKENS = {"const", "volatile", "static", "signed", "unsigned", "struct", "class", "enum", "union"}
+
+
+def _looks_int_like(normalized_type: str, type_tokens: List[str]) -> bool:
+    if any(token in TYPE_INT_TOKENS for token in type_tokens):
+        return True
+    if any(re.fullmatch(r"(?:u|i)?int\d+", token) for token in type_tokens):
+        return True
+    return bool(re.search(r"(?:^|\W)(?:u?_?int\d*_t|int\d*_t|size_t|ssize_t|ptrdiff_t)(?:$|\W)", normalized_type))
 
 def normalize_selected_features(selected_features: Optional[Iterable[str]] = None) -> List[str]:
     """
@@ -67,11 +95,30 @@ def normalize_selected_features(selected_features: Optional[Iterable[str]] = Non
 
 def get_feature_tokens(row, tokens, selected_features: Optional[Iterable[str]] = None):
     active_features = normalize_selected_features(selected_features)
-    return [FEATURE_FUNCTIONS[feat](row, tokens) for feat in active_features]
+    feature_tokens = []
+    for feature in active_features:
+        raw_value = FEATURE_FUNCTIONS[feature](row, tokens)
+        if raw_value is None:
+            continue
+        if isinstance(raw_value, str):
+            if raw_value:
+                feature_tokens.append(raw_value)
+            continue
+        feature_tokens.extend(str(value) for value in raw_value if str(value))
+    return feature_tokens
 
 
 def get_number_of_features(selected_features: Optional[Iterable[str]] = None) -> int:
     return len(normalize_selected_features(selected_features))
+
+
+def build_model_input_tokens(row, tokens, selected_features: Optional[Iterable[str]] = None):
+    feature_tokens = get_feature_tokens(row, tokens, selected_features)
+
+    length = len(tokens)
+    pos_tokens = ["@pos_2"] if length == 1 else ["@pos_0"] + ["@pos_1"] * (length - 2) + ["@pos_2"]
+    tokens_with_pos = [value for pair in zip(pos_tokens, tokens) for value in pair]
+    return feature_tokens + tokens_with_pos, len(feature_tokens)
 
 def detect_hungarian_prefix(first_token):
     m = re.match(r'^([a-zA-Z]{1,3})[A-Z_]', first_token)
@@ -119,11 +166,173 @@ def system_prefix_similarity(first_token, system_name):
     else:
         return "@sim_none"
 
-def normalize_type(type_str):
-    ts = type_str.strip().lower()
-    ts = ts.replace("*", "_ptr")
-    ts = ts.replace(" ", "_")
-    return f"@{ts}"
+
+def _normalize_text_for_split(text: str) -> str:
+    text = re.sub(r"::|->|<|>|\(|\)|\[|\]|,|\*|&|/|\\", " ", text)
+    text = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", text)
+    text = re.sub(r"[_\-.]+", " ", text)
+    return text
+
+
+def _split_identifier_like_text(text: str) -> List[str]:
+    if not text:
+        return []
+    normalized = _normalize_text_for_split(str(text))
+    return [part.lower() for part in re.findall(r"[A-Za-z]+\d*|\d+[A-Za-z]*", normalized) if part]
+
+
+def _dedupe_preserve_order(values: Iterable[str]) -> List[str]:
+    seen = set()
+    ordered = []
+    for value in values:
+        if value not in seen:
+            seen.add(value)
+            ordered.append(value)
+    return ordered
+
+
+def _token_match(identifier_token: str, lexicon_token: str) -> str | None:
+    left = identifier_token.strip().lower()
+    right = lexicon_token.strip().lower()
+    if not left or not right:
+        return None
+    if left == right:
+        return "exact"
+    if len(left) >= 2 and len(right) >= 2 and (left.startswith(right) or right.startswith(left)):
+        return "prefix"
+    return None
+
+
+def _count_any_overlap(identifier_tokens: List[str], lexicon_tokens: List[str]) -> int:
+    count = 0
+    for identifier_token in identifier_tokens:
+        if any(_token_match(identifier_token, lexicon_token) for lexicon_token in lexicon_tokens):
+            count += 1
+    return count
+
+
+def _count_leading_overlap(identifier_tokens: List[str], lexicon_tokens: List[str]) -> int:
+    span = 0
+    for identifier_token in identifier_tokens:
+        if any(_token_match(identifier_token, lexicon_token) for lexicon_token in lexicon_tokens):
+            span += 1
+        else:
+            break
+    return span
+
+
+def _bucket_overlap_count(count: int, prefix: str) -> str:
+    if count <= 0:
+        return f"@{prefix}_0"
+    if count == 1:
+        return f"@{prefix}_1"
+    return f"@{prefix}_2plus"
+
+
+def _get_head_match_token(identifier_tokens: List[str], lexicon_tokens: List[str], prefix: str) -> str:
+    if not identifier_tokens or not lexicon_tokens:
+        return f"@{prefix}_head_none"
+
+    head = identifier_tokens[0]
+    match_strength = None
+    for lexicon_token in lexicon_tokens:
+        match_strength = _token_match(head, lexicon_token)
+        if match_strength == "exact":
+            break
+
+    if match_strength == "exact":
+        return f"@{prefix}_head_exact"
+    if match_strength == "prefix":
+        return f"@{prefix}_head_prefix"
+    return f"@{prefix}_head_none"
+
+
+def _normalize_type_for_bucketing(type_str: str) -> str:
+    return str(type_str or "").strip().lower()
+
+
+def _normalize_type_tokens(type_str: str) -> List[str]:
+    raw_tokens = _split_identifier_like_text(type_str)
+    return [token for token in raw_tokens if token not in TYPE_QUALIFIER_TOKENS]
+
+
+def get_type_feature_tokens(type_str: str) -> List[str]:
+    normalized_type = _normalize_type_for_bucketing(type_str)
+    type_tokens = _normalize_type_tokens(type_str)
+    feature_tokens = []
+
+    if not normalized_type:
+        return ["@type_unknown"]
+
+    if "*" in normalized_type:
+        feature_tokens.append("@type_ptr")
+    if "&" in normalized_type:
+        feature_tokens.append("@type_ref")
+    if "[]" in normalized_type or "array" in type_tokens:
+        feature_tokens.append("@type_array")
+    if "<" in normalized_type and ">" in normalized_type:
+        feature_tokens.append("@type_generic")
+    if "const" in normalized_type:
+        feature_tokens.append("@type_const")
+    if "unsigned" in normalized_type:
+        feature_tokens.append("@type_unsigned")
+    if "signed" in normalized_type:
+        feature_tokens.append("@type_signed")
+
+    bucket = "@type_object_like"
+    if any(token in TYPE_BOOL_TOKENS for token in type_tokens):
+        bucket = "@type_bool"
+    elif any(token in TYPE_VOID_TOKENS for token in type_tokens):
+        bucket = "@type_void"
+    elif any(token in TYPE_CONTAINER_TOKENS for token in type_tokens):
+        bucket = "@type_container_like"
+    elif any(token in TYPE_STRING_TOKENS for token in type_tokens):
+        bucket = "@type_string_like"
+    elif any(token in TYPE_CHAR_TOKENS for token in type_tokens):
+        bucket = "@type_char_like"
+    elif any(token in TYPE_FLOAT_TOKENS for token in type_tokens):
+        bucket = "@type_float_like"
+    elif _looks_int_like(normalized_type, type_tokens):
+        bucket = "@type_int_like"
+    elif "enum" in normalized_type:
+        bucket = "@type_enum_like"
+    elif any(token in TYPE_FUNCTION_TOKENS for token in type_tokens):
+        bucket = "@type_function_like"
+
+    feature_tokens.insert(0, bucket)
+    return _dedupe_preserve_order(feature_tokens)
+
+
+def get_type_overlap_feature_tokens(identifier_tokens: List[str], type_str: str) -> List[str]:
+    normalized_identifier_tokens = [token.lower() for token in identifier_tokens if token]
+    type_tokens = _normalize_type_tokens(type_str)
+    if not type_tokens:
+        return ["@typeov_head_none", "@typeov_lead_0", "@typeov_any_0"]
+
+    leading_overlap = _count_leading_overlap(normalized_identifier_tokens, type_tokens)
+    any_overlap = _count_any_overlap(normalized_identifier_tokens, type_tokens)
+    return [
+        _get_head_match_token(normalized_identifier_tokens, type_tokens, "typeov"),
+        _bucket_overlap_count(leading_overlap, "typeov_lead"),
+        _bucket_overlap_count(any_overlap, "typeov_any"),
+    ]
+
+
+def get_system_overlap_feature_tokens(identifier_tokens: List[str], system_name: str) -> List[str]:
+    normalized_identifier_tokens = [token.lower() for token in identifier_tokens if token]
+    system_tokens = _split_identifier_like_text(system_name)
+    if not system_tokens:
+        return ["@sys_head_none", "@sys_lead_0", "@sys_any_0", "@sim_none"]
+
+    leading_overlap = _count_leading_overlap(normalized_identifier_tokens, system_tokens)
+    any_overlap = _count_any_overlap(normalized_identifier_tokens, system_tokens)
+    similarity_token = system_prefix_similarity(normalized_identifier_tokens[0] if normalized_identifier_tokens else "", system_name)
+    return [
+        _get_head_match_token(normalized_identifier_tokens, system_tokens, "sys"),
+        _bucket_overlap_count(leading_overlap, "sys_lead"),
+        _bucket_overlap_count(any_overlap, "sys_any"),
+        similarity_token,
+    ]
 
 def normalize_language(lang_str):
     return "@lang_" + lang_str.strip().lower().replace("++", "pp").replace("#", "sharp")
@@ -166,19 +375,12 @@ def prepare_dataset(
                         -100, 1, -100, 2, -100, 3]  # assuming label2id = {"V": 1, "NM": 2, "N": 3}
     """
     active_features = normalize_selected_features(selected_features)
-    num_features = len(active_features)
 
     rows = []
     for _, row in df.iterrows():
         tokens = row["tokens"]
         tags = row["tags"]
-        feature_tokens = get_feature_tokens(row, tokens, active_features)
-
-        length = len(tokens)
-        pos_tokens = ["@pos_2"] if length == 1 else ["@pos_0"] + ["@pos_1"] * (length - 2) + ["@pos_2"]
-        tokens_with_pos = [val for pair in zip(pos_tokens, tokens) for val in pair]
-
-        full_tokens = feature_tokens + tokens_with_pos
+        full_tokens, num_features = build_model_input_tokens(row, tokens, active_features)
         ner_tags_with_pos = [val for tag in tags for val in (-100, label2id[tag])]
         full_labels = [-100] * num_features + ner_tags_with_pos
 

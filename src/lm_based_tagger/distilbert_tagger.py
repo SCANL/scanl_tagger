@@ -30,7 +30,6 @@ class DistilBertTagger:
         self.selected_features = normalize_selected_features(
             getattr(self.model.config, "selected_features", None)
         )
-        self.number_of_features = get_number_of_features(self.selected_features)
         
         # map label IDs to strings
         self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}
@@ -62,13 +61,7 @@ class DistilBertTagger:
         }
         
         # Step 1: Feature tokens + alternating position/word tokens
-        feature_tokens = get_feature_tokens(row, tokens, self.selected_features)
-
-        length = len(tokens)
-        pos_tokens = ["@pos_2"] if length == 1 else ["@pos_0"] + ["@pos_1"] * (length - 2) + ["@pos_2"]
-        tokens_with_pos = [val for pair in zip(pos_tokens, tokens) for val in pair]
-
-        input_tokens = feature_tokens + tokens_with_pos
+        input_tokens, feature_count = build_model_input_tokens(row, tokens, self.selected_features)
 
         # Step 2: Tokenize using word-alignment aware tokenizer
         encoded = self.tokenizer(
@@ -100,9 +93,9 @@ class DistilBertTagger:
         for idx, word_idx in enumerate(word_ids):
             if word_idx is None:
                 continue  # special token (CLS, SEP, PAD, etc.)
-            if word_idx < self.number_of_features:
+            if word_idx < feature_count:
                 continue  # feature tokens (shouldn't be labeled)
-            if (word_idx - self.number_of_features) % 2 == 0:
+            if (word_idx - feature_count) % 2 == 0:
                 continue  # position tokens (e.g., @pos_0)
             if word_idx == previous_word_idx:
                 continue  # skip repeated subword tokens

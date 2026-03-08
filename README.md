@@ -64,6 +64,7 @@ python main --mode train --model_type lm_based --no-synthetic-data
 python main --mode train --model_type lm_based --no-tagger-data
 python main --mode train --model_type lm_based --tagger-data --synthetic-data
 python main --mode train --model_type lm_based --features context hungarian digit
+python main --mode train --model_type lm_based --features context type type_overlap sys_sim
 ```
 
 ---
