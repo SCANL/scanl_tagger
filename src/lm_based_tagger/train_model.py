@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import math
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
@@ -32,6 +33,18 @@ from src.lm_based_tagger.distilbert_preprocessing import (
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
+
+def _configure_torch_runtime() -> None:
+    """Enable faster CUDA execution settings when reproducibility constraints allow it."""
+    if device.type != "cuda":
+        return
+
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cudnn.deterministic = False
+    torch.backends.cudnn.benchmark = True
+    torch.set_float32_matmul_precision("high")
+
 # === Random Seeds ===
 RAND_STATE = 209
 random.seed(RAND_STATE)
@@ -40,6 +53,7 @@ torch.manual_seed(RAND_STATE)
 torch.cuda.manual_seed_all(RAND_STATE)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
+_configure_torch_runtime()
 
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
@@ -372,7 +386,80 @@ def compute_metrics(eval_pred):
         "eval_identifier_accuracy": id_acc,
     }
 
-def viterbi_predict(model, dataset, data_collator, batch_size=16):
+
+def _cuda_supports_bf16() -> bool:
+    if device.type != "cuda":
+        return False
+    if not torch.cuda.is_bf16_supported():
+        return False
+    major, _minor = torch.cuda.get_device_capability()
+    return major >= 8
+
+
+def _get_lm_runtime_config(train_examples: int, eval_examples: int) -> Dict[str, Any]:
+    """Choose throughput-oriented runtime settings for the active device."""
+    if device.type != "cuda":
+        return {
+            "train_batch_size": 16,
+            "eval_batch_size": 16,
+            "gradient_accumulation_steps": 1,
+            "warmup_steps": max(1, math.ceil(0.1 * (train_examples / 16) * EPOCHS)),
+            "fp16": False,
+            "bf16": False,
+            "dataloader_num_workers": min(4, os.cpu_count() or 1),
+            "pin_memory": False,
+            "persistent_workers": False,
+            "pad_to_multiple_of": None,
+            "eval_accumulation_steps": None,
+            "optim": "adamw_torch",
+            "torch_compile": False,
+            "viterbi_batch_size": min(32, max(16, eval_examples)),
+        }
+
+    total_vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
+    supports_bf16 = _cuda_supports_bf16()
+    cpu_count = os.cpu_count() or 1
+    num_workers = min(6, max(2, cpu_count - 2))
+
+    if total_vram_gb >= 11:
+        train_batch_size = 32
+        eval_batch_size = 64
+    elif total_vram_gb >= 7.5:
+        train_batch_size = 16
+        eval_batch_size = 32
+    else:
+        train_batch_size = 8
+        eval_batch_size = 16
+
+    effective_batch = train_batch_size
+    warmup_steps = max(1, math.ceil(0.1 * (train_examples / effective_batch) * EPOCHS))
+
+    return {
+        "train_batch_size": train_batch_size,
+        "eval_batch_size": eval_batch_size,
+        "gradient_accumulation_steps": 1,
+        "warmup_steps": warmup_steps,
+        "fp16": not supports_bf16,
+        "bf16": supports_bf16,
+        "dataloader_num_workers": num_workers,
+        "pin_memory": True,
+        "persistent_workers": num_workers > 0,
+        "pad_to_multiple_of": 16,
+        "eval_accumulation_steps": 8,
+        "optim": "adamw_torch_fused",
+        "torch_compile": False,
+        "viterbi_batch_size": eval_batch_size,
+    }
+
+def viterbi_predict(
+    model,
+    dataset,
+    data_collator,
+    batch_size=16,
+    num_workers=0,
+    pin_memory=False,
+    persistent_workers=False,
+):
     """
     Run CRF Viterbi decoding over a dataset without using the HuggingFace Trainer.
 
@@ -391,7 +478,14 @@ def viterbi_predict(model, dataset, data_collator, batch_size=16):
     if extra_cols:
         dataset = dataset.remove_columns(extra_cols)
 
-    loader = DataLoader(dataset, batch_size=batch_size, collate_fn=data_collator)
+    loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        collate_fn=data_collator,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers if num_workers > 0 else False,
+    )
     model.eval()
     all_preds, all_labels = [], []
 
@@ -565,6 +659,19 @@ def train_lm(
             batched=False
         )
 
+        runtime_config = _get_lm_runtime_config(
+            train_examples=len(fold_train_df),
+            eval_examples=len(fold_test_df),
+        )
+        print(
+            "  Runtime config: "
+            f"train_bs={runtime_config['train_batch_size']}, "
+            f"eval_bs={runtime_config['eval_batch_size']}, "
+            f"workers={runtime_config['dataloader_num_workers']}, "
+            f"precision={'bf16' if runtime_config['bf16'] else 'fp16' if runtime_config['fp16'] else 'fp32'}, "
+            f"optim={runtime_config['optim']}"
+        )
+
         # 8) Build fresh model + config for this fold 
         model = DistilBertCRFForTokenClassification(
             num_labels=len(LABEL_LIST),
@@ -576,31 +683,26 @@ def train_lm(
         model.config.selected_features = selected_features
 
         # 9) TrainingArguments (with early stopping)
-        # Compute warmup_steps as ~10% of total training steps for this fold
-        if device.type == "cpu":
-            _effective_batch = 16
-        else:
-            _effective_batch = 8 * 2  # per_device_batch * gradient_accumulation_steps
-        _warmup_steps = max(1, int(0.1 * (len(fold_train_df) / _effective_batch) * EPOCHS))
-
         if device.type == "cpu":
             training_args = TrainingArguments(
                 output_dir=os.path.join(output_dir, f"fold_{fold}"),
                 eval_strategy="epoch",
                 save_strategy="epoch",
                 learning_rate=5e-5,
-                per_device_train_batch_size=16,
-                per_device_eval_batch_size=16,
+                per_device_train_batch_size=runtime_config["train_batch_size"],
+                per_device_eval_batch_size=runtime_config["eval_batch_size"],
                 num_train_epochs=EPOCHS,
                 weight_decay=0.01,
-                warmup_steps=_warmup_steps,
+                warmup_steps=runtime_config["warmup_steps"],
                 lr_scheduler_type="cosine",
                 load_best_model_at_end=True,
                 metric_for_best_model="eval_macro_f1",
                 greater_is_better=True,
                 save_total_limit=1,
                 report_to="none",
-                seed=RAND_STATE
+                seed=RAND_STATE,
+                dataloader_num_workers=runtime_config["dataloader_num_workers"],
+                group_by_length=True,
             )
         else:
             training_args = TrainingArguments(
@@ -608,27 +710,28 @@ def train_lm(
                 eval_strategy="epoch",
                 save_strategy="epoch",
                 learning_rate=5e-5,
-
-                # Use more of your VRAM — try 8 or even 16 depending on sequence length
-                per_device_train_batch_size=8,
-                per_device_eval_batch_size=8,
-                gradient_accumulation_steps=2,  # adjust if needed to match total batch size
-
+                per_device_train_batch_size=runtime_config["train_batch_size"],
+                per_device_eval_batch_size=runtime_config["eval_batch_size"],
+                gradient_accumulation_steps=runtime_config["gradient_accumulation_steps"],
                 num_train_epochs=EPOCHS,
                 weight_decay=0.01,
-                warmup_steps=_warmup_steps,
+                warmup_steps=runtime_config["warmup_steps"],
                 lr_scheduler_type="cosine",
-
                 load_best_model_at_end=True,
                 metric_for_best_model="eval_macro_f1",
                 greater_is_better=True,
                 save_total_limit=1,
-
                 report_to="none",
                 seed=RAND_STATE,
-
-                fp16=True,                     # ✅ Enable mixed-precision training
-                dataloader_pin_memory=True    # ✅ Enable pinned memory for faster host-device transfers
+                optim=runtime_config["optim"],
+                fp16=runtime_config["fp16"],
+                bf16=runtime_config["bf16"],
+                dataloader_num_workers=runtime_config["dataloader_num_workers"],
+                dataloader_pin_memory=runtime_config["pin_memory"],
+                dataloader_persistent_workers=runtime_config["persistent_workers"],
+                eval_accumulation_steps=runtime_config["eval_accumulation_steps"],
+                group_by_length=True,
+                torch_compile=runtime_config["torch_compile"],
             )
 
         # 10) Define collator that handles dynamic padding + label alignment
@@ -636,7 +739,10 @@ def train_lm(
         #         input_ids = [[101, 2121, 5661, 2171, 102], [101, 2064, 102]]
         #     the collator will pad them to the same length and align
         #     their attention_mask and labels accordingly.
-        data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
+        data_collator = DataCollatorForTokenClassification(
+            tokenizer=tokenizer,
+            pad_to_multiple_of=runtime_config["pad_to_multiple_of"],
+        )
 
 
         # 11) Initialize Trainer for this fold with early stopping
@@ -662,7 +768,15 @@ def train_lm(
 
 
         # 13) Evaluate fold performance using CRF Viterbi decoding
-        viterbi_preds, fold_labels = viterbi_predict(model, tokenized_test, data_collator)
+        viterbi_preds, fold_labels = viterbi_predict(
+            model,
+            tokenized_test,
+            data_collator,
+            batch_size=runtime_config["viterbi_batch_size"],
+            num_workers=runtime_config["dataloader_num_workers"],
+            pin_memory=runtime_config["pin_memory"],
+            persistent_workers=runtime_config["persistent_workers"],
+        )
 
         # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels
         true_labels_list = [
@@ -704,11 +818,26 @@ def train_lm(
     # 16) Load best model and prepare for final evaluation on held-out set
     best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
+    holdout_runtime_config = _get_lm_runtime_config(
+        train_examples=len(train_df),
+        eval_examples=len(val_df),
+    )
 
     # 17) Run prediction on hold-out set and record inference time
-    holdout_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
+    holdout_collator = DataCollatorForTokenClassification(
+        tokenizer=tokenizer,
+        pad_to_multiple_of=holdout_runtime_config["pad_to_multiple_of"],
+    )
     start_time = time.perf_counter()
-    val_preds, val_labels = viterbi_predict(best_model, tokenized_val, holdout_collator)
+    val_preds, val_labels = viterbi_predict(
+        best_model,
+        tokenized_val,
+        holdout_collator,
+        batch_size=holdout_runtime_config["viterbi_batch_size"],
+        num_workers=holdout_runtime_config["dataloader_num_workers"],
+        pin_memory=holdout_runtime_config["pin_memory"],
+        persistent_workers=holdout_runtime_config["persistent_workers"],
+    )
     end_time = time.perf_counter()
 
     # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels

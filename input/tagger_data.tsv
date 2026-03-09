@@ -191,7 +191,7 @@ SEXP*	R igraph 0 or vector bool to SEXP	FUNCTION	PRE PRE D CJ NM N P N	C	rigraph
 bool	replace if exists	FUNCTION	V CJ V	C++	meta	https://github.com/meta-toolkit/meta
 MediaType	RTF UTF8	ATTRIBUTE	NM N	Java	guava	https://github.com/google/guava
 String	save Password	DECLARATION	NM N	Java	Spark	https://github.com/apache/spark
-String	SET GROUP NAME 1	ATTRIBUTE	NM NM N D	Java	Openfire	https://github.com/igniterealtime/Openfire
+String	SET GROUP NAME 1	ATTRIBUTE	V NM N D	Java	Openfire	https://github.com/igniterealtime/Openfire
 class	Sort Collector Labels 2	CLASS	NM NM NPL D	C++	panda3d	https://github.com/panda3d/panda3d
 bool	sorts less	FUNCTION	V VM	C++	panda3d	https://github.com/panda3d/panda3d
 int*	sqlite3 Fts5 Parser Fallback	FUNCTION	PRE PRE NM N	C	ccv	https://github.com/liuliu/ccv

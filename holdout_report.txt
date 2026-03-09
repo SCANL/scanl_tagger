@@ -1,31 +1,31 @@
               precision    recall  f1-score   support
 
-          CJ       0.95      0.98      0.96        42
-           D       0.96      0.95      0.95        96
-          DT       0.97      0.97      0.97       145
-           N       0.95      0.96      0.96      1111
-          NM       0.94      0.92      0.93       981
-         NPL       0.97      0.97      0.97       198
-           P       0.97      0.94      0.96       235
-         PRE       0.89      0.88      0.89       159
-           V       0.89      0.94      0.91       447
+          CJ       0.95      0.93      0.94        42
+           D       0.92      0.96      0.94        96
+          DT       0.97      0.96      0.96       145
+           N       0.95      0.95      0.95      1111
+          NM       0.94      0.92      0.93       980
+         NPL       0.98      0.97      0.98       198
+           P       0.96      0.93      0.95       235
+         PRE       0.88      0.88      0.88       159
+           V       0.87      0.94      0.91       448
           VM       0.98      0.86      0.91        50
 
     accuracy                           0.94      3464
-   macro avg       0.95      0.94      0.94      3464
+   macro avg       0.94      0.93      0.93      3464
 weighted avg       0.94      0.94      0.94      3464
 
 
 Run Configuration:
-Command: python main --mode train --model_type lm_based --features context type type_overlap sys_sim
+Command: python main --mode train --model_type lm_based --features context type type_overlap
 Seed: 209
 Datasets: tagger_data, synthetic_pos_data_full
-Features: context, type, type_overlap, sys_sim
+Features: context, type, type_overlap
 CLI options:
   address: None
   config_path: serve.json
   diagnostics_output_dir: output/error_analysis
-  features: ['context', 'type', 'type_overlap', 'sys_sim']
+  features: ['context', 'type', 'type_overlap']
   input_path: None
   local: False
   mode: train
@@ -40,10 +40,10 @@ CLI options:
   version: False
   word: None
 
-Inference Time: 6.20s for 1322 identifiers (18893 tokens)
-Tokens/sec: 3046.58
-Identifiers/sec: 213.18
+Inference Time: 3.52s for 1322 identifiers (13605 tokens)
+Tokens/sec: 3865.51
+Identifiers/sec: 375.61
 
-Final Macro F1 on Held-Out Set: 0.9412
-Final Token-level Accuracy on Held-Out Set: 0.9402
-Final Identifier-level Accuracy on Held-Out Set: 0.8722
+Final Macro F1 on Held-Out Set: 0.9347
+Final Token-level Accuracy on Held-Out Set: 0.9368
+Final Identifier-level Accuracy on Held-Out Set: 0.8661
