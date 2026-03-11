@@ -159,7 +159,11 @@ def initialize_model(temp_config = {}):
     elif model_type == "lm_based":
         print("Loading DistilBERT tagger...")
         is_local = temp_config.get("local", False)
-        lm_model = DistilBertTagger(temp_config['model'], local=is_local)
+        lm_model = DistilBertTagger(
+            temp_config['model'],
+            local=is_local,
+            pattern_postprocessing=temp_config.get("pattern_postprocessing", False),
+        )
         print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):

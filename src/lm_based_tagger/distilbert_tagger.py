@@ -3,6 +3,10 @@ from transformers import DistilBertTokenizerFast, DistilBertForTokenClassificati
 from .distilbert_crf import DistilBertCRFForTokenClassification 
 from .distilbert_preprocessing import *
 
+NOMINAL_TAGS = {"N", "NM", "NPL"}
+POSITION0_PRIOR_TAGS = {"PRE", "NM", "N"}
+POSITION0_PRIOR_SOURCE_TAGS = {"PRE", "NM"}
+
 class DistilBertTagger:
     """
     A lightweight wrapper around a DistilBERT+CRF or DistilBERT-only model for tagging identifier tokens
@@ -14,7 +18,7 @@ class DistilBertTagger:
     - Post-processing the raw logits or CRF predictions
     - Aligning subword tokens back to word-level predictions
     """
-    def __init__(self, model_path: str, local: bool = False):
+    def __init__(self, model_path: str, local: bool = False, pattern_postprocessing: bool = False):
         # Load tokenizer from local directory or remote HuggingFace path
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)
 
@@ -30,9 +34,75 @@ class DistilBertTagger:
         self.selected_features = normalize_selected_features(
             getattr(self.model.config, "selected_features", None)
         )
+        self.pattern_postprocessing = pattern_postprocessing
+        self.position0_label_priors = getattr(self.model.config, "position0_label_priors", {}) or {}
         
         # map label IDs to strings
         self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}
+
+    def _apply_position0_prior(self, pred_tags, tokens, context):
+        if not pred_tags or not tokens:
+            return list(pred_tags)
+
+        repaired = list(pred_tags)
+        current = repaired[0]
+        if current not in POSITION0_PRIOR_SOURCE_TAGS:
+            return repaired
+
+        token = str(tokens[0]).strip().lower()
+        if not token:
+            return repaired
+
+        by_context = self.position0_label_priors.get("by_context", {})
+        context_map = by_context.get(str(context or ""), {})
+        prior_label = context_map.get(token)
+
+        if prior_label is None:
+            prior_label = self.position0_label_priors.get("global", {}).get(token)
+
+        if prior_label in POSITION0_PRIOR_TAGS:
+            repaired[0] = prior_label
+
+        return repaired
+
+    def _repair_nominal_chunk(self, chunk_tags, next_tag):
+        repaired = list(chunk_tags)
+        head_positions = [i for i, tag in enumerate(repaired) if tag in {"N", "NPL"}]
+
+        if not head_positions and repaired and next_tag == "D":
+            repaired[-1] = "N"
+            head_positions = [len(repaired) - 1]
+
+        if head_positions:
+            head_pos = head_positions[-1]
+            for i in range(head_pos):
+                if repaired[i] == "N":
+                    repaired[i] = "NM"
+
+        return repaired
+
+    def _postprocess_pattern(self, pred_tags):
+        repaired = list(pred_tags)
+        chunk_start = None
+
+        for idx, tag in enumerate(repaired + [None]):
+            if tag in NOMINAL_TAGS:
+                if chunk_start is None:
+                    chunk_start = idx
+                continue
+
+            if chunk_start is not None:
+                repaired[chunk_start:idx] = self._repair_nominal_chunk(
+                    repaired[chunk_start:idx],
+                    next_tag=tag,
+                )
+                chunk_start = None
+
+        return repaired
+
+    def postprocess_tags(self, pred_tags, tokens=None, context=None, language=None, system_name=None):
+        repaired = self._apply_position0_prior(pred_tags, tokens or [], context)
+        return self._postprocess_pattern(repaired)
 
     def tag_identifier(self, tokens, context, type_str, language, system_name):
         """
@@ -108,4 +178,12 @@ class DistilBertTagger:
         
         # Step 6: Map label IDs back to string labels
         pred_tag_strings = [self.id2label[i] for i in pred_labels]
+        if self.pattern_postprocessing:
+            pred_tag_strings = self.postprocess_tags(
+                pred_tag_strings,
+                tokens=tokens,
+                context=context,
+                language=language,
+                system_name=system_name,
+            )
         return pred_tag_strings

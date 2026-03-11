@@ -2,6 +2,8 @@ import os
 import time
 import random
 import math
+import inspect
+from collections import Counter, defaultdict
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
@@ -46,7 +48,7 @@ def _configure_torch_runtime() -> None:
     torch.set_float32_matmul_precision("high")
 
 # === Random Seeds ===
-RAND_STATE = 209
+RAND_STATE = 69420
 random.seed(RAND_STATE)
 np.random.seed(RAND_STATE)
 torch.manual_seed(RAND_STATE)
@@ -57,10 +59,11 @@ _configure_torch_runtime()
 
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
-HOLDOUT_RATIO = 0.30      # 30% held out for final evaluation
+HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
 EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
+PRIOR_TAGS = {"PRE", "NM", "N"}
 
 # Curated mapping: common programming verbs → synonyms that are also clearly verbs.
 # Only words that are rarely ambiguous as NM/N in identifier naming are included.
@@ -260,6 +263,77 @@ def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame
         return pd.DataFrame(columns=df.columns)
     return pd.DataFrame(new_rows)
 
+
+def _build_position0_label_priors(
+    df: pd.DataFrame,
+    *,
+    min_global_count: int = 3,
+    min_global_purity: float = 0.80,
+    min_context_count: int = 2,
+    min_context_purity: float = 1.00,
+) -> Dict[str, Any]:
+    """Learn conservative label priors for the first identifier token.
+
+    The goal is to correct recurring PRE/NM/N confusions for token prefixes that are
+    stable in the training corpus, without overriding context-sensitive open-class words.
+    """
+
+    def choose_label(counts: Counter, min_count: int, min_purity: float) -> str | None:
+        total = sum(counts.values())
+        if total < min_count:
+            return None
+        label, count = counts.most_common(1)[0]
+        if (count / total) < min_purity:
+            return None
+        return label
+
+    global_counts: Dict[str, Counter] = defaultdict(Counter)
+    context_counts: Dict[str, Dict[str, Counter]] = defaultdict(lambda: defaultdict(Counter))
+
+    for _, row in df.iterrows():
+        tokens = row.get("tokens", [])
+        tags = row.get("tags", [])
+        if not tokens or not tags:
+            continue
+
+        token = str(tokens[0]).strip().lower()
+        tag = str(tags[0]).strip()
+        context = str(row.get("CONTEXT", "")).strip()
+
+        if not token or tag not in PRIOR_TAGS:
+            continue
+
+        global_counts[token][tag] += 1
+        if context:
+            context_counts[context][token][tag] += 1
+
+    global_priors = {}
+    for token, counts in global_counts.items():
+        label = choose_label(counts, min_global_count, min_global_purity)
+        if label is not None:
+            global_priors[token] = label
+
+    context_priors = {}
+    for context, token_map in context_counts.items():
+        accepted = {}
+        for token, counts in token_map.items():
+            label = choose_label(counts, min_context_count, min_context_purity)
+            if label is not None:
+                accepted[token] = label
+        if accepted:
+            context_priors[context] = accepted
+
+    return {
+        "global": global_priors,
+        "by_context": context_priors,
+        "settings": {
+            "min_global_count": min_global_count,
+            "min_global_purity": min_global_purity,
+            "min_context_count": min_context_count,
+            "min_context_purity": min_context_purity,
+        },
+    }
+
 # === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -451,6 +525,10 @@ def _get_lm_runtime_config(train_examples: int, eval_examples: int) -> Dict[str,
         "viterbi_batch_size": eval_batch_size,
     }
 
+
+def _training_arguments_supports(name: str) -> bool:
+    return name in inspect.signature(TrainingArguments.__init__).parameters
+
 def viterbi_predict(
     model,
     dataset,
@@ -607,6 +685,7 @@ def train_lm(
         random_state=RAND_STATE,
         stratify=df["CONTEXT"]
     )
+    position0_label_priors = _build_position0_label_priors(train_df)
 
     # 4) Tokenizer (upsampling now happens per-fold to prevent cross-fold leakage)
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
@@ -681,58 +760,46 @@ def train_lm(
             dropout_prob=0.1
         ).to(device)
         model.config.selected_features = selected_features
+        model.config.position0_label_priors = position0_label_priors
 
         # 9) TrainingArguments (with early stopping)
-        if device.type == "cpu":
-            training_args = TrainingArguments(
-                output_dir=os.path.join(output_dir, f"fold_{fold}"),
-                eval_strategy="epoch",
-                save_strategy="epoch",
-                learning_rate=5e-5,
-                per_device_train_batch_size=runtime_config["train_batch_size"],
-                per_device_eval_batch_size=runtime_config["eval_batch_size"],
-                num_train_epochs=EPOCHS,
-                weight_decay=0.01,
-                warmup_steps=runtime_config["warmup_steps"],
-                lr_scheduler_type="cosine",
-                load_best_model_at_end=True,
-                metric_for_best_model="eval_macro_f1",
-                greater_is_better=True,
-                save_total_limit=1,
-                report_to="none",
-                seed=RAND_STATE,
-                dataloader_num_workers=runtime_config["dataloader_num_workers"],
-                group_by_length=True,
-            )
-        else:
-            training_args = TrainingArguments(
-                output_dir=os.path.join(output_dir, f"fold_{fold}"),
-                eval_strategy="epoch",
-                save_strategy="epoch",
-                learning_rate=5e-5,
-                per_device_train_batch_size=runtime_config["train_batch_size"],
-                per_device_eval_batch_size=runtime_config["eval_batch_size"],
-                gradient_accumulation_steps=runtime_config["gradient_accumulation_steps"],
-                num_train_epochs=EPOCHS,
-                weight_decay=0.01,
-                warmup_steps=runtime_config["warmup_steps"],
-                lr_scheduler_type="cosine",
-                load_best_model_at_end=True,
-                metric_for_best_model="eval_macro_f1",
-                greater_is_better=True,
-                save_total_limit=1,
-                report_to="none",
-                seed=RAND_STATE,
-                optim=runtime_config["optim"],
-                fp16=runtime_config["fp16"],
-                bf16=runtime_config["bf16"],
-                dataloader_num_workers=runtime_config["dataloader_num_workers"],
-                dataloader_pin_memory=runtime_config["pin_memory"],
-                dataloader_persistent_workers=runtime_config["persistent_workers"],
-                eval_accumulation_steps=runtime_config["eval_accumulation_steps"],
-                group_by_length=True,
-                torch_compile=runtime_config["torch_compile"],
-            )
+        training_kwargs = {
+            "output_dir": os.path.join(output_dir, f"fold_{fold}"),
+            "eval_strategy": "epoch",
+            "save_strategy": "epoch",
+            "learning_rate": 5e-5,
+            "per_device_train_batch_size": runtime_config["train_batch_size"],
+            "per_device_eval_batch_size": runtime_config["eval_batch_size"],
+            "num_train_epochs": EPOCHS,
+            "weight_decay": 0.01,
+            "warmup_steps": runtime_config["warmup_steps"],
+            "lr_scheduler_type": "cosine",
+            "load_best_model_at_end": True,
+            "metric_for_best_model": "eval_macro_f1",
+            "greater_is_better": True,
+            "save_total_limit": 1,
+            "report_to": "none",
+            "seed": RAND_STATE,
+            "dataloader_num_workers": runtime_config["dataloader_num_workers"],
+        }
+
+        if _training_arguments_supports("group_by_length"):
+            training_kwargs["group_by_length"] = True
+
+        if device.type != "cpu":
+            training_kwargs.update({
+                "gradient_accumulation_steps": runtime_config["gradient_accumulation_steps"],
+                "optim": runtime_config["optim"],
+                "fp16": runtime_config["fp16"],
+                "bf16": runtime_config["bf16"],
+                "dataloader_pin_memory": runtime_config["pin_memory"],
+                "dataloader_persistent_workers": runtime_config["persistent_workers"],
+                "eval_accumulation_steps": runtime_config["eval_accumulation_steps"],
+            })
+            if _training_arguments_supports("torch_compile"):
+                training_kwargs["torch_compile"] = runtime_config["torch_compile"]
+
+        training_args = TrainingArguments(**training_kwargs)
 
         # 10) Define collator that handles dynamic padding + label alignment
         #     For example, if two tokenized examples have:
@@ -857,10 +924,17 @@ def train_lm(
     # 18) Output predictions per row to CSV for inspection or error analysis
     from .distilbert_tagger import DistilBertTagger
 
-    # Re-instantiate the exact same DistilBERT tagger we saved
-    tagger = DistilBertTagger(best_model_dir)
+    # Re-instantiate the exact same DistilBERT tagger we saved.
+    # We evaluate both raw decoding and repaired output from the same predictions.
+    tagger = DistilBertTagger(best_model_dir, local=True, pattern_postprocessing=False)
+    use_pattern_postprocessing = bool(
+        (run_metadata or {}).get("cli_options", {}).get("pattern_postprocessing", False)
+    )
 
     rows = []
+    flat_true = []
+    flat_pred_raw = []
+    flat_pred_post = []
     for _, row in val_df.iterrows():
         tokens     = row["tokens"]            # e.g. ["my", "Identifier", "Name"]
         true_tags  = row["tags"]              # e.g. ["NM", "DT", "DT"]
@@ -869,13 +943,26 @@ def train_lm(
         language   = row.get("LANGUAGE", "")  # if present; otherwise ""
         system_name= row.get("SYSTEM_NAME", "")  # if present; otherwise ""
 
-        # `tag_identifier` now returns a list of string labels, not IDs
-        pred_tags = tagger.tag_identifier(tokens, context, type_str, language, system_name)
+        pred_tags_raw = tagger.tag_identifier(tokens, context, type_str, language, system_name)
+        pred_tags_post = tagger.postprocess_tags(
+            pred_tags_raw,
+            tokens=tokens,
+            context=context,
+            language=language,
+            system_name=system_name,
+        )
+        pred_tags = pred_tags_post if use_pattern_postprocessing else pred_tags_raw
+
+        flat_true.extend(true_tags)
+        flat_pred_raw.extend(pred_tags_raw)
+        flat_pred_post.extend(pred_tags_post)
 
         rows.append({
             "tokens":      " ".join(tokens),
             "true_tags":   " ".join(true_tags),
             "pred_tags":   " ".join(pred_tags),
+            "pred_tags_raw": " ".join(pred_tags_raw),
+            "pred_tags_postprocessed": " ".join(pred_tags_post),
             "context":     context,
             "type":        type_str,
             "language":    language,
@@ -888,32 +975,52 @@ def train_lm(
     preds_df.to_csv(csv_path, index=False)
     print(f"\nWrote hold-out predictions to: {csv_path}")
 
-    # Now also compute identifier-level accuracy from the “flat_true/flat_pred” folds:
-    # We need to compare per-example (not flattened) again, so re-run a grouping logic.
+    # Compute identifier-level accuracy from the saved per-row predictions.
     df = pd.read_csv(os.path.join(output_dir, "holdout_predictions.csv"))
     df["row_correct"] = df["true_tags"] == df["pred_tags"]
+    df["row_correct_raw"] = df["true_tags"] == df["pred_tags_raw"]
+    df["row_correct_postprocessed"] = df["true_tags"] == df["pred_tags_postprocessed"]
     id_level_acc = df["row_correct"].mean()
+    id_level_acc_raw = df["row_correct_raw"].mean()
+    id_level_acc_post = df["row_correct_postprocessed"].mean()
     
     # Report evaluation metrics and timing info
     total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
     total_examples = len(val_dataset)
     elapsed = end_time - start_time
-    final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
-    final_accuracy = accuracy_score(flat_true, flat_pred)
+    final_macro_f1_raw = f1_score(flat_true, flat_pred_raw, average="macro")
+    final_accuracy_raw = accuracy_score(flat_true, flat_pred_raw)
+    final_macro_f1_post = f1_score(flat_true, flat_pred_post, average="macro")
+    final_accuracy_post = accuracy_score(flat_true, flat_pred_post)
     
     print("\nFinal Evaluation on Held-Out Set:")
     with open('holdout_report.txt', 'w') as f:
-        report = classification_report(flat_true, flat_pred)
-        dual_print(report, file=f)
+        dual_print("Raw Held-Out Classification Report:", file=f)
+        dual_print(classification_report(flat_true, flat_pred_raw), file=f)
+        dual_print("Postprocessed Held-Out Classification Report:", file=f)
+        dual_print(classification_report(flat_true, flat_pred_post), file=f)
         _write_run_metadata(
             file=f,
             source_names=source_names,
             selected_features=selected_features,
             run_metadata=run_metadata,
         )
+        dual_print(
+            f"\nActive holdout prediction mode: {'postprocessed' if use_pattern_postprocessing else 'raw'}",
+            file=f,
+        )
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
         dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)
         dual_print(f"Identifiers/sec: {total_examples / elapsed:.2f}", file=f)
-        dual_print(f"\nFinal Macro F1 on Held-Out Set: {final_macro_f1:.4f}", file=f)
-        dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}", file=f)
+        dual_print("\nRaw Held-Out Metrics:", file=f)
+        dual_print(f"Final Macro F1 on Held-Out Set: {final_macro_f1_raw:.4f}", file=f)
+        dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy_raw:.4f}", file=f)
+        dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc_raw:.4f}", file=f)
+        dual_print("\nPostprocessed Held-Out Metrics:", file=f)
+        dual_print(f"Final Macro F1 on Held-Out Set: {final_macro_f1_post:.4f}", file=f)
+        dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy_post:.4f}", file=f)
+        dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc_post:.4f}", file=f)
+        dual_print("\nSelected Output Metrics:", file=f)
+        dual_print(f"Final Macro F1 on Held-Out Set: {final_macro_f1_post if use_pattern_postprocessing else final_macro_f1_raw:.4f}", file=f)
+        dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy_post if use_pattern_postprocessing else final_accuracy_raw:.4f}", file=f)
         dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)

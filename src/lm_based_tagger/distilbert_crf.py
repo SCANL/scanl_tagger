@@ -157,6 +157,9 @@ class DistilBertCRFForTokenClassification(nn.Module):
         if hasattr(cfg, "selected_features"):
             model.config.selected_features = cfg.selected_features
             model.bert.config.selected_features = cfg.selected_features
+        if hasattr(cfg, "position0_label_priors"):
+            model.config.position0_label_priors = cfg.position0_label_priors
+            model.bert.config.position0_label_priors = cfg.position0_label_priors
 
         # Attempt to load model.safetensors only
         try:

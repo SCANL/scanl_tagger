@@ -1561,7 +1561,7 @@ MapWriter	as Map	FUNCTION	P N	Java	drill	https://github.com/apache/drill
 DCMolecularField*	as molecular field	FUNCTION	P NM N	C++	panda3d	https://github.com/panda3d/panda3d
 double	as of	PARAMETER	P P	C	panda3d	https://github.com/panda3d/panda3d
 void*	as pointer	FUNCTION	P N	C++	panda3d	https://github.com/panda3d/panda3d
-ByteBuf	as Read Only	FUNCTION	P NM VM	Java	drill	https://github.com/apache/drill
+ByteBuf	as Read Only	FUNCTION	P V VM	Java	drill	https://github.com/apache/drill
 DCSimpleParameter*	as simple parameter	FUNCTION	P NM N	C++	panda3d	https://github.com/panda3d/panda3d
 List	as Sorted Entry List	FUNCTION	P NM NM N	Java	Singularity	https://github.com/sylabs/singularity
 String	as String	DECLARATION	P N	Java	immutables	https://github.com/immutables/immutables
@@ -1573,7 +1573,7 @@ int	as warning	PARAMETER	P N	C	libxo	https://github.com/Juniper/libxo
 int	as within	ATTRIBUTE	P P	C	rigraph	https://github.com/igraph/rigraph
 Writer	as Writer	FUNCTION	P N	Java	guava	https://github.com/google/guava
 R	at Most	FUNCTION	P DT	Java	immutables	https://github.com/immutables/immutables
-int	atalk len	FUNCTION	N NM	C	wireshark	https://github.com/wireshark/wireshark
+int	atalk len	FUNCTION	NM N	C	wireshark	https://github.com/wireshark/wireshark
 int	b 1 Index	PARAMETER	N D N	Java	drill	https://github.com/apache/drill
 int	B 1110	ATTRIBUTE	N D	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
 byte	b 3	PARAMETER	N D	Java	guava	https://github.com/google/guava
@@ -1781,7 +1781,7 @@ bool	g curand availability logged	DECLARATION	PRE NM N V	C++	caffe	https://githu
 objectlist	g next	DECLARATION	PRE DT	C	naemon-core	https://github.com/naemon/naemon-core
 int*	generate key or iv	FUNCTION	V N CJ N	C	wireshark	https://github.com/wireshark/wireshark
 void	Generate Prolog 1	FUNCTION	V N D	C++	facebook-repo-ds2	https://github.com/facebookresearch/ds2
-string	get a 1	FUNCTION	V N D	C++	panda3d	https://github.com/panda3d/panda3d
+string	get a1	FUNCTION	V N	C++	panda3d	https://github.com/panda3d/panda3d
 String	get B64 Data	FUNCTION	V NM N	Java	Smack	https://github.com/igniterealtime/Smack
 LVecBase2d	get data 2d	FUNCTION	V N NM	C++	panda3d	https://github.com/panda3d/panda3d
 LVecBase4d	get data 4d	FUNCTION	V N NM	C++	panda3d	https://github.com/panda3d/panda3d
@@ -2127,7 +2127,7 @@ int	no callback	DECLARATION	DT N	C	git2r	https://github.com/ropensci/git2r
 fdpage_list_t	no data pages	DECLARATION	DT NM NPL	C++	s3fs-fuse	https://github.com/s3fs-fuse/s3fs-fuse
 no_delay	no Delay	DECLARATION	DT N	C++	drill	https://github.com/apache/drill
 float	no dig delay timer	ATTRIBUTE	DT N NM N	C++	freeminer	https://github.com/freeminer/freeminer
-bool	no emerge	PARAMETER	VM V	C++	freeminer	https://github.com/freeminer/freeminer
+bool	no emerge	PARAMETER	DT V	C++	freeminer	https://github.com/freeminer/freeminer
 bool	no Error	FUNCTION	DT N	C++	proxygen	https://github.com/facebook/proxygen
 boolean	no Interfaces	ATTRIBUTE	DT NPL	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
 char	no log	DECLARATION	DT N	C	weechat	https://github.com/weechat/weechat
@@ -2541,7 +2541,7 @@ class	Upsampling 2D	CLASS	N NM	Java	deeplearning4j	https://github.com/eclipse/de
 SEXP	us	PARAMETER	N	C	rigraph	https://github.com/igraph/rigraph
 bool	use default if empty	PARAMETER	V N CJ NM	C	git2r	https://github.com/ropensci/git2r
 string	username only	DECLARATION	N VM	C++	panda3d	https://github.com/panda3d/panda3d
-int32_t	utf8 next code point	FUNCTION	N DT NM N	C++	meta	https://github.com/meta-toolkit/meta
+int32_t	utf8 next codepoint	FUNCTION	N DT N	C++	meta	https://github.com/meta-toolkit/meta
 int	utf8 only	ATTRIBUTE	N VM	C	weechat	https://github.com/weechat/weechat
 V1LayerParameter	v 0 layer connection	PARAMETER	N D NM N	C++	caffe	https://github.com/BVLC/caffe
 float	v 00	PARAMETER	N D	C++	freeminer	https://github.com/freeminer/freeminer

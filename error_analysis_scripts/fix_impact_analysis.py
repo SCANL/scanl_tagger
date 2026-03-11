@@ -25,6 +25,18 @@ from typing import List
 import pandas as pd
 
 
+def _select_prediction_column(df: pd.DataFrame, prediction_column: str | None = None) -> str:
+    if prediction_column:
+        if prediction_column not in df.columns:
+            raise KeyError(f"Predictions file does not contain requested column: {prediction_column}")
+        return prediction_column
+    if "pred_tags_postprocessed" in df.columns:
+        return "pred_tags_postprocessed"
+    if "pred_tags" in df.columns:
+        return "pred_tags"
+    raise KeyError("Predictions file must contain 'pred_tags' or 'pred_tags_postprocessed'.")
+
+
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
@@ -35,20 +47,20 @@ def _split(value: str) -> List[str]:
     return str(value).strip().split()
 
 
-def _build_error_rows(df: pd.DataFrame) -> pd.DataFrame:
+def _build_error_rows(df: pd.DataFrame, prediction_column: str) -> pd.DataFrame:
     """Expand every token-level error into its own row with full context."""
     rows = []
     for _, id_row in df.iterrows():
         tokens = _split(id_row["tokens"])
         true_tags = _split(id_row["true_tags"])
-        pred_tags = _split(id_row["pred_tags"])
+        pred_tags = _split(id_row[prediction_column])
         error_count = sum(t != p for t, p in zip(true_tags, pred_tags))
         for pos, (tok, true_tag, pred_tag) in enumerate(zip(tokens, true_tags, pred_tags)):
             if true_tag != pred_tag:
                 rows.append({
                     "identifier":   id_row["tokens"],
                     "true_tags":    id_row["true_tags"],
-                    "pred_tags":    id_row["pred_tags"],
+                    "pred_tags":    id_row[prediction_column],
                     "token":        tok,
                     "position":     pos,
                     "identifier_len": len(tokens),
@@ -210,6 +222,7 @@ def _write_summary(
 def analyze_fix_impact(
     predictions_path: str,
     output_dir: str,
+    prediction_column: str | None = None,
 ) -> dict:
     """
     Analyze holdout predictions to rank single-tag fixes by identifier-level gain.
@@ -224,12 +237,13 @@ def analyze_fix_impact(
     """
     df = pd.read_csv(predictions_path)
     os.makedirs(output_dir, exist_ok=True)
+    prediction_column = _select_prediction_column(df, prediction_column)
 
-    df["row_correct"] = df["true_tags"] == df["pred_tags"]
+    df["row_correct"] = df["true_tags"] == df[prediction_column]
     total_identifiers = len(df)
     correct_identifiers = int(df["row_correct"].sum())
 
-    error_df = _build_error_rows(df)
+    error_df = _build_error_rows(df, prediction_column)
     if error_df.empty:
         print("No errors found in predictions — nothing to analyze.")
         return {}
@@ -250,6 +264,8 @@ def analyze_fix_impact(
     by_tok.to_csv(tok_path, index=False)
 
     with open(summary_path, "w") as f:
+        f.write(f"Prediction column used: {prediction_column}\n")
+        f.write("\n")
         _write_summary(f, total_identifiers, correct_identifiers,
                        one_off_df, by_sub, by_pos, by_tok, error_df)
 
@@ -263,6 +279,7 @@ def analyze_fix_impact(
         "sub_path": sub_path,
         "pos_path": pos_path,
         "tok_path": tok_path,
+        "prediction_column": prediction_column,
         "total_identifiers": total_identifiers,
         "correct_identifiers": correct_identifiers,
         "one_off_count": int(one_off_df["identifier"].nunique()) if len(one_off_df) > 0 else 0,

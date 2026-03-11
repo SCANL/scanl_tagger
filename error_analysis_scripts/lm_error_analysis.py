@@ -8,6 +8,14 @@ from sklearn.metrics import classification_report, confusion_matrix
 from error_analysis_scripts.fix_impact_analysis import analyze_fix_impact
 
 
+def _select_prediction_column(df: pd.DataFrame) -> str:
+    if "pred_tags_postprocessed" in df.columns:
+        return "pred_tags_postprocessed"
+    if "pred_tags" in df.columns:
+        return "pred_tags"
+    raise KeyError("Predictions file must contain 'pred_tags' or 'pred_tags_postprocessed'.")
+
+
 def _split_tags(value: str) -> List[str]:
     if pd.isna(value):
         return []
@@ -22,7 +30,7 @@ def _tokenize_identifier(value: str) -> List[str]:
     return text.split() if text else []
 
 
-def _flatten_predictions(df: pd.DataFrame) -> Tuple[List[str], List[str], List[dict]]:
+def _flatten_predictions(df: pd.DataFrame, prediction_column: str) -> Tuple[List[str], List[str], List[dict]]:
     y_true: List[str] = []
     y_pred: List[str] = []
     token_rows: List[dict] = []
@@ -30,7 +38,7 @@ def _flatten_predictions(df: pd.DataFrame) -> Tuple[List[str], List[str], List[d
     for _, row in df.iterrows():
         tokens = _tokenize_identifier(row["tokens"])
         true_tags = _split_tags(row["true_tags"])
-        pred_tags = _split_tags(row["pred_tags"])
+        pred_tags = _split_tags(row[prediction_column])
 
         for idx, (token, true_tag, pred_tag) in enumerate(zip(tokens, true_tags, pred_tags)):
             token_rows.append({
@@ -58,12 +66,13 @@ def run_lm_diagnostics(
     """Generate diagnostic summaries for LM holdout predictions."""
     df = pd.read_csv(predictions_path)
     os.makedirs(output_dir, exist_ok=True)
+    prediction_column = _select_prediction_column(df)
 
     df["true_tag_list"] = df["true_tags"].apply(_split_tags)
-    df["pred_tag_list"] = df["pred_tags"].apply(_split_tags)
+    df["pred_tag_list"] = df[prediction_column].apply(_split_tags)
     df["token_list"] = df["tokens"].apply(_tokenize_identifier)
     df["token_count"] = df["token_list"].apply(len)
-    df["row_correct"] = df["true_tags"] == df["pred_tags"]
+    df["row_correct"] = df["true_tags"] == df[prediction_column]
     df["error_count"] = df.apply(
         lambda row: sum(
             1 for true_tag, pred_tag in zip(row["true_tag_list"], row["pred_tag_list"]) if true_tag != pred_tag
@@ -72,7 +81,7 @@ def run_lm_diagnostics(
     )
 
     incorrect_df = df[~df["row_correct"]].copy()
-    y_true, y_pred, token_rows = _flatten_predictions(df)
+    y_true, y_pred, token_rows = _flatten_predictions(df, prediction_column)
     token_df = pd.DataFrame(token_rows)
     error_token_df = token_df[~token_df["correct"]].copy()
 
@@ -102,6 +111,7 @@ def run_lm_diagnostics(
         f.write("LM Holdout Error Analysis\n")
         f.write("=" * 80 + "\n")
         f.write(f"Predictions file: {predictions_path}\n")
+        f.write(f"Prediction column used: {prediction_column}\n")
         if report_path:
             f.write(f"Holdout report: {report_path}\n")
         f.write(f"Total identifiers: {len(df)}\n")
@@ -141,7 +151,7 @@ def run_lm_diagnostics(
         f.write("\nMost error-prone identifiers:\n")
         for _, row in incorrect_df.sort_values(["error_count", "token_count"], ascending=[False, False]).head(25).iterrows():
             f.write(
-                f"  {row['tokens']} | true={row['true_tags']} | pred={row['pred_tags']} | errors={row['error_count']}\n"
+                f"  {row['tokens']} | true={row['true_tags']} | pred={row[prediction_column]} | errors={row['error_count']}\n"
             )
 
     print(f"Wrote LM diagnostics summary to: {summary_path}")
@@ -153,6 +163,7 @@ def run_lm_diagnostics(
     fix_result = analyze_fix_impact(
         predictions_path=predictions_path,
         output_dir=fix_impact_dir,
+        prediction_column=prediction_column,
     )
 
     return {
@@ -160,6 +171,7 @@ def run_lm_diagnostics(
         "detail_path": detail_path,
         "token_detail_path": token_detail_path,
         "confusion_path": confusion_path,
+        "prediction_column": prediction_column,
         "identifier_accuracy": float(df["row_correct"].mean()),
         "token_errors": int(len(error_token_df)),
         "fix_impact": fix_result,

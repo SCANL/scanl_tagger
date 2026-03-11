@@ -76,6 +76,13 @@ if __name__ == "__main__":
         choices=AVAILABLE_FEATURES,
         help="Feature tokens to include for lm_based training",
     )
+    parser.add_argument(
+        "--pattern-postprocessing",
+        dest="pattern_postprocessing",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Enable nominal-chunk repair postprocessing for lm_based inference",
+    )
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
@@ -84,6 +91,15 @@ if __name__ == "__main__":
     parser.add_argument("--address", type=str, help="Server address")
 
     args = parser.parse_args()
+
+    raw_argv = set(getattr(sys, "orig_argv", sys.argv)[1:])
+    tagger_flag_explicit = any(flag in raw_argv for flag in {"--tagger-data", "--no-tagger-data"})
+    synthetic_flag_explicit = any(flag in raw_argv for flag in {"--synthetic-data", "--no-synthetic-data"})
+
+    if tagger_flag_explicit and not synthetic_flag_explicit:
+        args.use_synthetic_data = False
+    elif synthetic_flag_explicit and not tagger_flag_explicit:
+        args.use_tagger_data = False
     
     if args.version:
         print(get_version())
@@ -174,12 +190,14 @@ if __name__ == "__main__":
                     'script_dir': SCRIPT_DIR,
                     'model': 'sourceslicer/scalar_lm_best',
                     'model_type':'lm_based',
+                    'pattern_postprocessing': args.pattern_postprocessing,
                 })
             else:
                 start_server(temp_config={
                     'script_dir': SCRIPT_DIR,
                     'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
                     'model_type':'lm_based',
+                    'pattern_postprocessing': args.pattern_postprocessing,
                 })
     else:
         parser.print_usage()

@@ -22,6 +22,8 @@ AVAILABLE_FEATURES = [
     "hungarian",
     "cvr",
     "digit",
+    "digit_connector",
+    "plural_suffix",
     "type",
     "type_overlap",
     "language",
@@ -35,6 +37,8 @@ FEATURE_FUNCTIONS = {
     "hungarian": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
     "cvr": lambda row, tokens: consonant_vowel_ratio_bucket(tokens),
     "digit": lambda row, tokens: detect_digit_feature(tokens),
+    "digit_connector": lambda row, tokens: get_digit_connector_feature_tokens(tokens),
+    "plural_suffix": lambda row, tokens: get_plural_suffix_feature_tokens(tokens),
     "type": lambda row, tokens: get_type_feature_tokens(row.get("TYPE", "")),
     "type_overlap": lambda row, tokens: get_type_overlap_feature_tokens(tokens, row.get("TYPE", "")),
     "language": lambda row, tokens: normalize_language(row.get("LANGUAGE", "")),
@@ -58,6 +62,10 @@ TYPE_CONTAINER_TOKENS = {
 }
 TYPE_FUNCTION_TOKENS = {"func", "function", "callback", "predicate", "consumer", "supplier", "runnable", "lambda"}
 TYPE_QUALIFIER_TOKENS = {"const", "volatile", "static", "signed", "unsigned", "struct", "class", "enum", "union"}
+NON_PLURAL_S_SUFFIX_STOPLIST = {
+    "this", "is", "was", "has", "plus", "minus", "pass", "class", "glass",
+    "status", "alias", "bias", "canvas", "http", "https"
+}
 
 
 def _looks_int_like(normalized_type: str, type_tokens: List[str]) -> bool:
@@ -131,6 +139,82 @@ def detect_digit_feature(tokens):
         if any(char.isdigit() for char in token):
             return "@has_digit"
     return "@no_digit"
+
+
+def _is_alpha_like_token(token: str) -> bool:
+    return bool(token) and token.isalpha()
+
+
+def get_digit_connector_feature_tokens(tokens: List[str]) -> List[str]:
+    feature_tokens = []
+
+    for index, token in enumerate(tokens):
+        normalized = token.strip().lower()
+        if normalized != "2":
+            continue
+
+        feature_tokens.append("@digit_connector_2")
+
+        if index == 0:
+            feature_tokens.append("@digit_connector_head")
+        elif index == len(tokens) - 1:
+            feature_tokens.append("@digit_connector_tail")
+        else:
+            feature_tokens.append("@digit_connector_mid")
+
+        prev_is_alpha = index > 0 and _is_alpha_like_token(tokens[index - 1])
+        next_is_alpha = index + 1 < len(tokens) and _is_alpha_like_token(tokens[index + 1])
+        if prev_is_alpha and next_is_alpha:
+            feature_tokens.append("@digit_connector_alpha_bridge")
+        elif prev_is_alpha or next_is_alpha:
+            feature_tokens.append("@digit_connector_alpha_adjacent")
+
+    if not feature_tokens:
+        return ["@digit_connector_none"]
+    return _dedupe_preserve_order(feature_tokens)
+
+
+def _plural_suffix_bucket(token: str) -> str | None:
+    normalized = token.strip().lower()
+    if len(normalized) < 4 or not normalized.isalpha():
+        return None
+    if normalized in NON_PLURAL_S_SUFFIX_STOPLIST:
+        return None
+
+    if normalized.endswith("ies") and len(normalized) > 4:
+        return "ies"
+    if normalized.endswith(("ses", "xes", "zes", "ches", "shes", "oes")):
+        return "es"
+    if normalized.endswith("es") and not normalized.endswith(("sses", "uses", "ises")):
+        return "es"
+    if normalized.endswith("s") and not normalized.endswith(("ss", "us", "is")):
+        return "s"
+    return None
+
+
+def get_plural_suffix_feature_tokens(tokens: List[str]) -> List[str]:
+    suffixes = []
+    positions = []
+
+    for index, token in enumerate(tokens):
+        suffix = _plural_suffix_bucket(token)
+        if suffix is None:
+            continue
+        suffixes.append(suffix)
+        if index == len(tokens) - 1:
+            positions.append("tail")
+        elif index == 0:
+            positions.append("head")
+        else:
+            positions.append("mid")
+
+    if not suffixes:
+        return ["@plural_suffix_none"]
+
+    feature_tokens = ["@plural_suffix_present"]
+    feature_tokens.extend(f"@plural_suffix_{suffix}" for suffix in _dedupe_preserve_order(suffixes))
+    feature_tokens.extend(f"@plural_suffix_{position}" for position in _dedupe_preserve_order(positions))
+    return feature_tokens
 
 def consonant_vowel_ratio_bucket(tokens):
     def ratio(tok):
