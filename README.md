@@ -28,9 +28,10 @@ You can run SCALAR in multiple ways:
 ### CLI (with DistilBERT or GradientBoosting model)
 
 ```bash
-python main --mode run --model_type lm_based         # DistilBERT (recommended)
+python main --mode run --model_type lm_based         # DistilBERT; prefers serve.release.json or local output/best_model when configured/present
 python main --mode run --model_type lm_based --local # Load the locally trained model from output/best_model
 python main --mode run --model_type lm_based --pattern-postprocessing
+python main --mode run --model_type lm_based --config_path serve.release.json
 python main --mode run --model_type tree_based       # Legacy model
 ```
 
@@ -41,6 +42,16 @@ For LM inference, selected feature tokens are loaded from the saved model config
 - saved model default from training
 - server startup override via `--pattern-postprocessing` or `--no-pattern-postprocessing`
 - per-request override via `?pattern_postprocessing=true` or `?pattern_postprocessing=false`
+
+## Release Path
+
+The checked-in release-serving entry point is `serve.release.json`.
+
+```bash
+python main --mode run --model_type lm_based --config_path serve.release.json
+```
+
+That config is intended to represent the exact release candidate setup. Today it points at the local retrained checkpoint in `output/best_model`; once the candidate is published to Hugging Face, update the `model` and `local` fields there so fresh clones resolve to the published release artifact.
 
 Then query like:
 
@@ -88,9 +99,9 @@ When `--model_dir` is provided for LM training, the best saved checkpoint is wri
 
 | Metric                   | Score   |
 |--------------------------|---------|
-| **Macro F1**             | 0.9032  |
-| **Token Accuracy**       | 0.9223  |
-| **Identifier Accuracy**  | 0.8291  |
+| **Macro F1**             | 0.9527  |
+| **Token Accuracy**       | 0.9569  |
+| **Identifier Accuracy**  | 0.9053  |
 
 | Label | Precision | Recall | F1    | Support |
 |-------|-----------|--------|-------|---------|
@@ -105,8 +116,14 @@ When `--model_dir` is provided for LM training, the best saved checkpoint is wri
 | V     | 0.89      | 0.84   | 0.86  | 110     |
 | VM    | 0.79      | 0.85   | 0.81  | 13      |
 
+Current release-candidate training command:
+
+```bash
+python main --mode train --model_type lm_based --pattern-postprocessing --features context
+```
+
 **Inference Performance:**
-- Identifiers/sec: 225.8
+- Identifiers/sec: 486.81
 
 ---
 

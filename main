@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import json
 import os
 import shlex
 import sys
@@ -26,6 +27,14 @@ def resolve_path(path: str | None) -> str | None:
     if os.path.isabs(path):
         return path
     return os.path.join(SCRIPT_DIR, path)
+
+
+def load_runtime_config(path: str | None) -> dict:
+    if not path or not os.path.exists(path):
+        return {}
+
+    with open(path) as handle:
+        return json.load(handle)
 
 if __name__ == "__main__":
     """
@@ -160,6 +169,7 @@ if __name__ == "__main__":
 
     elif args.mode == "run":
         config_path = resolve_path(args.config_path)
+        runtime_config = load_runtime_config(config_path)
         if args.model_type == "tree_based":
             config = load_config_tree(SCRIPT_DIR)
             # Inject overrides
@@ -181,9 +191,30 @@ if __name__ == "__main__":
             start_server(temp_config=config)
         elif args.model_type == "lm_based":
             download_files()
-            default_local_model_path = resolve_path(args.model_dir or DEFAULT_LM_MODEL_DIR)
-            use_local_model = args.local or bool(args.model_dir) or os.path.isdir(default_local_model_path)
-            model_path = default_local_model_path if use_local_model else "sourceslicer/scalar_lm_best"
+            config_model = runtime_config.get("model")
+            config_local = bool(runtime_config.get("local", False))
+            resolved_config_model = config_model
+            if config_model and config_local:
+                resolved_config_model = resolve_path(config_model)
+
+            explicit_local_model_path = resolve_path(args.model_dir) if args.model_dir else None
+            default_local_model_path = resolve_path(DEFAULT_LM_MODEL_DIR)
+
+            if explicit_local_model_path:
+                use_local_model = True
+                model_path = explicit_local_model_path
+            elif args.local:
+                use_local_model = True
+                model_path = resolved_config_model if config_local and resolved_config_model else default_local_model_path
+            elif config_model:
+                use_local_model = config_local
+                model_path = resolved_config_model
+            elif os.path.isdir(default_local_model_path):
+                use_local_model = True
+                model_path = default_local_model_path
+            else:
+                use_local_model = False
+                model_path = "sourceslicer/scalar_lm_release_test"
 
             temp_config = {
                 "script_dir": SCRIPT_DIR,

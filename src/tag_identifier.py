@@ -191,6 +191,9 @@ def initialize_model(temp_config = {}, runtime_config = None):
         if pattern_postprocessing is None:
             pattern_postprocessing = runtime_config.get("pattern_postprocessing")
 
+        model_source = "local directory" if is_local else "HuggingFace repo"
+        print(f"LM model source: {model_source}: {model_path}")
+
         lm_model = DistilBertTagger(
             model_path,
             local=is_local,
