@@ -120,8 +120,8 @@ bool,b Is Valid,DECLARATION,PRE NM N,C,libvx
 bool,b Is Visible,DECLARATION,PRE NM N,C++,halcyon
 long,background Color,ATTRIBUTE,NM N,Java,gridview
 void,backup And Restore,FUNCTION,V CJ V,Java,beanworks
-class,Base 64,CLASS,N D,Java,bytecraft
-String,base 64 2 bytes,FUNCTION,N D P NPL,Java,bytecraft
+class,Base64,CLASS,N,Java,bytecraft
+String,base64 2 bytes,FUNCTION,N P NPL,Java,bytecraft
 int,batch Id,ATTRIBUTE,NM N,Java,cloudkit
 Map,batch Insert Records,FUNCTION,VM V NPL,Java,dataforge
 int,batch Number,PARAMETER,NM N,Java,springcore
@@ -236,8 +236,8 @@ String,charset Name,PARAMETER,NM N,Java,netpulse
 void,check And Repair,FUNCTION,V CJ V,Java,beanworks
 void,check Disk Space,FUNCTION,V NM N,C,kron
 void,check Reader And Writer,FUNCTION,V N CJ N,C,coda
-void,checkpoint,FUNCTION,V,Java,beanworks
-void,checkpoint State,FUNCTION,V N,Java,beanworks
+void,analyze,FUNCTION,V,Java,beanworks
+void,analyze State,FUNCTION,V N,Java,beanworks
 float,checksum Value,DECLARATION,NM N,C,volt
 int,child Count,ATTRIBUTE,NM N,C++,neutron
 vector,child Nodes,DECLARATION,NM NPL,C++,sigma
@@ -1080,14 +1080,14 @@ const char*,offset From Base Address,DECLARATION,N P NM N,C,aeon
 int,offset From Start Position,PARAMETER,N P NM N,C++,sigma
 void,on Activate,FUNCTION,P V,Java,webstack
 void,on Attach,FUNCTION,P V,Java,webstack
-void,on Button Click,FUNCTION,P NM N,Java,gridview
+void,on Button Click,FUNCTION,P N V,Java,gridview
 long,on Click,DECLARATION,P N,Java,gridview
 void,on Close,FUNCTION,P V,Java,netpulse
 void,on Complete,FUNCTION,P V,Java,springcore
 void,on Connect,FUNCTION,P V,Java,netpulse
 void,on Create,FUNCTION,P V,Java,gridview
-void,on Data Available,FUNCTION,P N NM,Java,netpulse
-void,on Data Received,FUNCTION,P N NM,Java,nodelink
+void,on Data Available,FUNCTION,P N V,Java,netpulse
+void,on Data Received,FUNCTION,P N V,Java,nodelink
 void,on Deactivate,FUNCTION,P V,Java,webstack
 void,on Destroy,FUNCTION,P V,Java,gridview
 void,on Detach,FUNCTION,P V,Java,webstack
@@ -1097,30 +1097,69 @@ Void,on Did Load,FUNCTION,P V V,swift,gridview
 void,on Did Retry,FUNCTION,P V V,Java,pulseforge
 void,on Disconnect,FUNCTION,P V,Java,nodelink
 size_t,on Error,DECLARATION,P N,C,nexus
-void,on Error_fn,FUNCTION,P N,Java,nodelink
+void,on Error,FUNCTION,P V,Java,nodelink
 Void,on Finish Unload,FUNCTION,P V V,swift,webstack
 void,on Focus,FUNCTION,P V,Java,webstack
-void,on Key Press,FUNCTION,P NM N,Java,gridview
+void,on Key Press,FUNCTION,P N V,Java,gridview
 void,on Load,FUNCTION,P V,Java,webstack
 void,on Message,FUNCTION,P N,Java,netpulse
-int,on Mouse Click,DECLARATION,P NM N,Java,gridview
+int,on Mouse Click,DECLARATION,P N V,Java,gridview
 void,on Pause,FUNCTION,P V,Java,gridview
-void,on Property Change,FUNCTION,P NM N,Java,webstack
+void,on Property Change,FUNCTION,P N V,Java,webstack
 void,on Render,FUNCTION,P V,C++,prism
 void,on Resize,FUNCTION,P V,Java,webstack
 void,on Resume,FUNCTION,P V,Java,gridview
 void,on Retry,FUNCTION,P V,Java,pulseforge
 void,on Move,FUNCTION,P V,Java,webstack
-void,on Size Change,FUNCTION,P NM N,Java,webstack
-void,on Start,FUNCTION,P N,Java,springcore
-void,on State Change,FUNCTION,P NM N,Java,webstack
+void,on Size Change,FUNCTION,P N V,Java,webstack
+void,on Start,FUNCTION,P V,Java,springcore
+void,on State Change,FUNCTION,P N V,Java,webstack
 void,on Submit,FUNCTION,P V,Java,webstack
 long,on Success,DECLARATION,P N,Java,nodelink
 void,on Timeout,FUNCTION,P N,Java,nodelink
 void,on Update,FUNCTION,P V,Java,cloudkit
 Void,on Will Appear,FUNCTION,P V V,swift,gridview
 void,on Will Flush,FUNCTION,P V V,Java,byteforge
-void,on Worker Exit,FUNCTION,P NM N,Java,quill
+void,on Worker Exit,FUNCTION,P N V,Java,quill
+void,on Audio Pause,FUNCTION,P N V,JavaScript,domkit
+void,on Audio Play,FUNCTION,P N V,JavaScript,domkit
+void,on Child Exit,FUNCTION,P N V,C,oxide
+void,on Connection Close,FUNCTION,P N V,JavaScript,nodelink
+void,on Connection Open,FUNCTION,P N V,JavaScript,nodelink
+void,on Dialog Close,FUNCTION,P N V,JavaScript,domkit
+void,on Element Mount,FUNCTION,P N V,JavaScript,reactlib
+void,on Element Unmount,FUNCTION,P N V,JavaScript,reactlib
+void,on Event Trigger,FUNCTION,P N V,Java,netpulse
+void,on File Change,FUNCTION,P N V,JavaScript,nodelink
+void,on Form Reset,FUNCTION,P N V,JavaScript,domkit
+void,on Form Submit,FUNCTION,P N V,JavaScript,domkit
+void,on Icon Click,FUNCTION,P N V,JavaScript,domkit
+void,on Input Blur,FUNCTION,P N V,JavaScript,domkit
+void,on Link Click,FUNCTION,P N V,JavaScript,domkit
+void,on Menu Open,FUNCTION,P N V,JavaScript,domkit
+void,on Mouse Enter,FUNCTION,P N V,JavaScript,domkit
+void,on Mouse Leave,FUNCTION,P N V,JavaScript,domkit
+void,on Mouse Move,FUNCTION,P N V,JavaScript,domkit
+void,on Node Enter,FUNCTION,P N V,JavaScript,domkit
+void,on Node Exit,FUNCTION,P N V,JavaScript,nodelink
+void,on Page Load,FUNCTION,P N V,JavaScript,domkit
+void,on Pointer Cancel,FUNCTION,P N V,JavaScript,domkit
+void,on Pointer Move,FUNCTION,P N V,JavaScript,domkit
+void,on Process Exit,FUNCTION,P N V,JavaScript,nodelink
+void,on Signal Receive,FUNCTION,P N V,C,oxide
+void,on Slot Change,FUNCTION,P N V,JavaScript,domkit
+void,on Socket Close,FUNCTION,P N V,JavaScript,nodelink
+void,on Socket Open,FUNCTION,P N V,JavaScript,nodelink
+void,on Stream Read,FUNCTION,P N V,JavaScript,nodelink
+void,on Tab Select,FUNCTION,P N V,JavaScript,domkit
+void,on Thread Spawn,FUNCTION,P N V,C++,vortex
+void,on Touch Move,FUNCTION,P N V,JavaScript,domkit
+void,on Touch Start,FUNCTION,P N V,JavaScript,domkit
+void,on Video Pause,FUNCTION,P N V,JavaScript,domkit
+void,on Video Play,FUNCTION,P N V,JavaScript,domkit
+void,on Window Focus,FUNCTION,P N V,JavaScript,domkit
+void,on Window Resize,FUNCTION,P N V,JavaScript,domkit
+void,on Window Scroll,FUNCTION,P N V,JavaScript,domkit
 Real,opacity Value,ATTRIBUTE,NM N,C++,vortex
 void,open And Initialize,FUNCTION,V CJ V,C,libvx
 Collection,open Connections,DECLARATION,NM NPL,Java,nodelink
@@ -1385,7 +1424,7 @@ void,retry Automatically,FUNCTION,V VM,Java,northstar
 int,retry Count,ATTRIBUTE,NM N,Java,nodelink
 Integer,retry Delay,DECLARATION,NM N,Java,nodelink
 void,retry Host If Busy,FUNCTION,V N CJ NM,Java,pulseforge
-void,retry If Failed,FUNCTION,V CJ NM,Java,nodelink
+void,retry If Failed,FUNCTION,V CJ V,Java,nodelink
 float,retry Interval,PARAMETER,NM N,Java,cloudkit
 void,retry Operation,FUNCTION,V N,Java,cloudkit
 class,Retry Policy,CLASS,NM N,Java,cloudkit

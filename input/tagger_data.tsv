@@ -249,7 +249,7 @@ QStringList	anchor Name	DECLARATION	NM N	C++	calligra	https://github.com/KDE/cal
 AndroidByteBuddyMockMaker	Android Byte Buddy Mock Maker	CLASS	NM NM NM NM N	Java	mockito	https://github.com/mockito/mockito
 qreal	angle In Radian	DECLARATION	N P N	C++	calligra	https://github.com/KDE/calligra
 GtkWidget	animation box	DECLARATION	NM N	C	gimp	https://github.com/GNOME/gimp
-KPrPredefinedAnimationsLoader	animations Data	PARAMETER	NM NPL	C++	calligra	https://github.com/KDE/calligra
+KPrPredefinedAnimationsLoader	animations Data	PARAMETER	NM N	C++	calligra	https://github.com/KDE/calligra
 String	App ID	PARAMETER	NM N	Java	opencv	https://github.com/opencv/opencv
 void	append Python Style Escaped Code Point	FUNCTION	V NM NM NM NM N	Java	antlr4	https://github.com/antlr/antlr4
 void	append Sequence	FUNCTION	V N	C++	kdevelop	https://github.com/KDE/kdevelop
@@ -986,8 +986,8 @@ OFAndroidSoundPlayer	OF Android Sound Player	CLASS	PRE NM NM N	Java	openFramewor
 OFAndroidWindow	OF Android Window	CLASS	PRE NM N	Java	openFrameworks	https://github.com/openframeworks/openFrameworks
 OFOrientationListener	OF Orientation Listener	CLASS	PRE NM N	Java	openFrameworks	https://github.com/openframeworks/openFrameworks
 string	of To Binary	FUNCTION	PRE P N	C++	openFrameworks	https://github.com/openframeworks/openFrameworks
-grpcclosure	on connect	PARAMETER	P N	C	grpc	https://github.com/grpc/grpc
-void	on Group Call Key Sent	FUNCTION	P NM NM N NM	Java	Telegram	https://github.com/DrKLO/Telegram
+grpcclosure	on connect	PARAMETER	P V	C	grpc	https://github.com/grpc/grpc
+void	on Group Call Key Sent	FUNCTION	P NM NM N V	Java	Telegram	https://github.com/DrKLO/Telegram
 Void	on Implies	FUNCTION	P V	Java	jenkins	https://github.com/jenkinsci/jenkins
 OnItemLongClickListener	on Item Long Click Listener	ATTRIBUTE	P NM NM NM N	Java	Telegram	https://github.com/DrKLO/Telegram
 boolean	one Document	DECLARATION	NM N	Java	corenlp	https://github.com/stanfordnlp/CoreNLP
@@ -1003,7 +1003,7 @@ List	ordered Invocations	PARAMETER	NM NPL	Java	mockito	https://github.com/mockit
 float	ori W	DECLARATION	NM N	C++	bullet3	https://github.com/bulletphysics/bullet3
 MockingDetails	original Mocking Details	ATTRIBUTE	NM NM NPL	Java	mockito	https://github.com/mockito/mockito
 Set	original Set	PARAMETER	NM N	Java	elasticsearch	https://github.com/elastic/elasticsearch
-long	other Data Len Bits	ATTRIBUTE	NM NM NM NPL	Java	Telegram	https://github.com/DrKLO/Telegram
+long	other Data Len Bits	ATTRIBUTE	DT NM NM NPL	Java	Telegram	https://github.com/DrKLO/Telegram
 char	out buf	PARAMETER	NM N	C	irrlicht	https://github.com/zaki/irrlicht
 double[]	out d G	DECLARATION	N NM NM	C	Telegram	https://github.com/DrKLO/Telegram
 char[]	out table	PARAMETER	NM N	C	bullet3	https://github.com/bulletphysics/bullet3
@@ -2355,7 +2355,7 @@ png_size_t	save buffer max	ATTRIBUTE	V NM N	C	toggldesktop	https://github.com/to
 size_t	save data length	ATTRIBUTE	NM NM N	C	toxcore	https://github.com/TokTok/c-toxcore
 int	save err no	DECLARATION	V NM N	C	ovs	https://github.com/openvswitch/ovs
 Long	save Every Ms	ATTRIBUTE	V DT N	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
-boolean	save Every Since Last	ATTRIBUTE	V DT VM DT	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
+boolean	save Every Since Last	ATTRIBUTE	V DT P DT	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
 SingularityCreateResult	save Expiring Object	FUNCTION	V NM N	Java	Singularity	https://github.com/sylabs/singularity
 void	save Mail Record	FUNCTION	V NM N	Java	Singularity	https://github.com/sylabs/singularity
 boolean	save Output	ATTRIBUTE	V N	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
