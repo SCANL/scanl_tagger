@@ -1083,7 +1083,7 @@ void,on Attach,FUNCTION,P V,Java,webstack
 void,on Button Click,FUNCTION,P NM N,Java,gridview
 long,on Click,DECLARATION,P N,Java,gridview
 void,on Close,FUNCTION,P V,Java,netpulse
-void,on Complete,FUNCTION,P N,Java,springcore
+void,on Complete,FUNCTION,P V,Java,springcore
 void,on Connect,FUNCTION,P V,Java,netpulse
 void,on Create,FUNCTION,P V,Java,gridview
 void,on Data Available,FUNCTION,P N NM,Java,netpulse
@@ -1692,7 +1692,7 @@ void,trak init,FUNCTION,PRE V,C,trak
 int*,trak list threads,FUNCTION,PRE V NPL,C,trak
 void,trak mutex,FUNCTION,PRE N,C,trak
 int,trak pid,DECLARATION,PRE N,C,trak
-void*,trak process table,FUNCTION,PRE NM N,C,trak
+void*,trak process table,FUNCTION,PRE V N,C,trak
 void,trak shutdown,FUNCTION,PRE V,C,trak
 void*,trak threads,DECLARATION,PRE NPL,C,trak
 void,transform Node,FUNCTION,V N,C++,helix
