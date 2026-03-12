@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
-    parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
+    parser.add_argument("--local", action="store_true", help="Force use of a local model/tokenizer instead of the HuggingFace repo.")
     # Core run/train model arguments
     parser.add_argument("--mode", choices=["train", "run", "diagnostics"], required=True, help="Choose to 'train', 'run', or 'diagnostics'")
     parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
@@ -181,16 +181,16 @@ if __name__ == "__main__":
             start_server(temp_config=config)
         elif args.model_type == "lm_based":
             download_files()
-            model_path = "sourceslicer/scalar_lm_best"
-            if args.local:
-                model_path = resolve_path(args.model_dir or DEFAULT_LM_MODEL_DIR)
+            default_local_model_path = resolve_path(args.model_dir or DEFAULT_LM_MODEL_DIR)
+            use_local_model = args.local or bool(args.model_dir) or os.path.isdir(default_local_model_path)
+            model_path = default_local_model_path if use_local_model else "sourceslicer/scalar_lm_best"
 
             temp_config = {
                 "script_dir": SCRIPT_DIR,
                 "config_path": config_path,
                 "model": model_path,
                 "model_type": "lm_based",
-                "local": args.local,
+                "local": use_local_model,
             }
 
             if args.pattern_postprocessing is not None:

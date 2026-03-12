@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
 
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import f1_score, accuracy_score, classification_report
 
 from transformers import (
@@ -37,28 +37,29 @@ print("Using device:", device)
 
 
 def _configure_torch_runtime() -> None:
-    """Enable faster CUDA execution settings when reproducibility constraints allow it."""
+    """Configure CUDA for reproducible training runs."""
     if device.type != "cuda":
         return
 
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
-    torch.backends.cudnn.deterministic = False
-    torch.backends.cudnn.benchmark = True
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
     torch.set_float32_matmul_precision("high")
 
 # === Random Seeds ===
-RAND_STATE = 69420
-random.seed(RAND_STATE)
-np.random.seed(RAND_STATE)
-torch.manual_seed(RAND_STATE)
-torch.cuda.manual_seed_all(RAND_STATE)
+SPLIT_SEED = 658
+TRAIN_SEED = 209
+random.seed(TRAIN_SEED)
+np.random.seed(TRAIN_SEED)
+torch.manual_seed(TRAIN_SEED)
+torch.cuda.manual_seed_all(TRAIN_SEED)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 _configure_torch_runtime()
 
 # === Hyperparameters / Config ===
-K = 5                     # number of CV folds
+K = 2                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
 EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
@@ -264,6 +265,42 @@ def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame
     return pd.DataFrame(new_rows)
 
 
+def _prepare_training_frame(
+    df: pd.DataFrame,
+    *,
+    augmentation_seed: int,
+) -> Tuple[pd.DataFrame, int]:
+    """Apply fold-safe resampling and augmentation to a training frame."""
+    prepared_df = df.reset_index(drop=True).copy()
+
+    low_freq_rows = prepared_df[
+        prepared_df["tags"].apply(lambda tags: any(tag in LOW_FREQ_TAGS for tag in tags))
+    ]
+    prepared_df = pd.concat([prepared_df] + [low_freq_rows] * 2, ignore_index=True)
+
+    verb_aug_df = _augment_verb_examples(prepared_df, random.Random(augmentation_seed))
+    if not verb_aug_df.empty:
+        prepared_df = pd.concat([prepared_df, verb_aug_df], ignore_index=True)
+
+    return prepared_df, len(verb_aug_df)
+
+
+def _extract_best_epoch(trainer: Trainer) -> float:
+    """Recover the best evaluation epoch from Trainer state."""
+    best_metric = trainer.state.best_metric
+    if best_metric is None:
+        return float(EPOCHS)
+
+    best_epoch = None
+    for record in trainer.state.log_history:
+        if "eval_macro_f1" not in record or "epoch" not in record:
+            continue
+        if math.isclose(float(record["eval_macro_f1"]), float(best_metric), rel_tol=1e-9, abs_tol=1e-9):
+            best_epoch = float(record["epoch"])
+
+    return best_epoch if best_epoch is not None else float(EPOCHS)
+
+
 def _build_position0_label_priors(
     df: pd.DataFrame,
     *,
@@ -356,7 +393,8 @@ def _write_run_metadata(
 
     dual_print("\nRun Configuration:", file=file)
     dual_print(f"Command: {run_metadata.get('command', '<unknown>')}", file=file)
-    dual_print(f"Seed: {RAND_STATE}", file=file)
+    dual_print(f"Split seed: {SPLIT_SEED}", file=file)
+    dual_print(f"Train seed: {TRAIN_SEED}", file=file)
     dual_print(f"Datasets: {', '.join(source_names)}", file=file)
     dual_print(
         f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
@@ -691,7 +729,7 @@ def train_lm(
     train_df, val_df = train_test_split(
         df,
         test_size=HOLDOUT_RATIO,
-        random_state=RAND_STATE,
+        random_state=SPLIT_SEED,
         stratify=df["CONTEXT"]
     )
     position0_label_priors = _build_position0_label_priors(train_df)
@@ -707,28 +745,25 @@ def train_lm(
     )
 
     # 7) Set up K-Fold
-    kf = KFold(n_splits=K, shuffle=True, random_state=RAND_STATE)
+    kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
     best_macro_f1 = -1.0
+    best_fold_index = None
+    best_num_train_epochs = float(EPOCHS)
     fold = 1
-    for train_idx, test_idx in kf.split(train_df):
+    for train_idx, test_idx in kf.split(train_df, train_df["CONTEXT"]):
         print(f"\n=== Fold {fold} ===")
 
         # 7a) Split this fold’s train/test from the base training set
         fold_train_df = train_df.iloc[train_idx].reset_index(drop=True)
         fold_test_df  = train_df.iloc[test_idx].reset_index(drop=True)
 
-        # Upsample low-frequency tags inside the fold to prevent cross-fold leakage
-        low_freq_fold = fold_train_df[fold_train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
-        fold_train_df = pd.concat([fold_train_df] + [low_freq_fold] * 2, ignore_index=True)
-
-        # Verb synonym augmentation: synthesise new rows by substituting V-tagged tokens
-        # with synonyms drawn from VERB_SYNONYMS.  Applied across all contexts so the model
-        # sees V signal in DECLARATION, PARAMETER, ATTRIBUTE, and CLASS frames, not just FUNCTION.
-        _fold_rng = random.Random(RAND_STATE + fold)
-        verb_aug_df = _augment_verb_examples(fold_train_df, _fold_rng)
-        if not verb_aug_df.empty:
-            fold_train_df = pd.concat([fold_train_df, verb_aug_df], ignore_index=True)
-            print(f"  Verb augmentation added {len(verb_aug_df)} synthetic rows "
+        # Apply resampling and verb augmentation only inside the fold training slice.
+        fold_train_df, verb_aug_count = _prepare_training_frame(
+            fold_train_df,
+            augmentation_seed=TRAIN_SEED + fold,
+        )
+        if verb_aug_count:
+            print(f"  Verb augmentation added {verb_aug_count} synthetic rows "
                   f"(fold train size: {len(fold_train_df)})")
 
         # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
@@ -787,9 +822,12 @@ def train_lm(
             "greater_is_better": True,
             "save_total_limit": 1,
             "report_to": "none",
-            "seed": RAND_STATE,
+            "seed": TRAIN_SEED,
             "dataloader_num_workers": runtime_config["dataloader_num_workers"],
         }
+
+        if _training_arguments_supports("data_seed"):
+            training_kwargs["data_seed"] = TRAIN_SEED
 
         if _training_arguments_supports("group_by_length"):
             training_kwargs["group_by_length"] = True
@@ -875,6 +913,8 @@ def train_lm(
         #     This ensures we retain the model with highest validation performance
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
+            best_fold_index = fold
+            best_num_train_epochs = _extract_best_epoch(trainer)
             # Clear stale files (e.g. added_tokens.json from prior runs) before saving
             if os.path.exists(best_model_dir):
                 import shutil
@@ -886,14 +926,112 @@ def train_lm(
         fold += 1
 
     # 15) Final summary after cross-validation
-    #     Reports where the best model is saved and its macro F1 on fold validation data
-    print(f"\nBest fold model saved at: {best_model_dir}, Macro F1 = {best_macro_f1:.4f}")
+    #     Use CV to choose the training duration, then retrain once on all of train_df.
+    print(
+        f"\nBest CV fold: {best_fold_index}, Macro F1 = {best_macro_f1:.4f}, "
+        f"selected epochs = {best_num_train_epochs:.2f}"
+    )
 
-    # 16) Load best model and prepare for final evaluation on held-out set
+    full_train_df, final_verb_aug_count = _prepare_training_frame(
+        train_df,
+        augmentation_seed=TRAIN_SEED + K + 1,
+    )
+    if final_verb_aug_count:
+        print(
+            f"Final retrain verb augmentation added {final_verb_aug_count} synthetic rows "
+            f"(train size: {len(full_train_df)})"
+        )
+
+    full_train_dataset = prepare_dataset(full_train_df, LABEL2ID, selected_features=selected_features)
+    tokenized_full_train = full_train_dataset.map(
+        lambda sample: tokenize_and_align_labels(sample, tokenizer),
+        batched=False
+    )
+
+    final_runtime_config = _get_lm_runtime_config(
+        train_examples=len(full_train_df),
+        eval_examples=len(val_df),
+    )
+    print(
+        "Final retrain runtime config: "
+        f"train_bs={final_runtime_config['train_batch_size']}, "
+        f"workers={final_runtime_config['dataloader_num_workers']}, "
+        f"precision={'bf16' if final_runtime_config['bf16'] else 'fp16' if final_runtime_config['fp16'] else 'fp32'}, "
+        f"optim={final_runtime_config['optim']}"
+    )
+
+    final_model = DistilBertCRFForTokenClassification(
+        num_labels=len(LABEL_LIST),
+        id2label=ID2LABEL,
+        label2id=LABEL2ID,
+        pretrained_name="distilbert-base-uncased",
+        dropout_prob=0.1
+    ).to(device)
+    final_model.config.selected_features = selected_features
+    final_model.config.position0_label_priors = position0_label_priors
+    final_model.config.pattern_postprocessing_default = use_pattern_postprocessing
+
+    final_training_kwargs = {
+        "output_dir": os.path.join(output_dir, "final_retrain"),
+        "eval_strategy": "no",
+        "save_strategy": "no",
+        "learning_rate": 5e-5,
+        "per_device_train_batch_size": final_runtime_config["train_batch_size"],
+        "per_device_eval_batch_size": final_runtime_config["eval_batch_size"],
+        "num_train_epochs": best_num_train_epochs,
+        "weight_decay": 0.01,
+        "warmup_steps": max(1, math.ceil(0.1 * (len(full_train_df) / final_runtime_config["train_batch_size"]) * best_num_train_epochs)),
+        "lr_scheduler_type": "cosine",
+        "report_to": "none",
+        "seed": TRAIN_SEED,
+        "dataloader_num_workers": final_runtime_config["dataloader_num_workers"],
+    }
+
+    if _training_arguments_supports("data_seed"):
+        final_training_kwargs["data_seed"] = TRAIN_SEED
+
+    if _training_arguments_supports("group_by_length"):
+        final_training_kwargs["group_by_length"] = True
+
+    if device.type != "cpu":
+        final_training_kwargs.update({
+            "gradient_accumulation_steps": final_runtime_config["gradient_accumulation_steps"],
+            "optim": final_runtime_config["optim"],
+            "fp16": final_runtime_config["fp16"],
+            "bf16": final_runtime_config["bf16"],
+            "dataloader_pin_memory": final_runtime_config["pin_memory"],
+            "dataloader_persistent_workers": final_runtime_config["persistent_workers"],
+        })
+        if _training_arguments_supports("torch_compile"):
+            final_training_kwargs["torch_compile"] = final_runtime_config["torch_compile"]
+
+    final_training_args = TrainingArguments(**final_training_kwargs)
+    final_collator = DataCollatorForTokenClassification(
+        tokenizer=tokenizer,
+        pad_to_multiple_of=final_runtime_config["pad_to_multiple_of"],
+    )
+    final_trainer = Trainer(
+        model=final_model,
+        args=final_training_args,
+        train_dataset=tokenized_full_train,
+        processing_class=tokenizer,
+        data_collator=final_collator,
+    )
+    final_trainer.train()
+
+    if os.path.exists(best_model_dir):
+        import shutil
+        shutil.rmtree(best_model_dir)
+    final_trainer.save_model(best_model_dir)
+    final_model.config.save_pretrained(best_model_dir)
+    tokenizer.save_pretrained(best_model_dir)
+    print(f"Final retrained model saved at: {best_model_dir}")
+
+    # 16) Load final model and prepare for final evaluation on held-out set
     best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
     holdout_runtime_config = _get_lm_runtime_config(
-        train_examples=len(train_df),
+        train_examples=len(full_train_df),
         eval_examples=len(val_df),
     )
 
@@ -1009,6 +1147,8 @@ def train_lm(
             selected_features=selected_features,
             run_metadata=run_metadata,
         )
+        dual_print(f"Best CV fold: {best_fold_index}", file=f)
+        dual_print(f"Selected retrain epochs: {best_num_train_epochs:.2f}", file=f)
         dual_print(f"Best model dir: {best_model_dir}", file=f)
         dual_print(
             f"\nActive holdout prediction mode: {'postprocessed' if use_pattern_postprocessing else 'raw'}",
