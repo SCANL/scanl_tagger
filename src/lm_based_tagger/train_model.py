@@ -640,6 +640,7 @@ def train_lm(
     use_tagger_data: bool = True,
     use_synthetic_data: bool = True,
     selected_features: List[str] | None = None,
+    model_dir: str | None = None,
     run_metadata: Dict[str, Any] | None = None,
 ):
     """
@@ -662,7 +663,15 @@ def train_lm(
     # 1) Paths
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
+    best_model_dir = model_dir or os.path.join(output_dir, "best_model")
+    if not os.path.isabs(best_model_dir):
+        best_model_dir = os.path.join(script_dir, best_model_dir)
+    best_model_root = os.path.dirname(best_model_dir)
+    os.makedirs(best_model_root, exist_ok=True)
     selected_features = normalize_selected_features(selected_features)
+    use_pattern_postprocessing = bool(
+        (run_metadata or {}).get("cli_options", {}).get("pattern_postprocessing", False)
+    )
 
     # 2) Read the requested datasets and build “tokens” / “tags” columns
     df, source_names = _load_lm_training_dataframe(
@@ -700,8 +709,6 @@ def train_lm(
     # 7) Set up K-Fold
     kf = KFold(n_splits=K, shuffle=True, random_state=RAND_STATE)
     best_macro_f1 = -1.0
-    best_model_dir = None
-
     fold = 1
     for train_idx, test_idx in kf.split(train_df):
         print(f"\n=== Fold {fold} ===")
@@ -761,6 +768,7 @@ def train_lm(
         ).to(device)
         model.config.selected_features = selected_features
         model.config.position0_label_priors = position0_label_priors
+        model.config.pattern_postprocessing_default = use_pattern_postprocessing
 
         # 9) TrainingArguments (with early stopping)
         training_kwargs = {
@@ -867,7 +875,6 @@ def train_lm(
         #     This ensures we retain the model with highest validation performance
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
-            best_model_dir = os.path.join(output_dir, "best_model")
             # Clear stale files (e.g. added_tokens.json from prior runs) before saving
             if os.path.exists(best_model_dir):
                 import shutil
@@ -927,9 +934,6 @@ def train_lm(
     # Re-instantiate the exact same DistilBERT tagger we saved.
     # We evaluate both raw decoding and repaired output from the same predictions.
     tagger = DistilBertTagger(best_model_dir, local=True, pattern_postprocessing=False)
-    use_pattern_postprocessing = bool(
-        (run_metadata or {}).get("cli_options", {}).get("pattern_postprocessing", False)
-    )
 
     rows = []
     flat_true = []
@@ -1005,6 +1009,7 @@ def train_lm(
             selected_features=selected_features,
             run_metadata=run_metadata,
         )
+        dual_print(f"Best model dir: {best_model_dir}", file=f)
         dual_print(
             f"\nActive holdout prediction mode: {'postprocessed' if use_pattern_postprocessing else 'raw'}",
             file=f,

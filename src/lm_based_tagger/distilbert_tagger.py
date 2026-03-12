@@ -18,7 +18,7 @@ class DistilBertTagger:
     - Post-processing the raw logits or CRF predictions
     - Aligning subword tokens back to word-level predictions
     """
-    def __init__(self, model_path: str, local: bool = False, pattern_postprocessing: bool = False):
+    def __init__(self, model_path: str, local: bool = False, pattern_postprocessing: bool | None = None):
         # Load tokenizer from local directory or remote HuggingFace path
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)
 
@@ -34,7 +34,16 @@ class DistilBertTagger:
         self.selected_features = normalize_selected_features(
             getattr(self.model.config, "selected_features", None)
         )
-        self.pattern_postprocessing = pattern_postprocessing
+        saved_postprocessing_default = getattr(
+            self.model.config,
+            "pattern_postprocessing_default",
+            False,
+        )
+        self.pattern_postprocessing = (
+            bool(saved_postprocessing_default)
+            if pattern_postprocessing is None
+            else bool(pattern_postprocessing)
+        )
         self.position0_label_priors = getattr(self.model.config, "position0_label_priors", {}) or {}
         
         # map label IDs to strings
@@ -104,7 +113,15 @@ class DistilBertTagger:
         repaired = self._apply_position0_prior(pred_tags, tokens or [], context)
         return self._postprocess_pattern(repaired)
 
-    def tag_identifier(self, tokens, context, type_str, language, system_name):
+    def tag_identifier(
+        self,
+        tokens,
+        context,
+        type_str,
+        language,
+        system_name,
+        pattern_postprocessing: bool | None = None,
+    ):
         """
         Tag a split identifier using the model, returning a sequence of grammar pattern labels (e.g., ["V", "NM", "N"]).
 
@@ -178,7 +195,8 @@ class DistilBertTagger:
         
         # Step 6: Map label IDs back to string labels
         pred_tag_strings = [self.id2label[i] for i in pred_labels]
-        if self.pattern_postprocessing:
+        should_postprocess = self.pattern_postprocessing if pattern_postprocessing is None else bool(pattern_postprocessing)
+        if should_postprocess:
             pred_tag_strings = self.postprocess_tags(
                 pred_tag_strings,
                 tokens=tokens,

@@ -1,23 +1,31 @@
 #!/usr/bin/env python
 
-import os, argparse, shlex, sys
-from datetime import datetime
+import argparse
+import os
+import shlex
+import sys
 from error_analysis_scripts.lm_error_analysis import run_lm_diagnostics
-from error_analysis_scripts.fix_impact_analysis import analyze_fix_impact
 from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
 from src.lm_based_tagger.train_model import train_lm
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from src.tag_identifier import start_server
 from src.tree_based_tagger.download_code2vec_vectors import *
-from version import __version__ 
-from datasets import Dataset
+from version import __version__
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_LM_MODEL_DIR = os.path.join("output", "best_model")
 
 def get_version():
     """Return the current version of SCANL Tagger."""
     return f"SCANL Tagger version {__version__}"
+
+
+def resolve_path(path: str | None) -> str | None:
+    if not path:
+        return None
+    if os.path.isabs(path):
+        return path
+    return os.path.join(SCRIPT_DIR, path)
 
 if __name__ == "__main__":
     """
@@ -48,10 +56,10 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run", "diagnostics", "fix-impact"], required=True, help="Choose to 'train', 'run', 'diagnostics', or 'fix-impact'")
+    parser.add_argument("--mode", choices=["train", "run", "diagnostics"], required=True, help="Choose to 'train', 'run', or 'diagnostics'")
     parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
-    parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
+    parser.add_argument("--model_dir", type=str, help="Local model directory to save/load for lm_based runs")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
     parser.add_argument("--predictions_path", type=str, default="output/holdout_predictions.csv", help="Path to holdout predictions CSV used by diagnostics mode")
     parser.add_argument("--report_path", type=str, default="holdout_report.txt", help="Path to holdout report used by diagnostics mode")
@@ -80,8 +88,8 @@ if __name__ == "__main__":
         "--pattern-postprocessing",
         dest="pattern_postprocessing",
         action=argparse.BooleanOptionalAction,
-        default=False,
-        help="Enable nominal-chunk repair postprocessing for lm_based inference",
+        default=None,
+        help="Override nominal-chunk repair postprocessing for lm_based train eval and inference",
     )
 
     # Run-specific options
@@ -124,24 +132,9 @@ if __name__ == "__main__":
                 use_tagger_data=args.use_tagger_data,
                 use_synthetic_data=args.use_synthetic_data,
                 selected_features=args.features,
+                model_dir=resolve_path(args.model_dir),
                 run_metadata=run_metadata,
             )
-
-    elif args.mode == "fix-impact":
-        predictions_path = args.predictions_path
-        if not os.path.isabs(predictions_path):
-            predictions_path = os.path.join(SCRIPT_DIR, predictions_path)
-        fix_impact_dir = os.path.join(SCRIPT_DIR, "output", "fix_impact")
-        result = analyze_fix_impact(
-            predictions_path=predictions_path,
-            output_dir=fix_impact_dir,
-        )
-        if result:
-            n = result["one_off_count"]
-            total = result["total_identifiers"]
-            correct = result["correct_identifiers"]
-            print(f"\nCurrent identifier accuracy: {correct / total:.1%} ({correct}/{total})")
-            print(f"One-off errors: {n}  — fixing all would raise accuracy to {(correct + n) / total:.1%}")
 
     elif args.mode == "diagnostics":
         if args.model_type != "lm_based":
@@ -166,12 +159,15 @@ if __name__ == "__main__":
         )
 
     elif args.mode == "run":
+        config_path = resolve_path(args.config_path)
         if args.model_type == "tree_based":
             config = load_config_tree(SCRIPT_DIR)
             # Inject overrides
             download_files()
             config["model_type"] = args.model_type
-            config["model_dir"] = args.model_dir
+            if args.model_dir:
+                config["model_dir"] = args.model_dir
+            config["config_path"] = config_path
 
             if args.port:
                 config["port"] = args.port
@@ -185,19 +181,29 @@ if __name__ == "__main__":
             start_server(temp_config=config)
         elif args.model_type == "lm_based":
             download_files()
-            if not args.local:
-                start_server(temp_config={
-                    'script_dir': SCRIPT_DIR,
-                    'model': 'sourceslicer/scalar_lm_best',
-                    'model_type':'lm_based',
-                    'pattern_postprocessing': args.pattern_postprocessing,
-                })
-            else:
-                start_server(temp_config={
-                    'script_dir': SCRIPT_DIR,
-                    'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
-                    'model_type':'lm_based',
-                    'pattern_postprocessing': args.pattern_postprocessing,
-                })
+            model_path = "sourceslicer/scalar_lm_best"
+            if args.local:
+                model_path = resolve_path(args.model_dir or DEFAULT_LM_MODEL_DIR)
+
+            temp_config = {
+                "script_dir": SCRIPT_DIR,
+                "config_path": config_path,
+                "model": model_path,
+                "model_type": "lm_based",
+                "local": args.local,
+            }
+
+            if args.pattern_postprocessing is not None:
+                temp_config["pattern_postprocessing"] = args.pattern_postprocessing
+            if args.port:
+                temp_config["port"] = args.port
+            if args.protocol:
+                temp_config["protocol"] = args.protocol
+            if args.address:
+                temp_config["address"] = args.address
+            if args.word:
+                temp_config["words"] = args.word
+
+            start_server(temp_config=temp_config)
     else:
         parser.print_usage()

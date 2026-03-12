@@ -29,8 +29,18 @@ You can run SCALAR in multiple ways:
 
 ```bash
 python main --mode run --model_type lm_based         # DistilBERT (recommended)
+python main --mode run --model_type lm_based --local # Load the locally trained model from output/best_model
+python main --mode run --model_type lm_based --pattern-postprocessing
 python main --mode run --model_type tree_based       # Legacy model
 ```
+
+`--config_path` is honored in run mode, so server address, port, protocol, word list, and optional LM defaults can come from an alternate JSON file.
+
+For LM inference, selected feature tokens are loaded from the saved model config automatically. Postprocessing can be controlled in three places:
+
+- saved model default from training
+- server startup override via `--pattern-postprocessing` or `--no-pattern-postprocessing`
+- per-request override via `?pattern_postprocessing=true` or `?pattern_postprocessing=false`
 
 Then query like:
 
@@ -65,7 +75,10 @@ python main --mode train --model_type lm_based --no-tagger-data
 python main --mode train --model_type lm_based --tagger-data --synthetic-data
 python main --mode train --model_type lm_based --features context hungarian digit
 python main --mode train --model_type lm_based --features context type type_overlap sys_sim
+python main --mode train --model_type lm_based --model_dir release_models/lm_v1
 ```
+
+When `--model_dir` is provided for LM training, the best saved checkpoint is written there. The same path can be reused with `python main --mode run --model_type lm_based --local --model_dir release_models/lm_v1`.
 
 ---
 

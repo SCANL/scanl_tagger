@@ -3,7 +3,7 @@ import time
 import joblib
 import nltk
 import pandas as pd
-from flask import Flask, request
+from flask import Flask, abort, request
 from waitress import serve
 from spiral import ronin
 import json
@@ -17,6 +17,26 @@ app = Flask(__name__)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 model_type = None
 lm_model = None
+
+
+def _parse_optional_bool(value):
+    if value is None:
+        return None
+
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    raise ValueError(f"Invalid boolean value: {value}")
+
+
+def _load_runtime_config(config_path: str | None) -> dict:
+    if not config_path:
+        return {}
+
+    with open(config_path) as data:
+        return json.load(data)
 
 class ModelData:
     def __init__(self, modelTokens, modelMethods, modelGensimEnglish, wordCount) -> None:
@@ -131,7 +151,7 @@ class WordList:
     def find(self, item):
         return item in self.Words
 
-def initialize_model(temp_config = {}):
+def initialize_model(temp_config = {}, runtime_config = None):
     """
     Initialize and load word vectors for the application, and load a word count DataFrame.
 
@@ -142,7 +162,8 @@ def initialize_model(temp_config = {}):
         tuple: (ModelData, WORD_COUNT DataFrame)
     """
     global model_type, lm_model
-    model_type = temp_config.get("model_type", "tree_based")
+    runtime_config = runtime_config or {}
+    model_type = temp_config.get("model_type", runtime_config.get("model_type", "tree_based"))
     if model_type == "tree_based":
         print("Loading word vectors!!")
         modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
@@ -158,11 +179,22 @@ def initialize_model(temp_config = {}):
         app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
     elif model_type == "lm_based":
         print("Loading DistilBERT tagger...")
-        is_local = temp_config.get("local", False)
+        model_path = temp_config.get("model", runtime_config.get("model"))
+        if not model_path:
+            raise ValueError("LM run mode requires a model path or repo id.")
+
+        is_local = temp_config.get("local")
+        if is_local is None:
+            is_local = bool(runtime_config.get("local", False))
+
+        pattern_postprocessing = temp_config.get("pattern_postprocessing")
+        if pattern_postprocessing is None:
+            pattern_postprocessing = runtime_config.get("pattern_postprocessing")
+
         lm_model = DistilBertTagger(
-            temp_config['model'],
+            model_path,
             local=is_local,
-            pattern_postprocessing=temp_config.get("pattern_postprocessing", False),
+            pattern_postprocessing=pattern_postprocessing,
         )
         print("DistilBERT tagger loaded!")
 
@@ -181,7 +213,9 @@ def start_server(temp_config = {}):
     """
     print('initializing model...')
     selected_model = temp_config.get("model_type", "tree_based")
-    initialize_model(temp_config)
+    config_path = temp_config.get("config_path")
+    runtime_config = _load_runtime_config(config_path)
+    initialize_model(temp_config, runtime_config=runtime_config)
 
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
@@ -198,21 +232,19 @@ def start_server(temp_config = {}):
                 app.english_words.add(word[:-1])
 
     print('retrieving server configuration...')
-    data = open(os.path.join(SCRIPT_DIR, '..', 'serve.json'))
-    config = json.load(data)
+    config = runtime_config
 
-    server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
-    server_port = temp_config["port"] if "port" in temp_config.keys() else config['port']
-    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config["protocol"]
+    server_host = temp_config["address"] if "address" in temp_config.keys() else config.get("address", "0.0.0.0")
+    server_port = temp_config["port"] if "port" in temp_config.keys() else config.get('port', 5000)
+    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config.get("protocol", "http")
 
     print("loading word list...")
-    wordListPath = temp_config["words"] if "words" in temp_config.keys() else config["words"]
+    wordListPath = temp_config["words"] if "words" in temp_config.keys() else config.get("words", "")
     app.words = WordList(wordListPath)
     app.words.load()
 
     print("Starting server...")
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
-    data.close()
 
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
@@ -271,13 +303,19 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     # 2) If we asked for the LM‐based (DistilBERT) tagger, use it
     if model_type == "lm_based":
         result = { "words": [] }
+        request_postprocessing = request.args.get("pattern_postprocessing")
+        try:
+            postprocessing_override = _parse_optional_bool(request_postprocessing)
+        except ValueError as exc:
+            abort(400, description=str(exc))
 
         tags = lm_model.tag_identifier(
             tokens=words,
             context=identifier_context,
             type_str=data_type,
             language=programming_language,
-            system_name=system_name
+            system_name=system_name,
+            pattern_postprocessing=postprocessing_override,
         )
 
         for word, tag in zip(words, tags):

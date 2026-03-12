@@ -5,8 +5,6 @@ from typing import List, Tuple
 import pandas as pd
 from sklearn.metrics import classification_report, confusion_matrix
 
-from error_analysis_scripts.fix_impact_analysis import analyze_fix_impact
-
 
 def _select_prediction_column(df: pd.DataFrame) -> str:
     if "pred_tags_postprocessed" in df.columns:
@@ -159,13 +157,6 @@ def run_lm_diagnostics(
     print(f"Wrote token-level errors to: {token_detail_path}")
     print(f"Wrote token confusion matrix to: {confusion_path}")
 
-    fix_impact_dir = os.path.join(output_dir, "fix_impact")
-    fix_result = analyze_fix_impact(
-        predictions_path=predictions_path,
-        output_dir=fix_impact_dir,
-        prediction_column=prediction_column,
-    )
-
     return {
         "summary_path": summary_path,
         "detail_path": detail_path,
@@ -174,5 +165,4 @@ def run_lm_diagnostics(
         "prediction_column": prediction_column,
         "identifier_accuracy": float(df["row_correct"].mean()),
         "token_errors": int(len(error_token_df)),
-        "fix_impact": fix_result,
     }

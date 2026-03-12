@@ -160,6 +160,9 @@ class DistilBertCRFForTokenClassification(nn.Module):
         if hasattr(cfg, "position0_label_priors"):
             model.config.position0_label_priors = cfg.position0_label_priors
             model.bert.config.position0_label_priors = cfg.position0_label_priors
+        if hasattr(cfg, "pattern_postprocessing_default"):
+            model.config.pattern_postprocessing_default = cfg.pattern_postprocessing_default
+            model.bert.config.pattern_postprocessing_default = cfg.pattern_postprocessing_default
 
         # Attempt to load model.safetensors only
         try:
