@@ -25,7 +25,7 @@ int	conv in channels	ATTRIBUTE	NM NM NPL	C++	caffe	https://github.com/BVLC/caffe
 bool	force fog off	ATTRIBUTE	V N VM	C++	freeminer	https://github.com/freeminer/freeminer
 int*	friend in close	FUNCTION	N P N	C	toxcore	https://github.com/TokTok/c-toxcore
 boolean	if Present	PARAMETER	CJ N	Java	immutables	https://github.com/immutables/immutables
-void	l2 norm transform	FUNCTION	NM NM V	C	meta	https://github.com/meta-toolkit/meta
+void	l2 norm transform	FUNCTION	NM N V	C	meta	https://github.com/meta-toolkit/meta
 u64	last time ms	ATTRIBUTE	DT NM N	C++	freeminer	https://github.com/freeminer/freeminer
 String	LAYER FIELD POOL 1D SIZE	ATTRIBUTE	NM NM NM NM N	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
 JComboBox	look and feel	ATTRIBUTE	V CJ V	Java	Spark	https://github.com/apache/spark
@@ -864,7 +864,7 @@ MaskComponents	Mask Components	CLASS	NM NPL	C++	gimp.idents	https://github.com/G
 boolean	match By IP	FUNCTION	V P N	Java	elasticsearch	https://github.com/elastic/elasticsearch
 ExpectedExceptionMatcherBuilder	matcher Builder	ATTRIBUTE	NM N	Java	junit4	https://github.com/junit-team/junit4
 boolean	matches Any Parent Categories	FUNCTION	V DT NM NPL	Java	junit4	https://github.com/junit-team/junit4
-long	max Age Seconds Long	DECLARATION	NM NM NPL NM	Java	okhttp	https://github.com/square/okhttp
+long	max Age Seconds Long	DECLARATION	NM NM NPL N	Java	okhttp	https://github.com/square/okhttp
 sharedptr	max basket	DECLARATION	NM N	C++	QuantLib	https://github.com/lballabio/QuantLib
 int	max Buffer Size	ATTRIBUTE	NM NM N	C++	opencv	https://github.com/opencv/opencv
 MaxCore	Max Core	CLASS	NM N	Java	junit4	https://github.com/junit-team/junit4
@@ -1997,7 +1997,7 @@ uint32_t	left to parse	DECLARATION	V P V	C++	proxygen	https://github.com/faceboo
 size_t	len a	PARAMETER	NM N	C	freeminer	https://github.com/freeminer/freeminer
 String	less Terminal Path	ATTRIBUTE	NM NM N	Java	Singularity	https://github.com/sylabs/singularity
 LikeFilter	like Filter	PARAMETER	NM N	C++	drill	https://github.com/apache/drill
-RunQuery	limit 0 Query	DECLARATION	V D N	Java	drill	https://github.com/apache/drill
+RunQuery	limit 0 Query	DECLARATION	N D N	Java	drill	https://github.com/apache/drill
 int	lines after	ATTRIBUTE	NPL P	C	weechat	https://github.com/weechat/weechat
 size_t	lines in hunk	DECLARATION	NPL P N	C	git2r	https://github.com/ropensci/git2r
 int	lines per option	DECLARATION	NPL P N	C	weechat	https://github.com/weechat/weechat
@@ -2271,7 +2271,7 @@ boolean	partitionby	DECLARATION	N	Java	drill	https://github.com/apache/drill
 bool	pass through	DECLARATION	V P	C++	freeminer	https://github.com/freeminer/freeminer
 String	path Name for Logs	PARAMETER	NM N P NPL	Java	Singularity	https://github.com/sylabs/singularity
 ArrayList	paths 2	DECLARATION	NPL D	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
-long	per Ex Train	DECLARATION	P N V	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
+long	per Ex Train	DECLARATION	P NM N	Java	deeplearning4j	https://github.com/eclipse/deeplearning4j
 void	place all	FUNCTION	V DT	C++	panda3d	https://github.com/panda3d/panda3d
 bool	playing Ch 2	ATTRIBUTE	V N D	C	mgba	https://github.com/mgba-emu/mgba
 int	plfit errno	PARAMETER	NM N	C	rigraph	https://github.com/igraph/rigraph
@@ -2381,7 +2381,7 @@ int	shift by	PARAMETER	V P	C	git2r	https://github.com/ropensci/git2r
 int	short too	PARAMETER	NM VM	C	mgba	https://github.com/mgba-emu/mgba
 String	show String for Add	DECLARATION	NM N P N	Java	Spark	https://github.com/apache/spark
 uint64_t	significand	ATTRIBUTE	N	C++	toggldesktop	https://github.com/toggl-open-source/toggldesktop
-Date	since	ATTRIBUTE	VM	Java	Smack	https://github.com/igniterealtime/Smack
+Date	since	ATTRIBUTE	P	Java	Smack	https://github.com/igniterealtime/Smack
 class	Singularity S3 Service	CLASS	PRE PRE N	Java	Singularity	https://github.com/sylabs/singularity
 class	Singularity S3 Services	CLASS	PRE PRE NPL	Java	Singularity	https://github.com/sylabs/singularity
 class	Singularity S3 Uploader	CLASS	PRE PRE N	Java	Singularity	https://github.com/sylabs/singularity
@@ -2527,7 +2527,7 @@ MajorType	type 2	PARAMETER	N D	Java	drill	https://github.com/apache/drill
 uint32_t	u 1 bit count	PARAMETER	N D NM N	C	ovs	https://github.com/openvswitch/ovs
 guint32	u32 Pointer	DECLARATION	NM N	C	wireshark	https://github.com/wireshark/wireshark
 udpif	udpif	ATTRIBUTE	N	C	ovs	https://github.com/openvswitch/ovs
-class	Un7zip App	CLASS	V N	C++	toggldesktop	https://github.com/toggl-open-source/toggldesktop
+class	Un7zip App	CLASS	NM N	C++	toggldesktop	https://github.com/toggl-open-source/toggldesktop
 String	UNBLOCK CONTACT 16 x 16	ATTRIBUTE	V N D P D	Java	Spark	https://github.com/apache/spark
 void	unbox or zero	FUNCTION	V CJ N	Java	cglib	https://github.com/cglib/cglib
 int	under Provisioned Requests	PARAMETER	P V NPL	Java	Singularity	https://github.com/sylabs/singularity

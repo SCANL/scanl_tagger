@@ -255,7 +255,7 @@ int,clip Rect,DECLARATION,NM N,C,moth
 void,clip Rectangle,FUNCTION,V N,C,moth
 void,close Connection,FUNCTION,V N,Java,nodelink
 void,close If Idle,FUNCTION,V CJ NM,Java,cloudkit
-int*,coalesce Blocks,FUNCTION,V N,C,aeon
+int*,coalesce Blocks,FUNCTION,V NPL,C,aeon
 int*,coda buffers,DECLARATION,PRE NPL,C,coda
 void,coda close file,FUNCTION,PRE V N,C,coda
 uint32_t,coda file,DECLARATION,PRE N,C,coda
@@ -586,7 +586,7 @@ string,font Name,PARAMETER,NM N,C++,vortex
 class,Font Rasterizer,CLASS,NM N,C++,titan
 double,font Weight,ATTRIBUTE,NM N,C++,corelib
 unsigned,for Loop,DECLARATION,P N,C,libvx
-uint32_t,for Reading,PARAMETER,P N,C,coda
+uint32_t,for List,PARAMETER,P N,C,coda
 bool,force col 2 im,PARAMETER,V N P N,C++,neutron
 bool,force nd im 2 col,ATTRIBUTE,V NM N P N,C++,neutron
 int,foreground Color,ATTRIBUTE,NM N,Java,gridview
@@ -1102,15 +1102,15 @@ Void,on Finish Unload,FUNCTION,P V V,swift,webstack
 void,on Focus,FUNCTION,P V,Java,webstack
 void,on Key Press,FUNCTION,P NM N,Java,gridview
 void,on Load,FUNCTION,P V,Java,webstack
-void,on Message,FUNCTION,P V,Java,netpulse
+void,on Message,FUNCTION,P N,Java,netpulse
 int,on Mouse Click,DECLARATION,P NM N,Java,gridview
 void,on Pause,FUNCTION,P V,Java,gridview
 void,on Property Change,FUNCTION,P NM N,Java,webstack
 void,on Render,FUNCTION,P V,C++,prism
 void,on Resize,FUNCTION,P V,Java,webstack
 void,on Resume,FUNCTION,P V,Java,gridview
-void,on Retry,FUNCTION,P N,Java,pulseforge
-void,on Scroll,FUNCTION,P V,Java,webstack
+void,on Retry,FUNCTION,P V,Java,pulseforge
+void,on Move,FUNCTION,P V,Java,webstack
 void,on Size Change,FUNCTION,P NM N,Java,webstack
 void,on Start,FUNCTION,P N,Java,springcore
 void,on State Change,FUNCTION,P NM N,Java,webstack
