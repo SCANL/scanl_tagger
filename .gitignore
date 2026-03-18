@@ -4,3 +4,5 @@ code2vec/
 cache/
 input.txt
 .venvs/
+.tutorial/
+tutorial/

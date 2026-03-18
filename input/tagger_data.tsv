@@ -775,7 +775,7 @@ K	from Key	PARAMETER	P N	Java	guava	https://github.com/google/guava
 btVector3	from Local Aabb Min	DECLARATION	P NM NM N	C++	bullet3	https://github.com/bulletphysics/bullet3
 StanzaFilter	from Room Filter	ATTRIBUTE	P NM N	Java	Smack	https://github.com/igniterealtime/Smack
 boolean	from Server	PARAMETER	P N	Java	Telegram	https://github.com/DrKLO/Telegram
-boolean	from Server	PARAMETER		Java	Openfire	https://github.com/igniterealtime/Openfire
+boolean	from Server	PARAMETER	P N	Java	Openfire	https://github.com/igniterealtime/Openfire
 SelectionVector4	from SV 4	PARAMETER	P N D	Java	drill	https://github.com/apache/drill
 int	from Y	PARAMETER	P N	Java	Spark	https://github.com/apache/spark
 int*	fts5 MultiIter Do Compare	FUNCTION	PRE PRE V V	C	toggldesktop	https://github.com/toggl-open-source/toggldesktop
