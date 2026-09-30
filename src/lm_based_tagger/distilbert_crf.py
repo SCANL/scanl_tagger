@@ -52,7 +52,38 @@ class DistilBertCRFForTokenClassification(nn.Module):
         self.classifier = nn.Linear(self.config.hidden_size, num_labels)
         self.crf = CRF(num_labels, batch_first=True)
 
-    def forward(self, input_ids=None, attention_mask=None, labels=None, **kwargs):
+    @staticmethod
+    def _compact_word_positions(emissions, word_mask, tags=None):
+        """
+        Gather the word positions of each row into a contiguous, left-aligned sequence.
+
+        torchcrf assumes the mask is a contiguous prefix. Word labels are interleaved with
+        feature tokens, @pos_N tokens and continuation subwords, so the CRF must run over
+        the compacted word sequence for its transitions to connect adjacent words.
+
+        Example (W = word position, . = ignored):
+            word_mask  [., ., W, ., W, W, .]  ->  order [2, 4, 5, ...], mask [T, T, T]
+
+        Returns:
+            emissions [B, W, C], mask [B, W], tags [B, W] or None, order [B, W], lengths [B]
+        """
+        lengths = word_mask.sum(dim=1)
+        max_len = max(int(lengths.max().item()) if lengths.numel() else 0, 1)
+        # Stable sort puts word positions first while keeping their original order.
+        order = torch.argsort((~word_mask).to(torch.int8), dim=1, stable=True)[:, :max_len]
+        num_labels = emissions.size(-1)
+        compact_emissions = emissions.gather(1, order.unsqueeze(-1).expand(-1, -1, num_labels))
+        compact_mask = torch.arange(max_len, device=emissions.device)[None, :] < lengths[:, None]
+        # torchcrf requires the first timestep to be on; only matters for rows with no words.
+        compact_mask[:, 0] = True
+
+        compact_tags = None
+        if tags is not None:
+            compact_tags = tags.gather(1, order)
+            compact_tags = compact_tags.masked_fill(~compact_mask | (compact_tags < 0), 0)
+        return compact_emissions, compact_mask, compact_tags, order, lengths
+
+    def forward(self, input_ids=None, attention_mask=None, labels=None, word_mask=None, **kwargs):
         """
         Forward pass for training or inference.
 
@@ -60,6 +91,8 @@ class DistilBertCRFForTokenClassification(nn.Module):
             input_ids (Tensor): Token IDs of shape [B, T]
             attention_mask (Tensor): Attention mask of shape [B, T]
             labels (Tensor, optional): Ground-truth labels of shape [B, T]. Required during training.
+            word_mask (Tensor, optional): Bool mask of shape [B, T], True at the first subword of each
+                identifier word. Required for CRF decoding at inference; derived from labels in training.
             kwargs: Any additional DistilBERT-compatible inputs (e.g., head_mask, position_ids, etc.)
 
         Returns:
@@ -71,14 +104,14 @@ class DistilBertCRFForTokenClassification(nn.Module):
             If labels are not provided (inference mode):
                 dict with:
                     - logits (Tensor): emission scores of shape [B, T, C]
-                    - predictions (List[List[int]]): decoded label IDs from CRF,
-                                                    one list per sequence,
-                                                    each of length T-2 (excluding [CLS] and [SEP])
+                    - predictions (List[List[int]]): one list per sequence, aligned to the
+                      inner tokens (excluding [CLS] and [SEP]). Word positions hold the
+                      Viterbi-decoded label IDs; other positions hold the emission argmax.
 
         Notes:
             - logits: [B, T, C], where B = batch size, T = sequence length, C = number of label classes
-            - predictions: List[List[int]], where each inner list has length T-2
-                        (i.e., excludes [CLS] and [SEP]) and contains Viterbi-decoded label IDs
+            - The CRF only sees word positions (see `_compact_word_positions`), so its transition
+              scores model word-to-word tag sequences such as NM -> N or V -> NM.
         """
 
         # Hugging Face occasionally injects helper fields (e.g. num_items_in_batch)
@@ -101,42 +134,38 @@ class DistilBertCRFForTokenClassification(nn.Module):
         emission_scores = self.classifier(sequence_output)
 
         if labels is not None:
-            # 2) Remove [CLS] and [SEP] special tokens from emissions and labels
-            # These tokens were added by the tokenizer but are not part of the identifier
-            emissions = emission_scores[:, 1:-1, :]         # [B, T-2, C]
-            tags      = labels[:, 1:-1].clone()             # [B, T-2]
+            # 2) Word positions are exactly the positions with a real label
+            #    (feature tokens, @pos_N tokens, continuation subwords, CLS/SEP and padding are -100)
+            emissions, crf_mask, tags, _, _ = self._compact_word_positions(
+                emission_scores.float(), labels != -100, labels
+            )
 
-            # 3) Create a mask: True where label is valid, False where label == -100
-            # The CRF will use this to ignore special/padded tokens
-            crf_mask  = (tags != -100)
-
-            # 4) Replace invalid label positions (-100) with a dummy label (e.g., 0)
-            # This is required because CRF expects a label at every position, even if masked
-            tags[~crf_mask] = 0
-
-            # 5) Ensure the first token of every sequence is active in the CRF mask
-            # This avoids CRF errors when the first token is masked out (which breaks decoding)
-            first_off = (~crf_mask[:, 0]).nonzero(as_tuple=True)[0]
-            if len(first_off):
-                crf_mask[first_off, 0] = True
-                tags[first_off, 0] = 0  # assign a dummy label
-
-            # 6) Compute CRF negative log-likelihood loss
+            # 3) Compute CRF negative log-likelihood over the contiguous word sequence
             loss = -self.crf(emissions, tags, mask=crf_mask, reduction="mean")
             return {"loss": loss, "logits": emission_scores}
 
         else:
             # INFERENCE MODE
+            inner_emissions = emission_scores[:, 1:-1, :]           # [B, T-2, C]
+            inner_lengths = attention_mask[:, 1:-1].sum(dim=1).tolist()
+            predictions = inner_emissions.argmax(dim=-1)            # fallback for non-word positions
 
-            # 2) Remove [CLS] and [SEP] from emissions and build CRF mask from attention
-            # Only use the inner content of the input sequence
-            crf_mask  = attention_mask[:, 1:-1].bool()      # [B, T-2]
-            emissions = emission_scores[:, 1:-1, :]         # [B, T-2, C]
+            if word_mask is not None:
+                # 2) Run Viterbi over the contiguous word sequence, then scatter back to token positions
+                emissions, crf_mask, _, order, lengths = self._compact_word_positions(
+                    inner_emissions.float(), word_mask[:, 1:-1].bool()
+                )
+                best_paths = self.crf.decode(emissions, mask=crf_mask)
+                for row, path in enumerate(best_paths):
+                    n_words = int(lengths[row].item())
+                    if n_words:
+                        predictions[row, order[row, :n_words]] = torch.tensor(
+                            path[:n_words], device=predictions.device
+                        )
 
-            # 3) Run Viterbi decoding to get best label sequence for each input
-            best_paths = self.crf.decode(emissions, mask=crf_mask)
+            best_paths = [row[:n] for row, n in zip(predictions.tolist(), inner_lengths)]
             return {"logits": emission_scores, "predictions": best_paths}
-    
+
     @classmethod
     def from_pretrained(cls, ckpt_dir, local=False, **kw):
         from safetensors.torch import load_file as load_safe_file

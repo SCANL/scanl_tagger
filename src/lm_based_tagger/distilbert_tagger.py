@@ -129,12 +129,12 @@ class DistilBertTagger:
         1) Build full input token list:
               [feature tokens] + [@pos_0, w1, @pos_1, w2, ..., @pos_2, wn]
         2) Tokenize using HuggingFace tokenizer with is_split_into_words=True
-        3) Run the model forward pass (handles CRF or logits automatically)
-        4) Use word_ids() to align predictions back to full words
+        3) Use word_ids() to find the first subtoken of each identifier word
               - Skip special tokens (None)
               - Skip feature tokens (index < configured feature count)
               - Use only the *second* token in each [@pos_X, word] pair (the word)
               - Skip repeated subword tokens (only use the first subtoken per word)
+        4) Run the model forward pass with a word mask, so the CRF decodes over words only
         5) Return a list of string labels corresponding to the original identifier tokens.
 
         Returns:
@@ -159,25 +159,9 @@ class DistilBertTagger:
             padding=True
         )
 
-        # Step 3: Forward pass
-        with torch.no_grad():
-            out = self.model(
-                input_ids=encoded["input_ids"],
-                attention_mask=encoded["attention_mask"],
-            )
-
-        # Step 4: Get predictions depending on model type (CRF vs logits)
-        if isinstance(out, dict) and "predictions" in out:
-            labels_per_token = out["predictions"][0]
-        else:
-            logits = out[0] if isinstance(out, (tuple, list)) else out
-            labels_per_token = torch.argmax(logits, dim=-1).squeeze().tolist()
-
-        # Step 5: Convert subtoken-level predictions to word-level predictions
-        pred_labels, previous_word_idx = [], None
-        word_ids = encoded.word_ids()
-
-        for idx, word_idx in enumerate(word_ids):
+        # Step 3: Find the first subtoken of each identifier word
+        word_positions, previous_word_idx = [], None
+        for idx, word_idx in enumerate(encoded.word_ids()):
             if word_idx is None:
                 continue  # special token (CLS, SEP, PAD, etc.)
             if word_idx < feature_count:
@@ -186,13 +170,30 @@ class DistilBertTagger:
                 continue  # position tokens (e.g., @pos_0)
             if word_idx == previous_word_idx:
                 continue  # skip repeated subword tokens
-            
-            # Heuristic: labels lag by 1 position relative to input_ids
-            label_idx = idx - 1
-            if label_idx < len(labels_per_token):
-                pred_labels.append(labels_per_token[label_idx])
+            word_positions.append(idx)
             previous_word_idx = word_idx
-        
+
+        word_mask = torch.zeros_like(encoded["input_ids"], dtype=torch.bool)
+        word_mask[0, word_positions] = True
+
+        # Step 4: Forward pass (the CRF decodes over word positions only)
+        with torch.no_grad():
+            out = self.model(
+                input_ids=encoded["input_ids"],
+                attention_mask=encoded["attention_mask"],
+                word_mask=word_mask,
+            )
+
+        # Step 5: Read the label at each word position
+        if isinstance(out, dict) and "predictions" in out:
+            # CRF predictions exclude [CLS], so they lag input positions by 1
+            labels_per_token = out["predictions"][0]
+            pred_labels = [labels_per_token[idx - 1] for idx in word_positions]
+        else:
+            logits = out[0] if isinstance(out, (tuple, list)) else out
+            labels_per_token = torch.argmax(logits, dim=-1).squeeze(0).tolist()
+            pred_labels = [labels_per_token[idx] for idx in word_positions]
+
         # Step 6: Map label IDs back to string labels
         pred_tag_strings = [self.id2label[i] for i in pred_labels]
         should_postprocess = self.pattern_postprocessing if pattern_postprocessing is None else bool(pattern_postprocessing)

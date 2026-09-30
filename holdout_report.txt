@@ -1,57 +1,57 @@
 Raw Held-Out Classification Report:
               precision    recall  f1-score   support
 
-          CJ       0.96      1.00      0.98        26
-           D       0.97      0.96      0.97        73
-          DT       0.96      0.97      0.96        96
-           N       0.96      0.98      0.97       774
-          NM       0.96      0.94      0.95       641
-         NPL       0.98      0.98      0.98       122
-           P       0.96      0.95      0.96       169
-         PRE       0.89      0.90      0.90       111
-           V       0.94      0.96      0.95       320
-          VM       0.97      0.86      0.91        35
+          CJ       0.93      1.00      0.97        28
+           D       1.00      0.97      0.99        72
+          DT       0.94      0.97      0.95        95
+           N       0.94      0.96      0.95       772
+          NM       0.94      0.92      0.93       634
+         NPL       0.98      0.95      0.97       127
+           P       0.98      0.94      0.96       171
+         PRE       0.87      0.91      0.89       109
+           V       0.93      0.94      0.94       324
+          VM       0.91      0.85      0.88        34
 
-    accuracy                           0.96      2367
-   macro avg       0.96      0.95      0.95      2367
-weighted avg       0.96      0.96      0.96      2367
+    accuracy                           0.94      2366
+   macro avg       0.94      0.94      0.94      2366
+weighted avg       0.94      0.94      0.94      2366
 
 Postprocessed Held-Out Classification Report:
               precision    recall  f1-score   support
 
-          CJ       0.96      1.00      0.98        26
-           D       0.97      0.96      0.97        73
-          DT       0.96      0.97      0.96        96
-           N       0.97      0.97      0.97       774
-          NM       0.95      0.94      0.95       641
-         NPL       0.98      0.98      0.98       122
-           P       0.96      0.95      0.96       169
-         PRE       0.89      0.90      0.90       111
-           V       0.94      0.96      0.95       320
-          VM       0.97      0.86      0.91        35
+          CJ       0.93      1.00      0.97        28
+           D       1.00      0.97      0.99        72
+          DT       0.94      0.97      0.95        95
+           N       0.95      0.96      0.95       772
+          NM       0.94      0.93      0.94       634
+         NPL       0.98      0.95      0.97       127
+           P       0.98      0.94      0.96       171
+         PRE       0.87      0.92      0.89       109
+           V       0.93      0.94      0.94       324
+          VM       0.91      0.85      0.88        34
 
-    accuracy                           0.96      2367
-   macro avg       0.96      0.95      0.95      2367
-weighted avg       0.96      0.96      0.96      2367
+    accuracy                           0.95      2366
+   macro avg       0.94      0.94      0.94      2366
+weighted avg       0.95      0.95      0.95      2366
 
 
 Run Configuration:
-Command: python main --mode train --model_type lm_based --pattern-postprocessing --features context
+Command: python3 main --mode train --model_type lm_based
 Split seed: 658
 Train seed: 209
 Datasets: tagger_data, synthetic_pos_data_full
-Features: context
+Features: context, hungarian, cvr, digit, digit_connector, plural_suffix, type, type_overlap, language, sys_sim
 CLI options:
   address: None
   config_path: serve.json
   diagnostics_output_dir: output/error_analysis
-  features: ['context']
+  features: None
   input_path: None
   local: False
   mode: train
   model_dir: None
   model_type: lm_based
-  pattern_postprocessing: True
+  pattern_postprocessing: None
   port: None
   predictions_path: output/holdout_predictions.csv
   protocol: None
@@ -60,27 +60,27 @@ CLI options:
   use_tagger_data: True
   version: False
   word: None
-Best CV fold: 2
-Selected retrain epochs: 4.00
+Best CV fold: 1
+Selected retrain epochs: 5.00
 Best model dir: /home/asteriaicom/scanl_tagger/output/best_model
 
-Active holdout prediction mode: postprocessed
+Active holdout prediction mode: raw
 
-Inference Time: 1.84s for 898 identifiers (5632 tokens)
-Tokens/sec: 3053.15
-Identifiers/sec: 486.81
+Inference Time: 2.59s for 898 identifiers (18615 tokens)
+Tokens/sec: 7174.86
+Identifiers/sec: 346.12
 
 Raw Held-Out Metrics:
-Final Macro F1 on Held-Out Set: 0.9524
-Final Token-level Accuracy on Held-Out Set: 0.9561
-Final Identifier-level Accuracy on Held-Out Set: 0.9009
+Final Macro F1 on Held-Out Set: 0.9414
+Final Token-level Accuracy on Held-Out Set: 0.9417
+Final Identifier-level Accuracy on Held-Out Set: 0.8742
 
 Postprocessed Held-Out Metrics:
-Final Macro F1 on Held-Out Set: 0.9527
-Final Token-level Accuracy on Held-Out Set: 0.9569
-Final Identifier-level Accuracy on Held-Out Set: 0.9053
+Final Macro F1 on Held-Out Set: 0.9432
+Final Token-level Accuracy on Held-Out Set: 0.9455
+Final Identifier-level Accuracy on Held-Out Set: 0.8842
 
 Selected Output Metrics:
-Final Macro F1 on Held-Out Set: 0.9527
-Final Token-level Accuracy on Held-Out Set: 0.9569
-Final Identifier-level Accuracy on Held-Out Set: 0.9053
+Final Macro F1 on Held-Out Set: 0.9414
+Final Token-level Accuracy on Held-Out Set: 0.9417
+Final Identifier-level Accuracy on Held-Out Set: 0.8742

@@ -7,7 +7,7 @@ int	a Change	PARAMETER	PRE N	C	ccv	https://github.com/liuliu/ccv
 asn1_ctx_t	a ctx	PARAMETER	NM N	C	wireshark	https://github.com/wireshark/wireshark
 int	a len	PARAMETER	NM N	C	naemon-core	https://github.com/naemon/naemon-core
 u8	a light	PARAMETER	DT N	C++	freeminer	https://github.com/freeminer/freeminer
-int	a low	PARAMETER	N NM	C	rigraph	https://github.com/igraph/rigraph
+int	a low	PARAMETER	NM N	C	rigraph	https://github.com/igraph/rigraph
 u8	a Old Record 1	PARAMETER	PRE NM N D	C	ccv	https://github.com/liuliu/ccv
 sqlite3_value**	a Replace	PARAMETER	PRE V	C	ccv	https://github.com/liuliu/ccv
 Throwable	a Throwable	PARAMETER	DT NM	Java	Spark	https://github.com/apache/spark
@@ -978,17 +978,17 @@ FREEIMAGETYPE	img Type	DECLARATION	NM N	C++	openFrameworks	https://github.com/op
 String	IMPLICIT GROUP KEY	DECLARATION	NM NM N	Java	elasticsearch	https://github.com/elastic/elasticsearch
 Grammar	import G	PARAMETER	NM N	Java	antlr4	https://github.com/antlr/antlr4
 wchart	in	PARAMETER	N	C++	bullet3	https://github.com/bulletphysics/bullet3
-String	in Action Code	PARAMETER	PRE NM N	Java	Smack	https://github.com/igniterealtime/Smack
+String	in Action Code	PARAMETER	NM NM N	Java	Smack	https://github.com/igniterealtime/Smack
 InetAddress	in addr	PARAMETER	NM N	Java	Openfire	https://github.com/igniterealtime/Openfire
 bool	in best path	ATTRIBUTE	P NM N	C++	rigraph	https://github.com/igraph/rigraph
 float	in buffer	PARAMETER	NM N	C	openFrameworks	https://github.com/openframeworks/openFrameworks
 Strategy	in Cache	DECLARATION	P N	Java	Telegram	https://github.com/DrKLO/Telegram
 Channel	in channel	PARAMETER	NM N	C++	drill	https://github.com/apache/drill
-verify_context	in ctx	PARAMETER	P N	C++	drill	https://github.com/apache/drill
+verify_context	in ctx	PARAMETER	NM N	C++	drill	https://github.com/apache/drill
 boolean	in Eclipse Compiler	ATTRIBUTE	P NM N	Java	immutables	https://github.com/immutables/immutables
 Map	in Edges	PARAMETER	NM NPL	Java	guava	https://github.com/google/guava
 Set	in Eq More Than Once	DECLARATION	P N DT CJ VM	Java	drill	https://github.com/apache/drill
-int	in expected RPC Type	PARAMETER	PRE NM NM N	C++	drill	https://github.com/apache/drill
+int	in expected RPC Type	PARAMETER	NM NM NM N	C++	drill	https://github.com/apache/drill
 TypedFieldId	in Field Id	DECLARATION	NM NM N	Java	drill	https://github.com/apache/drill
 List	in Fields	ATTRIBUTE	NM NPL	Java	drill	https://github.com/apache/drill
 double	in Flow New M	DECLARATION	NM NM NM N	C++	rigraph	https://github.com/igraph/rigraph
@@ -999,7 +999,7 @@ Integer	in Index	PARAMETER	NM N	Java	drill	https://github.com/apache/drill
 ovs_be64	in key	ATTRIBUTE	NM N	C	ovs	https://github.com/openvswitch/ovs
 igraph_adjlist_t	in list	DECLARATION	NM N	C	rigraph	https://github.com/igraph/rigraph
 boolean	in Literal	DECLARATION	P N	Java	Openfire	https://github.com/igniterealtime/Openfire
-int	in Mem Count	PARAMETER	P NM N	Java	drill	https://github.com/apache/drill
+int	in Mem Count	PARAMETER	NM NM N	Java	drill	https://github.com/apache/drill
 string	in name	PARAMETER	NM N	C++	meta	https://github.com/meta-toolkit/meta
 stbi_uc	in near	PARAMETER	N P	C	panda3d	https://github.com/panda3d/panda3d
 bool	in neighbour heap	ATTRIBUTE	P NM N	C++	rigraph	https://github.com/igraph/rigraph

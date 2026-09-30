@@ -158,6 +158,8 @@ python main --mode train --model_type lm_based --pattern-postprocessing --featur
 | D     | Digit                              | `1`, `2`, `10`, `0xAF`         |
 | PRE   | Preamble / Prefix                  | `m`, `b`, `GL`, `p`            |
 
+See [ANNOTATION_GUIDELINES.md](ANNOTATION_GUIDELINES.md) for how to tag ambiguous words such as `in`, `if`, `no` and single-letter prefixes.
+
 ---
 
 ## Docker Support (Legacy only)

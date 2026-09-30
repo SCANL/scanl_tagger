@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import random
 import math
@@ -63,6 +64,7 @@ K = 2                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
 EPOCHS = 5            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
+CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 PRIOR_TAGS = {"PRE", "NM", "N"}
 
@@ -405,6 +407,36 @@ def _write_run_metadata(
         dual_print(f"  {key}: {value}", file=file)
 
 
+class CRFTrainer(Trainer):
+    """
+    Trainer that gives the CRF transition parameters their own learning rate.
+
+    The CRF only has num_labels^2 + 2 * num_labels parameters and starts from small random
+    values; at the encoder learning rate (5e-5) they barely move during fine-tuning.
+    """
+
+    def create_optimizer(self, *args, **kwargs):
+        # transformers <5.3 takes no `model` argument; newer versions accept an optional one.
+        if self.optimizer is None:
+            super().create_optimizer(*args, **kwargs)
+            opt_model = kwargs.get("model") or (args[0] if args else None) or self.model
+            crf_param_ids = {
+                id(p) for n, p in opt_model.named_parameters()
+                if re.search(r"(^|\.)crf\.", n) and p.requires_grad
+            }
+            crf_params = []
+            for group in self.optimizer.param_groups:
+                crf_params.extend(p for p in group["params"] if id(p) in crf_param_ids)
+                group["params"] = [p for p in group["params"] if id(p) not in crf_param_ids]
+            if crf_params:
+                self.optimizer.add_param_group({
+                    "params": crf_params,
+                    "lr": CRF_LEARNING_RATE,
+                    "weight_decay": 0.0,
+                })
+        return self.optimizer
+
+
 # 11) compute_metrics function (macro-F1) 
 def compute_metrics(eval_pred):
     """
@@ -607,7 +639,10 @@ def viterbi_predict(
 
     with torch.no_grad():
         for batch in loader:
-            batch_labels = batch.pop("labels").tolist()
+            labels = batch.pop("labels")
+            batch_labels = labels.tolist()
+            # Word positions are exactly the labeled positions; the CRF decodes over those only
+            batch["word_mask"] = labels != -100
             batch = {k: v.to(device) for k, v in batch.items()}
             out = model(**batch)
             if "predictions" in out:
@@ -860,7 +895,7 @@ def train_lm(
 
         # 11) Initialize Trainer for this fold with early stopping
         #     Trainer handles batching, optimizer, eval, LR scheduling, logging, etc.
-        trainer = Trainer(
+        trainer = CRFTrainer(
             model=model,
             args=training_args,
             train_dataset=tokenized_train,
@@ -1010,7 +1045,7 @@ def train_lm(
         tokenizer=tokenizer,
         pad_to_multiple_of=final_runtime_config["pad_to_multiple_of"],
     )
-    final_trainer = Trainer(
+    final_trainer = CRFTrainer(
         model=final_model,
         args=final_training_args,
         train_dataset=tokenized_full_train,
