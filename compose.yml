@@ -1,6 +1,4 @@
 volumes:
-  vectors:
-  gensim:
   cache:
   words:
 
@@ -14,10 +12,8 @@ services:
         - ${BUILD_PLATFORM:-linux/arm64}
         - ${BUILD_PLATFORM:-linux/amd64}
     volumes:
-      - vectors:/code2vec
-      - gensim:/root/gensim-data
-      - cache:/cache
-      - words:/words
+      - cache:/app/cache
+      - words:/app/words
     ports:
-      - "${PORT-8080}:5000"
+      - "${PORT-8080}:8080"
     restart: always

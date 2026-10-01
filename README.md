@@ -1,9 +1,8 @@
 # SCALAR Part-of-Speech Tagger for Identifiers
 
-**SCALAR** is a part-of-speech tagger for source code identifiers. It supports two model types:
+The Source Code Analysis and Lexical Annotation Runtime (**SCALAR**) is a part-of-speech tagger for source code identifiers. It uses a DistilBERT model with a CRF layer.
 
-- **DistilBERT-based model with CRF layer** (Recommended: faster, more accurate)
-- Legacy Gradient Boosting model (for compatibility)
+The legacy Gradient Boosting (tree-based) model was removed in 3.0.0. It was slower and less accurate than the DistilBERT model. Version 2.2.0 is the last release that includes it.
 
 ---
 
@@ -25,15 +24,17 @@ pip install -r requirements.txt
 
 You can run SCALAR in multiple ways:
 
-### CLI (with DistilBERT or GradientBoosting model)
+### CLI
 
 ```bash
-python main --mode run --model_type lm_based         # DistilBERT; prefers serve.release.json or local output/best_model when configured/present
-python main --mode run --model_type lm_based --local # Load the locally trained model from output/best_model
-python main --mode run --model_type lm_based --pattern-postprocessing
-python main --mode run --model_type lm_based --config_path serve.release.json
-python main --mode run --model_type tree_based       # Legacy model
+python main --version                                # Print the SCALAR version
+python main --mode run                               # Uses the model in serve.json, else local output/best_model if present, else the Hugging Face release
+python main --mode run --local                       # Load the locally trained model from output/best_model
+python main --mode run --pattern-postprocessing
+python main --mode run --config_path serve.release.json
 ```
+
+`--model_type lm_based` is still accepted, for compatibility with older scripts.
 
 `--config_path` is honored in run mode, so server address, port, protocol, word list, and optional LM defaults can come from an alternate JSON file.
 
@@ -48,7 +49,7 @@ For LM inference, selected feature tokens are loaded from the saved model config
 The checked-in release-serving entry point is `serve.release.json`.
 
 ```bash
-python main --mode run --model_type lm_based --config_path serve.release.json
+python main --mode run --config_path serve.release.json
 ```
 
 That config is intended to represent the exact release candidate setup. Today it points at the local retrained checkpoint in `output/best_model`; once the candidate is published to Hugging Face, update the `model` and `local` fields there so fresh clones resolve to the published release artifact.
@@ -70,26 +71,25 @@ Supports context types:
 
 ## Training
 
-You can retrain either model (default parameters are currently hardcoded):
+You can retrain the model (default parameters are currently hardcoded):
 
 ```bash
-python main --mode train --model_type lm_based
-python main --mode train --model_type tree_based
+python main --mode train
 ```
 
 For LM training, you can choose which datasets to include:
 
 ```bash
-python main --mode train --model_type lm_based
-python main --mode train --model_type lm_based --no-synthetic-data
-python main --mode train --model_type lm_based --no-tagger-data
-python main --mode train --model_type lm_based --tagger-data --synthetic-data
-python main --mode train --model_type lm_based --features context hungarian digit
-python main --mode train --model_type lm_based --features context type type_overlap sys_sim
-python main --mode train --model_type lm_based --model_dir release_models/lm_v1
+python main --mode train
+python main --mode train --no-synthetic-data
+python main --mode train --no-tagger-data
+python main --mode train --tagger-data --synthetic-data
+python main --mode train --features context hungarian digit
+python main --mode train --features context type type_overlap sys_sim
+python main --mode train --model_dir release_models/lm_v1
 ```
 
-When `--model_dir` is provided for LM training, the best saved checkpoint is written there. The same path can be reused with `python main --mode run --model_type lm_based --local --model_dir release_models/lm_v1`.
+When `--model_dir` is provided for LM training, the best saved checkpoint is written there. The same path can be reused with `python main --mode run --local --model_dir release_models/lm_v1`.
 
 ---
 
@@ -119,27 +119,11 @@ When `--model_dir` is provided for LM training, the best saved checkpoint is wri
 Current release-candidate training command:
 
 ```bash
-python main --mode train --model_type lm_based --pattern-postprocessing --features context
+python main --mode train --pattern-postprocessing --features context
 ```
 
 **Inference Performance:**
 - Identifiers/sec: 486.81
-
----
-
-### Gradient Boost Model (Legacy)
-
-| Metric               | Score     |
-|----------------------|-----------|
-| Accuracy             | 0.8216    |
-| Balanced Accuracy    | 0.9160    |
-| Weighted Recall      | 0.8216    |
-| Weighted Precision   | 0.8245    |
-| Weighted F1          | 0.8220    |
-| Inference Time       | 249.05s   |
-
-**Inference Performance:**
-- Identifiers/sec: 8.6
 
 ---
 
@@ -162,9 +146,9 @@ See [ANNOTATION_GUIDELINES.md](ANNOTATION_GUIDELINES.md) for how to tag ambiguou
 
 ---
 
-## Docker Support (Legacy only)
+## Docker Support
 
-For the legacy server, you can also use Docker:
+The image serves the DistilBERT model over HTTP on port 8080:
 
 ```bash
 docker compose pull
@@ -177,8 +161,22 @@ docker compose up
 
 - **Kebab case** is not supported (e.g., `do-something-cool`).
 - Feature and position tokens (e.g., `@pos_0`) are inserted automatically.
-- Internally uses [WordNet](https://wordnet.princeton.edu/) for lexical features.
+- The `dictionary` field in responses comes from the NLTK `words` corpus. It is downloaded on first run.
 - Input must be parsed into identifier tokens. We recommend [srcML](https://www.srcml.org/) but any AST-based parser works.
+
+---
+
+## Versioning
+
+SCALAR follows [Semantic Versioning](https://semver.org). The version lives in [version.py](version.py), and `python main --version` prints it. Changes are recorded in [CHANGELOG.md](CHANGELOG.md), and each release is tagged `vMAJOR.MINOR.PATCH` in git.
+
+The version covers the software and its interfaces: the command line, the HTTP and stdio request/response formats, and the tagset.
+
+- **MAJOR**: a breaking change to any of those interfaces, such as a removed option, a renamed response field, or a tag added to or removed from the tagset.
+- **MINOR**: a backward-compatible addition, such as a new endpoint, a new optional response field, or a new default release model.
+- **PATCH**: a bug fix that keeps every interface the same.
+
+The model checkpoint is versioned separately, by its Hugging Face revision. A retrained model can change individual tags without changing the interface, so for reproducible results, record both the SCALAR version and the model revision.
 
 ---
 

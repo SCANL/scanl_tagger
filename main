@@ -5,12 +5,7 @@ import json
 import os
 import shlex
 import sys
-from error_analysis_scripts.lm_error_analysis import run_lm_diagnostics
-from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
 from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
-from src.lm_based_tagger.train_model import train_lm
-from src.tag_identifier import start_server
-from src.tree_based_tagger.download_code2vec_vectors import *
 from version import __version__
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +13,7 @@ DEFAULT_LM_MODEL_DIR = os.path.join("output", "best_model")
 
 def get_version():
     """Return the current version of SCANL Tagger."""
-    return f"SCANL Tagger version {__version__}"
+    return f"SCALAR tagger {__version__}"
 
 
 def resolve_path(path: str | None) -> str | None:
@@ -40,39 +35,26 @@ if __name__ == "__main__":
     """
     Use argparse to allow the user to choose either running the tagger or training a new tagger
 
-    Usage:
-    - To check the application version, use: -v or --version.
-    - To start a server for part-of-speech tagging requests, use: -r or --run.
-    - To run a training set and retrain the model, use: -t or --train.
-    - To update server configuration, use -c or --config
-
     Example Usage:
-    python script.py -v                          # Display the application version.
-    python script.py -r                          # Start the server for tagging requests.
-    python script.py -t                          # Run the training set to retrain the model.
-    python script.py -a --address [host]         # Run the tagger on a specific IP address
-    python script.py --port [port]               # Run the tagger on a specific port
-    python script.py --protocol [http/https]     # Specify use of http or https
-    python script.py --words [path]              # Specify path of word list
-
-    Note:
-    If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
-    
-    Version: 2.0.0
+    python main --version                        # Display the application version.
+    python main --mode run                       # Start the server for tagging requests.
+    python main --mode train                     # Retrain the model.
+    python main --mode run --address [host]      # Run the tagger on a specific IP address
+    python main --mode run --port [port]         # Run the tagger on a specific port
+    python main --mode run --protocol [http/https]
+    python main --mode run --word [path]         # Specify path of word list
     """
 
     parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
-    parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
+    parser.add_argument("-v", "--version", action="version", version=get_version(), help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Force use of a local model/tokenizer instead of the HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run", "diagnostics"], required=True, help="Choose to 'train', 'run', or 'diagnostics'")
-    parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
+    parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run'")
+    # Kept so existing `--model_type lm_based` invocations still work; the tree-based model was removed in 3.0.0.
+    parser.add_argument("--model_type", choices=["lm_based"], default="lm_based", help=argparse.SUPPRESS)
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--model_dir", type=str, help="Local model directory to save/load for lm_based runs")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
-    parser.add_argument("--predictions_path", type=str, default="output/holdout_predictions.csv", help="Path to holdout predictions CSV used by diagnostics mode")
-    parser.add_argument("--report_path", type=str, default="holdout_report.txt", help="Path to holdout report used by diagnostics mode")
-    parser.add_argument("--diagnostics_output_dir", type=str, default="output/error_analysis", help="Directory for diagnostics outputs")
     parser.add_argument(
         "--tagger-data",
         dest="use_tagger_data",
@@ -118,123 +100,74 @@ if __name__ == "__main__":
     elif synthetic_flag_explicit and not tagger_flag_explicit:
         args.use_tagger_data = False
     
-    if args.version:
-        print(get_version())
-    elif args.mode == "train":
-        if args.model_type == "tree_based":
-            config = load_config_tree(SCRIPT_DIR)
-            download_files()
-            train_tree(config)
-        elif args.model_type == "lm_based":
-            if not args.use_tagger_data and not args.use_synthetic_data:
-                parser.error("At least one of --tagger-data or --synthetic-data must be enabled for lm_based training.")
+    if args.mode == "train":
+        if not args.use_tagger_data and not args.use_synthetic_data:
+            parser.error("At least one of --tagger-data or --synthetic-data must be enabled for training.")
 
-            run_metadata = {
-                "command": " ".join(
-                    shlex.quote(arg) for arg in getattr(sys, "orig_argv", sys.argv)
-                ),
-                "cli_options": dict(sorted(vars(args).items())),
-            }
+        from src.lm_based_tagger.train_model import train_lm
 
-            train_lm(
-                SCRIPT_DIR,
-                use_tagger_data=args.use_tagger_data,
-                use_synthetic_data=args.use_synthetic_data,
-                selected_features=args.features,
-                model_dir=resolve_path(args.model_dir),
-                run_metadata=run_metadata,
-            )
+        run_metadata = {
+            "command": " ".join(
+                shlex.quote(arg) for arg in getattr(sys, "orig_argv", sys.argv)
+            ),
+            "cli_options": dict(sorted(vars(args).items())),
+        }
 
-    elif args.mode == "diagnostics":
-        if args.model_type != "lm_based":
-            parser.error("Diagnostics mode is currently only supported for lm_based.")
-
-        predictions_path = args.predictions_path
-        if not os.path.isabs(predictions_path):
-            predictions_path = os.path.join(SCRIPT_DIR, predictions_path)
-
-        report_path = args.report_path
-        if not os.path.isabs(report_path):
-            report_path = os.path.join(SCRIPT_DIR, report_path)
-
-        diagnostics_output_dir = args.diagnostics_output_dir
-        if not os.path.isabs(diagnostics_output_dir):
-            diagnostics_output_dir = os.path.join(SCRIPT_DIR, diagnostics_output_dir)
-
-        run_lm_diagnostics(
-            predictions_path=predictions_path,
-            output_dir=diagnostics_output_dir,
-            report_path=report_path,
+        train_lm(
+            SCRIPT_DIR,
+            use_tagger_data=args.use_tagger_data,
+            use_synthetic_data=args.use_synthetic_data,
+            selected_features=args.features,
+            model_dir=resolve_path(args.model_dir),
+            run_metadata=run_metadata,
         )
 
     elif args.mode == "run":
+        from src.tag_identifier import start_server
+
         config_path = resolve_path(args.config_path)
         runtime_config = load_runtime_config(config_path)
-        if args.model_type == "tree_based":
-            config = load_config_tree(SCRIPT_DIR)
-            # Inject overrides
-            download_files()
-            config["model_type"] = args.model_type
-            if args.model_dir:
-                config["model_dir"] = args.model_dir
-            config["config_path"] = config_path
+        config_model = runtime_config.get("model")
+        config_local = bool(runtime_config.get("local", False))
+        resolved_config_model = config_model
+        if config_model and config_local:
+            resolved_config_model = resolve_path(config_model)
 
-            if args.port:
-                config["port"] = args.port
-            if args.protocol:
-                config["protocol"] = args.protocol
-            if args.word:
-                config["word"] = args.word
-            if args.address:
-                config["address"] = args.address
+        explicit_local_model_path = resolve_path(args.model_dir) if args.model_dir else None
+        default_local_model_path = resolve_path(DEFAULT_LM_MODEL_DIR)
 
-            start_server(temp_config=config)
-        elif args.model_type == "lm_based":
-            download_files()
-            config_model = runtime_config.get("model")
-            config_local = bool(runtime_config.get("local", False))
-            resolved_config_model = config_model
-            if config_model and config_local:
-                resolved_config_model = resolve_path(config_model)
+        if explicit_local_model_path:
+            use_local_model = True
+            model_path = explicit_local_model_path
+        elif args.local:
+            use_local_model = True
+            model_path = resolved_config_model if config_local and resolved_config_model else default_local_model_path
+        elif config_model:
+            use_local_model = config_local
+            model_path = resolved_config_model
+        elif os.path.isdir(default_local_model_path):
+            use_local_model = True
+            model_path = default_local_model_path
+        else:
+            use_local_model = False
+            model_path = "sourceslicer/scalar_lm_release_test"
 
-            explicit_local_model_path = resolve_path(args.model_dir) if args.model_dir else None
-            default_local_model_path = resolve_path(DEFAULT_LM_MODEL_DIR)
+        temp_config = {
+            "script_dir": SCRIPT_DIR,
+            "config_path": config_path,
+            "model": model_path,
+            "local": use_local_model,
+        }
 
-            if explicit_local_model_path:
-                use_local_model = True
-                model_path = explicit_local_model_path
-            elif args.local:
-                use_local_model = True
-                model_path = resolved_config_model if config_local and resolved_config_model else default_local_model_path
-            elif config_model:
-                use_local_model = config_local
-                model_path = resolved_config_model
-            elif os.path.isdir(default_local_model_path):
-                use_local_model = True
-                model_path = default_local_model_path
-            else:
-                use_local_model = False
-                model_path = "sourceslicer/scalar_lm_release_test"
+        if args.pattern_postprocessing is not None:
+            temp_config["pattern_postprocessing"] = args.pattern_postprocessing
+        if args.port:
+            temp_config["port"] = args.port
+        if args.protocol:
+            temp_config["protocol"] = args.protocol
+        if args.address:
+            temp_config["address"] = args.address
+        if args.word:
+            temp_config["words"] = args.word
 
-            temp_config = {
-                "script_dir": SCRIPT_DIR,
-                "config_path": config_path,
-                "model": model_path,
-                "model_type": "lm_based",
-                "local": use_local_model,
-            }
-
-            if args.pattern_postprocessing is not None:
-                temp_config["pattern_postprocessing"] = args.pattern_postprocessing
-            if args.port:
-                temp_config["port"] = args.port
-            if args.protocol:
-                temp_config["protocol"] = args.protocol
-            if args.address:
-                temp_config["address"] = args.address
-            if args.word:
-                temp_config["words"] = args.word
-
-            start_server(temp_config=temp_config)
-    else:
-        parser.print_usage()
+        start_server(temp_config=temp_config)
