@@ -60,7 +60,7 @@ torch.backends.cudnn.benchmark = False
 _configure_torch_runtime()
 
 # === Hyperparameters / Config ===
-K = 2                     # number of CV folds
+K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
 EPOCHS = 7            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
