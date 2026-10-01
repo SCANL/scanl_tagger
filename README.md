@@ -207,7 +207,7 @@ Please cite:
 
 ## Training Data
 
-You can find the most recent SCALAR training dataset [here](https://github.com/SCANL/scanl_tagger/blob/master/input/tagger_data.tsv)
+You can find the most recent SCALAR training dataset [here](https://github.com/SCANL/scanl_tagger/blob/master/input/tagger_data_new.tsv). Each identifier links to its declaration in the original source (`CODE_URL`)
 
 ---
 

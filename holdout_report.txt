@@ -1,38 +1,38 @@
 Raw Held-Out Classification Report:
               precision    recall  f1-score   support
 
-          CJ       0.93      1.00      0.97        28
-           D       1.00      0.97      0.99        72
-          DT       0.94      0.97      0.95        95
-           N       0.94      0.96      0.95       772
-          NM       0.94      0.92      0.93       634
-         NPL       0.98      0.95      0.97       127
-           P       0.98      0.94      0.96       171
-         PRE       0.87      0.91      0.89       109
-           V       0.93      0.94      0.94       324
-          VM       0.91      0.85      0.88        34
+          CJ       1.00      1.00      1.00        23
+           D       0.96      0.96      0.96        79
+          DT       0.96      0.99      0.97        93
+           N       0.98      0.97      0.97       788
+          NM       0.95      0.94      0.95       641
+         NPL       1.00      0.98      0.99       118
+           P       0.93      0.98      0.96       163
+         PRE       0.88      0.89      0.89       101
+           V       0.92      0.95      0.94       307
+          VM       1.00      0.88      0.94        33
 
-    accuracy                           0.94      2366
-   macro avg       0.94      0.94      0.94      2366
-weighted avg       0.94      0.94      0.94      2366
+    accuracy                           0.96      2346
+   macro avg       0.96      0.95      0.96      2346
+weighted avg       0.96      0.96      0.96      2346
 
 Postprocessed Held-Out Classification Report:
               precision    recall  f1-score   support
 
-          CJ       0.93      1.00      0.97        28
-           D       1.00      0.97      0.99        72
-          DT       0.94      0.97      0.95        95
-           N       0.95      0.96      0.95       772
-          NM       0.94      0.93      0.94       634
-         NPL       0.98      0.95      0.97       127
-           P       0.98      0.94      0.96       171
-         PRE       0.87      0.92      0.89       109
-           V       0.93      0.94      0.94       324
-          VM       0.91      0.85      0.88        34
+          CJ       1.00      1.00      1.00        23
+           D       0.96      0.96      0.96        79
+          DT       0.96      0.99      0.97        93
+           N       0.98      0.97      0.97       788
+          NM       0.95      0.94      0.95       641
+         NPL       1.00      0.98      0.99       118
+           P       0.93      0.98      0.96       163
+         PRE       0.89      0.89      0.89       101
+           V       0.92      0.95      0.94       307
+          VM       1.00      0.88      0.94        33
 
-    accuracy                           0.95      2366
-   macro avg       0.94      0.94      0.94      2366
-weighted avg       0.95      0.95      0.95      2366
+    accuracy                           0.96      2346
+   macro avg       0.96      0.95      0.96      2346
+weighted avg       0.96      0.96      0.96      2346
 
 
 Run Configuration:
@@ -60,27 +60,27 @@ CLI options:
   use_tagger_data: True
   version: False
   word: None
-Best CV fold: 1
-Selected retrain epochs: 5.00
+Best CV fold: 2
+Selected retrain epochs: 7.00
 Best model dir: /home/asteriaicom/scanl_tagger/output/best_model
 
 Active holdout prediction mode: raw
 
-Inference Time: 2.59s for 898 identifiers (18615 tokens)
-Tokens/sec: 7174.86
-Identifiers/sec: 346.12
+Inference Time: 2.06s for 894 identifiers (18491 tokens)
+Tokens/sec: 8963.48
+Identifiers/sec: 433.37
 
 Raw Held-Out Metrics:
-Final Macro F1 on Held-Out Set: 0.9414
-Final Token-level Accuracy on Held-Out Set: 0.9417
-Final Identifier-level Accuracy on Held-Out Set: 0.8742
+Final Macro F1 on Held-Out Set: 0.9559
+Final Token-level Accuracy on Held-Out Set: 0.9561
+Final Identifier-level Accuracy on Held-Out Set: 0.9016
 
 Postprocessed Held-Out Metrics:
-Final Macro F1 on Held-Out Set: 0.9432
-Final Token-level Accuracy on Held-Out Set: 0.9455
-Final Identifier-level Accuracy on Held-Out Set: 0.8842
+Final Macro F1 on Held-Out Set: 0.9562
+Final Token-level Accuracy on Held-Out Set: 0.9557
+Final Identifier-level Accuracy on Held-Out Set: 0.9004
 
 Selected Output Metrics:
-Final Macro F1 on Held-Out Set: 0.9414
-Final Token-level Accuracy on Held-Out Set: 0.9417
-Final Identifier-level Accuracy on Held-Out Set: 0.8742
+Final Macro F1 on Held-Out Set: 0.9559
+Final Token-level Accuracy on Held-Out Set: 0.9561
+Final Identifier-level Accuracy on Held-Out Set: 0.9016

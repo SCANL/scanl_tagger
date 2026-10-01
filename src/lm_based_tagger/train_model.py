@@ -62,7 +62,7 @@ _configure_torch_runtime()
 # === Hyperparameters / Config ===
 K = 2                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
-EPOCHS = 5            # number of epochs per fold
+EPOCHS = 7            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
 CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
@@ -216,8 +216,9 @@ def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame
     by a randomly sampled synonym.  The rest of the row (context, tags, other tokens)
     is unchanged, so the new rows are valid training examples.
 
-    Applied across all contexts (FUNCTION, PARAMETER, ATTRIBUTE, DECLARATION, CLASS)
-    to improve V recall outside the previously-dominant FUNCTION context.
+    Only FUNCTION rows are augmented. Augmenting every context taught the model that
+    verb-looking words are V wherever they appear, so modifiers such as `adjusted` in
+    adjustedGradient or `conv` in conv_in_channels_ were tagged V.
 
     Args:
         df:  Fold training DataFrame with 'tokens' (List[str]) and 'tags' (List[str]).
@@ -230,6 +231,8 @@ def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame
 
     new_rows = []
     for _, row in df.iterrows():
+        if str(row.get("CONTEXT", "")).strip().upper() != "FUNCTION":
+            continue
         tokens: List[str] = list(row["tokens"])
         tags:   List[str] = list(row["tags"])
 
@@ -672,7 +675,7 @@ def _load_lm_training_dataframe(
         {
             "enabled": use_tagger_data,
             "name": "tagger_data",
-            "path": os.path.join(script_dir, "input", "tagger_data.tsv"),
+            "path": os.path.join(script_dir, "input", "tagger_data_new.tsv"),
             "read_kwargs": {"sep": "\t", "dtype": str},
         },
         {

@@ -5,6 +5,10 @@ import torch.nn as nn
 from transformers import DistilBertModel, DistilBertConfig
 
 class DistilBertCRFForTokenClassification(nn.Module):
+    # Tag bigrams that never occur in the training data. They are ruled out at decode time:
+    # a noun directly followed by another noun means the first one should have been NM.
+    FORBIDDEN_TRANSITIONS = (("N", "N"), ("N", "NPL"), ("NPL", "NPL"))
+
     """
     Token-level classifier that combines DistilBERT with a CRF layer for structured prediction.
 
@@ -51,6 +55,21 @@ class DistilBertCRFForTokenClassification(nn.Module):
         self.dropout = nn.Dropout(dropout_prob)
         self.classifier = nn.Linear(self.config.hidden_size, num_labels)
         self.crf = CRF(num_labels, batch_first=True)
+
+    def _constrained_crf(self):
+        """
+        Copy of the CRF with FORBIDDEN_TRANSITIONS set to a large negative score, used only
+        for decoding. A copy (rather than editing self.crf in place) keeps concurrent
+        inference safe and leaves the learned transitions untouched.
+        """
+        label2id = {label: int(i) for i, label in self.config.id2label.items()}
+        crf = CRF(self.crf.num_tags, batch_first=True).to(self.crf.transitions.device)
+        crf.load_state_dict(self.crf.state_dict())
+        with torch.no_grad():
+            for before, after in self.FORBIDDEN_TRANSITIONS:
+                if before in label2id and after in label2id:
+                    crf.transitions[label2id[before], label2id[after]] = -1e4
+        return crf
 
     @staticmethod
     def _compact_word_positions(emissions, word_mask, tags=None):
@@ -155,7 +174,7 @@ class DistilBertCRFForTokenClassification(nn.Module):
                 emissions, crf_mask, _, order, lengths = self._compact_word_positions(
                     inner_emissions.float(), word_mask[:, 1:-1].bool()
                 )
-                best_paths = self.crf.decode(emissions, mask=crf_mask)
+                best_paths = self._constrained_crf().decode(emissions, mask=crf_mask)
                 for row, path in enumerate(best_paths):
                     n_words = int(lengths[row].item())
                     if n_words:
