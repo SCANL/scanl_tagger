@@ -1,12 +1,12 @@
 import os
 import time
-import nltk
 from flask import Flask, abort, request
 from waitress import serve
 from spiral import ronin
 import json
 import sqlite3
 from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
+from src.tagging_backend import load_english_words
 
 app = Flask(__name__)
 
@@ -157,15 +157,6 @@ def initialize_model(temp_config = {}, runtime_config = None):
         pattern_postprocessing=pattern_postprocessing,
     )
     print("DistilBERT tagger loaded!")
-
-def load_english_words():
-    """Return the lowercased NLTK words corpus, downloading it on first use."""
-    try:
-        words = nltk.corpus.words.words()
-    except LookupError:
-        nltk.download("words", quiet=True)
-        words = nltk.corpus.words.words()
-    return set(w.lower() for w in words)
 
 def start_server(temp_config = {}):
     """

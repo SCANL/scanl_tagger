@@ -70,6 +70,11 @@ jobs:
       - name: Check version
         run: python main --version
 
+      - name: Unit tests
+        run: |
+          pip install pytest
+          python -m pytest tests -q
+
       - name: Start tagger server
         run: |
           python main --mode run --protocol http &

@@ -15,6 +15,8 @@ Both transports carry the same JSON contract (item 4).
 
 ### 1. A single batch-tagging function
 
+> **Status (3.x):** Done: `TaggingBackend.tag_batch(request)` in `src/tagging_backend.py`.
+
 One `tag_batch(requests) -> results` function that every transport calls. `TaggingBackend.tag_identifier_batch` already does most of this. The tool tags a whole file or project at a time, so tagging one identifier per request will be a bottleneck.
 
 ### 2. A stdio serve mode
@@ -33,6 +35,8 @@ scalar-tagger serve --stdio        # or: python main --mode serve --stdio
 It takes the same JSON body as stdio. The current `GET /<name>/<context>?type=...` puts type strings like `std::map<std::string, int>` into the URL, which is fragile. The GET route can stay for backward compatibility.
 
 ### 4. A structured request/response contract
+
+> **Status (3.x):** Done, in `src/contract.py`. `p` and `alt` are not filled in yet (item 9); requesting them adds a `CONFIDENCE_UNAVAILABLE` warning.
 
 Request:
 
@@ -66,9 +70,13 @@ Response:
 
 ### 5. Character offsets for each token
 
+> **Status (3.x):** Done.
+
 `start` and `end` are positions in the original identifier string, so `end - start` equals the length of `text`. The tool needs them to highlight a single word and to build rename suggestions. Ronin drops underscores and may split digits, so the original text can't be reconstructed from the tokens alone.
 
 ### 6. Caller-supplied tokens (optional)
+
+> **Status (3.x):** Done. A supplied token that is not in the name gets `null` offsets.
 
 If `tokens` is a non-null list of strings, skip `ronin.split` and tag those tokens. The tool uses this for:
 
@@ -80,11 +88,15 @@ When tokens are supplied, offsets can be computed by matching each token in orde
 
 ### 7. Model metadata in every response, plus an `info` command
 
+> **Status (3.x):** Metadata done (`name`, `revision`, `features`, `postprocess`, `device`, `scalar_version`). The `info` command and `GET /info` come with the transports (items 2 and 3).
+
 `model.name`, `model.revision` (a checkpoint hash or Hugging Face revision), the feature set, and the postprocessing flag. The tool records these with every finding so results are reproducible, and it uses them as part of its cache key. Retagging only happens when the model changes.
 
 For stdio, `{"command": "info"}` returns this block without tagging anything. For HTTP, use `GET /info`.
 
 ### 8. Structured errors per identifier
+
+> **Status (3.x):** Done. Error codes are listed in the README.
 
 One bad identifier shouldn't fail the whole batch:
 

@@ -1,0 +1,13 @@
+.git
+.github
+.venv
+.venvs
+.claude
+__pycache__
+**/__pycache__
+output
+cache
+code2vec
+tutorial
+.tutorial
+input.txt

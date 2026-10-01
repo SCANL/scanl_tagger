@@ -4,6 +4,21 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- `TaggingBackend.tag_batch(request)`: one batch-tagging function for every transport, following the JSON contract in `src/contract.py`.
+- Each token in a response is an object with `text`, `start`, `end`, `tag`, and `dictionary`. `start` and `end` are character offsets into the original name.
+- Callers can send their own `tokens` to skip splitting.
+- Every response carries a `model` block: `name`, `revision`, `features`, `postprocess`, `device`, and `scalar_version`.
+- Per-identifier errors with codes (`EMPTY_IDENTIFIER`, `NO_TOKENS`, `UNSUPPORTED_IDENTIFIER`, `INVALID_CONTEXT`, `INVALID_TOKENS`, `INVALID_IDENTIFIER`, `IDENTIFIER_TOO_LONG`, `INTERNAL_ERROR`), so one bad name doesn't fail the batch.
+- `DistilBertTagger.tag_identifiers(rows, batch_size)` for batched inference.
+- A pytest suite in `tests/`, run in CI.
+
+### Fixed
+
+- Inference runs on the GPU when one is available. It always ran on the CPU before (about 25 identifiers per second instead of about 360).
+- An identifier too long for the model input is reported as an error, instead of silently returning fewer tags than tokens.
+
 ## [3.0.0] - 2026-10-01
 
 ### Removed

@@ -18,7 +18,16 @@ class DistilBertTagger:
     - Post-processing the raw logits or CRF predictions
     - Aligning subword tokens back to word-level predictions
     """
-    def __init__(self, model_path: str, local: bool = False, pattern_postprocessing: bool | None = None):
+    def __init__(
+        self,
+        model_path: str,
+        local: bool = False,
+        pattern_postprocessing: bool | None = None,
+        device: str | None = None,
+    ):
+        # Run on the GPU when there is one, unless the caller picks a device
+        self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+
         # Load tokenizer from local directory or remote HuggingFace path
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)
 
@@ -29,6 +38,7 @@ class DistilBertTagger:
             self.model = DistilBertForTokenClassification.from_pretrained(model_path, local_files_only=local)
 
         # disable dropout, etc. for inference
+        self.model.to(self.device)
         self.model.eval()
 
         self.selected_features = normalize_selected_features(
@@ -123,36 +133,80 @@ class DistilBertTagger:
         pattern_postprocessing: bool | None = None,
     ):
         """
-        Tag a split identifier using the model, returning a sequence of grammar pattern labels (e.g., ["V", "NM", "N"]).
+        Tag a split identifier, returning one grammar tag per token (e.g., ["V", "NM", "N"]).
 
-        Steps:
-        1) Build full input token list:
+        Raises:
+            ValueError: if the identifier is too long to fit in the model's input.
+        """
+        tags = self.tag_identifiers(
+            [{
+                "tokens": tokens,
+                "context": context,
+                "type_str": type_str,
+                "language": language,
+                "system_name": system_name,
+                "pattern_postprocessing": pattern_postprocessing,
+            }]
+        )[0]
+        if tags is None:
+            raise ValueError("Identifier is too long for the model input.")
+        return tags
+
+    def tag_identifiers(self, rows, batch_size: int = 64):
+        """
+        Tag many split identifiers, running the model `batch_size` identifiers at a time.
+
+        Each row is a dict with "tokens" (a non-empty list of words), "context", and optionally
+        "type_str", "language", "system_name", and "pattern_postprocessing".
+
+        Steps, per batch:
+        1) Build each row's input tokens:
               [feature tokens] + [@pos_0, w1, @pos_1, w2, ..., @pos_2, wn]
-        2) Tokenize using HuggingFace tokenizer with is_split_into_words=True
+        2) Tokenize the batch with is_split_into_words=True, padding to the longest row
         3) Use word_ids() to find the first subtoken of each identifier word
               - Skip special tokens (None)
-              - Skip feature tokens (index < configured feature count)
+              - Skip feature tokens (index < that row's feature count)
               - Use only the *second* token in each [@pos_X, word] pair (the word)
               - Skip repeated subword tokens (only use the first subtoken per word)
         4) Run the model forward pass with a word mask, so the CRF decodes over words only
-        5) Return a list of string labels corresponding to the original identifier tokens.
+        5) Map label IDs back to tags, and optionally postprocess
 
         Returns:
-            List[str]: a list of grammar tags (e.g., ['V', 'NM', 'N']) aligned to `tokens`
+            List[List[str] | None]: tags aligned to each row's tokens, in input order. A row is
+            None when truncation dropped some of its words, so it can't be tagged in full.
         """
-        row = {
-            "CONTEXT": context,
-            "SYSTEM_NAME": system_name,
-            "TYPE": type_str,
-            "LANGUAGE": language
-        }
-        
+        if batch_size < 1:
+            raise ValueError("batch_size must be >= 1")
+
+        results = [None] * len(rows)
+        # Group rows of similar length so each batch carries little padding.
+        order = sorted(range(len(rows)), key=lambda i: len(rows[i]["tokens"]))
+        for start in range(0, len(order), batch_size):
+            batch_indices = order[start:start + batch_size]
+            batch_rows = [rows[i] for i in batch_indices]
+            for index, tags in zip(batch_indices, self._tag_batch(batch_rows)):
+                results[index] = tags
+        return results
+
+    def _tag_batch(self, rows):
         # Step 1: Feature tokens + alternating position/word tokens
-        input_tokens, feature_count = build_model_input_tokens(row, tokens, self.selected_features)
+        inputs, feature_counts = [], []
+        for row in rows:
+            feature_row = {
+                "CONTEXT": row["context"],
+                "SYSTEM_NAME": row.get("system_name", ""),
+                "TYPE": row.get("type_str", ""),
+                "LANGUAGE": row.get("language", ""),
+            }
+            input_tokens, feature_count = build_model_input_tokens(
+                feature_row, row["tokens"], self.selected_features
+            )
+            inputs.append(input_tokens)
+            feature_counts.append(feature_count)
 
         # Step 2: Tokenize using word-alignment aware tokenizer
         encoded = self.tokenizer(
-            input_tokens,
+            inputs,
             is_split_into_words=True,
             return_tensors="pt",
             truncation=True,
@@ -160,24 +214,27 @@ class DistilBertTagger:
         )
 
         # Step 3: Find the first subtoken of each identifier word
-        word_positions, previous_word_idx = [], None
-        for idx, word_idx in enumerate(encoded.word_ids()):
-            if word_idx is None:
-                continue  # special token (CLS, SEP, PAD, etc.)
-            if word_idx < feature_count:
-                continue  # feature tokens (shouldn't be labeled)
-            if (word_idx - feature_count) % 2 == 0:
-                continue  # position tokens (e.g., @pos_0)
-            if word_idx == previous_word_idx:
-                continue  # skip repeated subword tokens
-            word_positions.append(idx)
-            previous_word_idx = word_idx
-
+        word_positions = []
+        encoded = encoded.to(self.device)
         word_mask = torch.zeros_like(encoded["input_ids"], dtype=torch.bool)
-        word_mask[0, word_positions] = True
+        for row_index, feature_count in enumerate(feature_counts):
+            positions, previous_word_idx = [], None
+            for idx, word_idx in enumerate(encoded.word_ids(batch_index=row_index)):
+                if word_idx is None:
+                    continue  # special token (CLS, SEP, PAD, etc.)
+                if word_idx < feature_count:
+                    continue  # feature tokens (shouldn't be labeled)
+                if (word_idx - feature_count) % 2 == 0:
+                    continue  # position tokens (e.g., @pos_0)
+                if word_idx == previous_word_idx:
+                    continue  # skip repeated subword tokens
+                positions.append(idx)
+                previous_word_idx = word_idx
+            word_positions.append(positions)
+            word_mask[row_index, positions] = True
 
         # Step 4: Forward pass (the CRF decodes over word positions only)
-        with torch.no_grad():
+        with torch.inference_mode():
             out = self.model(
                 input_ids=encoded["input_ids"],
                 attention_mask=encoded["attention_mask"],
@@ -187,22 +244,36 @@ class DistilBertTagger:
         # Step 5: Read the label at each word position
         if isinstance(out, dict) and "predictions" in out:
             # CRF predictions exclude [CLS], so they lag input positions by 1
-            labels_per_token = out["predictions"][0]
-            pred_labels = [labels_per_token[idx - 1] for idx in word_positions]
+            batch_labels = [
+                [labels[idx - 1] for idx in positions]
+                for labels, positions in zip(out["predictions"], word_positions)
+            ]
         else:
             logits = out[0] if isinstance(out, (tuple, list)) else out
-            labels_per_token = torch.argmax(logits, dim=-1).squeeze(0).tolist()
-            pred_labels = [labels_per_token[idx] for idx in word_positions]
+            argmax = torch.argmax(logits, dim=-1).cpu().tolist()
+            batch_labels = [
+                [labels[idx] for idx in positions]
+                for labels, positions in zip(argmax, word_positions)
+            ]
 
         # Step 6: Map label IDs back to string labels
-        pred_tag_strings = [self.id2label[i] for i in pred_labels]
-        should_postprocess = self.pattern_postprocessing if pattern_postprocessing is None else bool(pattern_postprocessing)
-        if should_postprocess:
-            pred_tag_strings = self.postprocess_tags(
-                pred_tag_strings,
-                tokens=tokens,
-                context=context,
-                language=language,
-                system_name=system_name,
-            )
-        return pred_tag_strings
+        results = []
+        for row, pred_labels in zip(rows, batch_labels):
+            tokens = row["tokens"]
+            if len(pred_labels) != len(tokens):
+                results.append(None)  # truncation dropped some words
+                continue
+
+            pred_tag_strings = [self.id2label[i] for i in pred_labels]
+            override = row.get("pattern_postprocessing")
+            should_postprocess = self.pattern_postprocessing if override is None else bool(override)
+            if should_postprocess:
+                pred_tag_strings = self.postprocess_tags(
+                    pred_tag_strings,
+                    tokens=tokens,
+                    context=row["context"],
+                    language=row.get("language", ""),
+                    system_name=row.get("system_name", ""),
+                )
+            results.append(pred_tag_strings)
+        return results
