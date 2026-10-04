@@ -54,3 +54,33 @@ def test_tag_batch_end_to_end(backend):
     assert [t["tag"] for t in first["tokens"]] == ["V", "NM", "N"]
     assert second["error"]["code"] == "UNSUPPORTED_IDENTIFIER"
     assert third["error"]["code"] == "IDENTIFIER_TOO_LONG"
+
+
+def test_stdio_subprocess_end_to_end():
+    """Spawn the real stdio server: stdout must carry only protocol lines."""
+    import json
+    import subprocess
+    import sys
+    import time
+
+    start = time.perf_counter()
+    process = subprocess.Popen(
+        [sys.executable, "main", "--mode", "serve", "--stdio", "--model_dir", MODEL_DIR],
+        cwd=ROOT,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    ready = json.loads(process.stdout.readline())
+    print(f"time to ready: {time.perf_counter() - start:.1f}s")
+    assert ready["ready"] is True
+    assert ready["model"]["revision"].startswith("sha256:")
+
+    request = {"id": 1, "identifiers": [{"key": "a", "name": "getUserToken", "context": "FUNCTION"}]}
+    stdout, stderr = process.communicate(json.dumps(request).encode() + b"\n", timeout=120)
+    assert process.returncode == 0, stderr.decode()
+
+    lines = stdout.decode().splitlines()
+    assert len(lines) == 1
+    response = json.loads(lines[0])
+    assert [t["tag"] for t in response["results"][0]["tokens"]] == ["V", "NM", "N"]

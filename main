@@ -10,6 +10,7 @@ from version import __version__
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_LM_MODEL_DIR = os.path.join("output", "best_model")
+DEFAULT_HF_MODEL = "sourceslicer/scalar_lm_release_test"
 
 def get_version():
     """Return the current version of SCANL Tagger."""
@@ -31,13 +32,35 @@ def load_runtime_config(path: str | None) -> dict:
     with open(path) as handle:
         return json.load(handle)
 
+
+def resolve_model(args, runtime_config: dict) -> tuple[str, bool]:
+    """Pick the model to serve: --model_dir, then --local, then the config file, then a local default, then Hugging Face."""
+    config_model = runtime_config.get("model")
+    config_local = bool(runtime_config.get("local", False))
+    resolved_config_model = config_model
+    if config_model and config_local:
+        resolved_config_model = resolve_path(config_model)
+
+    default_local_model_path = resolve_path(DEFAULT_LM_MODEL_DIR)
+
+    if args.model_dir:
+        return resolve_path(args.model_dir), True
+    if args.local:
+        return (resolved_config_model if config_local and resolved_config_model else default_local_model_path), True
+    if config_model:
+        return resolved_config_model, config_local
+    if os.path.isdir(default_local_model_path):
+        return default_local_model_path, True
+    return DEFAULT_HF_MODEL, False
+
 if __name__ == "__main__":
     """
     Use argparse to allow the user to choose either running the tagger or training a new tagger
 
     Example Usage:
     python main --version                        # Display the application version.
-    python main --mode run                       # Start the server for tagging requests.
+    python main --mode run                       # Start the HTTP server for tagging requests.
+    python main --mode serve --stdio             # Serve JSON lines over stdin/stdout for a parent process.
     python main --mode train                     # Retrain the model.
     python main --mode run --address [host]      # Run the tagger on a specific IP address
     python main --mode run --port [port]         # Run the tagger on a specific port
@@ -49,7 +72,8 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--version", action="version", version=get_version(), help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Force use of a local model/tokenizer instead of the HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run'")
+    parser.add_argument("--mode", choices=["train", "run", "serve"], required=True,
+                        help="'train' a model, or 'run'/'serve' the tagger ('run' and 'serve' are the same)")
     # Kept so existing `--model_type lm_based` invocations still work; the tree-based model was removed in 3.0.0.
     parser.add_argument("--model_type", choices=["lm_based"], default="lm_based", help=argparse.SUPPRESS)
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
@@ -84,6 +108,10 @@ if __name__ == "__main__":
     )
 
     # Run-specific options
+    parser.add_argument("--device", type=str,
+                        help="Device for inference: 'auto' (default; GPU if available), 'cpu', 'cuda', or 'cuda:N'")
+    parser.add_argument("--stdio", action="store_true",
+                        help="Serve JSON lines over stdin/stdout instead of HTTP; all logging goes to stderr")
     parser.add_argument("--port", type=int, help="Port to bind server")
     parser.add_argument("--protocol", type=str, help="Protocol (http/https)")
     parser.add_argument("--word", type=str, help="Word used in config")
@@ -122,35 +150,30 @@ if __name__ == "__main__":
             run_metadata=run_metadata,
         )
 
-    elif args.mode == "run":
-        from src.tag_identifier import start_server
-
+    elif args.mode in ("run", "serve"):
         config_path = resolve_path(args.config_path)
         runtime_config = load_runtime_config(config_path)
-        config_model = runtime_config.get("model")
-        config_local = bool(runtime_config.get("local", False))
-        resolved_config_model = config_model
-        if config_model and config_local:
-            resolved_config_model = resolve_path(config_model)
+        model_path, use_local_model = resolve_model(args, runtime_config)
 
-        explicit_local_model_path = resolve_path(args.model_dir) if args.model_dir else None
-        default_local_model_path = resolve_path(DEFAULT_LM_MODEL_DIR)
+        if args.stdio:
+            from src.stdio_server import serve_stdio
 
-        if explicit_local_model_path:
-            use_local_model = True
-            model_path = explicit_local_model_path
-        elif args.local:
-            use_local_model = True
-            model_path = resolved_config_model if config_local and resolved_config_model else default_local_model_path
-        elif config_model:
-            use_local_model = config_local
-            model_path = resolved_config_model
-        elif os.path.isdir(default_local_model_path):
-            use_local_model = True
-            model_path = default_local_model_path
-        else:
-            use_local_model = False
-            model_path = "sourceslicer/scalar_lm_release_test"
+            def load_backend():
+                from src.tagging_backend import TaggingBackend
+
+                postprocessing = args.pattern_postprocessing
+                if postprocessing is None:
+                    postprocessing = runtime_config.get("pattern_postprocessing")
+                return TaggingBackend(
+                    model_path,
+                    local=use_local_model,
+                    pattern_postprocessing=postprocessing,
+                    device=args.device or runtime_config.get("device"),
+                )
+
+            sys.exit(serve_stdio(load_backend))
+
+        from src.tag_identifier import start_server
 
         temp_config = {
             "script_dir": SCRIPT_DIR,
@@ -169,5 +192,7 @@ if __name__ == "__main__":
             temp_config["address"] = args.address
         if args.word:
             temp_config["words"] = args.word
+        if args.device:
+            temp_config["device"] = args.device
 
         start_server(temp_config=temp_config)

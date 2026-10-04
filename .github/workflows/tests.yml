@@ -106,3 +106,16 @@ jobs:
             exit 1
           fi
           echo "Received response: $response"
+
+      - name: Test batch endpoints
+        run: |
+          curl -sf "http://localhost:8080/info"
+          curl -sf -X POST "http://localhost:8080/tag" -H "Content-Type: application/json" \
+            -d '{"id": 1, "identifiers": [{"key": "a", "name": "getUserToken", "context": "FUNCTION"}]}' \
+            | python -c "import json, sys; r = json.load(sys.stdin); assert r['results'][0]['tokens'][0]['text'] == 'get', r; print(r)"
+
+      - name: Test stdio mode
+        run: |
+          echo '{"id": 1, "identifiers": [{"key": "a", "name": "getUserToken", "context": "FUNCTION"}]}' \
+            | python main --mode serve --stdio --device cpu 2>/dev/null \
+            | python -c "import json, sys; lines = [json.loads(l) for l in sys.stdin]; assert lines[0]['ready'] and len(lines) == 2, lines; print(lines[1])"

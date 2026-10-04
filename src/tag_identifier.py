@@ -1,16 +1,17 @@
 import os
 import time
-from flask import Flask, abort, request
+from flask import Flask, abort, jsonify, request
 from waitress import serve
-from spiral import ronin
 import json
 import sqlite3
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
-from src.tagging_backend import load_english_words
+from src import contract
+from src.tagging_backend import TaggingBackend
 
 app = Flask(__name__)
-
-lm_model = None
+# Batch requests from the analysis tool can be large; reject anything unreasonable.
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024
+# Keep response fields in contract order ("id", "model", "results") instead of sorting them.
+app.json.sort_keys = False
 
 
 def _parse_optional_bool(value):
@@ -133,7 +134,6 @@ def initialize_model(temp_config = {}, runtime_config = None):
     """
     Load the DistilBERT+CRF tagger named by the startup overrides or the runtime config.
     """
-    global lm_model
     runtime_config = runtime_config or {}
     print("Loading DistilBERT tagger...")
     model_path = temp_config.get("model", runtime_config.get("model"))
@@ -151,10 +151,11 @@ def initialize_model(temp_config = {}, runtime_config = None):
     model_source = "local directory" if is_local else "HuggingFace repo"
     print(f"LM model source: {model_source}: {model_path}")
 
-    lm_model = DistilBertTagger(
+    app.backend = TaggingBackend(
         model_path,
         local=is_local,
         pattern_postprocessing=pattern_postprocessing,
+        device=temp_config.get("device", runtime_config.get("device")),
     )
     print("DistilBERT tagger loaded!")
 
@@ -179,17 +180,6 @@ def start_server(temp_config = {}):
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
 
-    print("loading dictionary")
-    app.english_words = load_english_words()
-
-    #insert english words from words/en.txt
-    if not os.path.exists("words/en.txt"):
-        print("could not find English words, using WordNet only!")
-    else:
-        with open("words/en.txt") as words:
-            for word in words:
-                app.english_words.add(word[:-1])
-
     print('retrieving server configuration...')
     config = runtime_config
 
@@ -209,7 +199,7 @@ def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
     #or if the word is in the list of approved words
     dictionaryType = ""
-    dictionary = word.lower() in app.english_words
+    dictionary = word.lower() in app.backend.english_words
     acceptable = app.words.find(word)
     digit = word.isnumeric()
     if (dictionary):
@@ -222,6 +212,25 @@ def dictionary_lookup(word):
         dictionaryType = "UC"
     
     return dictionaryType
+
+@app.route('/info', methods=['GET'])
+def info():
+    """Describe the model being served, without tagging anything."""
+    return jsonify({"id": None, "model": app.backend.model_info()})
+
+@app.route('/tag', methods=['POST'])
+def tag():
+    """Tag a batch of identifiers. Takes the same JSON request as the stdio transport."""
+    # force=True: accept a JSON body even when the client omits the Content-Type header
+    message = request.get_json(force=True, silent=True)
+    if message is None:
+        return jsonify({
+            "id": None,
+            "error": {"code": contract.INVALID_JSON, "message": "request body must be JSON"},
+        }), 400
+
+    response = app.backend.tag_batch(message)
+    return jsonify(response), 400 if "error" in response else 200
 
 #route to check for and create a database if it does not exist already
 @app.route('/probe/<cache_id>')
@@ -256,10 +265,6 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     print(f"INPUT: {identifier_name} {identifier_context}")
     start_time = time.perf_counter()
 
-    # 1) Split the identifier into tokens for **both** modes
-    words = ronin.split(identifier_name)
-
-    # 2) Tag the tokens with the DistilBERT+CRF model
     result = { "words": [] }
     request_postprocessing = request.args.get("pattern_postprocessing")
     try:
@@ -267,14 +272,16 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     except ValueError as exc:
         abort(400, description=str(exc))
 
-    tags = lm_model.tag_identifier(
-        tokens=words,
-        context=identifier_context,
+    # Split the identifier and tag the words with the DistilBERT+CRF model
+    tagged = app.backend.tag_identifier(
+        identifier_name,
+        identifier_context,
         type_str=data_type,
         language=programming_language,
         system_name=system_name,
         pattern_postprocessing=postprocessing_override,
     )
+    words, tags = tagged["tokens"], tagged["tags"]
 
     for word, tag in zip(words, tags):
         dictionary = dictionary_lookup(word)

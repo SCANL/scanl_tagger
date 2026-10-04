@@ -21,6 +21,8 @@ One `tag_batch(requests) -> results` function that every transport calls. `Taggi
 
 ### 2. A stdio serve mode
 
+> **Status (3.x):** Done: `python main --mode serve --stdio`. Model load failures send `{"ready": false, ...}` and exit with status 1.
+
 ```bash
 scalar-tagger serve --stdio        # or: python main --mode serve --stdio
 ```
@@ -31,6 +33,8 @@ scalar-tagger serve --stdio        # or: python main --mode serve --stdio
 - Exit cleanly when stdin closes.
 
 ### 3. A `POST /tag` HTTP endpoint
+
+> **Status (3.x):** Done. `GET /info` is also available, and the GET route remains.
 
 It takes the same JSON body as stdio. The current `GET /<name>/<context>?type=...` puts type strings like `std::map<std::string, int>` into the URL, which is fragile. The GET route can stay for backward compatibility.
 
@@ -88,7 +92,7 @@ When tokens are supplied, offsets can be computed by matching each token in orde
 
 ### 7. Model metadata in every response, plus an `info` command
 
-> **Status (3.x):** Metadata done (`name`, `revision`, `features`, `postprocess`, `device`, `scalar_version`). The `info` command and `GET /info` come with the transports (items 2 and 3).
+> **Status (3.x):** Done. The model block has `name`, `revision`, `features`, `postprocess`, `device`, and `scalar_version`. `{"command": "info"}` works over stdio, and `GET /info` over HTTP.
 
 `model.name`, `model.revision` (a checkpoint hash or Hugging Face revision), the feature set, and the postprocessing flag. The tool records these with every finding so results are reproducible, and it uses them as part of its cache key. Retagging only happens when the model changes.
 

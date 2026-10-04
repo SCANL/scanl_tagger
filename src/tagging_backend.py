@@ -9,14 +9,22 @@ from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from version import __version__
 
 
-def load_english_words() -> set[str]:
-    """Return the lowercased NLTK words corpus, downloading it on first use."""
+def load_english_words(extra_words_path: str = os.path.join("words", "en.txt")) -> set[str]:
+    """
+    Return the lowercased NLTK words corpus, downloading it on first use, plus one word per
+    line from `extra_words_path` if that file exists.
+    """
     try:
         words = nltk.corpus.words.words()
     except LookupError:
         nltk.download("words", quiet=True)
         words = nltk.corpus.words.words()
-    return set(w.lower() for w in words)
+    english_words = set(w.lower() for w in words)
+
+    if extra_words_path and os.path.exists(extra_words_path):
+        with open(extra_words_path) as handle:
+            english_words.update(line.strip().lower() for line in handle if line.strip())
+    return english_words
 
 
 def model_revision(model_path: str, local: bool) -> str | None:
@@ -53,12 +61,14 @@ class TaggingBackend:
         local: bool = False,
         pattern_postprocessing: bool | None = None,
         batch_size: int = 64,
+        device: str | None = None,
         tagger=None,
         english_words: set[str] | None = None,
     ):
         """
         Args:
             model_path: local checkpoint directory or Hugging Face repo id.
+            device: "cpu", "cuda", "cuda:1", or None/"auto" to use the GPU when there is one.
             tagger: an already-loaded tagger to use instead of loading `model_path`.
             english_words: lowercased words for the `dictionary` flag; defaults to NLTK's corpus.
         """
@@ -72,6 +82,7 @@ class TaggingBackend:
             model_path,
             local=local,
             pattern_postprocessing=pattern_postprocessing,
+            device=device,
         )
         self.english_words = english_words if english_words is not None else load_english_words()
         self.revision = model_revision(model_path, local) if tagger is None else None
@@ -185,14 +196,16 @@ class TaggingBackend:
         pattern_postprocessing: bool | None = None,
     ) -> dict:
         words = ronin.split(identifier_name)
-        tags = self.lm_model.tag_identifier(
-            tokens=words,
-            context=context,
-            type_str=type_str,
-            language=language,
-            system_name=system_name,
-            pattern_postprocessing=pattern_postprocessing,
-        )
+        tags = self.lm_model.tag_identifiers([{
+            "tokens": words,
+            "context": context,
+            "type_str": type_str,
+            "language": language,
+            "system_name": system_name,
+            "pattern_postprocessing": pattern_postprocessing,
+        }])[0]
+        if tags is None:
+            raise ValueError("Identifier is too long for the model input.")
         return {"tokens": words, "tags": list(tags)}
 
     def tag_identifier_batch(self, records, batch_size: int = 64):

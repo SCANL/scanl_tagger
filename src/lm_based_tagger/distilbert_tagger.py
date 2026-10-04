@@ -25,8 +25,11 @@ class DistilBertTagger:
         pattern_postprocessing: bool | None = None,
         device: str | None = None,
     ):
-        # Run on the GPU when there is one, unless the caller picks a device
-        self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+        # Run on the GPU when there is one, unless the caller picks a device. An explicit
+        # device skips torch.cuda.is_available(), which can crash on some broken CUDA setups.
+        if device in (None, "auto"):
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.device = torch.device(device)
 
         # Load tokenizer from local directory or remote HuggingFace path
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)

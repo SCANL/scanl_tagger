@@ -6,6 +6,10 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Added
 
+- `--mode serve --stdio`: serves the batch contract as JSON lines over stdin/stdout. It prints a `ready` line once the model has loaded, sends all logging to stderr, answers `{"command": "info"}`, and exits when stdin closes.
+- `POST /tag` and `GET /info` HTTP endpoints, using the same contract as stdio.
+- `--device` (and `"device"` in the config file) to choose `cpu`, `cuda`, or `cuda:N` instead of detecting the GPU automatically.
+- `--mode serve`, the same as `--mode run`.
 - `TaggingBackend.tag_batch(request)`: one batch-tagging function for every transport, following the JSON contract in `src/contract.py`.
 - Each token in a response is an object with `text`, `start`, `end`, `tag`, and `dictionary`. `start` and `end` are character offsets into the original name.
 - Callers can send their own `tokens` to skip splitting.
@@ -13,6 +17,11 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - Per-identifier errors with codes (`EMPTY_IDENTIFIER`, `NO_TOKENS`, `UNSUPPORTED_IDENTIFIER`, `INVALID_CONTEXT`, `INVALID_TOKENS`, `INVALID_IDENTIFIER`, `IDENTIFIER_TOO_LONG`, `INTERNAL_ERROR`), so one bad name doesn't fail the batch.
 - `DistilBertTagger.tag_identifiers(rows, batch_size)` for batched inference.
 - A pytest suite in `tests/`, run in CI.
+
+### Changed
+
+- The legacy `GET /<name>/<context>` route goes through the shared backend. Its responses are unchanged.
+- The `dictionary` flag in every transport uses the NLTK words corpus plus `words/en.txt`, if that file exists.
 
 ### Fixed
 

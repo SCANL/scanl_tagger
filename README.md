@@ -36,6 +36,8 @@ python main --mode run --config_path serve.release.json
 
 `--model_type lm_based` is still accepted, for compatibility with older scripts.
 
+`--device cpu`, `--device cuda`, or `--device cuda:N` picks where inference runs. The default, `auto`, uses the GPU when there is one. The config file can also set `"device"`.
+
 `--config_path` is honored in run mode, so server address, port, protocol, word list, and optional LM defaults can come from an alternate JSON file.
 
 For LM inference, selected feature tokens are loaded from the saved model config automatically. Postprocessing can be controlled in three places:
@@ -100,6 +102,32 @@ An identifier that can't be tagged gets an error in place of `tokens`, and the r
 A request that can't be read at all, such as one missing the `identifiers` list, gets a top-level `{"error": {"code": "INVALID_REQUEST", ...}}` instead of `results`. Per-token confidence (`options.confidence`) isn't supported yet. Requesting it adds a `CONFIDENCE_UNAVAILABLE` warning to the response.
 
 Inference runs on the GPU when one is available. On the training data, the batch path tags about 360 identifiers per second on a GPU and about 25 per second on a CPU.
+
+### Stdio transport
+
+For a parent process that spawns the tagger, such as a CLI or an MCP server:
+
+```bash
+python main --mode serve --stdio
+```
+
+- Each line on stdin is one JSON message, and each line on stdout is one JSON response, in order. Blank lines are ignored.
+- Once the model has loaded, the first line on stdout is `{"ready": true, "model": {...}}`. Wait for it before sending. If the model fails to load, the line is `{"ready": false, "error": {"code": "MODEL_LOAD_FAILED", ...}}` and the process exits with status 1.
+- A message without a `command` is a tagging request. `{"id": 2, "command": "info"}` returns `{"id": 2, "model": {...}}` without tagging anything.
+- A line that isn't valid JSON gets an `INVALID_JSON` error, and an unknown command gets `UNKNOWN_COMMAND`. The session continues either way.
+- Only protocol messages go to stdout. All logging goes to stderr.
+- The process exits with status 0 when stdin closes.
+
+Time from launch to the ready line is about 9 seconds with the model already downloaded, on either a CPU or a GPU. About 7 seconds of that is importing torch and transformers. Allow at least 30 seconds the first time, when the model is downloaded from Hugging Face.
+
+### HTTP transport
+
+`python main --mode run` (or `--mode serve`) also serves the contract over HTTP:
+
+- `POST /tag` takes the same JSON request body. It returns 200 when the request could be read, even if some identifiers have errors, and 400 with a top-level `error` when it couldn't.
+- `GET /info` returns `{"id": null, "model": {...}}`.
+
+The older `GET /<name>/<context>` route still works, but it puts type strings like `std::map<std::string, int>` into the URL. Prefer `POST /tag` for new clients.
 
 ---
 
