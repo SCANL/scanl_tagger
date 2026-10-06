@@ -18,11 +18,13 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - `--model_type` is optional and accepts only `lm_based`.
 - Run mode downloads only the NLTK `words` corpus (used by the `dictionary` flag), and only when it is missing.
 - The Docker image serves the DistilBERT model over HTTP on port 8080, instead of starting training.
+- Dependencies are updated to their latest releases, including `torch` 2.14.1, `transformers` 5.19.0, `datasets` 5.1.0, `pandas` 3.0.6, and `scikit-learn` 1.9.1. `transformers`, `accelerate`, `huggingface_hub`, `safetensors`, `numpy`, and `pandas` are now pinned directly.
 
 ### Removed
 
 - The tree-based (Gradient Boosting) tagger: `src/tree_based_tagger/`, `models/model_GradientBoostingClassifier.pkl`, its training database `input/scanl_tagger_training_db_11_29_2024.db`, and the `gensim` dependency. It was slower (8.6 vs. about 360 identifiers per second) and less accurate than the DistilBERT+CRF model.
 - `--model_type tree_based` and `--model_dir`, which only applied to the tree-based model.
+- The unused `aiohttp` and `pipdeptree` dependencies.
 
 ### Added
 

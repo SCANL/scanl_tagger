@@ -31,7 +31,7 @@ def tokenizer(tmp_path_factory):
     vocab_dir = tmp_path_factory.mktemp("vocab")
     vocab_file = vocab_dir / "vocab.txt"
     vocab_file.write_text("\n".join(VOCAB) + "\n")
-    return DistilBertTokenizerFast(vocab_file=str(vocab_file), do_lower_case=True, model_max_length=128)
+    return DistilBertTokenizerFast(vocab=str(vocab_file), do_lower_case=True, model_max_length=128)
 
 
 def make_config(**overrides):
