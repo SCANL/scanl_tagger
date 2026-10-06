@@ -28,8 +28,8 @@ def main():
     try:
         from sklearn.model_selection import StratifiedKFold, train_test_split
 
-        from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset
-        from src.lm_based_tagger.train_model import (
+        from scalar_tagger.lm_based_tagger.distilbert_preprocessing import prepare_dataset
+        from scalar_tagger.lm_based_tagger.train_model import (
             HOLDOUT_RATIO,
             K,
             LABEL2ID,

@@ -1,25 +1,26 @@
+import gzip
 import hashlib
+import json
 import os
+import re
+from importlib import resources
 
-import nltk
 from spiral import ronin
 
-from src import contract
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
-from version import __version__
+from scalar_tagger import contract
+from scalar_tagger.lm_based_tagger.distilbert_tagger import DistilBertTagger
+from scalar_tagger.version import __version__
 
 
 def load_english_words(extra_words_path: str = os.path.join("words", "en.txt")) -> set[str]:
     """
-    Return the lowercased NLTK words corpus, downloading it on first use, plus one word per
-    line from `extra_words_path` if that file exists.
+    Return the bundled English word list (the NLTK words corpus, lowercased; see
+    scalar_tagger/data/README.md), plus one word per line from `extra_words_path` if that
+    file exists.
     """
-    try:
-        words = nltk.corpus.words.words()
-    except LookupError:
-        nltk.download("words", quiet=True)
-        words = nltk.corpus.words.words()
-    english_words = set(w.lower() for w in words)
+    bundled = resources.files("scalar_tagger").joinpath("data", "english_words.txt.gz")
+    with bundled.open("rb") as raw, gzip.open(raw, "rt", encoding="utf-8") as handle:
+        english_words = set(handle.read().split())
 
     if extra_words_path and os.path.exists(extra_words_path):
         with open(extra_words_path) as handle:
@@ -27,31 +28,85 @@ def load_english_words(extra_words_path: str = os.path.join("words", "en.txt")) 
     return english_words
 
 
-def model_revision(model_path: str, local: bool) -> str | None:
+def _revision_cache_path() -> str:
+    cache_home = os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache")
+    return os.path.join(cache_home, "scalar-tagger", "revisions.json")
+
+
+def file_revision(weight_path: str) -> str:
+    """
+    "sha256:" plus the first 16 hex digits of the file's hash. Hashes are cached by path,
+    size, and modification time, so an unchanged checkpoint isn't re-read on every start.
+    """
+    stat = os.stat(weight_path)
+    key = os.path.realpath(weight_path)
+    fingerprint = [stat.st_size, stat.st_mtime_ns]
+    cache_path = _revision_cache_path()
+
+    try:
+        with open(cache_path) as handle:
+            cache = json.load(handle)
+    except (OSError, ValueError):
+        cache = {}
+    entry = cache.get(key)
+    if isinstance(entry, dict) and entry.get("fingerprint") == fingerprint:
+        return entry["revision"]
+
+    digest = hashlib.sha256()
+    with open(weight_path, "rb") as handle:
+        for chunk in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(chunk)
+    revision = f"sha256:{digest.hexdigest()[:16]}"
+
+    cache[key] = {"fingerprint": fingerprint, "revision": revision}
+    try:
+        os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+        with open(cache_path, "w") as handle:
+            json.dump(cache, handle)
+    except OSError:
+        pass  # a read-only home directory just means hashing again next time
+    return revision
+
+
+def model_revision(model_path: str, revision: str | None = None) -> str | None:
     """
     Identify the exact checkpoint being served.
 
     For a Hugging Face repo this is the commit hash of the downloaded snapshot. For a local
-    directory it is "sha256:" plus the first 16 hex digits of model.safetensors' hash.
+    directory it is a hash of model.safetensors (see `file_revision`).
     """
     if os.path.isdir(model_path):
         weight_path = os.path.join(model_path, "model.safetensors")
         if not os.path.exists(weight_path):
             return None
-        digest = hashlib.sha256()
-        with open(weight_path, "rb") as handle:
-            for chunk in iter(lambda: handle.read(1 << 20), b""):
-                digest.update(chunk)
-        return f"sha256:{digest.hexdigest()[:16]}"
+        return file_revision(weight_path)
 
     from huggingface_hub import hf_hub_download
     try:
         # The model is already downloaded, so this resolves from the local cache:
         # .../models--<repo>/snapshots/<commit>/config.json
-        config_path = hf_hub_download(repo_id=model_path, filename="config.json", local_files_only=True)
+        config_path = hf_hub_download(
+            repo_id=model_path, filename="config.json", revision=revision, local_files_only=True
+        )
     except Exception:
         return None
     return os.path.basename(os.path.dirname(config_path))
+
+
+def cached_snapshot(repo_id: str, revision: str | None) -> str | None:
+    """
+    The local snapshot directory for a pinned commit that is already downloaded, or None.
+
+    A commit hash can't change, so a cached copy can be used without asking the Hub whether
+    it is current. That keeps startup fast and lets the tagger start offline.
+    """
+    if not revision or not re.fullmatch(r"[0-9a-f]{40}", revision):
+        return None
+    from huggingface_hub import snapshot_download
+    try:
+        return snapshot_download(repo_id=repo_id, revision=revision, local_files_only=True)
+    except Exception:
+        return None
 
 
 class TaggingBackend:
@@ -59,6 +114,7 @@ class TaggingBackend:
         self,
         model_path: str,
         local: bool = False,
+        revision: str | None = None,
         pattern_postprocessing: bool | None = None,
         batch_size: int = 64,
         device: str | None = None,
@@ -68,9 +124,10 @@ class TaggingBackend:
         """
         Args:
             model_path: local checkpoint directory or Hugging Face repo id.
+            revision: Hugging Face commit, branch, or tag to load; ignored for local directories.
             device: "cpu", "cuda", "cuda:1", or None/"auto" to use the GPU when there is one.
             tagger: an already-loaded tagger to use instead of loading `model_path`.
-            english_words: lowercased words for the `dictionary` flag; defaults to NLTK's corpus.
+            english_words: lowercased words for the `dictionary` flag; defaults to the bundled list.
         """
         if not model_path:
             raise ValueError("Tagging requires a model path or HuggingFace repo id.")
@@ -78,14 +135,31 @@ class TaggingBackend:
         self.model_path = model_path
         self.pattern_postprocessing = pattern_postprocessing
         self.batch_size = batch_size
+        snapshot = None if local or tagger is not None else cached_snapshot(model_path, revision)
         self.lm_model = tagger or DistilBertTagger(
-            model_path,
-            local=local,
+            snapshot or model_path,
+            local=local or snapshot is not None,
             pattern_postprocessing=pattern_postprocessing,
             device=device,
+            revision=None if snapshot else revision,
         )
         self.english_words = english_words if english_words is not None else load_english_words()
-        self.revision = model_revision(model_path, local) if tagger is None else None
+        if tagger is not None:
+            self.revision = None
+        elif snapshot:
+            self.revision = revision
+        else:
+            self.revision = model_revision(model_path, revision)
+        if tagger is None:
+            self.warm_up()
+
+    def warm_up(self) -> None:
+        """
+        Run one identifier through the splitter and the model. Both do one-time setup on first
+        use (Ronin loads its dictionary; the GPU initializes its kernels), so doing it here keeps
+        that cost out of the first real request.
+        """
+        self.lm_model.tag_identifiers([{"tokens": ronin.split("getUserName"), "context": "FUNCTION"}])
 
     def model_info(self, postprocess: bool | None = None) -> dict:
         """
@@ -103,7 +177,7 @@ class TaggingBackend:
 
     def tag_batch(self, request) -> dict:
         """
-        Tag every identifier in a request, following the contract in `src/contract.py`.
+        Tag every identifier in a request, following the contract in `scalar_tagger/contract.py`.
 
         Never raises for bad input: a malformed request gets a top-level "error", and a bad
         identifier gets an "error" in its own result while the rest of the batch is tagged.

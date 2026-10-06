@@ -15,7 +15,7 @@ Both transports carry the same JSON contract (item 4).
 
 ### 1. A single batch-tagging function
 
-> **Status (3.x):** Done: `TaggingBackend.tag_batch(request)` in `src/tagging_backend.py`.
+> **Status (3.x):** Done: `TaggingBackend.tag_batch(request)` in `scalar_tagger/tagging_backend.py`.
 
 One `tag_batch(requests) -> results` function that every transport calls. `TaggingBackend.tag_identifier_batch` already does most of this. The tool tags a whole file or project at a time, so tagging one identifier per request will be a bottleneck.
 
@@ -40,7 +40,7 @@ It takes the same JSON body as stdio. The current `GET /<name>/<context>?type=..
 
 ### 4. A structured request/response contract
 
-> **Status (3.x):** Done, in `src/contract.py`. `p` and `alt` are not filled in yet (item 9); requesting them adds a `CONFIDENCE_UNAVAILABLE` warning.
+> **Status (3.x):** Done, in `scalar_tagger/contract.py`. `p` and `alt` are not filled in yet (item 9); requesting them adds a `CONFIDENCE_UNAVAILABLE` warning.
 
 Request:
 
@@ -157,9 +157,13 @@ In the training data and in the `sys_sim` feature, `SYSTEM_NAME` is the project 
 
 ### 14. A pip-installable package with a console command
 
+> **Status (3.x):** Done. `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@<tag>"` installs the `scalar-tagger` command; `scalar-tagger serve --stdio` starts the stdio transport. Publishing to PyPI needs `spiral` published there first, because PyPI rejects packages with git dependencies.
+
 Provide `pip install scalar-tagger` (or an install from git) with a `scalar-tagger` command, so the C++ tool can find and start it without knowing the path to a checked-out repo or a `main` script.
 
 ### 15. Faster startup
+
+> **Status (3.x):** Done. About 7 seconds to a warmed-up `ready` line, documented in the README; about 5 seconds of that is importing torch and transformers. `--version` returns immediately, NLTK data is no longer downloaded, and a pinned model that is already cached starts offline.
 
 Spawning over stdio makes import and model-load time matter. Ideas:
 
@@ -168,5 +172,7 @@ Spawning over stdio makes import and model-load time matter. Ideas:
 - Report the measured time from launch to the `ready` line in the README, so the tool can set a sensible timeout.
 
 ### 16. Publish the release model at a pinned revision
+
+> **Status (3.x):** Pinning done: `RELEASE_REVISION` in `scalar_tagger/cli.py`, overridable with `--revision`. Pushing the verified 90.5% candidate to the Hub and updating the pin is still to do; see RELEASE_MODEL.md.
 
 `RELEASE_MODEL.md` already plans this. The tool's config will pin a revision, so a fresh install resolves to the exact model the reported metrics describe.

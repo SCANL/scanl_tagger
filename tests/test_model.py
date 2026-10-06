@@ -14,7 +14,7 @@ pytestmark = pytest.mark.skipif(not os.path.isdir(MODEL_DIR), reason="no local m
 
 @pytest.fixture(scope="module")
 def backend():
-    from src.tagging_backend import TaggingBackend
+    from scalar_tagger.tagging_backend import TaggingBackend
     return TaggingBackend(MODEL_DIR, local=True)
 
 

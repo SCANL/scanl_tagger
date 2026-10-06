@@ -6,6 +6,9 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Added
 
+- A `pyproject.toml` package, `scalar-tagger`, with a `scalar-tagger` command (`scalar-tagger serve --stdio`, `scalar-tagger train ...`). Install it with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git"`. Training dependencies are in the `[train]` extra.
+- `--revision` (and `"revision"` in the config file) to load a specific Hugging Face commit, branch, or tag.
+- The release model is pinned: `sourceslicer/scalar_lm_release_test` at commit `41a3c953a6ec5612834a16b0da54d809531af2ee` (`RELEASE_MODEL` and `RELEASE_REVISION` in `scalar_tagger/cli.py`).
 - `--mode serve --stdio`: serves the batch contract as JSON lines over stdin/stdout. It prints a `ready` line once the model has loaded, sends all logging to stderr, answers `{"command": "info"}`, and exits when stdin closes.
 - `POST /tag` and `GET /info` HTTP endpoints, using the same contract as stdio.
 - `--device` (and `"device"` in the config file) to choose `cpu`, `cuda`, or `cuda:N` instead of detecting the GPU automatically.
@@ -20,8 +23,21 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Changed
 
+- The package moved from `src/` to `scalar_tagger/`, and the version from `version.py` to `scalar_tagger/version.py`. `python main` still works from a checkout.
+- The installed command doesn't read `serve.json` or use `output/best_model` unless told to. `python main` still does both.
+- Startup takes about 7 seconds to a ready line, down from about 9, and the tagger warms up before reporting ready, so the first request isn't slower. `--version` returns in well under a second.
+  - The `dictionary` word list is bundled (`scalar_tagger/data/english_words.txt.gz`), so NLTK data is never downloaded, and loading it takes 0.07 seconds instead of 2.3.
+  - Inference no longer imports `pandas` or `datasets`.
+  - Loading a checkpoint no longer downloads or reads the base `distilbert-base-uncased` weights first.
+  - A pinned model that is already downloaded loads without contacting Hugging Face, so the tagger starts offline.
+  - The hash that identifies a local checkpoint is cached in `~/.cache/scalar-tagger/revisions.json`.
+- `requirements.txt` pins `transformers` and `accelerate`, and adds `pytest`.
 - The legacy `GET /<name>/<context>` route goes through the shared backend. Its responses are unchanged.
 - The `dictionary` flag in every transport uses the NLTK words corpus plus `words/en.txt`, if that file exists.
+
+### Removed
+
+- `setup.py`, the root `__init__.py`, and the `nltk` direct dependency. `nltk` is still installed, because the `spiral` splitter needs it.
 
 ### Fixed
 

@@ -42,16 +42,22 @@ class DistilBertCRFForTokenClassification(nn.Module):
         attention_mask: [B, T]      — 1 for real tokens, 0 for padding
         logits:         [B, T, C]   — C = number of label classes
     """
-    def __init__(self, num_labels: int, id2label: dict, label2id: dict, pretrained_name: str = "distilbert-base-uncased",  dropout_prob: float = 0.1):
+    def __init__(self, num_labels: int, id2label: dict, label2id: dict, pretrained_name: str = "distilbert-base-uncased",  dropout_prob: float = 0.1, config: DistilBertConfig | None = None):
         super().__init__()
 
-        self.config = DistilBertConfig.from_pretrained(
-            pretrained_name,
-            num_labels=num_labels,
-            id2label=id2label,
-            label2id=label2id,
-        )
-        self.bert = DistilBertModel.from_pretrained(pretrained_name, config=self.config)
+        if config is not None:
+            # Loading a fine-tuned checkpoint: every weight comes from its state dict, so build
+            # the encoder from the saved config instead of downloading pretrained weights first.
+            self.config = config
+            self.bert = DistilBertModel(config)
+        else:
+            self.config = DistilBertConfig.from_pretrained(
+                pretrained_name,
+                num_labels=num_labels,
+                id2label=id2label,
+                label2id=label2id,
+            )
+            self.bert = DistilBertModel.from_pretrained(pretrained_name, config=self.config)
         self.dropout = nn.Dropout(dropout_prob)
         self.classifier = nn.Linear(self.config.hidden_size, num_labels)
         self.crf = CRF(num_labels, batch_first=True)
@@ -186,17 +192,17 @@ class DistilBertCRFForTokenClassification(nn.Module):
             return {"logits": emission_scores, "predictions": best_paths}
 
     @classmethod
-    def from_pretrained(cls, ckpt_dir, local=False, **kw):
+    def from_pretrained(cls, ckpt_dir, local=False, revision=None, **kw):
         from safetensors.torch import load_file as load_safe_file
         from huggingface_hub import hf_hub_download
         import os
-        cfg = DistilBertConfig.from_pretrained(ckpt_dir, local_files_only=local)
+        cfg = DistilBertConfig.from_pretrained(ckpt_dir, local_files_only=local, revision=revision)
 
         model = cls(
             num_labels=cfg.num_labels,
             id2label=cfg.id2label,
             label2id=cfg.label2id,
-            pretrained_name=cfg._name_or_path or "distilbert-base-uncased",
+            config=cfg,
             **kw,
         )
 
@@ -224,6 +230,7 @@ class DistilBertCRFForTokenClassification(nn.Module):
                 weight_path = hf_hub_download(
                     repo_id=ckpt_dir,
                     filename="model.safetensors",
+                    revision=revision,
                     local_files_only=local
                 )
 

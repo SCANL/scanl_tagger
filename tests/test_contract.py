@@ -1,7 +1,7 @@
 import pytest
 
-from src import contract
-from src.tagging_backend import TaggingBackend
+from scalar_tagger import contract
+from scalar_tagger.tagging_backend import TaggingBackend
 from tests.conftest import FakeTagger
 
 

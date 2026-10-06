@@ -18,7 +18,7 @@ import json
 import os
 import sys
 
-from src import contract
+from scalar_tagger import contract
 
 
 def claim_stdout():

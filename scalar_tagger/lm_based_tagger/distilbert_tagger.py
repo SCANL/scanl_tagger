@@ -24,6 +24,7 @@ class DistilBertTagger:
         local: bool = False,
         pattern_postprocessing: bool | None = None,
         device: str | None = None,
+        revision: str | None = None,
     ):
         # Run on the GPU when there is one, unless the caller picks a device. An explicit
         # device skips torch.cuda.is_available(), which can crash on some broken CUDA setups.
@@ -32,13 +33,13 @@ class DistilBertTagger:
         self.device = torch.device(device)
 
         # Load tokenizer from local directory or remote HuggingFace path
-        self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local)
+        self.tokenizer = DistilBertTokenizerFast.from_pretrained(model_path, local_files_only=local, revision=revision)
 
         # Try loading CRF-enhanced model; fallback to plain classifier if not available
         try:
-            self.model = DistilBertCRFForTokenClassification.from_pretrained(model_path, local=local)
+            self.model = DistilBertCRFForTokenClassification.from_pretrained(model_path, local=local, revision=revision)
         except Exception:
-            self.model = DistilBertForTokenClassification.from_pretrained(model_path, local_files_only=local)
+            self.model = DistilBertForTokenClassification.from_pretrained(model_path, local_files_only=local, revision=revision)
 
         # disable dropout, etc. for inference
         self.model.to(self.device)

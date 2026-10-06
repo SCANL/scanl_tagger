@@ -5,4 +5,7 @@ cache/
 input.txt
 .venvs/
 .tutorial/
-tutorial/
+tutorial/build/
+dist/
+*.egg-info/
+.pytest_cache/

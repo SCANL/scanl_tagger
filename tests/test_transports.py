@@ -3,8 +3,8 @@ import json
 
 import pytest
 
-from src import stdio_server
-from src.tagging_backend import TaggingBackend
+from scalar_tagger import stdio_server
+from scalar_tagger.tagging_backend import TaggingBackend
 from tests.conftest import FakeTagger
 
 
@@ -89,7 +89,7 @@ def test_stdio_model_load_failure():
 
 @pytest.fixture
 def client(backend):
-    from src import tag_identifier
+    from scalar_tagger import tag_identifier
 
     tag_identifier.app.backend = backend
     tag_identifier.app.words = tag_identifier.WordList("")

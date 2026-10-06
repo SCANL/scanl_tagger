@@ -25,7 +25,7 @@ from transformers import (
 )
 
 from datasets import Dataset
-from src.lm_based_tagger.distilbert_preprocessing import (
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import (
     AVAILABLE_FEATURES,
     normalize_selected_features,
     prepare_dataset,

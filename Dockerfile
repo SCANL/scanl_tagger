@@ -11,9 +11,6 @@ COPY . /app
 WORKDIR /app
 RUN pip install --no-cache-dir -e .
 
-# Dictionary flag lookup uses the NLTK words corpus
-RUN python3 -c "import nltk; nltk.download('words')"
-
 EXPOSE 8080
 CMD ["python3", "main", "--mode", "run", "--config_path", "serve.json", "--protocol", "http"]
 

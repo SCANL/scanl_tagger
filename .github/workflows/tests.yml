@@ -66,9 +66,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+          pip install .
       
       - name: Check version
-        run: python main --version
+        run: |
+          python main --version
+          scalar-tagger --version
 
       - name: Unit tests
         run: |

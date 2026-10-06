@@ -54,9 +54,9 @@ This example may download `distilbert-base-uncased` the first time you run it.
 
 ### 04_real_preprocessing_pipeline.py
 
-Calls the repository's actual helpers from [src/lm_based_tagger/distilbert_preprocessing.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/distilbert_preprocessing.py).
+Calls the repository's actual helpers from [scalar_tagger/lm_based_tagger/distilbert_preprocessing.py](../scalar_tagger/lm_based_tagger/distilbert_preprocessing.py).
 
-This is the closest match to the real training path in [src/lm_based_tagger/train_model.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/train_model.py).
+This is the closest match to the real training path in [scalar_tagger/lm_based_tagger/train_model.py](../scalar_tagger/lm_based_tagger/train_model.py).
 
 It shows:
 
@@ -83,10 +83,10 @@ This example is intentionally lightweight. It explains the same control flow as 
 
 Once these examples make sense, the real lm_based_tagger becomes much easier to read:
 
-- preprocessing logic: [src/lm_based_tagger/distilbert_preprocessing.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/distilbert_preprocessing.py)
-- training loop: [src/lm_based_tagger/train_model.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/train_model.py)
-- inference wrapper: [src/lm_based_tagger/distilbert_tagger.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/distilbert_tagger.py)
-- CRF model wrapper: [src/lm_based_tagger/distilbert_crf.py](/home/wotterotter/scanl_tagger/src/lm_based_tagger/distilbert_crf.py)
+- preprocessing logic: [scalar_tagger/lm_based_tagger/distilbert_preprocessing.py](../scalar_tagger/lm_based_tagger/distilbert_preprocessing.py)
+- training loop: [scalar_tagger/lm_based_tagger/train_model.py](../scalar_tagger/lm_based_tagger/train_model.py)
+- inference wrapper: [scalar_tagger/lm_based_tagger/distilbert_tagger.py](../scalar_tagger/lm_based_tagger/distilbert_tagger.py)
+- CRF model wrapper: [scalar_tagger/lm_based_tagger/distilbert_crf.py](../scalar_tagger/lm_based_tagger/distilbert_crf.py)
 
 ## Mental model for the real architecture
 

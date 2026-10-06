@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scalar-tagger"
+dynamic = ["version"]
+description = "SCALAR: a part-of-speech tagger for source code identifiers"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Christian Newman" },
+    { name = "Anthony Peruma" },
+    { name = "Brandon Scholten" },
+    { name = "Syreen Banabilah" },
+]
+# Inference only. Training needs the [train] extra.
+dependencies = [
+    "torch>=2.7",
+    "transformers>=5.3",
+    "huggingface_hub>=1.0",
+    "safetensors>=0.4",
+    "pytorch-crf>=0.7.2",
+    "Flask>=3.1",
+    "waitress>=3.0",
+    "spiral @ git+https://github.com/cnewman/spiral.git@dff537320c15849c10e583968036df2d966eddee",
+]
+
+[project.optional-dependencies]
+train = [
+    "accelerate>=1.0",
+    "datasets>=3.6",
+    "numpy",
+    "pandas",
+    "scikit-learn>=1.6",
+]
+dev = ["pytest"]
+
+[project.scripts]
+scalar-tagger = "scalar_tagger.cli:run"
+
+[project.urls]
+Homepage = "https://www.scanl.org/"
+Repository = "https://github.com/SCANL/scanl_tagger"
+Changelog = "https://github.com/SCANL/scanl_tagger/blob/master/CHANGELOG.md"
+
+[tool.setuptools.dynamic]
+version = { attr = "scalar_tagger.version.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["scalar_tagger*"]
+
+[tool.setuptools.package-data]
+scalar_tagger = ["data/*.gz", "data/README.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

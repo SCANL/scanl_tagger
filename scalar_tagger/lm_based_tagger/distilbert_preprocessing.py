@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import re
 from difflib import SequenceMatcher
-from typing import Iterable, List, Optional
-import pandas as pd
-from datasets import Dataset
+from typing import TYPE_CHECKING, Iterable, List, Optional
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 # === Constants ===
 VOWELS = set("aeiou")
@@ -458,6 +461,9 @@ def prepare_dataset(
             ner_tags:  [-100, -100, -100, -100,
                         -100, 1, -100, 2, -100, 3]  # assuming label2id = {"V": 1, "NM": 2, "N": 3}
     """
+    # Imported here so that inference doesn't pay for datasets (training-only).
+    from datasets import Dataset
+
     active_features = normalize_selected_features(selected_features)
 
     rows = []

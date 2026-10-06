@@ -4,8 +4,8 @@ from flask import Flask, abort, jsonify, request
 from waitress import serve
 import json
 import sqlite3
-from src import contract
-from src.tagging_backend import TaggingBackend
+from scalar_tagger import contract
+from scalar_tagger.tagging_backend import TaggingBackend
 
 app = Flask(__name__)
 # Batch requests from the analysis tool can be large; reject anything unreasonable.
@@ -155,6 +155,7 @@ def initialize_model(temp_config = {}, runtime_config = None):
         model_path,
         local=is_local,
         pattern_postprocessing=pattern_postprocessing,
+        revision=temp_config.get("revision", runtime_config.get("revision")),
         device=temp_config.get("device", runtime_config.get("device")),
     )
     print("DistilBERT tagger loaded!")

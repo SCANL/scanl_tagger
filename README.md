@@ -8,7 +8,16 @@ The legacy Gradient Boosting (tree-based) model was removed in 3.0.0. It was slo
 
 ## Installation
 
-Make sure you have `python3.12` installed. Then:
+SCALAR needs Python 3.12 or later.
+
+To use the tagger, install the package. This gives you the `scalar-tagger` command:
+
+```bash
+pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.1.0"
+scalar-tagger --version
+```
+
+To train models or work on SCALAR itself, clone the repository and install the pinned environment:
 
 ```bash
 git clone https://github.com/SCANL/scanl_tagger.git
@@ -16,7 +25,16 @@ cd scanl_tagger
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install -e .
 ```
+
+The installed package has only what tagging needs. Training also needs `pip install "scalar-tagger[train]"`, which `requirements.txt` already includes.
+
+### Which model runs
+
+The installed `scalar-tagger` command uses the release model, pinned to an exact Hugging Face commit (`RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py)). It is downloaded on first use. After that, the tagger starts from the local copy without contacting Hugging Face, so it also works offline. `--revision` picks a different commit, branch, or tag, and `--model_dir` loads a local checkpoint.
+
+Running `python main` from a checkout behaves the same, except that it also reads `serve.json` and uses `output/best_model` if that directory exists.
 
 ---
 
@@ -27,14 +45,19 @@ You can run SCALAR in multiple ways:
 ### CLI
 
 ```bash
-python main --version                                # Print the SCALAR version
-python main --mode run                               # Uses the model in serve.json, else local output/best_model if present, else the Hugging Face release
+scalar-tagger --version                              # Print the SCALAR version
+scalar-tagger serve --stdio                          # JSON lines over stdin/stdout (see "Stdio transport")
+scalar-tagger serve --port 8080                      # HTTP server
+scalar-tagger serve --stdio --model_dir path/to/checkpoint
+scalar-tagger train --features context               # Needs the [train] extra and the input/ data
+
+python main --mode run                               # From a checkout: serve.json's model, else output/best_model if present, else the release model
 python main --mode run --local                       # Load the locally trained model from output/best_model
 python main --mode run --pattern-postprocessing
 python main --mode run --config_path serve.release.json
 ```
 
-`--model_type lm_based` is still accepted, for compatibility with older scripts.
+`scalar-tagger serve` is the same as `scalar-tagger --mode serve`, and `run` is the same as `serve`. `--model_type lm_based` is still accepted, for compatibility with older scripts.
 
 `--device cpu`, `--device cuda`, or `--device cuda:N` picks where inference runs. The default, `auto`, uses the GPU when there is one. The config file can also set `"device"`.
 
@@ -51,7 +74,7 @@ For LM inference, selected feature tokens are loaded from the saved model config
 `TaggingBackend.tag_batch` tags a whole batch of identifiers with one JSON request. The stdio and HTTP transports will carry the same request and response.
 
 ```python
-from src.tagging_backend import TaggingBackend
+from scalar_tagger.tagging_backend import TaggingBackend
 
 backend = TaggingBackend("output/best_model", local=True)
 response = backend.tag_batch({
@@ -118,7 +141,7 @@ python main --mode serve --stdio
 - Only protocol messages go to stdout. All logging goes to stderr.
 - The process exits with status 0 when stdin closes.
 
-Time from launch to the ready line is about 9 seconds with the model already downloaded, on either a CPU or a GPU. About 7 seconds of that is importing torch and transformers. Allow at least 30 seconds the first time, when the model is downloaded from Hugging Face.
+Time from launch to the ready line is about 7 seconds once the model is downloaded, on either a CPU or a GPU. About 5 seconds of that is importing torch, transformers, and the splitter. The tagger has already split and tagged one identifier when it reports ready, so the first request isn't slower than the rest. Allow at least 60 seconds the first time, when the model is downloaded from Hugging Face. `scalar-tagger --version` returns immediately, so it is a cheap way to check that the command is installed.
 
 ### HTTP transport
 
@@ -248,14 +271,14 @@ docker compose up
 
 - **Kebab case** is not supported (e.g., `do-something-cool`).
 - Feature and position tokens (e.g., `@pos_0`) are inserted automatically.
-- The `dictionary` field in responses comes from the NLTK `words` corpus. It is downloaded on first run.
+- The `dictionary` field in responses comes from a bundled copy of the NLTK `words` corpus (see [scalar_tagger/data/README.md](scalar_tagger/data/README.md)), plus `words/en.txt` if that file exists.
 - Input must be parsed into identifier tokens. We recommend [srcML](https://www.srcml.org/) but any AST-based parser works.
 
 ---
 
 ## Versioning
 
-SCALAR follows [Semantic Versioning](https://semver.org). The version lives in [version.py](version.py), and `python main --version` prints it. Changes are recorded in [CHANGELOG.md](CHANGELOG.md), and each release is tagged `vMAJOR.MINOR.PATCH` in git.
+SCALAR follows [Semantic Versioning](https://semver.org). The version lives in [scalar_tagger/version.py](scalar_tagger/version.py), and `scalar-tagger --version` prints it. Changes are recorded in [CHANGELOG.md](CHANGELOG.md), and each release is tagged `vMAJOR.MINOR.PATCH` in git.
 
 The version covers the software and its interfaces: the command line, the HTTP and stdio request/response formats, and the tagset.
 
@@ -263,7 +286,7 @@ The version covers the software and its interfaces: the command line, the HTTP a
 - **MINOR**: a backward-compatible addition, such as a new endpoint, a new optional response field, or a new default release model.
 - **PATCH**: a bug fix that keeps every interface the same.
 
-The model checkpoint is versioned separately, by its Hugging Face revision. A retrained model can change individual tags without changing the interface, so for reproducible results, record both the SCALAR version and the model revision.
+The model checkpoint is versioned separately, by its Hugging Face revision. A retrained model can change individual tags without changing the interface, so for reproducible results, record both the SCALAR version and the model revision. Each SCALAR release pins one release model revision, and changing that pin is a MINOR release.
 
 ---
 

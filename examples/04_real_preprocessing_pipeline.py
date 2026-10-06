@@ -29,7 +29,7 @@ def main():
         import pandas as pd
         from transformers import DistilBertTokenizerFast
 
-        from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
+        from scalar_tagger.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
     except ImportError as exc:
         print("This example depends on the repository's training stack.")
         print("Install the project dependencies first, then re-run this file.")

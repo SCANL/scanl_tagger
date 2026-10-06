@@ -63,7 +63,7 @@ def main():
     print()
 
     try:
-        from src.lm_based_tagger.distilbert_preprocessing import (
+        from scalar_tagger.lm_based_tagger.distilbert_preprocessing import (
             DEFAULT_FEATURES,
             build_model_input_tokens,
             get_feature_tokens,
