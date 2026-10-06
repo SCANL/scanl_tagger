@@ -13,8 +13,8 @@ from datasets import Dataset
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def get_version():
-    """Return the current version of SCANL Tagger."""
-    return f"SCANL Tagger version {__version__}"
+    """Return the current version of SCALAR tagger."""
+    return f"SCALAR tagger {__version__}"
 
 if __name__ == "__main__":
     """
@@ -38,15 +38,14 @@ if __name__ == "__main__":
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
     
-    Version: 2.0.0
     """
 
     parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
     parser.add_argument("-v", "--version", action="store_true", help="print tagger application version")
     parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
-    parser.add_argument("--mode", choices=["train", "run"], required=True, help="Choose to 'train' or 'run' the model")
-    parser.add_argument("--model_type", choices=["tree_based", "lm_based"], required=True, help="Specify which model type to use")
+    parser.add_argument("--mode", choices=["train", "run"], help="Choose to 'train' or 'run' the model")
+    parser.add_argument("--model_type", choices=["tree_based", "lm_based"], help="Specify which model type to use")
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
@@ -58,7 +57,9 @@ if __name__ == "__main__":
     parser.add_argument("--address", type=str, help="Server address")
 
     args = parser.parse_args()
-    
+    if not args.version and (args.mode is None or args.model_type is None):
+        parser.error("--mode and --model_type are required unless --version is given")
+
     if args.version:
         print(get_version())
     elif args.mode == "train":

@@ -10,3 +10,4 @@ waitress==3.0.2
 gensim==4.3.3
 nltk==3.9.1
 transformers[torch]
+pytest==8.4.1

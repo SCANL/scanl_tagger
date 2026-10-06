@@ -56,6 +56,19 @@ python main --mode train --model_type lm_based
 python main --mode train --model_type tree_based
 ```
 
+The LM model trains on `input/tagger_data.tsv` and `input/synthetic_pos_data_full.csv`. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --model_type lm_based --local`.
+
+---
+
+## Tests
+
+```bash
+pip install -r requirements.txt
+python -m pytest tests -q
+```
+
+The tests build a tiny randomly initialized DistilBERT, so they don't download a model and run on CPU in under a minute.
+
 ---
 
 ## Evaluation Results
@@ -136,6 +149,20 @@ docker compose up
 - Feature and position tokens (e.g., `@pos_0`) are inserted automatically.
 - Internally uses [WordNet](https://wordnet.princeton.edu/) for lexical features.
 - Input must be parsed into identifier tokens. We recommend [srcML](https://www.srcml.org/) but any AST-based parser works.
+
+---
+
+## Versioning
+
+SCALAR follows [Semantic Versioning](https://semver.org). The version lives in [version.py](version.py), and `python main --version` prints it. Changes are recorded in [CHANGELOG.md](CHANGELOG.md), and each release is tagged `vMAJOR.MINOR.PATCH` in git.
+
+The version covers the software and its interfaces: the command line, the HTTP request/response format, and the tagset.
+
+- **MAJOR**: a breaking change to any of those interfaces, such as a removed option, a renamed response field, or a tag added to or removed from the tagset.
+- **MINOR**: a backward-compatible addition, such as a new endpoint, a new optional response field, or a new default model.
+- **PATCH**: a bug fix that keeps every interface the same.
+
+The model checkpoint is versioned separately, by its Hugging Face revision. A retrained model can change individual tags without changing the interface, so for reproducible results, record both the SCALAR version and the model revision.
 
 ---
 

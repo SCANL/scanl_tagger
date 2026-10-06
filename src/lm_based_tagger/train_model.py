@@ -1,13 +1,19 @@
 import os
+import re
 import time
 import random
+import math
+import inspect
+from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 import torch
+from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
+from version import __version__
 
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import f1_score, accuracy_score, classification_report
 
 from transformers import (
@@ -19,27 +25,284 @@ from transformers import (
 )
 
 from datasets import Dataset
-from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
+from src.lm_based_tagger.distilbert_preprocessing import (
+    normalize_selected_features,
+    prepare_dataset,
+    tokenize_and_align_labels,
+)
 
 # If CUDA is available, use it; otherwise fallback to CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device:", device)
 
+
+def _configure_torch_runtime() -> None:
+    """Configure CUDA for reproducible training runs."""
+    if device.type != "cuda":
+        return
+
+    torch.backends.cuda.matmul.allow_tf32 = True
+    torch.backends.cudnn.allow_tf32 = True
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.set_float32_matmul_precision("high")
+
 # === Random Seeds ===
-RAND_STATE = 209
-random.seed(RAND_STATE)
-np.random.seed(RAND_STATE)
-torch.manual_seed(RAND_STATE)
-torch.cuda.manual_seed_all(RAND_STATE)
+SPLIT_SEED = 658
+TRAIN_SEED = 209
+random.seed(TRAIN_SEED)
+np.random.seed(TRAIN_SEED)
+torch.manual_seed(TRAIN_SEED)
+torch.cuda.manual_seed_all(TRAIN_SEED)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
+_configure_torch_runtime()
 
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
-HOLDOUT_RATIO = 0.15      # 15% held out for final evaluation
-EPOCHS = 10            # number of epochs per fold
+HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
+EPOCHS = 7            # number of epochs per fold
 EARLY_STOP = 2            # patience for early stopping
+CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
+
+# Curated mapping: common programming verbs → synonyms that are also clearly verbs.
+# Only words that are rarely ambiguous as NM/N in identifier naming are included.
+# Used by _augment_verb_examples() to synthesise new V-tagged training rows.
+VERB_SYNONYMS: Dict[str, List[str]] = {
+    # Read / Load / Fetch
+    "read":        ["load", "fetch", "parse"],
+    "load":        ["read", "fetch", "import"],
+    "fetch":       ["get", "retrieve", "load"],
+    "get":         ["fetch", "retrieve", "obtain"],
+    "parse":       ["read", "decode", "extract"],
+    "retrieve":    ["fetch", "get", "load"],
+    "import":      ["load", "read", "fetch"],
+    # Write / Save / Store
+    "write":       ["save", "store", "output"],
+    "save":        ["write", "store", "persist"],
+    "store":       ["save", "write", "persist"],
+    "output":      ["write", "emit", "print"],
+    "export":      ["save", "write", "output"],
+    "emit":        ["send", "dispatch", "publish"],
+    # Compute
+    "compute":     ["calculate", "evaluate", "process"],
+    "calculate":   ["compute", "evaluate", "solve"],
+    "calc":        ["compute", "calculate", "evaluate"],
+    "evaluate":    ["compute", "calculate", "check"],
+    "process":     ["compute", "handle", "transform"],
+    "solve":       ["compute", "calculate", "resolve"],
+    # Transform / Convert
+    "convert":     ["transform", "encode", "decode"],
+    "transform":   ["convert", "encode", "map"],
+    "encode":      ["convert", "serialize", "pack"],
+    "decode":      ["parse", "convert", "deserialize"],
+    "serialize":   ["encode", "convert", "write"],
+    "deserialize": ["decode", "parse", "read"],
+    "transpose":   ["transform", "convert", "rotate"],
+    "invert":      ["negate", "reverse", "flip"],
+    # Search / Filter / Sort
+    "find":        ["search", "locate", "lookup"],
+    "search":      ["find", "scan", "lookup"],
+    "filter":      ["select", "prune", "screen"],
+    "sort":        ["order", "arrange", "rank"],
+    "select":      ["filter", "choose", "pick"],
+    "scan":        ["search", "parse", "traverse"],
+    # Create / Build
+    "create":      ["build", "make", "generate"],
+    "build":       ["create", "make", "construct"],
+    "make":        ["create", "build", "generate"],
+    "generate":    ["create", "produce", "build"],
+    "compile":     ["build", "assemble"],
+    "clone":       ["copy", "duplicate", "replicate"],
+    # CRUD
+    "add":         ["insert", "append", "attach"],
+    "insert":      ["add", "append", "push"],
+    "remove":      ["delete", "detach", "erase"],
+    "delete":      ["remove", "erase", "purge"],
+    "update":      ["modify", "refresh", "change"],
+    "modify":      ["update", "change", "alter"],
+    "change":      ["update", "modify", "alter"],
+    "set":         ["assign", "update", "put"],
+    # Init / Setup / Clear
+    "init":        ["initialize", "setup", "create"],
+    "initialize":  ["init", "setup", "create"],
+    "setup":       ["init", "initialize", "configure"],
+    "configure":   ["setup", "initialize", "set"],
+    "reset":       ["clear", "reinitialize"],
+    "clear":       ["reset", "flush", "purge"],
+    # Messaging / Events
+    "send":        ["transmit", "dispatch", "publish"],
+    "dispatch":    ["send", "emit", "route"],
+    "publish":     ["emit", "send", "broadcast"],
+    "receive":     ["accept", "collect", "handle"],
+    "handle":      ["process", "manage", "respond"],
+    "trigger":     ["invoke", "dispatch", "emit"],
+    # Render / Display
+    "render":      ["draw", "display", "paint"],
+    "draw":        ["render", "paint", "display"],
+    "display":     ["render", "show", "print"],
+    "print":       ["output", "display", "log"],
+    "show":        ["display", "render", "print"],
+    "preview":     ["show", "display", "render"],
+    # Validate
+    "validate":    ["check", "verify", "assert"],
+    "check":       ["validate", "verify", "test"],
+    "verify":      ["validate", "check", "confirm"],
+    "test":        ["check", "validate", "verify"],
+    # Execute / Run
+    "run":         ["execute", "invoke", "call"],
+    "execute":     ["run", "invoke", "call"],
+    "invoke":      ["call", "run", "execute"],
+    "call":        ["invoke", "execute", "run"],
+    "start":       ["begin", "launch", "run"],
+    "stop":        ["end", "halt", "terminate"],
+    "launch":      ["start", "run", "execute"],
+    # Connect / Register
+    "open":        ["connect", "launch"],
+    "close":       ["disconnect", "terminate"],
+    "connect":     ["link", "attach", "bind"],
+    "disconnect":  ["unlink", "detach", "unbind"],
+    "register":    ["add", "bind", "attach"],
+    "unregister":  ["remove", "detach", "deregister"],
+    "attach":      ["connect", "link", "bind"],
+    "detach":      ["disconnect", "unlink", "unbind"],
+    "link":        ["connect", "attach", "bind"],
+    # IO / Streams
+    "stream":      ["transmit", "pipe", "transfer"],
+    "echo":        ["print", "output", "display"],
+    "log":         ["record", "trace", "output"],
+    # Misc
+    "copy":        ["clone", "duplicate", "replicate"],
+    "move":        ["transfer", "relocate"],
+    "merge":       ["combine", "join", "concat"],
+    "split":       ["divide", "separate", "partition"],
+    "compare":     ["match", "check", "evaluate"],
+    "hash":        ["digest", "compute"],
+    "format":      ["serialize", "convert", "encode"],
+    "compress":    ["pack", "encode"],
+    "decompress":  ["unpack", "decode"],
+    "upload":      ["send", "push", "transfer"],
+    "download":    ["fetch", "pull", "retrieve"],
+    "backup":      ["copy", "archive", "save"],
+    "restore":     ["recover", "reload"],
+    "release":     ["free", "dispose"],
+    "free":        ["release", "dispose"],
+    "allocate":    ["create", "reserve"],
+    "resize":      ["scale", "adjust"],
+    "swap":        ["exchange", "replace"],
+    "defragment":  ["compact", "reorganize"],
+    "downsample":  ["reduce", "scale"],
+    "aggregate":   ["collect", "combine", "merge"],
+    "reload":      ["refresh", "restart", "reinitialize"],
+    "refresh":     ["reload", "update", "redraw"],
+    "sync":        ["synchronize", "update", "align"],
+    "synchronize": ["sync", "update", "align"],
+    "zip":         ["compress", "pack"],
+    "unzip":       ["decompress", "unpack"],
+    "encrypt":     ["encode", "protect"],
+    "decrypt":     ["decode", "decipher"],
+}
+
+
+def _augment_verb_examples(df: pd.DataFrame, rng: random.Random) -> pd.DataFrame:
+    """
+    Generate synthetic training rows by substituting V-tagged tokens with synonyms.
+
+    For each row containing at least one V-tagged token whose lowercase form appears
+    in VERB_SYNONYMS, produce up to MAX_SYNS new rows where that token is replaced
+    by a randomly sampled synonym.  The rest of the row (context, tags, other tokens)
+    is unchanged, so the new rows are valid training examples.
+
+    Only FUNCTION rows are augmented. Augmenting every context taught the model that
+    verb-looking words are V wherever they appear, so modifiers such as `adjusted` in
+    adjustedGradient or `conv` in conv_in_channels_ were tagged V.
+
+    Args:
+        df:  Fold training DataFrame with 'tokens' (List[str]) and 'tags' (List[str]).
+        rng: Seeded Random instance for reproducibility.
+
+    Returns:
+        DataFrame of newly-synthesised rows (may be empty if nothing is substitutable).
+    """
+    MAX_SYNS = 2  # max new synthetic examples per original row
+
+    new_rows = []
+    for _, row in df.iterrows():
+        if str(row.get("CONTEXT", "")).strip().upper() != "FUNCTION":
+            continue
+        tokens: List[str] = list(row["tokens"])
+        tags:   List[str] = list(row["tags"])
+
+        # Positions that are V-tagged and whose lowercase token has synonyms
+        substitutable = [
+            (i, tokens[i])
+            for i, tag in enumerate(tags)
+            if tag == "V" and tokens[i].lower() in VERB_SYNONYMS
+        ]
+        if not substitutable:
+            continue
+
+        generated = 0
+        for pos, token in substitutable:
+            if generated >= MAX_SYNS:
+                break
+            synonyms = VERB_SYNONYMS[token.lower()]
+            # Preserve original casing style (Title-case → Title-case, lower → lower)
+            capitalize = token[0].isupper() if token else False
+            n_to_sample = min(MAX_SYNS - generated, len(synonyms))
+            sampled = rng.sample(synonyms, n_to_sample)
+            for syn in sampled:
+                if generated >= MAX_SYNS:
+                    break
+                syn_tok = syn[0].upper() + syn[1:] if capitalize else syn
+                new_tokens = tokens.copy()
+                new_tokens[pos] = syn_tok
+                new_row = row.copy()
+                new_row["tokens"] = new_tokens
+                new_rows.append(new_row)
+                generated += 1
+
+    if not new_rows:
+        return pd.DataFrame(columns=df.columns)
+    return pd.DataFrame(new_rows)
+
+
+def _prepare_training_frame(
+    df: pd.DataFrame,
+    *,
+    augmentation_seed: int,
+) -> Tuple[pd.DataFrame, int]:
+    """Apply fold-safe resampling and augmentation to a training frame."""
+    prepared_df = df.reset_index(drop=True).copy()
+
+    low_freq_rows = prepared_df[
+        prepared_df["tags"].apply(lambda tags: any(tag in LOW_FREQ_TAGS for tag in tags))
+    ]
+    prepared_df = pd.concat([prepared_df] + [low_freq_rows] * 2, ignore_index=True)
+
+    verb_aug_df = _augment_verb_examples(prepared_df, random.Random(augmentation_seed))
+    if not verb_aug_df.empty:
+        prepared_df = pd.concat([prepared_df, verb_aug_df], ignore_index=True)
+
+    return prepared_df, len(verb_aug_df)
+
+
+def _extract_best_epoch(trainer: Trainer) -> float:
+    """Recover the best evaluation epoch from Trainer state."""
+    best_metric = trainer.state.best_metric
+    if best_metric is None:
+        return float(EPOCHS)
+
+    best_epoch = None
+    for record in trainer.state.log_history:
+        if "eval_macro_f1" not in record or "epoch" not in record:
+            continue
+        if math.isclose(float(record["eval_macro_f1"]), float(best_metric), rel_tol=1e-9, abs_tol=1e-9):
+            best_epoch = float(record["epoch"])
+
+    return best_epoch if best_epoch is not None else float(EPOCHS)
+
 
 # === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
@@ -49,6 +312,50 @@ ID2LABEL   = {i: label for label, i in LABEL2ID.items()}
 def dual_print(*args, file, **kwargs):
     print(*args, **kwargs)         # stdout
     print(*args, file=file, **kwargs)  # file
+
+
+def _write_run_metadata(file, source_names: List[str], selected_features: List[str]):
+    """Write reproducibility metadata for the current LM training run."""
+    dual_print("\nRun Configuration:", file=file)
+    dual_print(f"SCALAR version: {__version__}", file=file)
+    dual_print(f"Split seed: {SPLIT_SEED}", file=file)
+    dual_print(f"Train seed: {TRAIN_SEED}", file=file)
+    dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, max epochs: {EPOCHS}", file=file)
+    dual_print(f"Datasets: {', '.join(source_names)}", file=file)
+    dual_print(
+        f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
+        file=file,
+    )
+
+
+class CRFTrainer(Trainer):
+    """
+    Trainer that gives the CRF transition parameters their own learning rate.
+
+    The CRF only has num_labels^2 + 2 * num_labels parameters and starts from small random
+    values; at the encoder learning rate (5e-5) they barely move during fine-tuning.
+    """
+
+    def create_optimizer(self, *args, **kwargs):
+        # transformers <5.3 takes no `model` argument; newer versions accept an optional one.
+        if self.optimizer is None:
+            super().create_optimizer(*args, **kwargs)
+            opt_model = kwargs.get("model") or (args[0] if args else None) or self.model
+            crf_param_ids = {
+                id(p) for n, p in opt_model.named_parameters()
+                if re.search(r"(^|\.)crf\.", n) and p.requires_grad
+            }
+            crf_params = []
+            for group in self.optimizer.param_groups:
+                crf_params.extend(p for p in group["params"] if id(p) in crf_param_ids)
+                group["params"] = [p for p in group["params"] if id(p) not in crf_param_ids]
+            if crf_params:
+                self.optimizer.add_param_group({
+                    "params": crf_params,
+                    "lr": CRF_LEARNING_RATE,
+                    "weight_decay": 0.0,
+                })
+        return self.optimizer
 
 
 # 11) compute_metrics function (macro-F1) 
@@ -114,19 +421,17 @@ def compute_metrics(eval_pred):
     all_true, all_pred, id_correct_flags = [], [], []
 
     for pred_row, label_row in zip(preds, labels):
-        ptr = 0
         example_correct = True
 
-        for lbl in label_row:                 # iterate gold labels
+        for i, lbl in enumerate(label_row):   # iterate gold labels with position index
             if lbl == -100:                   # skip padding / specials
                 continue
 
-            # pick the corresponding prediction
+            # Use the same position index into pred_row for correct alignment
             if isinstance(pred_row, (list, np.ndarray)):
-                pred_lbl = pred_row[ptr]
+                pred_lbl = pred_row[i]
             else:                             # pred_row is scalar
                 pred_lbl = pred_row
-            ptr += 1
 
             all_true.append(lbl)
             all_pred.append(pred_lbl)
@@ -146,12 +451,196 @@ def compute_metrics(eval_pred):
         "eval_identifier_accuracy": id_acc,
     }
 
-def train_lm(script_dir: str):
+
+def _cuda_supports_bf16() -> bool:
+    if device.type != "cuda":
+        return False
+    if not torch.cuda.is_bf16_supported():
+        return False
+    major, _minor = torch.cuda.get_device_capability()
+    return major >= 8
+
+
+def _get_lm_runtime_config(train_examples: int, eval_examples: int) -> Dict[str, Any]:
+    """Choose throughput-oriented runtime settings for the active device."""
+    if device.type != "cuda":
+        return {
+            "train_batch_size": 16,
+            "eval_batch_size": 16,
+            "gradient_accumulation_steps": 1,
+            "warmup_steps": max(1, math.ceil(0.1 * (train_examples / 16) * EPOCHS)),
+            "fp16": False,
+            "bf16": False,
+            "dataloader_num_workers": min(4, os.cpu_count() or 1),
+            "pin_memory": False,
+            "persistent_workers": False,
+            "pad_to_multiple_of": None,
+            "eval_accumulation_steps": None,
+            "optim": "adamw_torch",
+            "torch_compile": False,
+            "viterbi_batch_size": min(32, max(16, eval_examples)),
+        }
+
+    total_vram_gb = torch.cuda.get_device_properties(0).total_memory / (1024 ** 3)
+    supports_bf16 = _cuda_supports_bf16()
+    cpu_count = os.cpu_count() or 1
+    num_workers = min(6, max(2, cpu_count - 2))
+
+    if total_vram_gb >= 11:
+        train_batch_size = 32
+        eval_batch_size = 64
+    elif total_vram_gb >= 7.5:
+        train_batch_size = 16
+        eval_batch_size = 32
+    else:
+        train_batch_size = 8
+        eval_batch_size = 16
+
+    effective_batch = train_batch_size
+    warmup_steps = max(1, math.ceil(0.1 * (train_examples / effective_batch) * EPOCHS))
+
+    return {
+        "train_batch_size": train_batch_size,
+        "eval_batch_size": eval_batch_size,
+        "gradient_accumulation_steps": 1,
+        "warmup_steps": warmup_steps,
+        "fp16": not supports_bf16,
+        "bf16": supports_bf16,
+        "dataloader_num_workers": num_workers,
+        "pin_memory": True,
+        "persistent_workers": num_workers > 0,
+        "pad_to_multiple_of": 16,
+        "eval_accumulation_steps": 8,
+        "optim": "adamw_torch_fused",
+        "torch_compile": False,
+        "viterbi_batch_size": eval_batch_size,
+    }
+
+
+def _training_arguments_supports(name: str) -> bool:
+    return name in inspect.signature(TrainingArguments.__init__).parameters
+
+def viterbi_predict(
+    model,
+    dataset,
+    data_collator,
+    batch_size=16,
+    num_workers=0,
+    pin_memory=False,
+    persistent_workers=False,
+):
+    """
+    Run CRF Viterbi decoding over a dataset without using the HuggingFace Trainer.
+
+    Returns:
+        all_preds:  List[List[int]] — Viterbi-decoded label IDs per example,
+                    length T-2 (inner tokens, no CLS/SEP), shorter for padded sequences.
+        all_labels: List[List[int]] — padded label IDs per example, length T
+                    (with -100 for CLS, SEP, padding, and ignored tokens).
+
+    Caller is responsible for aligning: use sent_labels[1:-1] to strip CLS/SEP
+    before zipping with sent_preds.
+    """
+    # Strip raw string columns (tokens, ner_tags) that the collator cannot tensorise
+    COLLATABLE = {"input_ids", "attention_mask", "labels", "token_type_ids"}
+    extra_cols = [c for c in dataset.column_names if c not in COLLATABLE]
+    if extra_cols:
+        dataset = dataset.remove_columns(extra_cols)
+
+    loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        collate_fn=data_collator,
+        num_workers=num_workers,
+        pin_memory=pin_memory,
+        persistent_workers=persistent_workers if num_workers > 0 else False,
+    )
+    model.eval()
+    all_preds, all_labels = [], []
+
+    with torch.no_grad():
+        for batch in loader:
+            labels = batch.pop("labels")
+            batch_labels = labels.tolist()
+            # Word positions are exactly the labeled positions; the CRF decodes over those only
+            batch["word_mask"] = labels != -100
+            batch = {k: v.to(device) for k, v in batch.items()}
+            out = model(**batch)
+            if "predictions" in out:
+                all_preds.extend(out["predictions"])
+            else:
+                # Fallback for non-CRF models
+                all_preds.extend(torch.argmax(out["logits"], dim=-1).tolist())
+            all_labels.extend(batch_labels)
+
+    return all_preds, all_labels
+
+
+def _load_lm_training_dataframe(
+    script_dir: str,
+    use_tagger_data: bool = True,
+    use_synthetic_data: bool = True,
+) -> Tuple[pd.DataFrame, List[str]]:
+    """
+    Load and combine the requested LM training sources.
+
+    Returns:
+        A tuple of:
+        - combined training dataframe
+        - list of source names that were included
+    """
+    source_configs = [
+        {
+            "enabled": use_tagger_data,
+            "name": "tagger_data",
+            "path": os.path.join(script_dir, "input", "tagger_data.tsv"),
+            "read_kwargs": {"sep": "\t", "dtype": str},
+        },
+        {
+            "enabled": use_synthetic_data,
+            "name": "synthetic_pos_data_full",
+            "path": os.path.join(script_dir, "input", "synthetic_pos_data_full.csv"),
+            "read_kwargs": {"dtype": str},
+        },
+    ]
+
+    selected_sources = [cfg for cfg in source_configs if cfg["enabled"]]
+    if not selected_sources:
+        raise ValueError("At least one LM training dataset must be enabled.")
+
+    required_columns = ["SPLIT", "GRAMMAR_PATTERN"]
+    dataframes = []
+    source_names = []
+
+    for source in selected_sources:
+        df = pd.read_csv(source["path"], **source["read_kwargs"])
+        df.columns = [str(col).replace("\ufeff", "").strip() for col in df.columns]
+        df = df.dropna(subset=required_columns)
+        df = df[df["SPLIT"].str.strip().astype(bool)].copy()
+        df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
+        df["tags"] = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
+        df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)].copy()
+        df["DATA_SOURCE"] = source["name"]
+
+        dataframes.append(df)
+        source_names.append(source["name"])
+
+    combined_df = pd.concat(dataframes, ignore_index=True)
+    return combined_df, source_names
+
+
+def train_lm(
+    script_dir: str,
+    use_tagger_data: bool = True,
+    use_synthetic_data: bool = True,
+    selected_features: List[str] | None = None,
+    model_dir: str | None = None,
+):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
     Performs model selection based on macro F1 score, and evaluates the best model on a final hold-out set.
 
-    Input TSV must contain:
+    Enabled input datasets must contain:
         - SPLIT: tokenized identifier as space-separated subtokens (e.g., "get Employee Name")
         - GRAMMAR_PATTERN: space-separated labels (e.g., "V NM N")
         - CONTEXT: usage context string (e.g., FUNCTION, PARAMETER, ...)
@@ -165,56 +654,72 @@ def train_lm(script_dir: str):
         - Text report of macro-F1, token-level and identifier-level accuracy
     """
     # 1) Paths
-    input_path = os.path.join(script_dir, "input", "tagger_data.tsv")
     output_dir = os.path.join(script_dir, "output")
     os.makedirs(output_dir, exist_ok=True)
+    best_model_dir = model_dir or os.path.join(output_dir, "best_model")
+    if not os.path.isabs(best_model_dir):
+        best_model_dir = os.path.join(script_dir, best_model_dir)
+    best_model_root = os.path.dirname(best_model_dir)
+    os.makedirs(best_model_root, exist_ok=True)
+    selected_features = normalize_selected_features(selected_features)
 
-    # 2) Read the TSV & build “tokens” / “tags” columns 
-    df = pd.read_csv(input_path, sep="\t", dtype=str).dropna(subset=["SPLIT", "GRAMMAR_PATTERN"])
-    df = df[df["SPLIT"].str.strip().astype(bool)]
-    df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
-    df["tags"]   = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
-    # Keep only rows where len(tokens) == len(tags)
-    df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)]
+    # 2) Read the requested datasets and build “tokens” / “tags” columns
+    df, source_names = _load_lm_training_dataframe(
+        script_dir=script_dir,
+        use_tagger_data=use_tagger_data,
+        use_synthetic_data=use_synthetic_data,
+    )
+    print(
+        "Loaded LM training data from "
+        f"{', '.join(source_names)}: {len(df)} total examples"
+    )
+    print(f"Active LM features: {', '.join(selected_features) if selected_features else '<none>'}")
+    if "DATA_SOURCE" in df.columns:
+        print(df["DATA_SOURCE"].value_counts().sort_index().to_string())
 
-    # 3) Initial Train/Val Split (15% hold-out) 
+    # 3) Initial Train/Val Split (20% hold-out) 
     train_df, val_df = train_test_split(
         df,
         test_size=HOLDOUT_RATIO,
-        random_state=RAND_STATE,
+        random_state=SPLIT_SEED,
         stratify=df["CONTEXT"]
     )
 
-    # 4) Upsample low-frequency tags **in the training set only** 
-    low_freq_df = train_df[train_df["tags"].apply(lambda tags: any(t in LOW_FREQ_TAGS for t in tags))]
-    train_df_upsampled = pd.concat([train_df] + [low_freq_df] * 2, ignore_index=True)
-
-    # 5) Tokenizer
+    # 4) Tokenizer (upsampling now happens per-fold to prevent cross-fold leakage)
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
 
     # 6) Prepare final hold-out “validation” Dataset 
-    val_dataset = prepare_dataset(val_df, LABEL2ID)
+    val_dataset = prepare_dataset(val_df, LABEL2ID, selected_features=selected_features)
     tokenized_val = val_dataset.map(
         lambda ex: tokenize_and_align_labels(ex, tokenizer),
         batched=False
     )
 
     # 7) Set up K-Fold
-    kf = KFold(n_splits=K, shuffle=True, random_state=RAND_STATE)
+    kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
     best_macro_f1 = -1.0
-    best_model_dir = None
-
+    best_fold_index = None
+    best_num_train_epochs = float(EPOCHS)
     fold = 1
-    for train_idx, test_idx in kf.split(train_df_upsampled):
+    for train_idx, test_idx in kf.split(train_df, train_df["CONTEXT"]):
         print(f"\n=== Fold {fold} ===")
 
-        # 7a) Split the upsampled DataFrame into this fold’s train/test
-        fold_train_df = train_df_upsampled.iloc[train_idx].reset_index(drop=True)
-        fold_test_df  = train_df_upsampled.iloc[test_idx].reset_index(drop=True)
+        # 7a) Split this fold’s train/test from the base training set
+        fold_train_df = train_df.iloc[train_idx].reset_index(drop=True)
+        fold_test_df  = train_df.iloc[test_idx].reset_index(drop=True)
+
+        # Apply resampling and verb augmentation only inside the fold training slice.
+        fold_train_df, verb_aug_count = _prepare_training_frame(
+            fold_train_df,
+            augmentation_seed=TRAIN_SEED + fold,
+        )
+        if verb_aug_count:
+            print(f"  Verb augmentation added {verb_aug_count} synthetic rows "
+                  f"(fold train size: {len(fold_train_df)})")
 
         # 7b) Build HuggingFace Datasets via prepare_dataset(...) 
-        fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID)
-        fold_test_dataset  = prepare_dataset(fold_test_df, LABEL2ID)
+        fold_train_dataset = prepare_dataset(fold_train_df, LABEL2ID, selected_features=selected_features)
+        fold_test_dataset  = prepare_dataset(fold_test_df, LABEL2ID, selected_features=selected_features)
 
         # 7c) Tokenize + align labels (exactly as before) 
         tokenized_train = fold_train_dataset.map(
@@ -226,6 +731,19 @@ def train_lm(script_dir: str):
             batched=False
         )
 
+        runtime_config = _get_lm_runtime_config(
+            train_examples=len(fold_train_df),
+            eval_examples=len(fold_test_df),
+        )
+        print(
+            "  Runtime config: "
+            f"train_bs={runtime_config['train_batch_size']}, "
+            f"eval_bs={runtime_config['eval_batch_size']}, "
+            f"workers={runtime_config['dataloader_num_workers']}, "
+            f"precision={'bf16' if runtime_config['bf16'] else 'fp16' if runtime_config['fp16'] else 'fp32'}, "
+            f"optim={runtime_config['optim']}"
+        )
+
         # 8) Build fresh model + config for this fold 
         model = DistilBertCRFForTokenClassification(
             num_labels=len(LABEL_LIST),
@@ -234,76 +752,73 @@ def train_lm(script_dir: str):
             pretrained_name="distilbert-base-uncased",
             dropout_prob=0.1
         ).to(device)
+        model.config.selected_features = selected_features
 
-        # 9) TrainingArguments (with early stopping) 
-        if device.type == "cpu":
-            training_args = TrainingArguments(
-                output_dir=os.path.join(output_dir, f"fold_{fold}"),
-                eval_strategy="epoch",
-                save_strategy="epoch",
-                learning_rate=5e-5,
-                per_device_train_batch_size=16,
-                per_device_eval_batch_size=16,
-                num_train_epochs=EPOCHS,
-                weight_decay=0.01,
-                warmup_ratio=0.1,
-                lr_scheduler_type="cosine",
-                load_best_model_at_end=True,
-                metric_for_best_model="eval_macro_f1",
-                greater_is_better=True,
-                save_total_limit=1,
-                logging_dir=os.path.join(output_dir, "logs", f"fold_{fold}"),
-                report_to="none",
-                seed=RAND_STATE
-            )
-        else:
-            training_args = TrainingArguments(
-                output_dir=os.path.join(output_dir, f"fold_{fold}"),
-                eval_strategy="epoch",
-                save_strategy="epoch",
-                learning_rate=5e-5,
-                per_device_train_batch_size=4,   # smaller per-GPU batch size
-                per_device_eval_batch_size=4,
-                gradient_accumulation_steps=4,   # to simulate batch size = 16
-                num_train_epochs=EPOCHS,
-                weight_decay=0.01,
-                warmup_ratio=0.1,
-                lr_scheduler_type="cosine",
-                load_best_model_at_end=True,
-                metric_for_best_model="eval_macro_f1",
-                greater_is_better=True,
-                save_total_limit=1,
-                logging_dir=os.path.join(output_dir, "logs", f"fold_{fold}"),
-                report_to="none",
-                seed=RAND_STATE,
-                fp16=False,
-                dataloader_pin_memory=False
-            )
+        # 9) TrainingArguments (with early stopping)
+        training_kwargs = {
+            "output_dir": os.path.join(output_dir, f"fold_{fold}"),
+            "eval_strategy": "epoch",
+            "save_strategy": "epoch",
+            "learning_rate": 5e-5,
+            "per_device_train_batch_size": runtime_config["train_batch_size"],
+            "per_device_eval_batch_size": runtime_config["eval_batch_size"],
+            "num_train_epochs": EPOCHS,
+            "weight_decay": 0.01,
+            "warmup_steps": runtime_config["warmup_steps"],
+            "lr_scheduler_type": "cosine",
+            "load_best_model_at_end": True,
+            "metric_for_best_model": "eval_macro_f1",
+            "greater_is_better": True,
+            "save_total_limit": 1,
+            "report_to": "none",
+            "seed": TRAIN_SEED,
+            "dataloader_num_workers": runtime_config["dataloader_num_workers"],
+        }
+
+        if _training_arguments_supports("data_seed"):
+            training_kwargs["data_seed"] = TRAIN_SEED
+
+        if _training_arguments_supports("group_by_length"):
+            training_kwargs["group_by_length"] = True
+
+        if device.type != "cpu":
+            training_kwargs.update({
+                "gradient_accumulation_steps": runtime_config["gradient_accumulation_steps"],
+                "optim": runtime_config["optim"],
+                "fp16": runtime_config["fp16"],
+                "bf16": runtime_config["bf16"],
+                "dataloader_pin_memory": runtime_config["pin_memory"],
+                "dataloader_persistent_workers": runtime_config["persistent_workers"],
+                "eval_accumulation_steps": runtime_config["eval_accumulation_steps"],
+            })
+            if _training_arguments_supports("torch_compile"):
+                training_kwargs["torch_compile"] = runtime_config["torch_compile"]
+
+        training_args = TrainingArguments(**training_kwargs)
 
         # 10) Define collator that handles dynamic padding + label alignment
         #     For example, if two tokenized examples have:
         #         input_ids = [[101, 2121, 5661, 2171, 102], [101, 2064, 102]]
         #     the collator will pad them to the same length and align
         #     their attention_mask and labels accordingly.
-        data_collator = DataCollatorForTokenClassification(tokenizer=tokenizer)
+        data_collator = DataCollatorForTokenClassification(
+            tokenizer=tokenizer,
+            pad_to_multiple_of=runtime_config["pad_to_multiple_of"],
+        )
 
 
         # 11) Initialize Trainer for this fold with early stopping
         #     Trainer handles batching, optimizer, eval, LR scheduling, logging, etc.
-        #     We also assign the tokenizer to `trainer.tokenizer` so that
-        #     it is correctly saved with the model and used during predict().
-        trainer = Trainer(
+        trainer = CRFTrainer(
             model=model,
             args=training_args,
             train_dataset=tokenized_train,
             eval_dataset=tokenized_test,
-            tokenizer=tokenizer,
+            processing_class=tokenizer,
             data_collator=data_collator,
             callbacks=[EarlyStoppingCallback(early_stopping_patience=EARLY_STOP)],
             compute_metrics=compute_metrics
         )
-        # Avoid deprecation warning (explicitly set tokenizer on trainer)
-        trainer.tokenizer = tokenizer
 
         # 12) Train model on this fold
         #     During training, the CRF computes loss using both:
@@ -314,25 +829,29 @@ def train_lm(script_dir: str):
         trainer.train()
 
 
-        # 13) Evaluate fold performance on validation split
-        #     We run inference and obtain predictions as either logits (softmax) or Viterbi-decoded paths.
-        #     Here, since we use CRF; 'preds_logits' contains Viterbi sequences of label IDs.
-        #     We then flatten and decode both true and predicted labels for macro-F1 calculation.
-        preds_logits, labels, _ = trainer.predict(tokenized_test)
-        preds = np.argmax(preds_logits, axis=-1)
+        # 13) Evaluate fold performance using CRF Viterbi decoding
+        viterbi_preds, fold_labels = viterbi_predict(
+            model,
+            tokenized_test,
+            data_collator,
+            batch_size=runtime_config["viterbi_batch_size"],
+            num_workers=runtime_config["dataloader_num_workers"],
+            pin_memory=runtime_config["pin_memory"],
+            persistent_workers=runtime_config["persistent_workers"],
+        )
 
-        # Convert to (flattened) label strings for F1
+        # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels
         true_labels_list = [
             ID2LABEL[l]
-            for sent_labels, sent_preds in zip(labels, preds)
-            for (l, p) in zip(sent_labels, sent_preds)
+            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
+            for (l, p) in zip(sent_labels[1:-1], sent_preds)
             if l != -100
         ]
-        
+
         pred_labels_list = [
             ID2LABEL[p]
-            for sent_labels, sent_preds in zip(labels, preds)
-            for (l, p) in zip(sent_labels, sent_preds)
+            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
+            for (l, p) in zip(sent_labels[1:-1], sent_preds)
             if l != -100
         ]
 
@@ -343,7 +862,12 @@ def train_lm(script_dir: str):
         #     This ensures we retain the model with highest validation performance
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
-            best_model_dir = os.path.join(output_dir, "best_model")
+            best_fold_index = fold
+            best_num_train_epochs = _extract_best_epoch(trainer)
+            # Clear stale files (e.g. added_tokens.json from prior runs) before saving
+            if os.path.exists(best_model_dir):
+                import shutil
+                shutil.rmtree(best_model_dir)
             trainer.save_model(best_model_dir)
             model.config.save_pretrained(best_model_dir)
             tokenizer.save_pretrained(best_model_dir)
@@ -351,50 +875,142 @@ def train_lm(script_dir: str):
         fold += 1
 
     # 15) Final summary after cross-validation
-    #     Reports where the best model is saved and its macro F1 on fold validation data
-    print(f"\nBest fold model saved at: {best_model_dir}, Macro F1 = {best_macro_f1:.4f}")
+    #     Use CV to choose the training duration, then retrain once on all of train_df.
+    print(
+        f"\nBest CV fold: {best_fold_index}, Macro F1 = {best_macro_f1:.4f}, "
+        f"selected epochs = {best_num_train_epochs:.2f}"
+    )
 
-    # 16) Load best model and prepare for final evaluation on held-out set
+    full_train_df, final_verb_aug_count = _prepare_training_frame(
+        train_df,
+        augmentation_seed=TRAIN_SEED + K + 1,
+    )
+    if final_verb_aug_count:
+        print(
+            f"Final retrain verb augmentation added {final_verb_aug_count} synthetic rows "
+            f"(train size: {len(full_train_df)})"
+        )
+
+    full_train_dataset = prepare_dataset(full_train_df, LABEL2ID, selected_features=selected_features)
+    tokenized_full_train = full_train_dataset.map(
+        lambda sample: tokenize_and_align_labels(sample, tokenizer),
+        batched=False
+    )
+
+    final_runtime_config = _get_lm_runtime_config(
+        train_examples=len(full_train_df),
+        eval_examples=len(val_df),
+    )
+    print(
+        "Final retrain runtime config: "
+        f"train_bs={final_runtime_config['train_batch_size']}, "
+        f"workers={final_runtime_config['dataloader_num_workers']}, "
+        f"precision={'bf16' if final_runtime_config['bf16'] else 'fp16' if final_runtime_config['fp16'] else 'fp32'}, "
+        f"optim={final_runtime_config['optim']}"
+    )
+
+    final_model = DistilBertCRFForTokenClassification(
+        num_labels=len(LABEL_LIST),
+        id2label=ID2LABEL,
+        label2id=LABEL2ID,
+        pretrained_name="distilbert-base-uncased",
+        dropout_prob=0.1
+    ).to(device)
+    final_model.config.selected_features = selected_features
+
+    final_training_kwargs = {
+        "output_dir": os.path.join(output_dir, "final_retrain"),
+        "eval_strategy": "no",
+        "save_strategy": "no",
+        "learning_rate": 5e-5,
+        "per_device_train_batch_size": final_runtime_config["train_batch_size"],
+        "per_device_eval_batch_size": final_runtime_config["eval_batch_size"],
+        "num_train_epochs": best_num_train_epochs,
+        "weight_decay": 0.01,
+        "warmup_steps": max(1, math.ceil(0.1 * (len(full_train_df) / final_runtime_config["train_batch_size"]) * best_num_train_epochs)),
+        "lr_scheduler_type": "cosine",
+        "report_to": "none",
+        "seed": TRAIN_SEED,
+        "dataloader_num_workers": final_runtime_config["dataloader_num_workers"],
+    }
+
+    if _training_arguments_supports("data_seed"):
+        final_training_kwargs["data_seed"] = TRAIN_SEED
+
+    if _training_arguments_supports("group_by_length"):
+        final_training_kwargs["group_by_length"] = True
+
+    if device.type != "cpu":
+        final_training_kwargs.update({
+            "gradient_accumulation_steps": final_runtime_config["gradient_accumulation_steps"],
+            "optim": final_runtime_config["optim"],
+            "fp16": final_runtime_config["fp16"],
+            "bf16": final_runtime_config["bf16"],
+            "dataloader_pin_memory": final_runtime_config["pin_memory"],
+            "dataloader_persistent_workers": final_runtime_config["persistent_workers"],
+        })
+        if _training_arguments_supports("torch_compile"):
+            final_training_kwargs["torch_compile"] = final_runtime_config["torch_compile"]
+
+    final_training_args = TrainingArguments(**final_training_kwargs)
+    final_collator = DataCollatorForTokenClassification(
+        tokenizer=tokenizer,
+        pad_to_multiple_of=final_runtime_config["pad_to_multiple_of"],
+    )
+    final_trainer = CRFTrainer(
+        model=final_model,
+        args=final_training_args,
+        train_dataset=tokenized_full_train,
+        processing_class=tokenizer,
+        data_collator=final_collator,
+    )
+    final_trainer.train()
+
+    if os.path.exists(best_model_dir):
+        import shutil
+        shutil.rmtree(best_model_dir)
+    final_trainer.save_model(best_model_dir)
+    final_model.config.save_pretrained(best_model_dir)
+    tokenizer.save_pretrained(best_model_dir)
+    print(f"Final retrained model saved at: {best_model_dir}")
+
+    # 16) Load final model and prepare for final evaluation on held-out set
     best_model = DistilBertCRFForTokenClassification.from_pretrained(best_model_dir)
     best_model.to(device)
+    holdout_runtime_config = _get_lm_runtime_config(
+        train_examples=len(full_train_df),
+        eval_examples=len(val_df),
+    )
 
-    # Use new TrainingArguments to disable evaluation during predict
-    final_args = TrainingArguments(
-        output_dir=os.path.join(output_dir, "final_eval"),
-        per_device_eval_batch_size=16,
-        eval_strategy="no",
-        save_strategy="no",
-        logging_dir=os.path.join(output_dir, "logs", "final_eval"),
-        report_to="none",
-        seed=RAND_STATE
-    )
-    
-    # Set up Trainer to run inference on hold-out set
-    val_trainer = Trainer(
-        model=best_model,
-        args=final_args,
-        tokenizer=tokenizer,
-        data_collator=DataCollatorForTokenClassification(tokenizer=tokenizer)
-        # ← note: no eval_dataset here, because we’ll call .predict(...) manually
-    )
-    
     # 17) Run prediction on hold-out set and record inference time
+    holdout_collator = DataCollatorForTokenClassification(
+        tokenizer=tokenizer,
+        pad_to_multiple_of=holdout_runtime_config["pad_to_multiple_of"],
+    )
     start_time = time.perf_counter()
-    val_preds_logits, val_labels, _ = val_trainer.predict(tokenized_val)
+    val_preds, val_labels = viterbi_predict(
+        best_model,
+        tokenized_val,
+        holdout_collator,
+        batch_size=holdout_runtime_config["viterbi_batch_size"],
+        num_workers=holdout_runtime_config["dataloader_num_workers"],
+        pin_memory=holdout_runtime_config["pin_memory"],
+        persistent_workers=holdout_runtime_config["persistent_workers"],
+    )
     end_time = time.perf_counter()
 
-    val_preds = np.argmax(val_preds_logits, axis=-1)
-
-    flat_true = [
-        ID2LABEL[l]
+    # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels.
+    # Batched decoding should agree with the per-identifier tagger below; the report shows both.
+    viterbi_true = [
+        l
         for sent_labels, sent_preds in zip(val_labels, val_preds)
-        for (l, p) in zip(sent_labels, sent_preds)
+        for (l, p) in zip(sent_labels[1:-1], sent_preds)
         if l != -100
     ]
-    flat_pred = [
-        ID2LABEL[p]
+    viterbi_pred = [
+        p
         for sent_labels, sent_preds in zip(val_labels, val_preds)
-        for (l, p) in zip(sent_labels, sent_preds)
+        for (l, p) in zip(sent_labels[1:-1], sent_preds)
         if l != -100
     ]
 
@@ -402,9 +1018,11 @@ def train_lm(script_dir: str):
     from .distilbert_tagger import DistilBertTagger
 
     # Re-instantiate the exact same DistilBERT tagger we saved
-    tagger = DistilBertTagger(best_model_dir)
+    tagger = DistilBertTagger(best_model_dir, local=True)
 
     rows = []
+    flat_true = []
+    flat_pred = []
     for _, row in val_df.iterrows():
         tokens     = row["tokens"]            # e.g. ["my", "Identifier", "Name"]
         true_tags  = row["tags"]              # e.g. ["NM", "DT", "DT"]
@@ -413,13 +1031,20 @@ def train_lm(script_dir: str):
         language   = row.get("LANGUAGE", "")  # if present; otherwise ""
         system_name= row.get("SYSTEM_NAME", "")  # if present; otherwise ""
 
-        # `tag_identifier` now returns a list of string labels, not IDs
         pred_tags = tagger.tag_identifier(tokens, context, type_str, language, system_name)
+
+        flat_true.extend(true_tags)
+        flat_pred.extend(pred_tags)
 
         rows.append({
             "tokens":      " ".join(tokens),
             "true_tags":   " ".join(true_tags),
-            "pred_tags":   " ".join(pred_tags)
+            "pred_tags":   " ".join(pred_tags),
+            "context":     context,
+            "type":        type_str,
+            "language":    language,
+            "system_name": system_name,
+            "data_source": row.get("DATA_SOURCE", ""),
         })
 
     preds_df = pd.DataFrame(rows)
@@ -427,26 +1052,27 @@ def train_lm(script_dir: str):
     preds_df.to_csv(csv_path, index=False)
     print(f"\nWrote hold-out predictions to: {csv_path}")
 
-    # Now also compute identifier-level accuracy from the “flat_true/flat_pred” folds:
-    # We need to compare per-example (not flattened) again, so re-run a grouping logic.
-    df = pd.read_csv(os.path.join(output_dir, "holdout_predictions.csv"))
-    df["row_correct"] = df["true_tags"] == df["pred_tags"]
-    id_level_acc = df["row_correct"].mean()
-    
+    # Identifier-level accuracy: every tag in the identifier must match
+    id_level_acc = (preds_df["true_tags"] == preds_df["pred_tags"]).mean()
+
     # Report evaluation metrics and timing info
     total_tokens = sum(len(ex["tokens"]) for ex in val_dataset)
     total_examples = len(val_dataset)
     elapsed = end_time - start_time
     final_macro_f1 = f1_score(flat_true, flat_pred, average="macro")
     final_accuracy = accuracy_score(flat_true, flat_pred)
-    
+
     print("\nFinal Evaluation on Held-Out Set:")
-    with open('holdout_report.txt', 'w') as f:
-        report = classification_report(flat_true, flat_pred)
-        dual_print(report, file=f)
+    with open(os.path.join(script_dir, "holdout_report.txt"), "w") as f:
+        dual_print(classification_report(flat_true, flat_pred), file=f)
+        _write_run_metadata(file=f, source_names=source_names, selected_features=selected_features)
+        dual_print(f"Best CV fold: {best_fold_index}", file=f)
+        dual_print(f"Selected retrain epochs: {best_num_train_epochs:.2f}", file=f)
+        dual_print(f"Best model dir: {best_model_dir}", file=f)
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
         dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)
         dual_print(f"Identifiers/sec: {total_examples / elapsed:.2f}", file=f)
         dual_print(f"\nFinal Macro F1 on Held-Out Set: {final_macro_f1:.4f}", file=f)
         dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}", file=f)
         dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)
+        dual_print(f"Batched Viterbi Token-level Accuracy (consistency check): {accuracy_score(viterbi_true, viterbi_pred):.4f}", file=f)

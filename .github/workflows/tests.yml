@@ -2,7 +2,7 @@ name: SCALAR Tagger CI
 
 on:
   push:
-    branches: [ master, develop, distilbert ]
+    branches: [ master, develop, distilbert, scalar-3-0 ]
   pull_request:
     branches: [ master, develop ]
 
@@ -66,6 +66,12 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: Check version
+        run: python main --version
+
+      - name: Unit tests
+        run: python -m pytest tests -q
       
       - name: Download FastText model
         run: |
