@@ -1,9 +1,6 @@
 # SCALAR Part-of-Speech Tagger for Identifiers
 
-**SCALAR** is a part-of-speech tagger for source code identifiers. It supports two model types:
-
-- **DistilBERT-based model with CRF layer** (Recommended: faster, more accurate)
-- Legacy Gradient Boosting model (for compatibility)
+**SCALAR** is a part-of-speech tagger for source code identifiers. It uses a DistilBERT model with a CRF layer.
 
 ---
 
@@ -25,12 +22,14 @@ pip install -r requirements.txt
 
 You can run SCALAR in multiple ways:
 
-### CLI (with DistilBERT or GradientBoosting model)
+### CLI
 
 ```bash
-python main --mode run --model_type lm_based         # DistilBERT (recommended)
-python main --mode run --model_type tree_based       # Legacy model
+python main --mode run           # Serve the published model (sourceslicer/scalar_lm_best)
+python main --mode run --local   # Serve a locally trained model from output/best_model
 ```
+
+`--address`, `--port`, `--protocol`, and `--word` override the values in `serve.json`.
 
 Then query like:
 
@@ -49,14 +48,13 @@ Supports context types:
 
 ## Training
 
-You can retrain either model (default parameters are currently hardcoded):
+Default parameters are currently hardcoded:
 
 ```bash
-python main --mode train --model_type lm_based
-python main --mode train --model_type tree_based
+python main --mode train
 ```
 
-The LM model trains on `input/tagger_data.tsv` and `input/synthetic_pos_data_full.csv`. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --model_type lm_based --local`.
+The model trains on `input/tagger_data.tsv` and `input/synthetic_pos_data_full.csv`. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 
 ---
 
@@ -73,7 +71,7 @@ The tests build a tiny randomly initialized DistilBERT, so they don't download a
 
 ## Evaluation Results
 
-### DistilBERT (LM-Based Model) — Recommended
+### DistilBERT + CRF
 
 | Metric                   | Score   |
 |--------------------------|---------|
@@ -99,22 +97,6 @@ The tests build a tiny randomly initialized DistilBERT, so they don't download a
 
 ---
 
-### Gradient Boost Model (Legacy)
-
-| Metric               | Score     |
-|----------------------|-----------|
-| Accuracy             | 0.8216    |
-| Balanced Accuracy    | 0.9160    |
-| Weighted Recall      | 0.8216    |
-| Weighted Precision   | 0.8245    |
-| Weighted F1          | 0.8220    |
-| Inference Time       | 249.05s   |
-
-**Inference Performance:**
-- Identifiers/sec: 8.6
-
----
-
 ## Supported Tagset
 
 | Tag   | Meaning                            | Examples                       |
@@ -132,9 +114,9 @@ The tests build a tiny randomly initialized DistilBERT, so they don't download a
 
 ---
 
-## Docker Support (Legacy only)
+## Docker Support
 
-For the legacy server, you can also use Docker:
+The Docker image serves the DistilBERT model over HTTP on port 8080:
 
 ```bash
 docker compose pull
@@ -147,7 +129,7 @@ docker compose up
 
 - **Kebab case** is not supported (e.g., `do-something-cool`).
 - Feature and position tokens (e.g., `@pos_0`) are inserted automatically.
-- Internally uses [WordNet](https://wordnet.princeton.edu/) for lexical features.
+- The `dictionary` flag in each response uses the NLTK words corpus, plus `words/en.txt` if that file exists.
 - Input must be parsed into identifier tokens. We recommend [srcML](https://www.srcml.org/) but any AST-based parser works.
 
 ---

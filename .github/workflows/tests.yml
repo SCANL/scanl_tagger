@@ -73,18 +73,9 @@ jobs:
       - name: Unit tests
         run: python -m pytest tests -q
       
-      - name: Download FastText model
-        run: |
-          python -c "
-          import gensim.downloader as api
-          print('Downloading FastText model...')
-          _ = api.load('fasttext-wiki-news-subwords-300')
-          print('FastText model downloaded successfully')
-          "
-      
       - name: Start tagger server
         run: |
-          python main --mode run --model_type lm_based &
+          python main --mode run --protocol http &
           
           # Wait for up to 5 minutes for the service to start and load models
           timeout=300
@@ -113,9 +104,3 @@ jobs:
             exit 1
           fi
           echo "Received response: $response"
-
-      - name: Cache FastText model
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/gensim-data/fasttext-wiki-news-subwords-300*
-          key: ${{ runner.os }}-fasttext-model

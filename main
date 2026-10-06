@@ -1,14 +1,7 @@
 #!/usr/bin/env python
 
 import os, argparse
-from datetime import datetime
-from src.tree_based_tagger.classifier_multiclass import load_config_tree, train_tree
-from src.lm_based_tagger.train_model import train_lm
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
-from src.tag_identifier import start_server
-from src.tree_based_tagger.download_code2vec_vectors import *
-from version import __version__ 
-from datasets import Dataset
+from version import __version__
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,28 +9,33 @@ def get_version():
     """Return the current version of SCALAR tagger."""
     return f"SCALAR tagger {__version__}"
 
+def resolve_path(path):
+    return path if os.path.isabs(path) else os.path.join(SCRIPT_DIR, path)
+
+def ensure_nltk_words():
+    """Download the NLTK words corpus (used by the dictionary flag) only if it is missing."""
+    import nltk
+    try:
+        nltk.data.find("corpora/words")
+    except LookupError:
+        nltk.download("words")
+
 if __name__ == "__main__":
     """
     Use argparse to allow the user to choose either running the tagger or training a new tagger
 
-    Usage:
-    - To check the application version, use: -v or --version.
-    - To start a server for part-of-speech tagging requests, use: -r or --run.
-    - To run a training set and retrain the model, use: -t or --train.
-    - To update server configuration, use -c or --config
-
     Example Usage:
-    python script.py -v                          # Display the application version.
-    python script.py -r                          # Start the server for tagging requests.
-    python script.py -t                          # Run the training set to retrain the model.
-    python script.py -a --address [host]         # Run the tagger on a specific IP address
-    python script.py --port [port]               # Run the tagger on a specific port
-    python script.py --protocol [http/https]     # Specify use of http or https
-    python script.py --words [path]              # Specify path of word list
+    python main --version                            # Display the application version.
+    python main --mode run                           # Start the server for tagging requests.
+    python main --mode run --local                   # Serve the locally trained model in output/best_model.
+    python main --mode train                         # Retrain the model.
+    python main --mode run --address [host]          # Run the tagger on a specific IP address
+    python main --mode run --port [port]             # Run the tagger on a specific port
+    python main --mode run --protocol [http/https]   # Specify use of http or https
+    python main --mode run --word [path]             # Specify path of word list
 
     Note:
     If no arguments are provided or if there is an invalid argument, the script will display usage instructions.
-    
     """
 
     parser = argparse.ArgumentParser(description="SCALAR identifier tagger")
@@ -45,62 +43,46 @@ if __name__ == "__main__":
     parser.add_argument("--local", action="store_true", help="Use local model/tokenizer instead of HuggingFace repo.")
     # Core run/train model arguments
     parser.add_argument("--mode", choices=["train", "run"], help="Choose to 'train' or 'run' the model")
-    parser.add_argument("--model_type", choices=["tree_based", "lm_based"], help="Specify which model type to use")
+    # Kept so existing `--model_type lm_based` invocations still work; the tree-based model was removed in 3.0.0.
+    parser.add_argument("--model_type", choices=["lm_based"], default="lm_based", help=argparse.SUPPRESS)
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
-    parser.add_argument("--model_dir", type=str, default="models", help="Directory to load/save model")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
     parser.add_argument("--protocol", type=str, help="Protocol (http/https)")
-    parser.add_argument("--word", type=str, help="Word used in config")
+    parser.add_argument("--word", type=str, help="Path to the word list (approved abbreviations)")
     parser.add_argument("--address", type=str, help="Server address")
 
     args = parser.parse_args()
-    if not args.version and (args.mode is None or args.model_type is None):
-        parser.error("--mode and --model_type are required unless --version is given")
+    if not args.version and args.mode is None:
+        parser.error("--mode is required unless --version is given")
 
     if args.version:
         print(get_version())
     elif args.mode == "train":
-        if args.model_type == "tree_based":
-            config = load_config_tree(SCRIPT_DIR)
-            download_files()
-            train_tree(config)
-        elif args.model_type == "lm_based":
-            train_lm(SCRIPT_DIR)
+        from src.lm_based_tagger.train_model import train_lm
+        train_lm(SCRIPT_DIR)
 
     elif args.mode == "run":
-        if args.model_type == "tree_based":
-            config = load_config_tree(SCRIPT_DIR)
-            # Inject overrides
-            download_files()
-            config["model_type"] = args.model_type
-            config["model_dir"] = args.model_dir
+        from src.tag_identifier import start_server
+        ensure_nltk_words()
 
-            if args.port:
-                config["port"] = args.port
-            if args.protocol:
-                config["protocol"] = args.protocol
-            if args.word:
-                config["word"] = args.word
-            if args.address:
-                config["address"] = args.address
+        config = {
+            'script_dir': SCRIPT_DIR,
+            'config_path': resolve_path(args.config_path),
+            'model': os.path.join(SCRIPT_DIR, 'output', 'best_model') if args.local else 'sourceslicer/scalar_lm_best',
+            'local': args.local,
+        }
+        if args.port:
+            config["port"] = args.port
+        if args.protocol:
+            config["protocol"] = args.protocol
+        if args.word:
+            config["words"] = args.word
+        if args.address:
+            config["address"] = args.address
 
-            start_server(temp_config=config)
-        elif args.model_type == "lm_based":
-            download_files()
-            if not args.local:
-                start_server(temp_config={
-                    'script_dir': SCRIPT_DIR,
-                    'model': 'sourceslicer/scalar_lm_best',
-                    'model_type':'lm_based',
-                })
-            else:
-                start_server(temp_config={
-                    'script_dir': SCRIPT_DIR,
-                    'model': os.path.join(SCRIPT_DIR, 'output', 'best_model'),
-                    'model_type':'lm_based',
-                })
+        start_server(temp_config=config)
     else:
         parser.print_usage()

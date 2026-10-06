@@ -7,7 +7,6 @@ scikit-learn==1.6.1
 spiral @ git+https://github.com/cnewman/spiral.git@dff537320c15849c10e583968036df2d966eddee
 torch==2.7.1
 waitress==3.0.2
-gensim==4.3.3
 nltk==3.9.1
 transformers[torch]
 pytest==8.4.1

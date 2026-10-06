@@ -1,38 +1,17 @@
 import os
 import time
-import joblib
 import nltk
-import pandas as pd
 from flask import Flask, request
 from waitress import serve
 from spiral import ronin
 import json
 import sqlite3
-from src.tree_based_tagger.feature_generator import createFeatures, universal_to_custom, custom_to_numeric
-from src.tree_based_tagger.create_models import createModel, stable_features, mutable_feature_list
 from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
 
 app = Flask(__name__)
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-model_type = None
 lm_model = None
-
-class ModelData:
-    def __init__(self, modelTokens, modelMethods, modelGensimEnglish, wordCount) -> None:
-        """
-        Initialize an instance of the ModelData class with word vector models.
-
-        Args:
-            ModelTokens: Word vectors model for tokens.
-            ModelMethods: Word vectors model for methods.
-            ModelGensimEnglish: Word vectors model for general English words.
-        """
-
-        self.ModelTokens = modelTokens
-        self.ModelMethods = modelMethods
-        self.ModelGensimEnglish = modelGensimEnglish
-        self.wordCount = wordCount
 
 class AppCache:
     def __init__(self, Path) -> None:
@@ -133,34 +112,13 @@ class WordList:
 
 def initialize_model(temp_config = {}):
     """
-    Initialize and load word vectors for the application, and load a word count DataFrame.
-
-    This function initializes and loads word vectors using the 'createModel' function, and loads word counts 
-    from a JSON file into a Pandas DataFrame for use in the application.
-
-    Returns:
-        tuple: (ModelData, WORD_COUNT DataFrame)
+    Load the DistilBERT tagger named by temp_config["model"] (a Hugging Face repo id or a local directory).
     """
-    global model_type, lm_model
-    model_type = temp_config.get("model_type", "tree_based")
-    if model_type == "tree_based":
-        print("Loading word vectors!!")
-        modelTokens, modelMethods, modelGensimEnglish = createModel(rootDir=SCRIPT_DIR)
-        print("Word vectors loaded!!")
-        word_count_path = os.path.join("input", "word_count.json")
-        if os.path.exists(word_count_path):
-            print(f"Loading word count data from {word_count_path}...")
-            word_count_df = pd.read_json(word_count_path, orient='index', typ='series').reset_index()
-            word_count_df.columns = ['word', 'log_frequency']
-        else:
-            print(f"Word count file not found at {word_count_path}. Initializing empty DataFrame.")
-            word_count_df = pd.DataFrame(columns=['word', 'log_frequency'])
-        app.model_data = ModelData(modelTokens, modelMethods, modelGensimEnglish, word_count_df)
-    elif model_type == "lm_based":
-        print("Loading DistilBERT tagger...")
-        is_local = temp_config.get("local", False)
-        lm_model = DistilBertTagger(temp_config['model'], local=is_local)
-        print("DistilBERT tagger loaded!")
+    global lm_model
+    print("Loading DistilBERT tagger...")
+    is_local = temp_config.get("local", False)
+    lm_model = DistilBertTagger(temp_config['model'], local=is_local)
+    print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):
     """
@@ -176,7 +134,6 @@ def start_server(temp_config = {}):
         None
     """
     print('initializing model...')
-    selected_model = temp_config.get("model_type", "tree_based")
     initialize_model(temp_config)
 
     print("loading cache...")
@@ -194,7 +151,7 @@ def start_server(temp_config = {}):
                 app.english_words.add(word[:-1])
 
     print('retrieving server configuration...')
-    data = open(os.path.join(SCRIPT_DIR, '..', 'serve.json'))
+    data = open(temp_config.get("config_path", os.path.join(SCRIPT_DIR, '..', 'serve.json')))
     config = json.load(data)
 
     server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
@@ -261,142 +218,28 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     print(f"INPUT: {identifier_name} {identifier_context}")
     start_time = time.perf_counter()
 
-    # 1) Split the identifier into tokens for **both** modes
+    # 1) Split the identifier into tokens
     words = ronin.split(identifier_name)
 
-    # 2) If we asked for the LM‐based (DistilBERT) tagger, use it
-    if model_type == "lm_based":
-        result = { "words": [] }
+    # 2) Tag the tokens with the DistilBERT tagger
+    result = { "words": [] }
 
-        tags = lm_model.tag_identifier(
-            tokens=words,
-            context=identifier_context,
-            type_str=data_type,
-            language=programming_language,
-            system_name=system_name
-        )
-
-        for word, tag in zip(words, tags):
-            dictionary = dictionary_lookup(word)
-            result["words"].append({
-                word: { "tag": tag, "dictionary": dictionary }
-            })
-
-        tag_time = time.perf_counter() - start_time
-        if cache_id:
-            AppCache(f"cache/{cache_id}.db3").add(identifier_name, result, identifier_context, tag_time)
-        return result
-
-    # 3) Else: use the existing tree‐based tagger
-    # Create initial DataFrame
-    data = pd.DataFrame({
-        'WORD': words,
-        'SPLIT_IDENTIFIER': ' '.join(words),
-        'CONTEXT_NUMBER': context_to_number(identifier_context),
-    })
-
-    # Build features
-    data = createFeatures(
-        data,
-        mutable_feature_list,
-        modelGensimEnglish=app.model_data.ModelGensimEnglish,
+    tags = lm_model.tag_identifier(
+        tokens=words,
+        context=identifier_context,
+        type_str=data_type,
+        language=programming_language,
+        system_name=system_name
     )
 
-    # Convert any categorical features to numeric
-    categorical_features = ['NLTK_POS', 'PREV_POS', 'NEXT_POS']
-    for category_column in categorical_features:
-        if category_column in data.columns:
-            data[category_column] = data[category_column].astype(str)
-            unique_vals = data[category_column].unique()
-            category_map = {}
-            for val in unique_vals:
-                if val in universal_to_custom:
-                    category_map[val] = custom_to_numeric[universal_to_custom[val]]
-                else:
-                    category_map[val] = custom_to_numeric['NOUN']
-            data[category_column] = data[category_column].map(category_map)
-
-    # Load classifier and annotate
-    clf = joblib.load(os.path.join(SCRIPT_DIR, '..', 'models', 'model_GradientBoostingClassifier.pkl'))
-    predicted_tags = annotate_identifier(clf, data)
-
-    result = { "words": [] }
-    for i, word in enumerate(words):
+    for word, tag in zip(words, tags):
         dictionary = dictionary_lookup(word)
         result["words"].append({
-            word: { "tag": predicted_tags[i], "dictionary": dictionary }
+            word: { "tag": tag, "dictionary": dictionary }
         })
 
     tag_time = time.perf_counter() - start_time
-    if cache_id is not None:
+    if cache is not None:
         cache.add(identifier_name, result, identifier_context, tag_time)
 
     return result
-
-    
-def context_to_number(context):
-    """
-    Convert a textual context description to a numerical representation.
-
-    This function takes a context description as a string and maps it to a numerical representation according to a
-    predefined mapping.
-
-    Args:
-        context (str): The textual context description.
-
-    Returns:
-        int: The numerical representation of the context.
-
-    Raises:
-        ValueError: If the provided context is not one of the predefined values.
-
-    Example:
-        numeric_context = context_to_number("CLASS")
-    """
-    if context == "ATTRIBUTE":
-        return 1
-    elif context == "CLASS":
-        return 2
-    elif context == "DECLARATION":
-        return 3
-    elif context == "FUNCTION":
-        return 4
-    elif context == "PARAMETER":
-        return 5
-
-def annotate_identifier(clf, data):
-    """
-    Annotate identifier tokens using a trained classifier.
-
-    This function takes a trained classifier and a dataset containing features for identifier tokens. It applies the
-    classifier to predict labels for the identifier tokens.
-
-    Args:
-        clf (Classifier): The trained classifier model.
-        data (pd.DataFrame): A DataFrame containing features for identifier tokens. The columns of the DataFrame should
-                             match the feature names used during training.
-
-    Returns:
-        np.array: An array of predicted labels for the identifier tokens.
-    """
-    # Drop unnecessary columns
-    data = data.drop(columns=['WORD', 'SPLIT_IDENTIFIER'], errors='ignore')
-
-    # Ensure only the features used during training are included
-    trained_features = clf.feature_names_in_  # Features expected by the classifier
-    missing_features = set(trained_features) - set(data.columns)
-    extra_features = set(data.columns) - set(trained_features)
-
-    if missing_features:
-        raise ValueError(f"The following expected features are missing: {missing_features}")
-    if extra_features:
-        print(f"Warning: The following unused features are being ignored: {extra_features}")
-        data = data[trained_features]
-
-    # Ensure feature order matches the trained model
-    df_features = data[trained_features]
-    
-    # Make predictions
-    y_pred = clf.predict(df_features)
-    return y_pred
-

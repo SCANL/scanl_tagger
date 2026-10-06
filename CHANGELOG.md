@@ -14,7 +14,15 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - New feature tokens for the LM model: digit connectors, plural suffixes, declared type, type/name overlap, language, and system-name overlap. The feature list is saved in the checkpoint config, and inference uses it. Checkpoints without one (such as `sourceslicer/scalar_lm_best`) use the original four features.
 - Inference runs on the GPU when one is available.
 - `version.py` is the single source of the version, and is validated as a semantic version at import time.
-- `python main --version` works without `--mode` and `--model_type`, and prints `SCALAR tagger <version>`.
+- `python main --version` works without `--mode`, and prints `SCALAR tagger <version>`.
+- `--model_type` is optional and accepts only `lm_based`.
+- Run mode downloads only the NLTK `words` corpus (used by the `dictionary` flag), and only when it is missing.
+- The Docker image serves the DistilBERT model over HTTP on port 8080, instead of starting training.
+
+### Removed
+
+- The tree-based (Gradient Boosting) tagger: `src/tree_based_tagger/`, `models/model_GradientBoostingClassifier.pkl`, its training database `input/scanl_tagger_training_db_11_29_2024.db`, and the `gensim` dependency. It was slower (8.6 vs. about 360 identifiers per second) and less accurate than the DistilBERT+CRF model.
+- `--model_type tree_based` and `--model_dir`, which only applied to the tree-based model.
 
 ### Added
 
@@ -23,6 +31,8 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Fixed
 
+- `--address`, `--port`, `--protocol`, and `--word` apply when serving the DistilBERT model; they used to apply only to the tree-based model.
+- `--config_path` is honored; the server always read `serve.json` before.
 - Fold and holdout evaluation decode with the CRF, instead of taking the argmax of the emission scores.
 - An identifier too long for the model input raises an error, instead of silently returning fewer tags than tokens.
 
