@@ -33,9 +33,11 @@ class DistilBertTagger:
         self.model.to(self.device)
         self.model.eval()
 
-        # Use the same feature tokens the checkpoint was trained with
+        # Use the same feature tokens the checkpoint was trained with. An empty list means the
+        # model was trained without features; only a missing list means a legacy checkpoint.
+        saved_features = getattr(self.model.config, "selected_features", None)
         self.selected_features = normalize_selected_features(
-            getattr(self.model.config, "selected_features", None) or LEGACY_FEATURES
+            LEGACY_FEATURES if saved_features is None else saved_features
         )
 
         # map label IDs to strings

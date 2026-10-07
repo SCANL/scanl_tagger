@@ -42,6 +42,13 @@ def test_build_model_input_tokens_interleaves_positions():
     assert single == ["@func", "@pos_2", "size"]
 
 
+def test_no_features():
+    full, n_features = build_model_input_tokens(ROW, ["get", "name"], [])
+    assert n_features == 0
+    assert full == ["@pos_0", "get", "@pos_2", "name"]
+    assert normalize_selected_features([]) == []
+
+
 def test_multi_token_features_are_counted():
     tokens = ["get", "user", "name"]
     full, n_features = build_model_input_tokens(ROW, tokens, AVAILABLE_FEATURES)

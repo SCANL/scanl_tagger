@@ -56,3 +56,44 @@ def test_tree_based_model_type_is_gone():
     assert result.returncode == 2
     assert "invalid choice: 'tree_based'" in result.stderr
     assert not os.path.exists(os.path.join(REPO_ROOT, "src", "tree_based_tagger"))
+
+
+def _run_main(monkeypatch, *argv):
+    """Run the `main` script in-process with train_lm replaced, returning what it was called with."""
+    import runpy
+    from src.lm_based_tagger import train_model
+
+    calls = []
+    monkeypatch.setattr(train_model, "train_lm", lambda script_dir, **kw: calls.append(kw))
+    monkeypatch.setattr(sys, "argv", ["main", *argv])
+    runpy.run_path(os.path.join(REPO_ROOT, "main"), run_name="__main__")
+    return calls
+
+
+def test_train_defaults_to_every_feature(monkeypatch):
+    from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
+
+    assert _run_main(monkeypatch, "--mode", "train") == [{"selected_features": AVAILABLE_FEATURES}]
+
+
+def test_train_features_flag_is_passed_through(monkeypatch):
+    calls = _run_main(monkeypatch, "--mode", "train", "--features", "type", "context")
+    assert calls == [{"selected_features": ["type", "context"]}]  # train_lm puts them in canonical order
+
+
+def test_train_rejects_unknown_features(monkeypatch, capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        _run_main(monkeypatch, "--mode", "train", "--features", "context", "bogus")
+    assert exit_info.value.code == 2
+    assert "invalid choice: 'bogus'" in capsys.readouterr().err
+
+
+def test_train_no_features_flag(monkeypatch):
+    assert _run_main(monkeypatch, "--mode", "train", "--no-features") == [{"selected_features": []}]
+
+
+def test_features_and_no_features_are_exclusive(monkeypatch, capsys):
+    with pytest.raises(SystemExit) as exit_info:
+        _run_main(monkeypatch, "--mode", "train", "--no-features", "--features", "context")
+    assert exit_info.value.code == 2
+    assert "not allowed with argument" in capsys.readouterr().err

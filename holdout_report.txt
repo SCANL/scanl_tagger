@@ -1,19 +1,19 @@
               precision    recall  f1-score   support
 
-          CJ       0.92      1.00      0.96        23
-           D       0.96      0.94      0.95        79
-          DT       0.94      0.99      0.96        93
-           N       0.97      0.97      0.97       788
-          NM       0.95      0.93      0.94       641
-         NPL       1.00      0.97      0.98       118
-           P       0.95      0.96      0.95       163
-         PRE       0.85      0.86      0.86       101
-           V       0.92      0.96      0.94       307
-          VM       0.96      0.79      0.87        33
+          CJ       0.96      1.00      0.98        23
+           D       0.95      0.96      0.96        79
+          DT       0.95      1.00      0.97        93
+           N       0.98      0.97      0.97       788
+          NM       0.95      0.95      0.95       641
+         NPL       1.00      0.98      0.99       118
+           P       0.94      0.96      0.95       163
+         PRE       0.92      0.89      0.90       101
+           V       0.93      0.95      0.94       307
+          VM       0.96      0.82      0.89        33
 
-    accuracy                           0.95      2346
-   macro avg       0.94      0.94      0.94      2346
-weighted avg       0.95      0.95      0.95      2346
+    accuracy                           0.96      2346
+   macro avg       0.95      0.95      0.95      2346
+weighted avg       0.96      0.96      0.96      2346
 
 
 Run Configuration:
@@ -22,16 +22,16 @@ Split seed: 658
 Train seed: 209
 CV folds: 5, holdout ratio: 0.2, max epochs: 7
 Datasets: tagger_data, synthetic_pos_data_full
-Features: context, hungarian, cvr, digit, digit_connector, plural_suffix, type, type_overlap, language, sys_sim
+Features: context, type, language
 Best CV fold: 4
-Selected retrain epochs: 5.00
+Selected retrain epochs: 7.00
 Best model dir: /home/asteriaicom/tagger_refactor/scanl_tagger/output/best_model
 
-Inference Time: 2.46s for 894 identifiers (18491 tokens)
-Tokens/sec: 7523.51
-Identifiers/sec: 363.75
+Inference Time: 1.48s for 894 identifiers (7433 tokens)
+Tokens/sec: 5037.66
+Identifiers/sec: 605.90
 
-Final Macro F1 on Held-Out Set: 0.9383
-Final Token-level Accuracy on Held-Out Set: 0.9510
-Final Identifier-level Accuracy on Held-Out Set: 0.8904
-Batched Viterbi Token-level Accuracy (consistency check): 0.9510
+Final Macro F1 on Held-Out Set: 0.9497
+Final Token-level Accuracy on Held-Out Set: 0.9557
+Final Identifier-level Accuracy on Held-Out Set: 0.9016
+Batched Viterbi Token-level Accuracy (consistency check): 0.9557

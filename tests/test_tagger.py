@@ -27,6 +27,16 @@ def test_tagger_falls_back_to_legacy_features(tiny_model, tokenizer, tmp_path):
     assert tagger.selected_features == LEGACY_FEATURES
 
 
+def test_tagger_with_no_features(tiny_model, tokenizer, tmp_path):
+    # An empty list must survive the saved config and must not fall back to the legacy features
+    tiny_model.config.selected_features = []
+    tagger = _tagger(tiny_model, tokenizer, tmp_path / "ckpt")
+    assert tagger.selected_features == []
+
+    tags = tagger.tag_identifier(["get", "employee", "name"], "FUNCTION", "int", "C++", "drill")
+    assert len(tags) == 3
+
+
 def test_tagger_reads_first_subword_of_each_word(tiny_model, tokenizer, tmp_path):
     """Each word's tag must come from the CRF prediction at that word's first subword."""
     tagger = _tagger(tiny_model, tokenizer, tmp_path / "ckpt")

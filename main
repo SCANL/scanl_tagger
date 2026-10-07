@@ -2,6 +2,7 @@
 
 import os, argparse
 from version import __version__
+from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES, DEFAULT_FEATURES
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,7 +29,9 @@ if __name__ == "__main__":
     python main --version                            # Display the application version.
     python main --mode run                           # Start the server for tagging requests.
     python main --mode run --local                   # Serve the locally trained model in output/best_model.
-    python main --mode train                         # Retrain the model.
+    python main --mode train                         # Retrain the model with every feature.
+    python main --mode train --features context type # Retrain with only the listed features.
+    python main --mode train --no-features           # Retrain without feature tokens.
     python main --mode run --address [host]          # Run the tagger on a specific IP address
     python main --mode run --port [port]             # Run the tagger on a specific port
     python main --mode run --protocol [http/https]   # Specify use of http or https
@@ -47,6 +50,23 @@ if __name__ == "__main__":
     parser.add_argument("--model_type", choices=["lm_based"], default="lm_based", help=argparse.SUPPRESS)
     parser.add_argument("--input_path", type=str, help="Path to TSV file for training")
     parser.add_argument("--config_path", type=str, default="serve.json", help="Path to config JSON (used in run mode)")
+    feature_group = parser.add_mutually_exclusive_group()
+    feature_group.add_argument(
+        "--features",
+        nargs="+",
+        choices=AVAILABLE_FEATURES,
+        default=DEFAULT_FEATURES,
+        metavar="FEATURE",
+        help=f"Feature tokens to train with (train mode). Choices: {', '.join(AVAILABLE_FEATURES)}. "
+             "Default: all of them.",
+    )
+    feature_group.add_argument(
+        "--no-features",
+        dest="features",
+        action="store_const",
+        const=[],
+        help="Train without any feature tokens (train mode).",
+    )
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
@@ -62,7 +82,7 @@ if __name__ == "__main__":
         print(get_version())
     elif args.mode == "train":
         from src.lm_based_tagger.train_model import train_lm
-        train_lm(SCRIPT_DIR)
+        train_lm(SCRIPT_DIR, selected_features=args.features)
 
     elif args.mode == "run":
         from src.tag_identifier import start_server

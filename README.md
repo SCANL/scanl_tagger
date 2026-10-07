@@ -51,8 +51,27 @@ Supports context types:
 Default parameters are currently hardcoded:
 
 ```bash
-python main --mode train
+python main --mode train                                  # every feature (the default)
+python main --mode train --features context type language # only the listed features
+python main --mode train --no-features                    # no feature tokens at all
 ```
+
+### Feature tokens
+
+Each identifier is prefixed with feature tokens that describe it. `--features` chooses which ones the model trains with, and `--no-features` turns them all off; **by default, all ten are on**. The chosen list is saved in the checkpoint's config, and the tagger uses the same list when serving, so nothing needs to be set at run time. A checkpoint without a saved list (such as `sourceslicer/scalar_lm_best`) uses `context`, `hungarian`, `cvr`, and `digit`.
+
+| Feature | What it encodes | Input it reads |
+|---------|-----------------|----------------|
+| `context` | Where the identifier is declared (`@func`, `@param`, `@attr`, `@decl`, `@class`) | context |
+| `hungarian` | A 1–3 letter prefix on the first word, followed by an uppercase letter or `_` (e.g. `m_`, `pX`) | name |
+| `cvr` | Average consonant/vowel ratio of the words (low, mid, high) | name |
+| `digit` | Whether any word contains a digit | name |
+| `digit_connector` | A `2` used as a connector (`to`), and where it sits (head, middle, tail) | name |
+| `plural_suffix` | Plural-looking suffixes (`s`, `es`, `ies`) and where they sit | name |
+| `type` | Bucketed declared type (bool, int, float, string, container, …) plus pointer, reference, array, const | type |
+| `type_overlap` | Whether the name's words repeat the type's words (e.g. `userList` of type `UserList`) | name, type |
+| `language` | Programming language | language |
+| `sys_sim` | Whether the name's words repeat the system (project) name, e.g. a `gimp` prefix in GIMP | name, system |
 
 The model trains on `input/tagger_data.tsv` and `input/synthetic_pos_data_full.csv`. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 
