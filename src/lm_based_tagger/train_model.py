@@ -328,6 +328,28 @@ def _write_run_metadata(file, source_names: List[str], selected_features: List[s
     )
 
 
+def accuracy_by_source(preds_df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Token- and identifier-level holdout accuracy for each data source.
+
+    Synthetic rows are much easier than real identifiers, so the combined score hides how the
+    model does on real code. Expects the columns written to holdout_predictions.csv.
+    """
+    rows = []
+    for source, group in preds_df.groupby("data_source", sort=True):
+        true = group["true_tags"].str.split()
+        pred = group["pred_tags"].str.split()
+        tokens = sum(len(t) for t in true)
+        correct = sum(a == b for t, p in zip(true, pred) for a, b in zip(t, p))
+        rows.append({
+            "source": source,
+            "identifiers": len(group),
+            "token_accuracy": correct / tokens if tokens else float("nan"),
+            "identifier_accuracy": (group["true_tags"] == group["pred_tags"]).mean(),
+        })
+    return pd.DataFrame(rows)
+
+
 class CRFTrainer(Trainer):
     """
     Trainer that gives the CRF transition parameters their own learning rate.
@@ -1076,3 +1098,10 @@ def train_lm(
         dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}", file=f)
         dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)
         dual_print(f"Batched Viterbi Token-level Accuracy (consistency check): {accuracy_score(viterbi_true, viterbi_pred):.4f}", file=f)
+        dual_print("\nHeld-Out Accuracy by Data Source:", file=f)
+        for row in accuracy_by_source(preds_df).itertuples():
+            dual_print(
+                f"  {row.source}: {row.identifiers} identifiers, "
+                f"token {row.token_accuracy:.4f}, identifier {row.identifier_accuracy:.4f}",
+                file=f,
+            )

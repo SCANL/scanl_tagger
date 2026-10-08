@@ -81,11 +81,12 @@ def test_train_features_flag_is_passed_through(monkeypatch):
     assert calls == [{"selected_features": ["type", "context"]}]  # train_lm puts them in canonical order
 
 
-def test_train_rejects_unknown_features(monkeypatch, capsys):
+@pytest.mark.parametrize("feature", ["bogus", "hungarian_legacy"])
+def test_train_rejects_unknown_features(monkeypatch, capsys, feature):
     with pytest.raises(SystemExit) as exit_info:
-        _run_main(monkeypatch, "--mode", "train", "--features", "context", "bogus")
+        _run_main(monkeypatch, "--mode", "train", "--features", "context", feature)
     assert exit_info.value.code == 2
-    assert "invalid choice: 'bogus'" in capsys.readouterr().err
+    assert f"invalid choice: '{feature}'" in capsys.readouterr().err
 
 
 def test_train_no_features_flag(monkeypatch):

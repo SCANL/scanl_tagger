@@ -5,6 +5,7 @@ from conftest import LABEL2ID, REPO_ROOT
 from src.lm_based_tagger.distilbert_preprocessing import (
     AVAILABLE_FEATURES,
     LEGACY_FEATURES,
+    detect_hungarian_prefix_split,
     build_model_input_tokens,
     get_feature_tokens,
     get_plural_suffix_feature_tokens,
@@ -22,7 +23,8 @@ def test_normalize_selected_features():
     assert normalize_selected_features(None) == AVAILABLE_FEATURES
     # Canonical order, whatever order the caller used
     assert normalize_selected_features(["digit", "context"]) == ["context", "digit"]
-    assert normalize_selected_features(LEGACY_FEATURES) == ["context", "hungarian", "cvr", "digit"]
+    assert normalize_selected_features(LEGACY_FEATURES) == ["context", "hungarian_legacy", "cvr", "digit"]
+    assert "hungarian_legacy" not in AVAILABLE_FEATURES  # internal: not selectable for training
     with pytest.raises(ValueError, match="nope"):
         normalize_selected_features(["context", "nope"])
 
@@ -30,6 +32,25 @@ def test_normalize_selected_features():
 def test_legacy_features_match_the_original_four():
     tokens = ["get", "user", "name"]
     assert get_feature_tokens(ROW, tokens, LEGACY_FEATURES) == ["@func", "@hung_none", "@cvr_low", "@no_digit"]
+
+
+def test_hungarian_prefix_on_split_words():
+    assert detect_hungarian_prefix_split(["f", "Matcher"]) == "@hung_f"
+    assert detect_hungarian_prefix_split(["b", "Force", "16", "bpp"]) == "@hung_b"
+    assert detect_hungarian_prefix_split(["fMatcher"]) == "@hung_f"  # caller-supplied unsplit word
+    # Only a single lowercase letter before a capitalized word counts
+    for tokens in (["get", "Controller", "Transform"], ["on", "Item", "Click"], ["or", "Pred"],
+                   ["CRF", "Non", "Linear"], ["DX7", "Device", "GUID"], ["EGLEW", "KHR", "stream"],
+                   ["V", "URL", "Encode"], ["b", "URL"], ["m", "value"], ["get", "user", "name"],
+                   ["size"], []):
+        assert detect_hungarian_prefix_split(tokens) == "@hung_none", tokens
+
+
+def test_legacy_hungarian_keeps_original_behavior():
+    # Checkpoints without a saved feature list were trained with the broken feature, which
+    # almost always produced @hung_none on split words; their inputs must not change.
+    assert get_feature_tokens(ROW, ["f", "Matcher"], LEGACY_FEATURES)[1] == "@hung_none"
+    assert get_feature_tokens(ROW, ["f", "Matcher"], ["hungarian"]) == ["@hung_f"]
 
 
 def test_build_model_input_tokens_interleaves_positions():

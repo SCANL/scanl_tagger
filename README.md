@@ -63,7 +63,7 @@ Each identifier is prefixed with feature tokens that describe it. `--features` c
 | Feature | What it encodes | Input it reads |
 |---------|-----------------|----------------|
 | `context` | Where the identifier is declared (`@func`, `@param`, `@attr`, `@decl`, `@class`) | context |
-| `hungarian` | A 1–3 letter prefix on the first word, followed by an uppercase letter or `_` (e.g. `m_`, `pX`) | name |
+| `hungarian` | A single lowercase letter followed by a capitalized word (`fMatcher`, `bForce16bpp`). Underscore prefixes like `m_value` aren't detected, because splitting drops the underscore | name |
 | `cvr` | Average consonant/vowel ratio of the words (low, mid, high) | name |
 | `digit` | Whether any word contains a digit | name |
 | `digit_connector` | A `2` used as a connector (`to`), and where it sits (head, middle, tail) | name |

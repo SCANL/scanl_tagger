@@ -21,6 +21,19 @@ def test_labels_match_tests():
     assert train_model.LABEL2ID == LABEL2ID
 
 
+def test_accuracy_by_source():
+    preds = pd.DataFrame({
+        "data_source": ["tagger_data", "tagger_data", "synthetic_pos_data_full"],
+        "true_tags":   ["V NM N",      "N",           "NM N"],
+        "pred_tags":   ["V N N",       "N",           "NM N"],
+    })
+    by_source = train_model.accuracy_by_source(preds).set_index("source")
+    assert by_source.loc["tagger_data", "identifiers"] == 2
+    assert by_source.loc["tagger_data", "token_accuracy"] == pytest.approx(3 / 4)
+    assert by_source.loc["tagger_data", "identifier_accuracy"] == pytest.approx(0.5)
+    assert by_source.loc["synthetic_pos_data_full", "identifier_accuracy"] == 1.0
+
+
 def test_compute_metrics_uses_position_aligned_predictions():
     labels = np.array([
         [-100, -100, 3, -100, 4, -100],

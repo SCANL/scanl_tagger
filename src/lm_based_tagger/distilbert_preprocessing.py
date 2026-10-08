@@ -35,13 +35,22 @@ AVAILABLE_FEATURES = [
 
 DEFAULT_FEATURES = list(AVAILABLE_FEATURES)
 
+# Internal features that inference can use but training can't select.
+#   hungarian_legacy: the original `hungarian`, which ran on the first *split* word and so
+#   almost always produced @hung_none. Checkpoints trained with it expect that behavior.
+INTERNAL_FEATURES = ["hungarian_legacy"]
+
+# Order of feature tokens in the model input
+FEATURE_ORDER = ["context", "hungarian", "hungarian_legacy"] + AVAILABLE_FEATURES[2:]
+
 # Features used by checkpoints trained before the feature list was saved in the model config
 # (e.g. sourceslicer/scalar_lm_best). Inference falls back to these when the config has none.
-LEGACY_FEATURES = ["context", "hungarian", "cvr", "digit"]
+LEGACY_FEATURES = ["context", "hungarian_legacy", "cvr", "digit"]
 
 FEATURE_FUNCTIONS = {
     "context": lambda row, tokens: CONTEXT_MAP.get(row["CONTEXT"].strip().upper(), "@unknown"),
-    "hungarian": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
+    "hungarian": lambda row, tokens: detect_hungarian_prefix_split(tokens),
+    "hungarian_legacy": lambda row, tokens: detect_hungarian_prefix(tokens[0]) if tokens else "@hung_none",
     "cvr": lambda row, tokens: consonant_vowel_ratio_bucket(tokens),
     "digit": lambda row, tokens: detect_digit_feature(tokens),
     "digit_connector": lambda row, tokens: get_digit_connector_feature_tokens(tokens),
@@ -90,14 +99,14 @@ def normalize_selected_features(selected_features: Optional[Iterable[str]] = Non
         selected_features: Iterable of feature names, or ``None`` to use all features.
 
     Returns:
-        A feature list ordered according to ``AVAILABLE_FEATURES``.
+        A feature list in model-input order (``FEATURE_ORDER``).
     """
     if selected_features is None:
         return list(DEFAULT_FEATURES)
 
     selected_list = [feature.strip() for feature in selected_features if str(feature).strip()]
     selected_set = set(selected_list)
-    invalid_features = sorted(selected_set - set(AVAILABLE_FEATURES))
+    invalid_features = sorted(selected_set - set(AVAILABLE_FEATURES) - set(INTERNAL_FEATURES))
     if invalid_features:
         raise ValueError(
             "Unknown lm_based feature(s): "
@@ -105,7 +114,7 @@ def normalize_selected_features(selected_features: Optional[Iterable[str]] = Non
             f"Available features: {', '.join(AVAILABLE_FEATURES)}"
         )
 
-    return [feature for feature in AVAILABLE_FEATURES if feature in selected_set]
+    return [feature for feature in FEATURE_ORDER if feature in selected_set]
 
 
 def get_feature_tokens(row, tokens, selected_features: Optional[Iterable[str]] = None):
@@ -135,6 +144,24 @@ def detect_hungarian_prefix(first_token):
     m = re.match(r'^([a-zA-Z]{1,3})[A-Z_]', first_token)
     if m:
         return f"@hung_{m.group(1).lower()}"
+    return "@hung_none"
+
+def detect_hungarian_prefix_split(tokens):
+    """
+    Hungarian-style prefix on an identifier that has already been split into words: a single
+    lowercase letter followed by a capitalized word (``f Matcher``, ``b Force``), or the same
+    shape in an unsplit first word (``fMatcher``). That shape is a preamble in about 80% of the
+    training data. Looser rules (any 1-3 letter first word, all-caps words like ``CRF``) fire on
+    ordinary words such as ``get`` and ``on`` and hurt accuracy. Splitting drops underscores, so
+    ``m_value`` can't be told apart from ``m value`` and doesn't count.
+    """
+    if not tokens:
+        return "@hung_none"
+    unsplit = re.match(r"^([a-z])[A-Z][a-z]", tokens[0])
+    if unsplit:
+        return f"@hung_{unsplit.group(1)}"
+    if len(tokens) >= 2 and re.fullmatch(r"[a-z]", tokens[0]) and re.match(r"[A-Z][a-z]", tokens[1]):
+        return f"@hung_{tokens[0]}"
     return "@hung_none"
 
 def detect_digit_feature(tokens):

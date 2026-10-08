@@ -11,6 +11,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - The CRF transition parameters train with their own learning rate (`5e-3`), instead of the encoder's `5e-5`.
 - The LM model trains on `input/tagger_data.tsv` (replaced with the corrected, cross-validated annotations) plus `input/synthetic_pos_data_full.csv`.
 - LM training: 20% holdout, stratified 5-fold CV by context, low-frequency tag upsampling and verb-synonym augmentation (FUNCTION rows only) applied inside each fold, then a final retrain on the whole training split for the best fold's epoch count.
+- The holdout report shows token and identifier accuracy for each data source, since synthetic rows are much easier than real identifiers.
 - `python main --mode train --features ...` chooses which feature tokens to train with, and `--no-features` trains without any. The default is all of them.
 - New feature tokens for the LM model: digit connectors, plural suffixes, declared type, type/name overlap, language, and system-name overlap. The feature list is saved in the checkpoint config, and inference uses it. Checkpoints without one (such as `sourceslicer/scalar_lm_best`) use the original four features.
 - Inference runs on the GPU when one is available.
@@ -37,6 +38,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - `--address`, `--port`, `--protocol`, and `--word` apply when serving the DistilBERT model; they used to apply only to the tree-based model.
 - `--config_path` is honored; the server always read `serve.json` before.
 - Fold and holdout evaluation decode with the CRF, instead of taking the argmax of the emission scores.
+- The `hungarian` feature looked for its prefix inside the first word *after* splitting, so it almost never fired (20 of 4,383 training rows). It now detects a single lowercase letter followed by a capitalized word (`f Matcher`, `b Force`), which is a preamble about 80% of the time in the training data. Checkpoints trained with `hungarian` before this fix should be retrained; checkpoints without a saved feature list (such as `sourceslicer/scalar_lm_best`) keep the original behavior.
 - An identifier too long for the model input raises an error, instead of silently returning fewer tags than tokens.
 
 ## 2.2.0
