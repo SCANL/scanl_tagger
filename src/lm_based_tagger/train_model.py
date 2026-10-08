@@ -48,12 +48,18 @@ def _configure_torch_runtime() -> None:
     torch.set_float32_matmul_precision("high")
 
 # === Random Seeds ===
-SPLIT_SEED = 658
-TRAIN_SEED = 209
-random.seed(TRAIN_SEED)
-np.random.seed(TRAIN_SEED)
-torch.manual_seed(TRAIN_SEED)
-torch.cuda.manual_seed_all(TRAIN_SEED)
+SPLIT_SEED = 658   # holdout split and CV folds; fixed so every run is scored on the same holdout
+TRAIN_SEED = 209   # default training seed (weight init, batch order, augmentation, dropout)
+
+
+def _seed_everything(seed: int) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+
+
+_seed_everything(TRAIN_SEED)
 torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 _configure_torch_runtime()
@@ -314,12 +320,12 @@ def dual_print(*args, file, **kwargs):
     print(*args, file=file, **kwargs)  # file
 
 
-def _write_run_metadata(file, source_names: List[str], selected_features: List[str]):
+def _write_run_metadata(file, source_names: List[str], selected_features: List[str], train_seed: int):
     """Write reproducibility metadata for the current LM training run."""
     dual_print("\nRun Configuration:", file=file)
     dual_print(f"SCALAR version: {__version__}", file=file)
     dual_print(f"Split seed: {SPLIT_SEED}", file=file)
-    dual_print(f"Train seed: {TRAIN_SEED}", file=file)
+    dual_print(f"Train seed: {train_seed}", file=file)
     dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, max epochs: {EPOCHS}", file=file)
     dual_print(f"Datasets: {', '.join(source_names)}", file=file)
     dual_print(
@@ -657,6 +663,7 @@ def train_lm(
     use_synthetic_data: bool = True,
     selected_features: List[str] | None = None,
     model_dir: str | None = None,
+    train_seed: int = TRAIN_SEED,
 ):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
@@ -669,6 +676,10 @@ def train_lm(
 
     Example input row:
         SPLIT="get Employee Name", GRAMMAR_PATTERN="V NM N", CONTEXT="FUNCTION"
+
+    `train_seed` varies weight initialization, batch order, augmentation and dropout. The
+    holdout split and CV folds always use SPLIT_SEED, so runs with different seeds are scored
+    on the same holdout set.
 
     Output:
         - Trained model checkpoints (best fold + final eval)
@@ -684,6 +695,7 @@ def train_lm(
     best_model_root = os.path.dirname(best_model_dir)
     os.makedirs(best_model_root, exist_ok=True)
     selected_features = normalize_selected_features(selected_features)
+    _seed_everything(train_seed)
 
     # 2) Read the requested datasets and build “tokens” / “tags” columns
     df, source_names = _load_lm_training_dataframe(
@@ -733,7 +745,7 @@ def train_lm(
         # Apply resampling and verb augmentation only inside the fold training slice.
         fold_train_df, verb_aug_count = _prepare_training_frame(
             fold_train_df,
-            augmentation_seed=TRAIN_SEED + fold,
+            augmentation_seed=train_seed + fold,
         )
         if verb_aug_count:
             print(f"  Verb augmentation added {verb_aug_count} synthetic rows "
@@ -793,12 +805,12 @@ def train_lm(
             "greater_is_better": True,
             "save_total_limit": 1,
             "report_to": "none",
-            "seed": TRAIN_SEED,
+            "seed": train_seed,
             "dataloader_num_workers": runtime_config["dataloader_num_workers"],
         }
 
         if _training_arguments_supports("data_seed"):
-            training_kwargs["data_seed"] = TRAIN_SEED
+            training_kwargs["data_seed"] = train_seed
 
         if _training_arguments_supports("group_by_length"):
             training_kwargs["group_by_length"] = True
@@ -905,7 +917,7 @@ def train_lm(
 
     full_train_df, final_verb_aug_count = _prepare_training_frame(
         train_df,
-        augmentation_seed=TRAIN_SEED + K + 1,
+        augmentation_seed=train_seed + K + 1,
     )
     if final_verb_aug_count:
         print(
@@ -952,12 +964,12 @@ def train_lm(
         "warmup_steps": max(1, math.ceil(0.1 * (len(full_train_df) / final_runtime_config["train_batch_size"]) * best_num_train_epochs)),
         "lr_scheduler_type": "cosine",
         "report_to": "none",
-        "seed": TRAIN_SEED,
+        "seed": train_seed,
         "dataloader_num_workers": final_runtime_config["dataloader_num_workers"],
     }
 
     if _training_arguments_supports("data_seed"):
-        final_training_kwargs["data_seed"] = TRAIN_SEED
+        final_training_kwargs["data_seed"] = train_seed
 
     if _training_arguments_supports("group_by_length"):
         final_training_kwargs["group_by_length"] = True
@@ -1087,7 +1099,7 @@ def train_lm(
     print("\nFinal Evaluation on Held-Out Set:")
     with open(os.path.join(script_dir, "holdout_report.txt"), "w") as f:
         dual_print(classification_report(flat_true, flat_pred), file=f)
-        _write_run_metadata(file=f, source_names=source_names, selected_features=selected_features)
+        _write_run_metadata(file=f, source_names=source_names, selected_features=selected_features, train_seed=train_seed)
         dual_print(f"Best CV fold: {best_fold_index}", file=f)
         dual_print(f"Selected retrain epochs: {best_num_train_epochs:.2f}", file=f)
         dual_print(f"Best model dir: {best_model_dir}", file=f)

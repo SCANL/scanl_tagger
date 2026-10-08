@@ -54,7 +54,22 @@ Default parameters are currently hardcoded:
 python main --mode train                                  # every feature (the default)
 python main --mode train --features context type language # only the listed features
 python main --mode train --no-features                    # no feature tokens at all
+python main --mode train --seed 7                         # a different training seed (default 209)
 ```
+
+### Comparing configurations
+
+One training run varies by about ±1 point of identifier accuracy on real code from the seed alone, so compare configurations over several seeds. The holdout split and CV folds are fixed, so every run is scored on the same holdout set; `--seed` changes only weight initialization, batch order, augmentation and dropout. Each run overwrites `holdout_report.txt`, so copy it aside:
+
+```bash
+mkdir -p output/reports
+for seed in 209 7 42; do
+  python main --mode train --features context type language --seed $seed
+  cp holdout_report.txt "output/reports/ctl_seed$seed.txt"
+done
+```
+
+Compare the `tagger_data` line under "Held-Out Accuracy by Data Source"; synthetic identifiers are much easier and inflate the combined score.
 
 ### Feature tokens
 

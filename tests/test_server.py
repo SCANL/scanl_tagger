@@ -98,3 +98,21 @@ def test_features_and_no_features_are_exclusive(monkeypatch, capsys):
         _run_main(monkeypatch, "--mode", "train", "--no-features", "--features", "context")
     assert exit_info.value.code == 2
     assert "not allowed with argument" in capsys.readouterr().err
+
+
+def test_train_seed_flag(monkeypatch):
+    assert _run_main(monkeypatch, "--mode", "train", "--features", "context", "--seed", "7") == [
+        {"selected_features": ["context"], "train_seed": 7}
+    ]
+    # Without --seed, train_lm's own default applies
+    assert "train_seed" not in _run_main(monkeypatch, "--mode", "train")[0]
+
+
+def test_seed_help_states_the_real_default():
+    from src.lm_based_tagger.train_model import TRAIN_SEED
+
+    result = subprocess.run(
+        [sys.executable, os.path.join(REPO_ROOT, "main"), "--help"],
+        cwd=REPO_ROOT, capture_output=True, text=True, timeout=120,
+    )
+    assert f"Default: {TRAIN_SEED}" in " ".join(result.stdout.split())

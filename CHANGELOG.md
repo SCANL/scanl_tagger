@@ -11,6 +11,8 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - The CRF transition parameters train with their own learning rate (`5e-3`), instead of the encoder's `5e-5`.
 - The LM model trains on `input/tagger_data.tsv` (replaced with the corrected, cross-validated annotations) plus `input/synthetic_pos_data_full.csv`.
 - LM training: 20% holdout, stratified 5-fold CV by context, low-frequency tag upsampling and verb-synonym augmentation (FUNCTION rows only) applied inside each fold, then a final retrain on the whole training split for the best fold's epoch count.
+- `python main --mode train --seed N` sets the training seed (default 209). The holdout split and CV folds don't depend on it, so runs with different seeds are scored on the same holdout set.
+- Class rows in `input/tagger_data.tsv` use `class` as their TYPE. 260 of them had the class's own name, which made `type_overlap` report that the whole name was its type.
 - The holdout report shows token and identifier accuracy for each data source, since synthetic rows are much easier than real identifiers.
 - `python main --mode train --features ...` chooses which feature tokens to train with, and `--no-features` trains without any. The default is all of them.
 - New feature tokens for the LM model: digit connectors, plural suffixes, declared type, type/name overlap, language, and system-name overlap. The feature list is saved in the checkpoint config, and inference uses it. Checkpoints without one (such as `sourceslicer/scalar_lm_best`) use the original four features.

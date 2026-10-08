@@ -63,3 +63,10 @@ def test_training_loader_combines_both_sources():
 
     with pytest.raises(ValueError):
         _load_lm_training_dataframe(REPO_ROOT, use_tagger_data=False, use_synthetic_data=False)
+
+
+def test_class_rows_use_class_as_their_type(dataset):
+    # A class's TYPE is the keyword `class`, never the class's own name (which would make
+    # type_overlap report that the whole name is its type).
+    classes = dataset[dataset["CONTEXT"] == "CLASS"]
+    assert (classes["TYPE"].str.lower() == "class").all(), classes[classes["TYPE"].str.lower() != "class"][["SPLIT", "TYPE"]].head()
