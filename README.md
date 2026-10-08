@@ -58,6 +58,7 @@ python main --mode train --seed 7                         # a different training
 python main --mode train --synthetic-data input/other.csv # a different synthetic file
 python main --mode train --no-synthetic-data              # real identifiers only
 python main --mode train --amplify real                   # upsample/augment real identifiers only
+python main --mode train --amplify none                   # no upsampling or verb augmentation
 ```
 
 ### Comparing configurations
@@ -91,7 +92,7 @@ Each identifier is prefixed with feature tokens that describe it. `--features` c
 | `language` | Programming language | language |
 | `sys_sim` | Whether the name's words repeat the system (project) name, e.g. a `gimp` prefix in GIMP | name, system |
 
-The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only. The final model retrains for the median of the CV folds' best epochs. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
+The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only, and `--amplify none` turns it off. The final model retrains for the median of the CV folds' best epochs. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 
 ---
 

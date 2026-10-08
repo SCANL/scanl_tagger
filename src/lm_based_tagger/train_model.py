@@ -75,7 +75,7 @@ LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 # === Data sources ===
 REAL_SOURCE = "tagger_data"   # DATA_SOURCE of the real, commit-linked identifiers
 DEFAULT_SYNTHETIC_PATH = os.path.join("input", "synthetic_pos_data_full.csv")
-AMPLIFY_MODES = ("all", "real")  # which rows get low-frequency upsampling and verb augmentation
+AMPLIFY_MODES = ("all", "real", "none")  # which rows get low-frequency upsampling and verb augmentation
 
 # Curated mapping: common programming verbs → synonyms that are also clearly verbs.
 # Only words that are rarely ambiguous as NM/N in identifier naming are included.
@@ -288,12 +288,14 @@ def _prepare_training_frame(
     """
     Apply fold-safe resampling and augmentation to a training frame.
 
-    `amplify` chooses which rows are upsampled and augmented: "all", or "real" for
-    REAL_SOURCE rows only (synthetic rows are then used once, as written).
+    `amplify` chooses which rows are upsampled and augmented: "all", "real" for
+    REAL_SOURCE rows only (synthetic rows are then used once, as written), or "none".
     """
     if amplify not in AMPLIFY_MODES:
         raise ValueError(f"amplify must be one of {AMPLIFY_MODES}, not {amplify!r}")
     prepared_df = df.reset_index(drop=True).copy()
+    if amplify == "none":
+        return prepared_df, 0
 
     if amplify == "real":
         amplifiable = prepared_df["DATA_SOURCE"] == REAL_SOURCE
@@ -777,7 +779,7 @@ def train_lm(
     on the same holdout set. Each source is split separately, so the real holdout also stays
     the same whichever synthetic file (`synthetic_path`) is used, or none.
 
-    `amplify` is "all" to upsample and augment every row, or "real" for real rows only.
+    `amplify` is "all" to upsample and augment every row, "real" for real rows only, or "none".
 
     Output:
         - Trained model checkpoints (best fold + final eval)

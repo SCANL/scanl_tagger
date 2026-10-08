@@ -14,7 +14,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - `python main --mode train --seed N` sets the training seed (default 209). The holdout split and CV folds don't depend on it, so runs with different seeds are scored on the same holdout set.
 - The holdout is split per data source (20% of each, stratified by context), and CV folds are stratified by source and context. The real holdout no longer changes when the synthetic file does. This changes which identifiers are held out, so scores from earlier runs aren't comparable.
 - The final retrain runs for the median of the CV folds' best epochs, instead of the best fold's. Folds train for up to 10 epochs (was 7).
-- `python main --mode train --synthetic-data PATH` chooses the synthetic file, and `--no-synthetic-data` trains on real identifiers only. `--amplify real` limits low-frequency upsampling and verb augmentation to real rows.
+- `python main --mode train --synthetic-data PATH` chooses the synthetic file, and `--no-synthetic-data` trains on real identifiers only. `--amplify real` limits low-frequency upsampling and verb augmentation to real rows, and `--amplify none` turns them off.
 - Training drops synthetic rows that repeat a real identifier (43 in `synthetic_pos_data_full.csv`) or another synthetic row in the same context. The holdout report lists the synthetic file, its row count, and what was dropped.
 - Class rows in `input/tagger_data.tsv` use `class` as their TYPE. 260 of them had the class's own name, which made `type_overlap` report that the whole name was its type.
 - The holdout report shows token and identifier accuracy for each data source, since synthetic rows are much easier than real identifiers.

@@ -36,6 +36,7 @@ if __name__ == "__main__":
     python main --mode train --synthetic-data [path] # Retrain with a different synthetic file.
     python main --mode train --no-synthetic-data     # Retrain on real identifiers only.
     python main --mode train --amplify real          # Upsample/augment real identifiers only.
+    python main --mode train --amplify none          # No upsampling or verb augmentation.
     python main --mode run --address [host]          # Run the tagger on a specific IP address
     python main --mode run --port [port]             # Run the tagger on a specific port
     python main --mode run --protocol [http/https]   # Specify use of http or https
@@ -90,9 +91,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--amplify",
-        choices=["all", "real"],
+        choices=["all", "real", "none"],
         help="Rows that get low-frequency upsampling and verb augmentation (train mode): "
-             "'all' (default) or 'real' for real identifiers only.",
+             "'all' (default), 'real' for real identifiers only, or 'none'.",
     )
 
     # Run-specific options

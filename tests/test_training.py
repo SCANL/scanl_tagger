@@ -97,8 +97,11 @@ def test_prepare_training_frame_can_amplify_real_rows_only():
 
     _, n_aug_all = train_model._prepare_training_frame(df, augmentation_seed=1, amplify="all")
     assert n_aug_all == 2 * 3 * 2
+    unchanged, n_aug_none = train_model._prepare_training_frame(df, augmentation_seed=1, amplify="none")
+    assert n_aug_none == 0
+    assert len(unchanged) == 2
     with pytest.raises(ValueError):
-        train_model._prepare_training_frame(df, augmentation_seed=1, amplify="none")
+        train_model._prepare_training_frame(df, augmentation_seed=1, amplify="some")
 
 
 def test_real_holdout_does_not_depend_on_synthetic_data():
