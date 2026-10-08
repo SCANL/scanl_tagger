@@ -33,6 +33,9 @@ if __name__ == "__main__":
     python main --mode train --features context type # Retrain with only the listed features.
     python main --mode train --no-features           # Retrain without feature tokens.
     python main --mode train --seed 7                # Retrain with a different training seed.
+    python main --mode train --synthetic-data [path] # Retrain with a different synthetic file.
+    python main --mode train --no-synthetic-data     # Retrain on real identifiers only.
+    python main --mode train --amplify real          # Upsample/augment real identifiers only.
     python main --mode run --address [host]          # Run the tagger on a specific IP address
     python main --mode run --port [port]             # Run the tagger on a specific port
     python main --mode run --protocol [http/https]   # Specify use of http or https
@@ -74,6 +77,23 @@ if __name__ == "__main__":
         const=[],
         help="Train without any feature tokens (train mode).",
     )
+    synthetic_group = parser.add_mutually_exclusive_group()
+    synthetic_group.add_argument(
+        "--synthetic-data",
+        metavar="PATH",
+        help="Synthetic training file (train mode). Default: input/synthetic_pos_data_full.csv.",
+    )
+    synthetic_group.add_argument(
+        "--no-synthetic-data",
+        action="store_true",
+        help="Train on the real identifiers only (train mode).",
+    )
+    parser.add_argument(
+        "--amplify",
+        choices=["all", "real"],
+        help="Rows that get low-frequency upsampling and verb augmentation (train mode): "
+             "'all' (default) or 'real' for real identifiers only.",
+    )
 
     # Run-specific options
     parser.add_argument("--port", type=int, help="Port to bind server")
@@ -89,8 +109,17 @@ if __name__ == "__main__":
         print(get_version())
     elif args.mode == "train":
         from src.lm_based_tagger.train_model import train_lm
-        seed_args = {} if args.seed is None else {"train_seed": args.seed}
-        train_lm(SCRIPT_DIR, selected_features=args.features, **seed_args)
+        # Pass only the options that were given, so train_lm's own defaults apply otherwise.
+        train_args = {}
+        if args.seed is not None:
+            train_args["train_seed"] = args.seed
+        if args.synthetic_data:
+            train_args["synthetic_path"] = resolve_path(args.synthetic_data)
+        if args.no_synthetic_data:
+            train_args["use_synthetic_data"] = False
+        if args.amplify is not None:
+            train_args["amplify"] = args.amplify
+        train_lm(SCRIPT_DIR, selected_features=args.features, **train_args)
 
     elif args.mode == "run":
         from src.tag_identifier import start_server

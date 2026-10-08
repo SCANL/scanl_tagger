@@ -67,10 +67,15 @@ _configure_torch_runtime()
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
-EPOCHS = 7            # number of epochs per fold
+EPOCHS = 10               # max epochs per fold (early stopping usually ends sooner)
 EARLY_STOP = 2            # patience for early stopping
 CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
+
+# === Data sources ===
+REAL_SOURCE = "tagger_data"   # DATA_SOURCE of the real, commit-linked identifiers
+DEFAULT_SYNTHETIC_PATH = os.path.join("input", "synthetic_pos_data_full.csv")
+AMPLIFY_MODES = ("all", "real")  # which rows get low-frequency upsampling and verb augmentation
 
 # Curated mapping: common programming verbs → synonyms that are also clearly verbs.
 # Only words that are rarely ambiguous as NM/N in identifier naming are included.
@@ -278,16 +283,33 @@ def _prepare_training_frame(
     df: pd.DataFrame,
     *,
     augmentation_seed: int,
+    amplify: str = "all",
 ) -> Tuple[pd.DataFrame, int]:
-    """Apply fold-safe resampling and augmentation to a training frame."""
+    """
+    Apply fold-safe resampling and augmentation to a training frame.
+
+    `amplify` chooses which rows are upsampled and augmented: "all", or "real" for
+    REAL_SOURCE rows only (synthetic rows are then used once, as written).
+    """
+    if amplify not in AMPLIFY_MODES:
+        raise ValueError(f"amplify must be one of {AMPLIFY_MODES}, not {amplify!r}")
     prepared_df = df.reset_index(drop=True).copy()
 
+    if amplify == "real":
+        amplifiable = prepared_df["DATA_SOURCE"] == REAL_SOURCE
+    else:
+        amplifiable = pd.Series(True, index=prepared_df.index)
+
     low_freq_rows = prepared_df[
-        prepared_df["tags"].apply(lambda tags: any(tag in LOW_FREQ_TAGS for tag in tags))
+        amplifiable
+        & prepared_df["tags"].apply(lambda tags: any(tag in LOW_FREQ_TAGS for tag in tags))
     ]
     prepared_df = pd.concat([prepared_df] + [low_freq_rows] * 2, ignore_index=True)
 
-    verb_aug_df = _augment_verb_examples(prepared_df, random.Random(augmentation_seed))
+    augment_from = prepared_df
+    if amplify == "real":
+        augment_from = prepared_df[prepared_df["DATA_SOURCE"] == REAL_SOURCE]
+    verb_aug_df = _augment_verb_examples(augment_from, random.Random(augmentation_seed))
     if not verb_aug_df.empty:
         prepared_df = pd.concat([prepared_df, verb_aug_df], ignore_index=True)
 
@@ -310,6 +332,18 @@ def _extract_best_epoch(trainer: Trainer) -> float:
     return best_epoch if best_epoch is not None else float(EPOCHS)
 
 
+def _select_retrain_epochs(fold_best_epochs: List[float]) -> float:
+    """
+    Choose the final retrain length from the folds' best epochs.
+
+    The median, not the best fold's own epoch: a single fold that peaks early (one run had
+    fold 2 at epoch 3 while the others peaked at 5-7) would otherwise undertrain the model.
+    """
+    if not fold_best_epochs:
+        return float(EPOCHS)
+    return float(np.median(fold_best_epochs))
+
+
 # === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -320,14 +354,23 @@ def dual_print(*args, file, **kwargs):
     print(*args, file=file, **kwargs)  # file
 
 
-def _write_run_metadata(file, source_names: List[str], selected_features: List[str], train_seed: int):
+def _write_run_metadata(
+    file,
+    dataset_lines: List[str],
+    selected_features: List[str],
+    train_seed: int,
+    amplify: str,
+):
     """Write reproducibility metadata for the current LM training run."""
     dual_print("\nRun Configuration:", file=file)
     dual_print(f"SCALAR version: {__version__}", file=file)
     dual_print(f"Split seed: {SPLIT_SEED}", file=file)
     dual_print(f"Train seed: {train_seed}", file=file)
     dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, max epochs: {EPOCHS}", file=file)
-    dual_print(f"Datasets: {', '.join(source_names)}", file=file)
+    dual_print("Datasets:", file=file)
+    for line in dataset_lines:
+        dual_print(f"  {line}", file=file)
+    dual_print(f"Amplification (upsampling + verb augmentation): {amplify} rows", file=file)
     dual_print(
         f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
         file=file,
@@ -608,26 +651,31 @@ def _load_lm_training_dataframe(
     script_dir: str,
     use_tagger_data: bool = True,
     use_synthetic_data: bool = True,
+    synthetic_path: str | None = None,
 ) -> Tuple[pd.DataFrame, List[str]]:
     """
     Load and combine the requested LM training sources.
 
+    `synthetic_path` (relative to `script_dir` unless absolute) chooses the synthetic file;
+    the default is DEFAULT_SYNTHETIC_PATH. Its DATA_SOURCE is the file name without extension.
+
     Returns:
         A tuple of:
-        - combined training dataframe
+        - combined training dataframe, real rows first
         - list of source names that were included
     """
+    synthetic_path = os.path.join(script_dir, synthetic_path or DEFAULT_SYNTHETIC_PATH)
     source_configs = [
         {
             "enabled": use_tagger_data,
-            "name": "tagger_data",
+            "name": REAL_SOURCE,
             "path": os.path.join(script_dir, "input", "tagger_data.tsv"),
             "read_kwargs": {"sep": "\t", "dtype": str},
         },
         {
             "enabled": use_synthetic_data,
-            "name": "synthetic_pos_data_full",
-            "path": os.path.join(script_dir, "input", "synthetic_pos_data_full.csv"),
+            "name": os.path.splitext(os.path.basename(synthetic_path))[0],
+            "path": synthetic_path,
             "read_kwargs": {"dtype": str},
         },
     ]
@@ -657,6 +705,51 @@ def _load_lm_training_dataframe(
     return combined_df, source_names
 
 
+def normalize_split(split: str) -> str:
+    """Comparison key for an identifier split: lowercased, single-spaced."""
+    return " ".join(str(split).lower().split())
+
+
+def _drop_synthetic_overlap(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, int]]:
+    """
+    Drop synthetic rows that duplicate a real identifier or an earlier synthetic row.
+
+    A synthetic twin of a real identifier lets the model see a real holdout answer during
+    training. Synthetic duplicates are matched on split and context, since the same words can
+    take different tags in a different context.
+
+    Returns the filtered frame and {"real_twins": n, "duplicates": n} dropped.
+    """
+    keys = df["SPLIT"].map(normalize_split)
+    synthetic = df["DATA_SOURCE"] != REAL_SOURCE
+    real_twin = synthetic & keys.isin(set(keys[~synthetic]))
+    duplicate = synthetic & ~real_twin & pd.DataFrame({
+        "source": df["DATA_SOURCE"], "key": keys, "context": df["CONTEXT"].str.strip().str.upper(),
+    }).duplicated()
+    dropped = {"real_twins": int(real_twin.sum()), "duplicates": int(duplicate.sum())}
+    return df[~(real_twin | duplicate)].reset_index(drop=True), dropped
+
+
+def _split_holdout(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Hold out HOLDOUT_RATIO of each data source separately, stratified by context.
+
+    Splitting per source means the real holdout depends only on the real data, so editing
+    or swapping the synthetic file can't change which real identifiers are scored.
+    """
+    train_parts, holdout_parts = [], []
+    for _, group in df.groupby("DATA_SOURCE", sort=False):
+        train_part, holdout_part = train_test_split(
+            group,
+            test_size=HOLDOUT_RATIO,
+            random_state=SPLIT_SEED,
+            stratify=group["CONTEXT"],
+        )
+        train_parts.append(train_part)
+        holdout_parts.append(holdout_part)
+    return pd.concat(train_parts), pd.concat(holdout_parts)
+
+
 def train_lm(
     script_dir: str,
     use_tagger_data: bool = True,
@@ -664,6 +757,8 @@ def train_lm(
     selected_features: List[str] | None = None,
     model_dir: str | None = None,
     train_seed: int = TRAIN_SEED,
+    synthetic_path: str | None = None,
+    amplify: str = "all",
 ):
     """
     Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
@@ -679,7 +774,10 @@ def train_lm(
 
     `train_seed` varies weight initialization, batch order, augmentation and dropout. The
     holdout split and CV folds always use SPLIT_SEED, so runs with different seeds are scored
-    on the same holdout set.
+    on the same holdout set. Each source is split separately, so the real holdout also stays
+    the same whichever synthetic file (`synthetic_path`) is used, or none.
+
+    `amplify` is "all" to upsample and augment every row, or "real" for real rows only.
 
     Output:
         - Trained model checkpoints (best fold + final eval)
@@ -702,22 +800,26 @@ def train_lm(
         script_dir=script_dir,
         use_tagger_data=use_tagger_data,
         use_synthetic_data=use_synthetic_data,
+        synthetic_path=synthetic_path,
     )
-    print(
-        "Loaded LM training data from "
-        f"{', '.join(source_names)}: {len(df)} total examples"
-    )
+    df, dropped = _drop_synthetic_overlap(df)
+    source_counts = df["DATA_SOURCE"].value_counts()
+    dataset_lines = []
+    for name in source_names:
+        line = f"{name}: {source_counts.get(name, 0)} rows"
+        if name != REAL_SOURCE:
+            line += (
+                f" ({synthetic_path or DEFAULT_SYNTHETIC_PATH}; dropped "
+                f"{dropped['real_twins']} real twins and {dropped['duplicates']} duplicates)"
+            )
+        dataset_lines.append(line)
+    print(f"Loaded LM training data: {len(df)} total examples")
+    for line in dataset_lines:
+        print(f"  {line}")
     print(f"Active LM features: {', '.join(selected_features) if selected_features else '<none>'}")
-    if "DATA_SOURCE" in df.columns:
-        print(df["DATA_SOURCE"].value_counts().sort_index().to_string())
 
-    # 3) Initial Train/Val Split (20% hold-out) 
-    train_df, val_df = train_test_split(
-        df,
-        test_size=HOLDOUT_RATIO,
-        random_state=SPLIT_SEED,
-        stratify=df["CONTEXT"]
-    )
+    # 3) Initial Train/Val Split (20% hold-out of each source)
+    train_df, val_df = _split_holdout(df)
 
     # 4) Tokenizer (upsampling now happens per-fold to prevent cross-fold leakage)
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
@@ -730,12 +832,14 @@ def train_lm(
     )
 
     # 7) Set up K-Fold
+    #    Stratify by source and context, so every fold has its share of real identifiers.
     kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
+    fold_strata = train_df["DATA_SOURCE"] + "|" + train_df["CONTEXT"]
     best_macro_f1 = -1.0
     best_fold_index = None
-    best_num_train_epochs = float(EPOCHS)
+    fold_best_epochs = []
     fold = 1
-    for train_idx, test_idx in kf.split(train_df, train_df["CONTEXT"]):
+    for train_idx, test_idx in kf.split(train_df, fold_strata):
         print(f"\n=== Fold {fold} ===")
 
         # 7a) Split this fold’s train/test from the base training set
@@ -746,6 +850,7 @@ def train_lm(
         fold_train_df, verb_aug_count = _prepare_training_frame(
             fold_train_df,
             augmentation_seed=train_seed + fold,
+            amplify=amplify,
         )
         if verb_aug_count:
             print(f"  Verb augmentation added {verb_aug_count} synthetic rows "
@@ -890,14 +995,14 @@ def train_lm(
         ]
 
         fold_macro_f1 = f1_score(true_labels_list, pred_labels_list, average="macro")
-        print(f"Fold {fold} Macro F1: {fold_macro_f1:.4f}")
+        fold_best_epochs.append(_extract_best_epoch(trainer))
+        print(f"Fold {fold} Macro F1: {fold_macro_f1:.4f}, best epoch: {fold_best_epochs[-1]:.2f}")
 
         # 14) Save model checkpoint if this fold is the best so far
         #     This ensures we retain the model with highest validation performance
         if fold_macro_f1 > best_macro_f1:
             best_macro_f1 = fold_macro_f1
             best_fold_index = fold
-            best_num_train_epochs = _extract_best_epoch(trainer)
             # Clear stale files (e.g. added_tokens.json from prior runs) before saving
             if os.path.exists(best_model_dir):
                 import shutil
@@ -910,14 +1015,17 @@ def train_lm(
 
     # 15) Final summary after cross-validation
     #     Use CV to choose the training duration, then retrain once on all of train_df.
+    best_num_train_epochs = _select_retrain_epochs(fold_best_epochs)
+    fold_epochs_text = ", ".join(f"{epoch:g}" for epoch in fold_best_epochs)
     print(
         f"\nBest CV fold: {best_fold_index}, Macro F1 = {best_macro_f1:.4f}, "
-        f"selected epochs = {best_num_train_epochs:.2f}"
+        f"fold best epochs = [{fold_epochs_text}], selected epochs (median) = {best_num_train_epochs:.2f}"
     )
 
     full_train_df, final_verb_aug_count = _prepare_training_frame(
         train_df,
         augmentation_seed=train_seed + K + 1,
+        amplify=amplify,
     )
     if final_verb_aug_count:
         print(
@@ -1099,9 +1207,16 @@ def train_lm(
     print("\nFinal Evaluation on Held-Out Set:")
     with open(os.path.join(script_dir, "holdout_report.txt"), "w") as f:
         dual_print(classification_report(flat_true, flat_pred), file=f)
-        _write_run_metadata(file=f, source_names=source_names, selected_features=selected_features, train_seed=train_seed)
+        _write_run_metadata(
+            file=f,
+            dataset_lines=dataset_lines,
+            selected_features=selected_features,
+            train_seed=train_seed,
+            amplify=amplify,
+        )
         dual_print(f"Best CV fold: {best_fold_index}", file=f)
-        dual_print(f"Selected retrain epochs: {best_num_train_epochs:.2f}", file=f)
+        dual_print(f"Fold best epochs: {fold_epochs_text}", file=f)
+        dual_print(f"Selected retrain epochs (median of folds): {best_num_train_epochs:.2f}", file=f)
         dual_print(f"Best model dir: {best_model_dir}", file=f)
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
         dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)

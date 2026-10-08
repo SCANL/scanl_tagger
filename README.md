@@ -55,11 +55,14 @@ python main --mode train                                  # every feature (the d
 python main --mode train --features context type language # only the listed features
 python main --mode train --no-features                    # no feature tokens at all
 python main --mode train --seed 7                         # a different training seed (default 209)
+python main --mode train --synthetic-data input/other.csv # a different synthetic file
+python main --mode train --no-synthetic-data              # real identifiers only
+python main --mode train --amplify real                   # upsample/augment real identifiers only
 ```
 
 ### Comparing configurations
 
-One training run varies by about ±1 point of identifier accuracy on real code from the seed alone, so compare configurations over several seeds. The holdout split and CV folds are fixed, so every run is scored on the same holdout set; `--seed` changes only weight initialization, batch order, augmentation and dropout. Each run overwrites `holdout_report.txt`, so copy it aside:
+One training run varies by about ±1 point of identifier accuracy on real code from the seed alone, so compare configurations over several seeds. The holdout split and CV folds are fixed, so every run is scored on the same holdout set; `--seed` changes only weight initialization, batch order, augmentation and dropout. Each data source is split separately, so the real holdout also stays the same whichever synthetic file is used, or none. Each run overwrites `holdout_report.txt`, so copy it aside:
 
 ```bash
 mkdir -p output/reports
@@ -88,7 +91,7 @@ Each identifier is prefixed with feature tokens that describe it. `--features` c
 | `language` | Programming language | language |
 | `sys_sim` | Whether the name's words repeat the system (project) name, e.g. a `gimp` prefix in GIMP | name, system |
 
-The model trains on `input/tagger_data.tsv` and `input/synthetic_pos_data_full.csv`. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
+The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only. The final model retrains for the median of the CV folds' best epochs. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 
 ---
 

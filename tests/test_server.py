@@ -108,6 +108,23 @@ def test_train_seed_flag(monkeypatch):
     assert "train_seed" not in _run_main(monkeypatch, "--mode", "train")[0]
 
 
+def test_train_synthetic_data_flags(monkeypatch, capsys):
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--synthetic-data", "input/v2.csv")
+    assert calls == [{"selected_features": [], "synthetic_path": os.path.join(REPO_ROOT, "input", "v2.csv")}]
+
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--no-synthetic-data")
+    assert calls == [{"selected_features": [], "use_synthetic_data": False}]
+
+    with pytest.raises(SystemExit):
+        _run_main(monkeypatch, "--mode", "train", "--synthetic-data", "x.csv", "--no-synthetic-data")
+    assert "not allowed with argument" in capsys.readouterr().err
+
+
+def test_train_amplify_flag(monkeypatch):
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--amplify", "real")
+    assert calls == [{"selected_features": [], "amplify": "real"}]
+
+
 def test_seed_help_states_the_real_default():
     from src.lm_based_tagger.train_model import TRAIN_SEED
 
