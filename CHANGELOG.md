@@ -19,6 +19,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - Class rows in `input/tagger_data.tsv` use `class` as their TYPE. 260 of them had the class's own name, which made `type_overlap` report that the whole name was its type.
 - The holdout report shows token and identifier accuracy for each data source, since synthetic rows are much easier than real identifiers.
 - `python main --mode train --features ...` chooses which feature tokens to train with, and `--no-features` trains without any. The default is all of them.
+- New `lead_shape` feature: the first word's length, case, and separator (underscore or camelCase), which the uncased model can't otherwise see. A short first word followed by an underscore is a preamble far more often than one in camelCase.
 - New feature tokens for the LM model: digit connectors, plural suffixes, declared type, type/name overlap, language, and system-name overlap. The feature list is saved in the checkpoint config, and inference uses it. Checkpoints without one (such as `sourceslicer/scalar_lm_best`) use the original four features.
 - Inference runs on the GPU when one is available.
 - `version.py` is the single source of the version, and is validated as a semantic version at import time.

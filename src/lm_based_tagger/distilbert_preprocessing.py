@@ -30,7 +30,8 @@ AVAILABLE_FEATURES = [
     "type",
     "type_overlap",
     "language",
-    "sys_sim"
+    "sys_sim",
+    "lead_shape"
 ]
 
 DEFAULT_FEATURES = list(AVAILABLE_FEATURES)
@@ -59,6 +60,7 @@ FEATURE_FUNCTIONS = {
     "type_overlap": lambda row, tokens: get_type_overlap_feature_tokens(tokens, row.get("TYPE", "")),
     "language": lambda row, tokens: normalize_language(row.get("LANGUAGE", "")),
     "sys_sim": lambda row, tokens: get_system_overlap_feature_tokens(tokens, row.get("SYSTEM_NAME", "")),
+    "lead_shape": lambda row, tokens: get_lead_shape_feature_tokens(tokens),
 }
 
 TYPE_BOOL_TOKENS = {"bool", "boolean", "glboolean", "boolean_t"}
@@ -163,6 +165,43 @@ def detect_hungarian_prefix_split(tokens):
     if len(tokens) >= 2 and re.fullmatch(r"[a-z]", tokens[0]) and re.match(r"[A-Z][a-z]", tokens[1]):
         return f"@hung_{tokens[0]}"
     return "@hung_none"
+
+def get_lead_shape_feature_tokens(tokens: List[str]) -> List[str]:
+    """
+    Shape of the first word: its length, its case, and how the next word is attached.
+
+    The model is uncased and never sees separators, but preambles have a distinctive shape: a
+    short first word followed by an underscore (``m_count``, ``png_get_rows``) is a preamble far
+    more often than one in camelCase (``xOffset``). The split keeps each word's case, and the next
+    word's case recovers the separator: a lowercase next word means an underscore (``m count``
+    from ``m_count``), a capitalized one or a digit means camelCase. That guess matches the
+    original name for 99% of the real identifiers. All-caps names (``MAX_SIZE``) count as underscores.
+    """
+    if not tokens:
+        return ["@lead_none"]
+    first = tokens[0]
+    length = "@lead_len1" if len(first) == 1 else "@lead_len2_3" if len(first) <= 3 else "@lead_len4"
+    letters = [c for c in first if c.isalpha()]
+    if not letters:
+        case = "@lead_nocase"
+    elif all(c.isupper() for c in letters):
+        case = "@lead_upper" if len(letters) > 1 else "@lead_title"
+    elif letters[0].isupper():
+        case = "@lead_title"
+    else:
+        case = "@lead_lower"
+    if len(tokens) == 1:
+        attach = "@lead_alone"
+    else:
+        nxt = tokens[1]
+        if case == "@lead_upper" and nxt.isupper():
+            attach = "@lead_under"
+        elif nxt[:1].isupper() or nxt[:1].isdigit():
+            attach = "@lead_camel"
+        else:
+            attach = "@lead_under"
+    return [length, case, attach]
+
 
 def detect_digit_feature(tokens):
     for token in tokens:

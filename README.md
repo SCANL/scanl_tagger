@@ -77,7 +77,7 @@ Compare the `tagger_data` line under "Held-Out Accuracy by Data Source"; synthet
 
 ### Feature tokens
 
-Each identifier is prefixed with feature tokens that describe it. `--features` chooses which ones the model trains with, and `--no-features` turns them all off; **by default, all ten are on**. The chosen list is saved in the checkpoint's config, and the tagger uses the same list when serving, so nothing needs to be set at run time. A checkpoint without a saved list (such as `sourceslicer/scalar_lm_best`) uses `context`, `hungarian`, `cvr`, and `digit`.
+Each identifier is prefixed with feature tokens that describe it. `--features` chooses which ones the model trains with, and `--no-features` turns them all off; **by default, all eleven are on**. The chosen list is saved in the checkpoint's config, and the tagger uses the same list when serving, so nothing needs to be set at run time. A checkpoint without a saved list (such as `sourceslicer/scalar_lm_best`) uses `context`, `hungarian`, `cvr`, and `digit`.
 
 | Feature | What it encodes | Input it reads |
 |---------|-----------------|----------------|
@@ -91,6 +91,7 @@ Each identifier is prefixed with feature tokens that describe it. `--features` c
 | `type_overlap` | Whether the name's words repeat the type's words (e.g. `userList` of type `UserList`) | name, type |
 | `language` | Programming language | language |
 | `sys_sim` | Whether the name's words repeat the system (project) name, e.g. a `gimp` prefix in GIMP | name, system |
+| `lead_shape` | The first word's length (1, 2–3, 4+ characters), case, and whether an underscore or a camelCase break follows it. The model is uncased, so this is how it sees `m_count` vs. `xOffset`; the separator is read from the next word's case | name |
 
 The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only, and `--amplify none` turns it off. The final model retrains for the median of the CV folds' best epochs. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 

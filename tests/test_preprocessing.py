@@ -8,6 +8,7 @@ from src.lm_based_tagger.distilbert_preprocessing import (
     detect_hungarian_prefix_split,
     build_model_input_tokens,
     get_feature_tokens,
+    get_lead_shape_feature_tokens,
     get_plural_suffix_feature_tokens,
     get_type_feature_tokens,
     get_type_overlap_feature_tokens,
@@ -125,3 +126,19 @@ def test_every_training_row_builds_features():
     for tokens, tags in zip(ds["tokens"], ds["ner_tags"]):
         assert len(tokens) == len(tags)
         assert not any(t in ("@nan", "@lang_nan") or "nan" == t for t in tokens)
+
+
+@pytest.mark.parametrize("tokens, expected", [
+    (["m", "count"], ["@lead_len1", "@lead_lower", "@lead_under"]),          # m_count
+    (["m", "Count"], ["@lead_len1", "@lead_lower", "@lead_camel"]),          # mCount
+    (["png", "get", "rows"], ["@lead_len2_3", "@lead_lower", "@lead_under"]),
+    (["C", "Render", "Window"], ["@lead_len1", "@lead_title", "@lead_camel"]),
+    (["MAX", "RETRY", "COUNT"], ["@lead_len2_3", "@lead_upper", "@lead_under"]),
+    (["sqlite3", "Where"], ["@lead_len4", "@lead_lower", "@lead_camel"]),
+    (["vol", "Stride", "1"], ["@lead_len2_3", "@lead_lower", "@lead_camel"]),
+    (["arg", "2"], ["@lead_len2_3", "@lead_lower", "@lead_camel"]),
+    (["count"], ["@lead_len4", "@lead_lower", "@lead_alone"]),
+    ([], ["@lead_none"]),
+])
+def test_lead_shape(tokens, expected):
+    assert get_lead_shape_feature_tokens(tokens) == expected

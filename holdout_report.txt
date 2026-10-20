@@ -1,43 +1,45 @@
               precision    recall  f1-score   support
 
-          CJ       0.93      1.00      0.97        14
-           D       0.93      0.98      0.96        56
-          DT       0.97      0.97      0.97        61
-           N       0.95      0.94      0.95       454
-          NM       0.92      0.91      0.91       455
-         NPL       0.97      1.00      0.99        72
-           P       0.93      0.97      0.95        87
-         PRE       0.86      0.84      0.85        85
-           V       0.83      0.86      0.85       123
-          VM       0.73      0.79      0.76        14
+          CJ       0.97      1.00      0.99        33
+           D       0.97      0.97      0.97        69
+          DT       0.99      0.99      0.99        91
+           N       0.97      0.96      0.97       770
+          NM       0.95      0.93      0.94       631
+         NPL       0.97      0.99      0.98       135
+           P       0.96      0.98      0.97       149
+         PRE       0.90      0.93      0.91       127
+           V       0.90      0.93      0.92       300
+          VM       0.92      0.88      0.90        26
 
-    accuracy                           0.92      1421
-   macro avg       0.90      0.92      0.91      1421
-weighted avg       0.92      0.92      0.92      1421
+    accuracy                           0.95      2331
+   macro avg       0.95      0.96      0.95      2331
+weighted avg       0.95      0.95      0.95      2331
 
 
 Run Configuration:
 SCALAR version: 3.0.0
 Split seed: 658
-Train seed: 42
+Train seed: 209
 CV folds: 5, holdout ratio: 0.2, max epochs: 10
 Datasets:
   tagger_data: 2589 rows
+  synthetic_pos_data_full: 1836 rows (input/synthetic_pos_data_full.csv; dropped 43 real twins and 2 duplicates)
 Amplification (upsampling + verb augmentation): all rows
-Features: context, type, language
-Best CV fold: 5
-Fold best epochs: 8, 5, 6, 10, 5
+Features: context, type, language, lead_shape
+Best CV fold: 1
+Fold best epochs: 7, 10, 5, 5, 6
 Selected retrain epochs (median of folds): 6.00
 Best model dir: /home/asteriaicom/tagger_refactor/scanl_tagger/output/best_model
 
-Inference Time: 1.19s for 518 identifiers (4428 tokens)
-Tokens/sec: 3721.50
-Identifiers/sec: 435.35
+Inference Time: 1.67s for 886 identifiers (10037 tokens)
+Tokens/sec: 6026.52
+Identifiers/sec: 531.98
 
-Final Macro F1 on Held-Out Set: 0.9137
-Final Token-level Accuracy on Held-Out Set: 0.9233
-Final Identifier-level Accuracy on Held-Out Set: 0.8340
-Batched Viterbi Token-level Accuracy (consistency check): 0.9233
+Final Macro F1 on Held-Out Set: 0.9539
+Final Token-level Accuracy on Held-Out Set: 0.9524
+Final Identifier-level Accuracy on Held-Out Set: 0.8950
+Batched Viterbi Token-level Accuracy (consistency check): 0.9524
 
 Held-Out Accuracy by Data Source:
-  tagger_data: 518 identifiers, token 0.9233, identifier 0.8340
+  synthetic_pos_data_full: 368 identifiers, token 0.9824, identifier 0.9565
+  tagger_data: 518 identifiers, token 0.9331, identifier 0.8514
