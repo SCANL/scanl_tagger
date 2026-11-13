@@ -695,6 +695,10 @@ def _load_lm_training_dataframe(
         df.columns = [str(col).replace("\ufeff", "").strip() for col in df.columns]
         df = df.dropna(subset=required_columns)
         df = df[df["SPLIT"].str.strip().astype(bool)].copy()
+        if "TYPE" in df.columns:
+            # Typeless identifiers (enum constants, macros) have a blank TYPE; keep it ""
+            # so the type feature reads @type_unknown rather than the string "nan".
+            df["TYPE"] = df["TYPE"].fillna("")
         df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
         df["tags"] = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
         df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)].copy()

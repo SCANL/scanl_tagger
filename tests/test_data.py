@@ -28,8 +28,17 @@ def dataset(request):
 
 def test_required_columns_present_and_filled(dataset):
     assert set(REQUIRED_COLUMNS) <= set(dataset.columns)
-    assert dataset[REQUIRED_COLUMNS].isna().sum().sum() == 0
+    # headnoun_set includes typeless identifiers (enum constants, macros) with a blank TYPE.
+    may_lack_type = dataset.get("DATA_SOURCE", pd.Series("", index=dataset.index)) == "headnoun_set"
+    filled = [col for col in REQUIRED_COLUMNS if col != "TYPE"]
+    assert dataset[filled].isna().sum().sum() == 0
+    assert dataset.loc[~may_lack_type, "TYPE"].isna().sum() == 0
     assert len(dataset) > 1000
+
+
+def test_tagger_data_sources_are_known():
+    sources = pd.read_csv(REAL_DATA, sep="\t", dtype=str)["DATA_SOURCE"]
+    assert set(sources) == {"original_set", "closed_category_set", "headnoun_set"}
 
 
 def test_tokens_and_tags_line_up(dataset):
