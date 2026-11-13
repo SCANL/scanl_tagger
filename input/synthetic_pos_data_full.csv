@@ -52,7 +52,7 @@ List,aggregate Samples,FUNCTION,V NPL,Java,netpulse
 void,align To Boundary,FUNCTION,V P N,C,aeon
 float,alignment Value,PARAMETER,NM N,C,bolt
 vector,all Children,ATTRIBUTE,DT NPL,C++,sigma
-Integer,all Data,DECLARATION,DT N,Java,dataforge
+Integer,all Data,DECLARATION,DT NPL,Java,dataforge
 Collection,all Partitions,DECLARATION,DT NPL,Java,beanworks
 List,all Replicas,ATTRIBUTE,DT NPL,Java,cloudkit
 Set,all Subscribers,DECLARATION,DT NPL,Java,netpulse
@@ -334,7 +334,7 @@ String,convert To JSON String,FUNCTION,V P NM N,Java,netpulse
 String,convert To String,FUNCTION,V P N,Java,springcore
 void,convert yuv 2 rgb,FUNCTION,V N P N,C++,pixl
 void,copy Buffer To Shared Memory,FUNCTION,V N P NM N,C++,neutron
-void,copy Data To Shared Buffer,FUNCTION,V N P NM N,C,aeon
+void,copy Data To Shared Buffer,FUNCTION,V NPL P NM N,C,aeon
 void,copy File To Directory,FUNCTION,V N P N,C,forge
 void,copy Region To Buffer,FUNCTION,V N P N,C,aeon
 int,correlation Id,ATTRIBUTE,NM N,Java,netpulse
@@ -375,7 +375,7 @@ class,Custom Memory Manager,CLASS,NM NM N,C++,neutron
 class,Custom Retry Policy,CLASS,NM NM N,Java,cloudkit
 class,Custom Thread Pool Executor,CLASS,NM NM NM N,Java,springcore
 size_t,daemon,DECLARATION,N,C,trak
-int,data Or Logger,ATTRIBUTE,N CJ N,Java,springcore
+int,data Or Logger,ATTRIBUTE,NPL CJ N,Java,springcore
 class,Data Source,CLASS,NM N,Java,dataforge
 String,dec 2 hex,FUNCTION,N P N,C,forge
 void,decode Packet,FUNCTION,V N,C,nexus
@@ -465,8 +465,8 @@ int,each Entry,PARAMETER,DT N,Java,springcore
 int,each Item,DECLARATION,DT N,Java,springcore
 long,each Partition,DECLARATION,DT N,Java,beanworks
 size_t,each Segment,PARAMETER,DT N,C,coda
-boolean,eagerly Cached Data,ATTRIBUTE,VM V N,Java,byteforge
-void,eagerly Fetch Data,FUNCTION,VM V N,Java,dataforge
+boolean,eagerly Cached Data,ATTRIBUTE,VM V NPL,Java,byteforge
+void,eagerly Fetch Data,FUNCTION,VM V NPL,Java,dataforge
 boolean,eagerly Initialized,ATTRIBUTE,VM V,Java,beanworks
 List,eagerly Load Dependencies,FUNCTION,VM V NPL,Java,springcore
 Collection,eagerly Merge Results,FUNCTION,VM V NPL,Java,byteforge
@@ -525,7 +525,7 @@ class,Feature Extractor,CLASS,NM N,Java,dataforge
 void,fetch Or Create,FUNCTION,V CJ V,Java,springcore
 Map,fetch Records,FUNCTION,V NPL,Java,dataforge
 Collection,fetch Remote Files,FUNCTION,V NM NPL,Java,dataforge
-Void,fetch Weather Data,FUNCTION,V NM N,swift,gridview
+Void,fetch Weather Data,FUNCTION,V NM NPL,swift,gridview
 List,fields,ATTRIBUTE,NPL,Java,springcore
 int,file Descriptor,DECLARATION,NM N,C,kron
 string,file Path,DECLARATION,NM N,C++,apex
@@ -902,7 +902,7 @@ bool,load Cached Modules,FUNCTION,V NM NPL,C++,helix
 boolean,load Cached Resources,FUNCTION,V NM NPL,Java,springcore
 void,load Config,FUNCTION,V N,C++,apex
 std::string,load Config From Default Path,FUNCTION,V N P NM N,C++,apex
-void,load Data From Cache,FUNCTION,V N P N,Java,bytecraft
+void,load Data From Cache,FUNCTION,V NPL P N,Java,bytecraft
 string,load Default Config Path,FUNCTION,V NM NM N,C++,corelib
 void,load External Resources,FUNCTION,V NM NPL,Java,springcore
 const char*,load Image From Path,FUNCTION,V N P N,C,pixl
@@ -923,7 +923,7 @@ long,log Level,PARAMETER,NM N,Java,cloudkit
 void,log Out,FUNCTION,V P,Java,springcore
 class,Log Writer,CLASS,NM N,Java,dataforge
 double,loss Value,DECLARATION,NM N,C++,neutron
-uint32_t,lp Data,DECLARATION,PRE N,C,nexus
+uint32_t,lp Data,DECLARATION,PRE NPL,C,nexus
 char*,lp Error Text,DECLARATION,PRE NM N,C,ember
 char*,lpsz String,DECLARATION,PRE N,C,forge
 int,m 11,ATTRIBUTE,N D,C++,sigma
@@ -983,7 +983,7 @@ class,Memory Allocator,CLASS,NM N,C++,neutron
 Collection,merge Results,FUNCTION,V NPL,Java,dataforge
 class,Mesh Renderer,CLASS,NM N,C++,prism
 class,Message Broker,CLASS,NM N,Java,netpulse
-void,migrate Data To New Schema,FUNCTION,V N P NM N,Java,beanworks
+void,migrate Data To New Schema,FUNCTION,V NPL P NM N,Java,beanworks
 void,migrate Schema,FUNCTION,V N,Java,beanworks
 List,migrate Table To Schema,FUNCTION,V N P N,Java,beanworks
 int,migrate To Latest Version,FUNCTION,V P NM N,Java,beanworks
@@ -1086,8 +1086,8 @@ void,on Close,FUNCTION,P V,Java,netpulse
 void,on Complete,FUNCTION,P V,Java,springcore
 void,on Connect,FUNCTION,P V,Java,netpulse
 void,on Create,FUNCTION,P V,Java,gridview
-void,on Data Available,FUNCTION,P N V,Java,netpulse
-void,on Data Received,FUNCTION,P N V,Java,nodelink
+void,on Data Available,FUNCTION,P NPL V,Java,netpulse
+void,on Data Received,FUNCTION,P NPL V,Java,nodelink
 void,on Deactivate,FUNCTION,P V,Java,webstack
 void,on Destroy,FUNCTION,P V,Java,gridview
 void,on Detach,FUNCTION,P V,Java,webstack
@@ -1185,7 +1185,7 @@ bool,p Active Node,ATTRIBUTE,PRE NM N,C,aurora
 size_t,p Buffer,DECLARATION,PRE N,C,blitz
 long,p Buffer,PARAMETER,PRE N,C,ember
 int,p Buffer,PARAMETER,PRE N,C,ember
-size_t,p Data,ATTRIBUTE,PRE N,C,drift
+size_t,p Data,ATTRIBUTE,PRE NPL,C,drift
 unsigned,p Input Buffer,DECLARATION,PRE NM N,C,byteforge
 unsigned,p Next Free Block,DECLARATION,PRE NM NM N,C,blitz
 class,Packet Handler,CLASS,NM N,C++,nexus
@@ -1321,7 +1321,7 @@ size_t,r 1,DECLARATION,N D,C,trak
 Real,radius,ATTRIBUTE,N,C++,titan
 void,rasterize Polygon,FUNCTION,V N,C++,prism
 class,Rate Limiter,CLASS,NM N,Java,netpulse
-void,read And Process Data,FUNCTION,V CJ V N,Java,dataforge
+void,read And Process Data,FUNCTION,V CJ V NPL,Java,dataforge
 void,read And Write,FUNCTION,V CJ V,C,forge
 void,read Bytes From Stream,FUNCTION,V N P N,Java,springcore
 void,read Chunk From Stream,FUNCTION,V N P N,C,coda
@@ -1337,7 +1337,7 @@ int,read Or Write,DECLARATION,V CJ V,C,forge
 size_t,read Or Write Flag,DECLARATION,NM CJ NM N,C,coda
 char*,read Or Write Mode,DECLARATION,NM CJ NM N,C,coda
 int,read Position,ATTRIBUTE,NM N,C++,oxide
-void,read Sensor Data,FUNCTION,V NM N,C,dusk
+void,read Sensor Data,FUNCTION,V NM NPL,C,dusk
 Integer,read Timeout,PARAMETER,NM N,Java,netpulse
 uint32_t,reader And Parser,DECLARATION,N CJ N,C++,halcyon
 int,reader And Writer,DECLARATION,N CJ N,C,coda
@@ -1495,8 +1495,8 @@ Int,selected Index,DECLARATION,NM N,swift,gridview
 List,selected Rows,DECLARATION,NM NPL,Java,gridview
 int,semaphore,DECLARATION,N,C,trak
 int,semaphore Count,DECLARATION,NM N,C,kron
-void,send Data To Remote Server,FUNCTION,V N P NM N,Java,nodelink
-void,send Data To Server,FUNCTION,V N P N,Java,nodelink
+void,send Data To Remote Server,FUNCTION,V NPL P NM N,Java,nodelink
+void,send Data To Server,FUNCTION,V NPL P N,Java,nodelink
 void,send Event To Handler,FUNCTION,V N P N,Java,springcore
 void,send Heartbeat,FUNCTION,V N,C,nexus
 void,send Message,FUNCTION,V N,Java,springcore
@@ -1719,7 +1719,7 @@ Double,total Revenue,ATTRIBUTE,NM N,Java,dataforge
 void,trace Execution,FUNCTION,V N,Java,cloudkit
 long,trace Id,ATTRIBUTE,NM N,Java,cloudkit
 void,train Model,FUNCTION,V N,Java,dataforge
-long,training Data,PARAMETER,NM N,Java,dataforge
+long,training Data,PARAMETER,NM NPL,Java,dataforge
 void,trak context,FUNCTION,PRE N,C,trak
 void,trak create process,FUNCTION,PRE V N,C,trak
 int,trak default stack size,DECLARATION,PRE NM NM N,C,trak
@@ -1849,7 +1849,7 @@ int,with Context,PARAMETER,P N,Java,webstack
 Set,with Default Options,PARAMETER,P NM NPL,Java,cloudkit
 Map,with Headers,PARAMETER,P NPL,Java,netpulse
 long,with Retry Policy,PARAMETER,P NM N,Java,pulseforge
-void,write Binary Data,FUNCTION,V NM N,C,coda
+void,write Binary Data,FUNCTION,V NM NPL,C,coda
 void,write Buffer,FUNCTION,V N,C,blitz
 void,write Bytes To Stream,FUNCTION,V N P N,Java,springcore
 void,write Error Log,FUNCTION,V NM N,C,forge

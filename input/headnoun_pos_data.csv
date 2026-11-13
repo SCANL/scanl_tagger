@@ -1,0 +1,1777 @@
+TYPE,SPLIT,CONTEXT,GRAMMAR_PATTERN,LANGUAGE,SYSTEM_NAME
+,BACKWARD,ATTRIBUTE,N,C,arangodb/arangodb
+uint8_t,DELETE,ATTRIBUTE,V,C,dragonflydb/dragonfly
+,am,ATTRIBUTE,N,C,scylladb/scylladb
+Expr *,argument,ATTRIBUTE,N,C,timescale/timescaledb
+unsigned,bin,ATTRIBUTE,N,C,dragonflydb/dragonfly
+TdFilePtr,fd,ATTRIBUTE,N,C,taosdata/TDengine
+RowPolicyPtr,policy,ATTRIBUTE,N,C,ClickHouse/ClickHouse
+WebAssemblyFunctionSettings,settings,ATTRIBUTE,NPL,C,ClickHouse/ClickHouse
+EdbStmtInfoParseState,state,ATTRIBUTE,N,C,geldata/gel
+EventTriggerDropType,type,ATTRIBUTE,N,C,timescale/timescaledb
+,DRO Forbid,ATTRIBUTE,PRE V,C,timescale/timescaledb
+,JT DATE,ATTRIBUTE,NM N,C,dbeaver/dbeaver
+,LT INFO,ATTRIBUTE,NM N,C,dbeaver/dbeaver
+size_t,block size,ATTRIBUTE,NM N,C,ClickHouse/ClickHouse
+String,data name,ATTRIBUTE,NM N,C,ClickHouse/ClickHouse
+bool,is Valid,ATTRIBUTE,V NM,C,arangodb/arangodb
+using,iterator category,ATTRIBUTE,NM N,C,dragonflydb/dragonfly
+wchar_t,old Description,ATTRIBUTE,NM N,C,taosdata/TDengine
+SMJoinOperatorInfo*,p Join,ATTRIBUTE,PRE V,C,taosdata/TDengine
+int64,range start,ATTRIBUTE,NM N,C,timescale/timescaledb
+Datum *,seg values,ATTRIBUTE,NM NPL,C,timescale/timescaledb
+TimestampTz,stats since,ATTRIBUTE,NPL P,C,geldata/gel
+int,trim strategy,ATTRIBUTE,NM N,C,dragonflydb/dragonfly
+int64,wal fpi,ATTRIBUTE,NM N,C,geldata/gel
+Size,allocated body bytes,ATTRIBUTE,NM NM NPL,C,timescale/timescaledb
+bool,enable Foxx Api,ATTRIBUTE,V NM N,C,arangodb/arangodb
+FunctionCallInfo,eq fc info,ATTRIBUTE,NM NM N,C,timescale/timescaledb
+bool,filter push down,ATTRIBUTE,N V P,C,ClickHouse/ClickHouse
+,is 24 hr,ATTRIBUTE,V D N,C,scylladb/scylladb
+double,jit emission time,ATTRIBUTE,NM NM N,C,geldata/gel
+bool,need Sort Merge,ATTRIBUTE,V NM N,C,taosdata/TDengine
+CompactObjType,orig obj type,ATTRIBUTE,NM NM N,C,dragonflydb/dragonfly
+void *,p State Db,ATTRIBUTE,PRE NM N,C,taosdata/TDengine
+Names,projection column names,ATTRIBUTE,NM NM NPL,C,ClickHouse/ClickHouse
+int64,shared blks read,ATTRIBUTE,NM NPL V,C,geldata/gel
+uint64_t,stream random accesses,ATTRIBUTE,NM NM NPL,C,dragonflydb/dragonfly
+bool,use V Pack,ATTRIBUTE,V NM N,C,arangodb/arangodb
+,DW AT v table elem location,ATTRIBUTE,PRE PRE NM NM NM N,C,ClickHouse/ClickHouse
+,DW CFA def cfa register,ATTRIBUTE,PRE PRE NM NM N,C,ClickHouse/ClickHouse
+,EDB STMT INFO PARSE TAG,ATTRIBUTE,PRE PRE NM NM N,C,geldata/gel
+,Hyper table Index Flag Multi Transaction,ATTRIBUTE,PRE PRE PRE PRE NM N,C,timescale/timescaledb
+,PHY EXCHANGE CODE SRC START GROUP ID,ATTRIBUTE,PRE PRE PRE NM NM NM N,C,taosdata/TDengine
+,Anum continuous aggs watermark p key max,ATTRIBUTE,PRE NM NM NM NM NM N,C,timescale/timescaledb
+int32_t,max Rows Per Block,ATTRIBUTE,NM NPL P N,C,taosdata/TDengine
+int,move Filters Up Rule 2,ATTRIBUTE,NM NPL VM N D,C,arangodb/arangodb
+HllBufferPtr,pages marked for realloc,ATTRIBUTE,NPL NM P N,C,dragonflydb/dragonfly
+double,shared blk read time,ATTRIBUTE,NM NM NM N,C,geldata/gel
+size_t,small bins filling entries cnt,ATTRIBUTE,NM NM NM NM N,C,dragonflydb/dragonfly
+zlib_filefunc64_def,z file func 64,ATTRIBUTE,NM NM N D,C,arangodb/arangodb
+HRESULT STDMETHODCALLTYPE,Indicate,FUNCTION,V,C,dbeaver/dbeaver
+void,abs,FUNCTION,N,C,taosdata/TDengine
+unsigned short,checksum,FUNCTION,N,C,sqlmapproject/sqlmap
+Result,load,FUNCTION,V,C,arangodb/arangodb
+void,ok,FUNCTION,NM,C,dragonflydb/dragonfly
+ResponseType &,operator,FUNCTION,N,C,ClickHouse/ClickHouse
+void,pop,FUNCTION,V,C,timescale/timescaledb
+void FUNCTION_NAME,vector,FUNCTION,N,C,timescale/timescaledb
+,weekday,FUNCTION,N,C,scylladb/scylladb
+void,Read Attributes,FUNCTION,V NPL,C,dbeaver/dbeaver
+int,TRI listen,FUNCTION,PRE V,C,arangodb/arangodb
+double,TfIdf,FUNCTION,N,C,dragonflydb/dragonfly
+bool,belong Table,FUNCTION,V N,C,taosdata/TDengine
+TimestampTz,entry reset,FUNCTION,N V,C,geldata/gel
+BgwJob *,find job,FUNCTION,V N,C,timescale/timescaledb
+RabbitMQConnection &,get Connection,FUNCTION,V N,C,ClickHouse/ClickHouse
+,last spec,FUNCTION,DT N,C,scylladb/scylladb
+int,load deps,FUNCTION,V N,C,sqlmapproject/sqlmap
+void,pgss store,FUNCTION,PRE V,C,geldata/gel
+template <typename Container> auto &,pick Randomly,FUNCTION,V VM,C,ClickHouse/ClickHouse
+template<typename T> T,register String,FUNCTION,V N,C,arangodb/arangodb
+void,relock rel,FUNCTION,V N,C,timescale/timescaledb
+int,spawn shell,FUNCTION,V N,C,sqlmapproject/sqlmap
+EDealRes,translate Column,FUNCTION,V N,C,taosdata/TDengine
+void,Delete Local Ref,FUNCTION,V NM N,C,dbeaver/dbeaver
+bool,WMI Initialize Thread,FUNCTION,PRE V N,C,dbeaver/dbeaver
+int32_t,bse Batch Init,FUNCTION,PRE N V,C,taosdata/TDengine
+void,create icmp channel,FUNCTION,V NM N,C,sqlmapproject/sqlmap
+SortDescription,extract Sort Description,FUNCTION,V NM N,C,ClickHouse/ClickHouse
+real,geod gen direct,FUNCTION,NM NM N,C,arangodb/arangodb
+int32_t,histogram Function Merge,FUNCTION,PRE N V,C,taosdata/TDengine
+void,json append data,FUNCTION,PRE V NPL,C,dragonflydb/dragonfly
+void,pgss Executor Finish,FUNCTION,PRE N V,C,geldata/gel
+void *,rax Stack Pop,FUNCTION,PRE NM N,C,dragonflydb/dragonfly
+void,set Vars Valid,FUNCTION,V NPL NM,C,arangodb/arangodb
+TSDLLEXPORT void,ts chunk drop,FUNCTION,PRE N V,C,timescale/timescaledb
+bool,tuple is deleted,FUNCTION,N V V,C,timescale/timescaledb
+void*,Add Or Replace Obj,FUNCTION,V CJ V N,C,dragonflydb/dragonfly
+HUF_CTableHeader,HUF read C Table Header,FUNCTION,PRE V NM NM N,C,dragonflydb/dragonfly
+jobjectArray,Make Java Object Array From Safe Vector,FUNCTION,V NM NM N P NM N,C,dbeaver/dbeaver
+Result,create Is Building Database Coordinator,FUNCTION,V V V NM N,C,arangodb/arangodb
+AstNode*,create Node Value Int,FUNCTION,V NM NM N,C,arangodb/arangodb
+JsonParseErrorType,edbss json ofield start,FUNCTION,PRE NM NM N,C,geldata/gel
+void,hyper table drop hook type,FUNCTION,PRE PRE V NM N,C,timescale/timescaledb
+void,init scan c agg bucket function by mat hyper table id,FUNCTION,PRE V PRE PRE NM N P NM NM NM N,C,timescale/timescaledb
+bool,is Part Format Setting,FUNCTION,V NM NM N,C,ClickHouse/ClickHouse
+void,pgss shmem shutdown,FUNCTION,PRE N V,C,geldata/gel
+int32_t,sdb Write Without Free,FUNCTION,PRE V P V,C,taosdata/TDengine
+void,set Max Turbo Threads,FUNCTION,V NM NM NPL,C,ClickHouse/ClickHouse
+using,Buckets,DECLARATION,NPL,C,dragonflydb/dragonfly
+CComModule,Module,DECLARATION,N,C,dbeaver/dbeaver
+AnalyzerIterator,end,DECLARATION,N,C,arangodb/arangodb
+size_t,i,DECLARATION,N,C,timescale/timescaledb
+char *,partition,DECLARATION,N,C,ClickHouse/ClickHouse
+pgssSharedState *,pgss,DECLARATION,N,C,geldata/gel
+int,status,DECLARATION,N,C,taosdata/TDengine
+int,verbose,DECLARATION,NM,C,sqlmapproject/sqlmap
+,weekday,DECLARATION,N,C,scylladb/scylladb
+void,Append String,DECLARATION,V N,C,dragonflydb/dragonfly
+AqlValue,Date Day,DECLARATION,NM N,C,arangodb/arangodb
+uint32,FUNCTION NAME,DECLARATION,NM N,C,timescale/timescaledb
+,Mapping Mode,DECLARATION,NM N,C,ClickHouse/ClickHouse
+,Read Pipeline,DECLARATION,NM N,C,ClickHouse/ClickHouse
+,WMI Object,DECLARATION,NM N,C,dbeaver/dbeaver
+AsyncViewPtr,async Self,DECLARATION,NM N,C,arangodb/arangodb
+FARPROC,icmp send,DECLARATION,N V,C,sqlmapproject/sqlmap
+TelemetryLevel,on level,DECLARATION,P N,C,timescale/timescaledb
+HTAB *,pgss hash,DECLARATION,PRE N,C,geldata/gel
+ObjectSinkVector,sink List,DECLARATION,NM N,C,dbeaver/dbeaver
+using,sys seconds,DECLARATION,NM NPL,C,scylladb/scylladb
+config_enum_entry,track options,DECLARATION,NM N,C,geldata/gel
+char,ts Second,DECLARATION,PRE N,C,taosdata/TDengine
+char*,CLASS WMI OBJECT,DECLARATION,NM NM N,C,dbeaver/dbeaver
+,Temporary Data Buffer,DECLARATION,NM NM N,C,ClickHouse/ClickHouse
+size_t,heap Size Left,DECLARATION,NM N NM,C,arangodb/arangodb
+size_t,bytes per object,DECLARATION,NPL P N,C,dragonflydb/dragonfly
+char *,http method strings,DECLARATION,NM NM NPL,C,timescale/timescaledb
+,month day last,DECLARATION,NM N DT,C,scylladb/scylladb
+uint16,n block values,DECLARATION,NM NM NPL,C,timescale/timescaledb
+JavaVM*,p Java VM,DECLARATION,PRE NM N,C,dbeaver/dbeaver
+ExecutorFinish_hook_type,prev Executor Finish,DECLARATION,DT NM N,C,geldata/gel
+ProcessUtility_hook_type,prev Process Utility,DECLARATION,DT NM N,C,geldata/gel
+int64_t,ts Dnd Start,DECLARATION,NM NM N,C,taosdata/TDengine
+,year month weekday,DECLARATION,NM NM NM,C,scylladb/scylladb
+uint32_t,z std threshold,DECLARATION,NM NM N,C,dragonflydb/dragonfly
+,Merge Tree Read Pool Parallel Replicas,DECLARATION,NM NM NM NM NM NPL,C,ClickHouse/ClickHouse
+uint32,PGSS PG MAJOR VERSION,DECLARATION,PRE NM NM N,C,geldata/gel
+uint8_t,RDB OPCODE SHARD DOC INDEX,DECLARATION,PRE PRE NM NM N,C,dragonflydb/dragonfly
+CustomExecMethods,chunk append state methods,DECLARATION,NM V NM NPL,C,timescale/timescaledb
+jmethodID,g block data Set Num Of Cols Fp,DECLARATION,PRE NM NPL V N P NM N,C,taosdata/TDengine
+bool,is Shadow Row At Index,DECLARATION,V NM N P N,C,arangodb/arangodb
+jclass,java Lang Char Class,DECLARATION,NM NM NM N,C,dbeaver/dbeaver
+char*,jk Delete Stmt Precision,DECLARATION,PRE V N N,C,taosdata/TDengine
+CONSTCD11,time of day base,DECLARATION,N P NM N,C,scylladb/scylladb
+Result,validate Shards And Replication Factor,DECLARATION,V NPL CJ NM N,C,arangodb/arangodb
+jclass,wmi Object Attribute Class,DECLARATION,NM NM NM N,C,dbeaver/dbeaver
+,year month weekday last,DECLARATION,NM NM NM N,C,scylladb/scylladb
+uint64_t,field,DECLARATION,N,C,dragonflydb/dragonfly
+tss_store_hook_type,hook,DECLARATION,N,C,timescale/timescaledb
+auto,last,DECLARATION,DT,C,arangodb/arangodb
+LocationLen *,locs,DECLARATION,NPL,C,geldata/gel
+BatchHashingParams,params,DECLARATION,NPL,C,timescale/timescaledb
+int,pc,DECLARATION,N,C,ClickHouse/ClickHouse
+uv_fs_t,req,DECLARATION,N,C,taosdata/TDengine
+TRI_socket_t,res,DECLARATION,N,C,arangodb/arangodb
+unsigned short,rs,DECLARATION,N,C,sqlmapproject/sqlmap
+size_t,uss,DECLARATION,N,C,dragonflydb/dragonfly
+UUIDBuffer,arg values,DECLARATION,NM N,C,timescale/timescaledb
+bool,do gc,DECLARATION,V N,C,geldata/gel
+PICMP_ECHO_REPLY,echo reply,DECLARATION,NM N,C,sqlmapproject/sqlmap
+BOOL,had recurse,DECLARATION,V N,C,ClickHouse/ClickHouse
+char,in buf,DECLARATION,NM N,C,sqlmapproject/sqlmap
+auto,iter right,DECLARATION,NM N,C,ClickHouse/ClickHouse
+char *,json Key,DECLARATION,NM N,C,taosdata/TDengine
+int,last off,DECLARATION,DT N,C,geldata/gel
+int,n candidates,DECLARATION,NM NPL,C,timescale/timescaledb
+size_t,num Deprecated,DECLARATION,N NM,C,arangodb/arangodb
+unsigned char,old len,DECLARATION,NM N,C,dragonflydb/dragonfly
+SMnodeMgmt *,p Mgmt,DECLARATION,PRE N,C,taosdata/TDengine
+unsigned char *,p tail,DECLARATION,PRE N,C,dragonflydb/dragonfly
+T,real Value,DECLARATION,NM N,C,arangodb/arangodb
+TimestampTz,stats reset,DECLARATION,NM N,C,geldata/gel
+tableint,existing Internal Id,DECLARATION,NM NM N,C,dragonflydb/dragonfly
+int,ht idx 0,DECLARATION,NM N D,C,dragonflydb/dragonfly
+bool,is allowed role,DECLARATION,V NM N,C,geldata/gel
+auto,key value delimiter,DECLARATION,NM NM N,C,ClickHouse/ClickHouse
+Oid,last rel id,DECLARATION,DT NM N,C,timescale/timescaledb
+int,last tok len,DECLARATION,DT NM N,C,geldata/gel
+unsigned int,max data size,DECLARATION,NM NM N,C,sqlmapproject/sqlmap
+unsigned int,out buf size,DECLARATION,NM NM N,C,sqlmapproject/sqlmap
+void *,p Trans Server,DECLARATION,PRE NM N,C,taosdata/TDengine
+Oid,parent rel id,DECLARATION,NM NM N,C,timescale/timescaledb
+uint64_t,pre total rows,DECLARATION,P NM NPL,C,taosdata/TDengine
+sljit_s32,tmp 2 ind,DECLARATION,N P N,C,ClickHouse/ClickHouse
+char *,arr type ele key,DECLARATION,NM NM NM N,C,taosdata/TDengine
+NameToNameMap &,array join result to source,DECLARATION,NM NM N P N,C,ClickHouse/ClickHouse
+real,c bet 12 a,DECLARATION,PRE N D N,C,arangodb/arangodb
+int,cmp xdel first,DECLARATION,NM N DT,C,dragonflydb/dragonfly
+auto,dist Shards Like Field,DECLARATION,NM N P N,C,arangodb/arangodb
+auto,droppable part with sign,DECLARATION,NM N P N,C,ClickHouse/ClickHouse
+TimestampTz,min max stats since,DECLARATION,NM NM NPL P,C,geldata/gel
+uint64_t,new list pack bytes,DECLARATION,NM NM N NM,C,dragonflydb/dragonfly
+int,norm query buf len,DECLARATION,NM NM NM N,C,geldata/gel
+int,num segment by columns,DECLARATION,NM N P NPL,C,timescale/timescaledb
+int,old all Mark Types,DECLARATION,NM DT NM NPL,C,timescale/timescaledb
+SSysTableMeta *,p Infos Table Meta,DECLARATION,PRE NM NM N,C,taosdata/TDengine
+unsigned int,bytes,PARAMETER,NPL,C,dragonflydb/dragonfly
+PreSwapCheck,check,PARAMETER,N,C,ClickHouse/ClickHouse
+Oid *,conpfeqop,PARAMETER,N,C,timescale/timescaledb
+char *,ext,PARAMETER,N,C,taosdata/TDengine
+WaitKeys,keys,PARAMETER,NPL,C,dragonflydb/dragonfly
+ParamListInfo,params,PARAMETER,NPL,C,geldata/gel
+char *,query,PARAMETER,N,C,geldata/gel
+BSTR*,result,PARAMETER,N,C,dbeaver/dbeaver
+unsigned int,target,PARAMETER,N,C,sqlmapproject/sqlmap
+ActorList const&,x,PARAMETER,N,C,arangodb/arangodb
+Size *,buffer size,PARAMETER,NM N,C,geldata/gel
+uint64_t,cycles ts,PARAMETER,NM N,C,dragonflydb/dragonfly
+DimensionType,dim type,PARAMETER,NM N,C,timescale/timescaledb
+AstNode const*,doc Variable,PARAMETER,NM N,C,arangodb/arangodb
+HostEntry &,h 2,PARAMETER,N D,C,ClickHouse/ClickHouse
+bool*,has More,PARAMETER,V NM,C,taosdata/TDengine
+HANDLE *,in write,PARAMETER,NM N,C,sqlmapproject/sqlmap
+char *,out buf,PARAMETER,NM N,C,sqlmapproject/sqlmap
+WMIObjectSink*,p Sink,PARAMETER,PRE N,C,dbeaver/dbeaver
+char*,query str,PARAMETER,NM N,C,geldata/gel
+double,request Timeout,PARAMETER,NM N,C,arangodb/arangodb
+char *,role Name,PARAMETER,NM N,C,taosdata/TDengine
+SlotId,slot id,PARAMETER,NM N,C,dragonflydb/dragonfly
+TupleDesc,tuple Descriptor,PARAMETER,NM N,C,timescale/timescaledb
+int,ws count,PARAMETER,NM N,C,ClickHouse/ClickHouse
+AstNode const*&,condition And Node,PARAMETER,N CJ N,C,arangodb/arangodb
+unsigned int *,in buf size,PARAMETER,NM NM N,C,sqlmapproject/sqlmap
+jobject,java Sink Object,PARAMETER,NM NM N,C,dbeaver/dbeaver
+int,mat part colno,PARAMETER,NM NM N,C,timescale/timescaledb
+bool,min max only,PARAMETER,NM NM VM,C,geldata/gel
+KeyDescription &,new partition key,PARAMETER,NM NM N,C,ClickHouse/ClickHouse
+unsigned int,out buf size,PARAMETER,NM NM N,C,sqlmapproject/sqlmap
+SMonGrantInfo *,p Grant Info,PARAMETER,PRE NM N,C,taosdata/TDengine
+int64_t*,p Meta Ver,PARAMETER,PRE NM N,C,taosdata/TDengine
+IWbemClassObject **,pp Class Object,PARAMETER,PRE NM N,C,dbeaver/dbeaver
+bool*,realloced,PARAMETER,V,C,dragonflydb/dragonfly
+size_t,rows before limit,PARAMETER,NPL P N,C,ClickHouse/ClickHouse
+int64_t,total incr count,PARAMETER,NM NM N,C,dragonflydb/dragonfly
+uint8 *,bits in last bucket,PARAMETER,NPL P DT N,C,timescale/timescaledb
+tableint,data Point Internal Id,PARAMETER,NM NM NM N,C,dragonflydb/dragonfly
+bool,if chain to multiif,PARAMETER,NM N P N,C,ClickHouse/ClickHouse
+bool,is multitransaction,PARAMETER,V N,C,timescale/timescaledb
+unsigned int,max in data size,PARAMETER,NM NM NM N,C,sqlmapproject/sqlmap
+double,num cpus to normalize,PARAMETER,NM NPL P V,C,ClickHouse/ClickHouse
+zlib_filefunc_def*,p file func 32,PARAMETER,PRE NM N D,C,arangodb/arangodb
+int,parallel workers to launch,PARAMETER,NM NPL P V,C,geldata/gel
+SStreamTriggerReaderCalcInfo*,s Stream Reader Calc Info,PARAMETER,NM NM NM NM N,C,taosdata/TDengine
+bool,send full sync cut,PARAMETER,V NM NM N,C,dragonflydb/dragonfly
+bool,stop At First Depth,PARAMETER,V P DT N,C,arangodb/arangodb
+class,Bound,CLASS,N,C,dragonflydb/dragonfly
+class,Counters,CLASS,NPL,C,geldata/gel
+class,Document,CLASS,N,C,arangodb/arangodb
+class,Histogram,CLASS,N,C,timescale/timescaledb
+class,OPTIONS,CLASS,NPL,C,taosdata/TDengine
+class,Unaligned,CLASS,NM,C,dragonflydb/dragonfly
+class,hectare,CLASS,N,C,ClickHouse/ClickHouse
+class,rs,CLASS,N,C,scylladb/scylladb
+class,type,CLASS,N,C,ClickHouse/ClickHouse
+class,v128,CLASS,N,C,timescale/timescaledb
+class,Base Accessor,CLASS,NM N,C,dragonflydb/dragonfly
+class,Batch Info,CLASS,NM N,C,arangodb/arangodb
+class,Http Request,CLASS,NM N,C,timescale/timescaledb
+class,Hudi Definition,CLASS,NM N,C,ClickHouse/ClickHouse
+class,Index Cache,CLASS,NM N,C,taosdata/TDengine
+class,Java Type,CLASS,NM N,C,dbeaver/dbeaver
+class,Job Result,CLASS,NM N,C,timescale/timescaledb
+class,Log Type,CLASS,NM N,C,dbeaver/dbeaver
+class,Match Handler,CLASS,NM N,C,ClickHouse/ClickHouse
+class,TEST MODE,CLASS,NM N,C,taosdata/TDengine
+class,Thread State,CLASS,NM N,C,arangodb/arangodb
+class,last spec,CLASS,DT N,C,scylladb/scylladb
+class,local t,CLASS,NM N,C,scylladb/scylladb
+class,pgss Entry,CLASS,PRE N,C,geldata/gel
+class,pgss Version,CLASS,NM N,C,geldata/gel
+class,Black Hole Factory,CLASS,NM NM N,C,arangodb/arangodb
+class,Fn Telemetry Entry,CLASS,NM NM N,C,timescale/timescaledb
+class,I Log Follower,CLASS,NM NM N,C,arangodb/arangodb
+class,Identifier Resolve State,CLASS,NM NM N,C,ClickHouse/ClickHouse
+class,Patch Stats Entry,CLASS,NM NM N,C,ClickHouse/ClickHouse
+class,S Forecast Supp,CLASS,NM NM N,C,taosdata/TDengine
+class,Table Index Def,CLASS,NM NM N,C,timescale/timescaledb
+class,Tx Queue Info,CLASS,NM NM N,C,dragonflydb/dragonfly
+class,Z Range Spec,CLASS,NM NM N,C,dragonflydb/dragonfly
+class,dwarf id case,CLASS,NM NM N,C,ClickHouse/ClickHouse
+class,pgss Hash Key,CLASS,PRE NM N,C,geldata/gel
+class,pgss Store Kind,CLASS,PRE NM N,C,geldata/gel
+class,taos metric sample,CLASS,NM NM N,C,taosdata/TDengine
+class,Attribute Sorter Binary String View,CLASS,N V NM NM N,C,arangodb/arangodb
+class,Do Save Check And Start Opts,CLASS,V V N CJ NM NPL,C,dragonflydb/dragonfly
+class,Edb Stmt Info,CLASS,NM NM N,C,geldata/gel
+class,Edb Stmt Info Sem State,CLASS,NM NM NM NM N,C,geldata/gel
+class,Name To UInt32 Or Zero,CLASS,N P N CJ N,C,ClickHouse/ClickHouse
+class,Qual Pushdown Context,CLASS,NM NM N,C,timescale/timescaledb
+class,Remote Proxy Host Fetcher,CLASS,NM NM NM N,C,ClickHouse/ClickHouse
+class,S IpV4 Range,CLASS,NM NM N,C,taosdata/TDengine
+class,SV table Primary Cond Rewrite Cxt,CLASS,NM NM NM NM NM N,C,taosdata/TDengine
+class,Simple8b Rle Decompression Iterator,CLASS,NM NM NM N,C,timescale/timescaledb
+class,json token type t,CLASS,NM NM NM N,C,dragonflydb/dragonfly
+class,unz64 file pos s,CLASS,NM NM NM N,C,arangodb/arangodb
+,DISTINCT,ATTRIBUTE,NM,C++,ClickHouse/ClickHouse
+seastar::sstring,message,ATTRIBUTE,N,C++,scylladb/scylladb
+double,error,ATTRIBUTE,N,C++,dragonflydb/dragonfly
+uint32_t,frequency,ATTRIBUTE,N,C++,arangodb/arangodb
+VectorWithMemoryTracking<size_t> &,ids,ATTRIBUTE,NPL,C++,ClickHouse/ClickHouse
+PyObject *,reduce,ATTRIBUTE,V,C++,taosdata/TDengine
+Connection*,self,ATTRIBUTE,N,C++,dragonflydb/dragonfly
+ObjectSinkVector,sinks,ATTRIBUTE,NPL,C++,dbeaver/dbeaver
+PyObject *,start,ATTRIBUTE,N,C++,taosdata/TDengine
+std::vector<std::shared_ptr<Field>>,store,ATTRIBUTE,N,C++,arangodb/arangodb
+std::vector<managed_bytes_view_opt>,added cells,ATTRIBUTE,NM NPL,C++,scylladb/scylladb
+std::vector<::shared_ptr<column_identifier::raw>>,column names,ATTRIBUTE,NM NPL,C++,scylladb/scylladb
+size_t,buf size,ATTRIBUTE,NM N,C++,arangodb/arangodb
+uint64_t,cache hits,ATTRIBUTE,NM NPL,C++,scylladb/scylladb
+FunctionDocumentation::Category,category conversion,ATTRIBUTE,NM N,C++,ClickHouse/ClickHouse
+AccessFlags,function ddl,ATTRIBUTE,NM N,C++,ClickHouse/ClickHouse
+GlobalDocId,global id,ATTRIBUTE,NM N,C++,dragonflydb/dragonfly
+uint32_t,hash cnt,ATTRIBUTE,NM N,C++,dragonflydb/dragonfly
+String,hdfs uri,ATTRIBUTE,NM N,C++,ClickHouse/ClickHouse
+bstring,max term,ATTRIBUTE,NM N,C++,arangodb/arangodb
+int32_t,output Len,ATTRIBUTE,NM N,C++,taosdata/TDengine
+uint8_t *,p Data,ATTRIBUTE,PRE NPL,C++,taosdata/TDengine
+index_input*,pos in,ATTRIBUTE,NM N,C++,arangodb/arangodb
+std::condition_variable,task cond,ATTRIBUTE,NM N,C++,taosdata/TDengine
+base::Histogram,val len,ATTRIBUTE,NM N,C++,dragonflydb/dragonfly
+int32_t,PAXOS PREPARE,ATTRIBUTE,N V,C++,scylladb/scylladb
+size_t,link Definitions Offset,ATTRIBUTE,NM NM N,C++,arangodb/arangodb
+bool,batch is get,ATTRIBUTE,N V V,C++,dragonflydb/dragonfly
+UInt64,check period sec,ATTRIBUTE,NM NM N,C++,ClickHouse/ClickHouse
+uint16_t,commit cdc generation,ATTRIBUTE,NM NM N,C++,scylladb/scylladb
+int,max exponent 10,ATTRIBUTE,NM N D,C++,taosdata/TDengine
+int,min exponent 10,ATTRIBUTE,NM N D,C++,taosdata/TDengine
+DWORD,n Thread Id,ATTRIBUTE,NM NM N,C++,dbeaver/dbeaver
+int,num numerator words,ATTRIBUTE,NM NM NPL,C++,taosdata/TDengine
+JNIEnv*,p Thread Env,ATTRIBUTE,PRE NM N,C++,dbeaver/dbeaver
+ExchangeLookupPtr,streaming exchange lookup,ATTRIBUTE,NM N V,C++,ClickHouse/ClickHouse
+uint64_t,total def rags,ATTRIBUTE,NM NM NPL,C++,dragonflydb/dragonfly
+uint64_t,total term freq,ATTRIBUTE,NM NM N,C++,arangodb/arangodb
+,LFLAG LAST ROW,ATTRIBUTE,N DT N,C++,taosdata/TDengine
+ld_elements_heap,ld rows in partition records,ATTRIBUTE,NM NPL P NM NPL,C++,scylladb/scylladb
+compaction::owned_ranges_ptr,local owned ranges ptr,ATTRIBUTE,NM NM NM N,C++,scylladb/scylladb
+utils::updateable_value<uint32_t>,max hints send queue length,ATTRIBUTE,NM NM NM NM N,C++,scylladb/scylladb
+ZPOS64_T,add position when writting offset,ATTRIBUTE,NM N VM V N,C++,arangodb/arangodb
+uint64_t,batch write commands bytes,ATTRIBUTE,VM V NM NPL,C++,dragonflydb/dragonfly
+Variable const*,collection Node Out Var,ATTRIBUTE,NM NM NM N,C++,arangodb/arangodb
+std::vector<Iceberg::IcebergPathFromMetadata>,expired manifest list paths,ATTRIBUTE,NM NM NM NPL,C++,ClickHouse/ClickHouse
+in_addr,imr multiaddr,ATTRIBUTE,NM N,C++,ClickHouse/ClickHouse
+uint8_t,num Of PKs,ATTRIBUTE,N P NPL,C++,taosdata/TDengine
+DflyVersion,replica dfly version,ATTRIBUTE,NM NM N,C++,dragonflydb/dragonfly
+void,try To Steal From Queue,ATTRIBUTE,V P V P N,C++,ClickHouse/ClickHouse
+void,Connect,FUNCTION,V,C++,dbeaver/dbeaver
+HRESULT,Indicate,FUNCTION,V,C++,dbeaver/dbeaver
+std::nullptr_t,Value,FUNCTION,N,C++,taosdata/TDengine
+void,Wait,FUNCTION,V,C++,dragonflydb/dragonfly
+Result,commit,FUNCTION,V,C++,arangodb/arangodb
+PyUdf *,create,FUNCTION,V,C++,taosdata/TDengine
+std::string,describe,FUNCTION,V,C++,ClickHouse/ClickHouse
+named_file,f,DECLARATION,N,C++,scylladb/scylladb
+bool,performed,FUNCTION,V,C++,scylladb/scylladb
+AvroSchema,Bool Schema,FUNCTION,NM N,C++,taosdata/TDengine
+cmd::CmdR,Cmd GAT,FUNCTION,NM N,C++,dragonflydb/dragonfly
+void,Del Consumer,FUNCTION,V N,C++,dragonflydb/dragonfly
+void,Enum Classes,FUNCTION,V NPL,C++,dbeaver/dbeaver
+jobject,Open Namespace,FUNCTION,NM N,C++,dbeaver/dbeaver
+ColumnPtr,and Filters,FUNCTION,NM NPL,C++,ClickHouse/ClickHouse
+wcu_consumed_capacity_counter&,consumed capacity,FUNCTION,V N,C++,scylladb/scylladb
+future<>,insert snapshot,FUNCTION,V N,C++,scylladb/scylladb
+segment*,new segment,FUNCTION,NM N,C++,scylladb/scylladb
+void,register Filters,FUNCTION,V NPL,C++,arangodb/arangodb
+std::string,request Challenge,FUNCTION,V N,C++,ClickHouse/ClickHouse
+int32_t,scalar Proc,FUNCTION,NM N,C++,taosdata/TDengine
+void,serialize Custom,FUNCTION,V N,C++,ClickHouse/ClickHouse
+void,set Escaping,FUNCTION,V N,C++,arangodb/arangodb
+void,udivrem knuth,FUNCTION,N NM,C++,taosdata/TDengine
+void,Format Error Message,FUNCTION,V NM N,C++,dbeaver/dbeaver
+char,Sds Req Type,FUNCTION,NM NM N,C++,dragonflydb/dragonfly
+void,Set Optional Filters,FUNCTION,V NM NPL,C++,dragonflydb/dragonfly
+void,Term Static State,FUNCTION,NM NM N,C++,dbeaver/dbeaver
+result_with_carry<uint<N>>,add with carry,FUNCTION,V P N,C++,taosdata/TDengine
+void,advance Data Row,FUNCTION,V NM N,C++,arangodb/arangodb
+AqlValue,get Key Attribute,FUNCTION,V NM N,C++,arangodb/arangodb
+bool,is range query,FUNCTION,V NM N,C++,scylladb/scylladb
+void,scan Data Func,FUNCTION,V NM N,C++,ClickHouse/ClickHouse
+void,send vote reply,FUNCTION,V NM N,C++,scylladb/scylladb
+IPAddressDictionary::RowIdxConstIter,try Lookup IPv4,FUNCTION,V V N,C++,ClickHouse/ClickHouse
+bool,uInt128 Gt,FUNCTION,NM N,C++,taosdata/TDengine
+auto,with Error Backoff,FUNCTION,P NM N,C++,arangodb/arangodb
+bool,Is Page For Object UnderUtilized,FUNCTION,V N P N NM,C++,dragonflydb/dragonfly
+void,JS Exists Vocbase VPack,FUNCTION,PRE V NM N,C++,arangodb/arangodb
+JNIEXPORT void JNICALL,Java org jkiss wmi service WMI Service enum Instances,FUNCTION,PRE PRE PRE NM NM NM NM NM NPL,C++,dbeaver/dbeaver
+jfloatArray,Make Java Float Array From Safe Array,FUNCTION,V NM NM N P NM N,C++,dbeaver/dbeaver
+string_view,Search Field Type To String,FUNCTION,V NM N P N,C++,dragonflydb/dragonfly
+future<>,destroy gently nonleaf,FUNCTION,V VM N,C++,scylladb/scylladb
+Int32,extract ISO Day Of The Week,FUNCTION,V NM N P DT N,C++,ClickHouse/ClickHouse
+void,handle CI wait For Plan Version,FUNCTION,PRE PRE V P NM N,C++,arangodb/arangodb
+std::unique_ptr<cql_server::response>,make status change event,FUNCTION,V NM NM N,C++,scylladb/scylladb
+uint64_t,reciprocal 3 by 2,FUNCTION,N D P D,C++,taosdata/TDengine
+SplitResult,try Split NonIntersecting Parts,FUNCTION,V V NM NPL,C++,ClickHouse/ClickHouse
+int32_t,ts db Cache Deserialize,FUNCTION,PRE PRE N V,C++,taosdata/TDengine
+error_code,ec,DECLARATION,N,C++,dragonflydb/dragonfly
+IRS_NO_UNIQUE_ADDRESS hasher,hasher,DECLARATION,N,C++,arangodb/arangodb
+JNIMetaData*,instance,DECLARATION,N,C++,dbeaver/dbeaver
+auto &,parts,DECLARATION,NPL,C++,ClickHouse/ClickHouse
+field_readerfinal:publicirs::field_reader,ptr,DECLARATION,N,C++,arangodb/arangodb
+auto&,r,DECLARATION,N,C++,scylladb/scylladb
+std::vector<CollectedPageStats>,results,DECLARATION,NPL,C++,dragonflydb/dragonfly
+void,trunc,DECLARATION,V,C++,taosdata/TDengine
+void,unsigned,DECLARATION,N,C++,taosdata/TDengine
+ALWAYS_INLINE void,add Cube Or Rollup Step If Needed,FUNCTION,V N CJ NM N CJ V,C++,ClickHouse/ClickHouse
+auto,String Failed,DECLARATION,NM N,C++,arangodb/arangodb
+std::string,Uniq Id,DECLARATION,NM N,C++,arangodb/arangodb
+auto,apply Res,DECLARATION,NM N,C++,arangodb/arangodb
+auto,apply patches,DECLARATION,V NPL,C++,ClickHouse/ClickHouse
+FunctionDocumentation::Category,category xor,DECLARATION,NM N,C++,ClickHouse/ClickHouse
+Int128,int128 Zero,DECLARATION,NM N,C++,taosdata/TDengine
+auto,it res,DECLARATION,NM N,C++,dragonflydb/dragonfly
+column_definition,new def,DECLARATION,NM N,C++,scylladb/scylladb
+std::shared_ptr<detail::SaveStagesController>,save controller,DECLARATION,NM N,C++,dragonflydb/dragonfly
+auto,shard id,DECLARATION,NM N,C++,dragonflydb/dragonfly
+PyObject *,sys Path,DECLARATION,NM N,C++,taosdata/TDengine
+FunctionDocumentation::Category,translate category,DECLARATION,NM N,C++,ClickHouse/ClickHouse
+logging::logger,tsm logger,DECLARATION,NM N,C++,scylladb/scylladb
+int,CREATE FILE TRIES,DECLARATION,V NM NPL,C++,arangodb/arangodb
+long,MAX CACHE SIZE,DECLARATION,NM NM N,C++,dbeaver/dbeaver
+std::string,SCORER ARG FMT,DECLARATION,NM NM N,C++,arangodb/arangodb
+FunctionDocumentation::Arguments,arguments bitmap Cardinality,DECLARATION,NM NM N,C++,ClickHouse/ClickHouse
+validating_consumer,consume range tombstone,DECLARATION,V NM N,C++,scylladb/scylladb
+std::vector<std::string>,do Py Open,DECLARATION,V N V,C++,taosdata/TDengine
+HMODULE,h WMI Utils,DECLARATION,PRE NM NPL,C++,dbeaver/dbeaver
+Int256,int 256 One,DECLARATION,N D N,C++,taosdata/TDengine
+unsigned,k Max Size,DECLARATION,PRE NM N,C++,dragonflydb/dragonfly
+size_t,k Segment Size,DECLARATION,NM NM N,C++,dragonflydb/dragonfly
+template<typenameT> wrapping_interval:publicinterval_data<T>,make ending with,DECLARATION,V N P,C++,scylladb/scylladb
+ServerSettingsUInt64,max waiting queries,DECLARATION,NM NM NPL,C++,ClickHouse/ClickHouse
+bool,var Used Here,DECLARATION,N V VM,C++,arangodb/arangodb
+Event,Refreshable View Refresh Success,DECLARATION,NM N V N,C++,ClickHouse/ClickHouse
+Event,S3 Write Requests Redirects,DECLARATION,PRE NM NM NPL,C++,ClickHouse/ClickHouse
+PyObject *,g Py Udf Data Block Type,DECLARATION,PRE NM NM NM NM N,C++,taosdata/TDengine
+PyMethodDef,g Udf Data Block Methods,DECLARATION,PRE NM NM NM NPL,C++,taosdata/TDengine
+std::string_view,k Analyzer Field Name,DECLARATION,PRE NM NM N,C++,arangodb/arangodb
+std::string,k Compression Type LZ4HC,DECLARATION,PRE NM NM N,C++,arangodb/arangodb
+size_t,k Tracked Op Count,DECLARATION,PRE NM NM N,C++,dragonflydb/dragonfly
+verb [[with_client_info]],node ops cmd response,DECLARATION,NM NM NM N,C++,scylladb/scylladb
+std::vector<int>,opt k per buckets,DECLARATION,NM N P NPL,C++,scylladb/scylladb
+SettingsBool,schema inference use cache for url,DECLARATION,NM N V N P N,C++,ClickHouse/ClickHouse
+std::vector<std::vector<ShardDocIndex::FieldsValuesPerDocId>>,shard keys data per index,DECLARATION,NM NM NPL P N,C++,dragonflydb/dragonfly
+int8_t,tsS3 Ep Num,DECLARATION,NM NM N,C++,taosdata/TDengine
+int,count,DECLARATION,N,C++,sqlmapproject/sqlmap
+string_view,f,DECLARATION,N,C++,dragonflydb/dragonfly
+std::string,generated,DECLARATION,V,C++,ClickHouse/ClickHouse
+normalized_div_args<IntT::num_bits>,na,DECLARATION,N,C++,taosdata/TDengine
+"utils::result_with_exception_ptr<std::unordered_map<sstring, sstring>>",o,DECLARATION,N,C++,scylladb/scylladb
+wchar_t*,pos,DECLARATION,N,C++,dbeaver/dbeaver
+v8::Handle<v8::Array>,props,DECLARATION,NPL,C++,arangodb/arangodb
+size_t,psz,DECLARATION,N,C++,scylladb/scylladb
+auto,renamed,DECLARATION,V,C++,ClickHouse/ClickHouse
+"std::unordered_map<std::string, std::shared_ptr<LogicalCollection>>",result,DECLARATION,N,C++,arangodb/arangodb
+auto,auth tables,DECLARATION,NM NPL,C++,scylladb/scylladb
+std::size_t,change BP,DECLARATION,NM N,C++,arangodb/arangodb
+bool,clear tiered,DECLARATION,V NM,C++,dragonflydb/dragonfly
+jclass,element Class,DECLARATION,NM N,C++,dbeaver/dbeaver
+size_t,evicted items,DECLARATION,NM NPL,C++,dragonflydb/dragonfly
+int,gid Number,DECLARATION,NM N,C++,arangodb/arangodb
+HRESULT,h res,DECLARATION,NM N,C++,dbeaver/dbeaver
+PrewhereExprInfo,index task,DECLARATION,NM N,C++,ClickHouse/ClickHouse
+bool,is pending,DECLARATION,V V,C++,scylladb/scylladb
+bool,lhs Known,DECLARATION,N NM,C++,arangodb/arangodb
+PyObject *,p traceback,DECLARATION,PRE N,C++,taosdata/TDengine
+bool,should Print,DECLARATION,V V,C++,taosdata/TDengine
+Tokens,token settings,DECLARATION,NM NPL,C++,ClickHouse/ClickHouse
+uint64_t,u 1,DECLARATION,N D,C++,taosdata/TDengine
+VARTYPE,var Type,DECLARATION,NM N,C++,dbeaver/dbeaver
+auto &,casted set inner,DECLARATION,NM N NM,C++,ClickHouse/ClickHouse
+auto,extracted Attribute Values,DECLARATION,NM NM NPL,C++,arangodb/arangodb
+auto,global request id,DECLARATION,NM NM N,C++,scylladb/scylladb
+jstring,java Prop Name,DECLARATION,NM NM N,C++,dbeaver/dbeaver
+uint32_t,k P TTL,DECLARATION,NM NM N,C++,dragonflydb/dragonfly
+int,max Retry Interval,DECLARATION,NM NM N,C++,taosdata/TDengine
+std::vector<size_t>,missing column indices,DECLARATION,NM NM NPL,C++,ClickHouse/ClickHouse
+size_t,post Filter Conditions,DECLARATION,NM NM NPL,C++,arangodb/arangodb
+CComPtr<IWbemQualifierSet>,ptr QF Set,DECLARATION,NM NM N,C++,dbeaver/dbeaver
+auto,seg map node,DECLARATION,NM NM N,C++,dragonflydb/dragonfly
+auto,support batch delete,DECLARATION,V NM N,C++,ClickHouse/ClickHouse
+auto,underlying ck end,DECLARATION,NM NM N,C++,scylladb/scylladb
+auto,y is neg,DECLARATION,N V N,C++,taosdata/TDengine
+size_t,baseline marks in window,DECLARATION,NM NPL P N,C++,ClickHouse/ClickHouse
+double,client Bytes Received Per Second,DECLARATION,NM NM V P N,C++,arangodb/arangodb
+auto *,concrete request simple list,DECLARATION,NM NM NM N,C++,ClickHouse/ClickHouse
+bool,hints batch log flushed,DECLARATION,NM NM N V,C++,scylladb/scylladb
+bool,ids only without sort load,DECLARATION,N P P NM N,C++,dragonflydb/dragonfly
+auto,maybe Removed Participant Flags,DECLARATION,VM V NM NPL,C++,arangodb/arangodb
+size_t,min doc id index,DECLARATION,NM NM NM N,C++,dragonflydb/dragonfly
+void,rock sdb iter get error,DECLARATION,PRE PRE PRE V N,C++,taosdata/TDengine
+void,rock sdb iter seek to last,DECLARATION,PRE PRE PRE V P DT,C++,taosdata/TDengine
+co_await,start v nodes cleanup on dirty nodes,DECLARATION,V NM NPL V P NM NPL,C++,scylladb/scylladb
+auto,try And Extract Projections From Expression,DECLARATION,V CJ V NPL P N,C++,arangodb/arangodb
+UploadBlockBlobOptions,upload Block Blob Options,DECLARATION,NM NM NM NPL,C++,taosdata/TDengine
+long,arg,PARAMETER,N,C++,dbeaver/dbeaver
+char*,argv,PARAMETER,N,C++,sqlmapproject/sqlmap
+std::exception &,e,PARAMETER,N,C++,taosdata/TDengine
+char const*,hint,PARAMETER,N,C++,arangodb/arangodb
+S2Region const&,point,PARAMETER,N,C++,arangodb/arangodb
+cdc::stream_id,s,PARAMETER,N,C++,scylladb/scylladb
+ServiceInterface*,service,PARAMETER,N,C++,dragonflydb/dragonfly
+sds,str,PARAMETER,N,C++,dragonflydb/dragonfly
+size_t,width,PARAMETER,N,C++,ClickHouse/ClickHouse
+bool,allow filtering,PARAMETER,V V,C++,scylladb/scylladb
+CIMTYPE,cim Type,PARAMETER,NM N,C++,dbeaver/dbeaver
+String &,db name,PARAMETER,NM N,C++,ClickHouse/ClickHouse
+utils::chunked_vector<cdc::stream_id>::iterator,end 2,PARAMETER,N D,C++,scylladb/scylladb
+bool,is Exclusive,PARAMETER,V N,C++,arangodb/arangodb
+KeyPointer,k ptr,PARAMETER,NM N,C++,scylladb/scylladb
+SUdfInterBuf *,new Buf,PARAMETER,NM N,C++,taosdata/TDengine
+bool,only Touched,PARAMETER,VM V,C++,arangodb/arangodb
+UInt32,output size,PARAMETER,NM N,C++,ClickHouse/ClickHouse
+Int128*,p Right,PARAMETER,PRE N,C++,taosdata/TDengine
+jstring,prop Name,PARAMETER,NM N,C++,dbeaver/dbeaver
+RebootId&,reboot Id,PARAMETER,NM N,C++,arangodb/arangodb
+absl::Span<SearchResult>,search results,PARAMETER,NM NPL,C++,dragonflydb/dragonfly
+void *,udf Ctx,PARAMETER,NM N,C++,taosdata/TDengine
+std::string&,version str,PARAMETER,NM N,C++,dragonflydb/dragonfly
+replica::memtable&,active mem table,PARAMETER,NM NM N,C++,scylladb/scylladb
+DetachedPartInfo &,detached part info,PARAMETER,NM NM N,C++,ClickHouse/ClickHouse
+rjson::value*,expression attribute values,PARAMETER,NM NM NPL,C++,scylladb/scylladb
+size_t,func Argument Position,PARAMETER,PRE NM N,C++,arangodb/arangodb
+SUdfInterBuf *,input Buf 1,PARAMETER,NM N D,C++,taosdata/TDengine
+std::optional<search::KnnScoreSortOption>,knn score option,PARAMETER,NM NM N,C++,dragonflydb/dragonfly
+long,l Object Count,PARAMETER,PRE NM N,C++,dbeaver/dbeaver
+interval_map_type&,leveled ss tables,PARAMETER,NM NM NPL,C++,scylladb/scylladb
+SelectQueryInfo &,modified query info,PARAMETER,NM NM N,C++,ClickHouse/ClickHouse
+JNIEnv *,p Java Env,PARAMETER,PRE NM N,C++,dbeaver/dbeaver
+void **,p Udf Ctx,PARAMETER,PRE NM N,C++,taosdata/TDengine
+bool&,responsible For Commit,PARAMETER,N P N,C++,arangodb/arangodb
+int*,skip Longer Matches,PARAMETER,V NM NPL,C++,dragonflydb/dragonfly
+db::per_partition_rate_limit::account_and_enforce,account and enforce info,PARAMETER,V CJ V N,C++,scylladb/scylladb
+bool,account key memory usage,PARAMETER,NM NM N V,C++,dragonflydb/dragonfly
+size_t,adaptive buffer initial size,PARAMETER,NM NM NM N,C++,ClickHouse/ClickHouse
+bool,create Waits For Sync Replication,PARAMETER,V NPL P NM N,C++,arangodb/arangodb
+uint64_t,document Count Adjustment Ticket,PARAMETER,NM NM NM N,C++,arangodb/arangodb
+bool,has V8 Expression,PARAMETER,V NM N,C++,arangodb/arangodb
+std::function<bool(host_id)>,is transitioning token owner,PARAMETER,V NM NM N,C++,scylladb/scylladb
+UInt64,merge block size bytes,PARAMETER,NM NM NM NPL,C++,ClickHouse/ClickHouse
+String &,new path to table data,PARAMETER,NM N P NM NPL,C++,ClickHouse/ClickHouse
+std::string_view,notify key space events,PARAMETER,V NM NM NPL,C++,dragonflydb/dragonfly
+uint64_t,range rombstones,PARAMETER,NM NPL,C++,scylladb/scylladb
+bool,send full sync cut,PARAMETER,V NM NM N,C++,dragonflydb/dragonfly
+class,Eq,CLASS,N,C++,dragonflydb/dragonfly
+class,Files,CLASS,NPL,C++,taosdata/TDengine
+class,Hasher,CLASS,N,C++,ClickHouse/ClickHouse
+class,Scored,CLASS,N,C++,dragonflydb/dragonfly
+class,analysis,CLASS,N,C++,arangodb/arangodb
+class,attributes,CLASS,NPL,C++,arangodb/arangodb
+class,cache,CLASS,N,C++,scylladb/scylladb
+class,mixed,CLASS,N,C++,scylladb/scylladb
+class,option,CLASS,N,C++,scylladb/scylladb
+class,pair,CLASS,N,C++,ClickHouse/ClickHouse
+class,Aggregate Description,CLASS,NM N,C++,ClickHouse/ClickHouse
+class,Blob Client,CLASS,NM N,C++,taosdata/TDengine
+class,City Hash,CLASS,NM N,C++,ClickHouse/ClickHouse
+class,Claim Info,CLASS,NM N,C++,dragonflydb/dragonfly
+class,Data Lake,CLASS,NM N,C++,taosdata/TDengine
+class,ELEMENT TYPE,CLASS,NM N,C++,ClickHouse/ClickHouse
+class,Import Context,CLASS,NM N,C++,arangodb/arangodb
+class,S Value,CLASS,NM N,C++,taosdata/TDengine
+class,Set Flags,CLASS,NM NPL,C++,dragonflydb/dragonfly
+class,Stream Info,CLASS,NM N,C++,dragonflydb/dragonfly
+class,fst builder,CLASS,NM N,C++,arangodb/arangodb
+class,hashed key,CLASS,NM N,C++,scylladb/scylladb
+class,prepare message,CLASS,NM N,C++,scylladb/scylladb
+class,replay position,CLASS,NM N,C++,scylladb/scylladb
+class,timer states,CLASS,NM NPL,C++,arangodb/arangodb
+class,Cleanup On Fail,CLASS,N P V,C++,ClickHouse/ClickHouse
+class,Geo Store Type,CLASS,NM NM N,C++,dragonflydb/dragonfly
+class,Queue Back pressure,CLASS,NM NM N,C++,dragonflydb/dragonfly
+class,S Last Col,CLASS,NM DT N,C++,taosdata/TDengine
+class,S Last Key,CLASS,NM DT N,C++,taosdata/TDengine
+class,Schema Visitor Data,CLASS,NM NM NPL,C++,ClickHouse/ClickHouse
+class,Sparse Bitmap Version,CLASS,NM NM N,C++,arangodb/arangodb
+class,Thread Info Vector,CLASS,NM NM N,C++,dbeaver/dbeaver
+class,WMI Thread Info,CLASS,NM NM N,C++,dbeaver/dbeaver
+class,cql sg stats,CLASS,NM NM NPL,C++,scylladb/scylladb
+class,lz4 compressor,CLASS,NM N,C++,arangodb/arangodb
+class,scored term state,CLASS,NM NM N,C++,arangodb/arangodb
+class,snapshot tablet info,CLASS,NM NM N,C++,scylladb/scylladb
+class,Compact Obj Borrow Ops,CLASS,NM NM NM N,C++,dragonflydb/dragonfly
+class,Cut To First Significant Subdomain Custom,CLASS,V P DT NM NM N,C++,ClickHouse/ClickHouse
+class,Double Arithmetic Callback Result,CLASS,NM NM NM N,C++,dragonflydb/dragonfly
+class,E Last Cache Status,CLASS,PRE DT NM N,C++,taosdata/TDengine
+class,Function Is IPv4 String,CLASS,N V NM N,C++,ClickHouse/ClickHouse
+class,Group Consumer Pair Opts,CLASS,NM NM NM NPL,C++,dragonflydb/dragonfly
+class,Limit Full Count Checker,CLASS,V NM NM N,C++,arangodb/arangodb
+class,TD Block Blob Client,CLASS,NM NM NM N,C++,taosdata/TDengine
+class,Udf Data Block Py Object,CLASS,NM NM NM NM N,C++,taosdata/TDengine
+class,Work Stealing Thread Pool,CLASS,NM NM NM N,C++,arangodb/arangodb
+class,row body skipping context,CLASS,NM NM NM N,C++,scylladb/scylladb
+class,sst able snapshot metadata,CLASS,NM NM NM N,C++,scylladb/scylladb
+,KOREA,ATTRIBUTE,N,Java,dbeaver/dbeaver
+Logger,LOG,ATTRIBUTE,N,Java,ClickHouse/ClickHouse
+int,SESSION,ATTRIBUTE,N,Java,apache/shardingsphere
+Connection,connection,ATTRIBUTE,N,Java,taosdata/TDengine
+String,keyword,ATTRIBUTE,N,Java,dbeaver/dbeaver
+String,owner,ATTRIBUTE,N,Java,apache/shardingsphere
+String,prefix,ATTRIBUTE,N,Java,ClickHouse/ClickHouse
+int,rate,ATTRIBUTE,N,Java,taosdata/TDengine
+Collection<TableReferenceRuleSegment>,rules,ATTRIBUTE,NPL,Java,apache/shardingsphere
+MockWebServer,server,ATTRIBUTE,N,Java,ClickHouse/ClickHouse
+,COMPOSITE FIELD,ATTRIBUTE,NM N,Java,dbeaver/dbeaver
+String,MAX RESULTS,ATTRIBUTE,NM NPL,Java,ClickHouse/ClickHouse
+String,PAGE TOKEN,ATTRIBUTE,NM N,Java,ClickHouse/ClickHouse
+,SINGLE QUOTE,ATTRIBUTE,NM N,Java,apache/shardingsphere
+String,VARIABLE TABLE,ATTRIBUTE,NM N,Java,dbeaver/dbeaver
+CalciteSchema,calcite Schema,ATTRIBUTE,NM N,Java,apache/shardingsphere
+ConfigResponse,config Response,ATTRIBUTE,NM N,Java,ClickHouse/ClickHouse
+DatabaseMapper,database Mapper,ATTRIBUTE,NM N,Java,taosdata/TDengine
+String,edition cloud,ATTRIBUTE,NM N,Java,dbeaver/dbeaver
+String,failure Reason,ATTRIBUTE,NM N,Java,taosdata/TDengine
+String,operation Name,ATTRIBUTE,NM N,Java,dbeaver/dbeaver
+ShadowOperationType,operation Type,ATTRIBUTE,NM N,Java,apache/shardingsphere
+boolean,stop Thread,ATTRIBUTE,NM N,Java,taosdata/TDengine
+AtomicInteger,thread Number,ATTRIBUTE,NM N,Java,taosdata/TDengine
+"Map<String, View>",view Store,ATTRIBUTE,NM V,Java,ClickHouse/ClickHouse
+,AUTHENTICATION METHOD MISMATCH,ATTRIBUTE,NM NM N,Java,apache/shardingsphere
+String,AUTHORIZATION HEADER KEY,ATTRIBUTE,NM NM N,Java,ClickHouse/ClickHouse
+,CNCT PLUGIN NAME,ATTRIBUTE,PRE NM N,Java,apache/shardingsphere
+int,DEFAULT MAX RESULTS,ATTRIBUTE,NM NM NPL,Java,ClickHouse/ClickHouse
+String,EXP EXTENSION ID,ATTRIBUTE,NM NM N,Java,dbeaver/dbeaver
+String[],POSTGRE FUNCTIONS JSON,ATTRIBUTE,NM NM N,Java,dbeaver/dbeaver
+String,SQL HINT SPLIT,ATTRIBUTE,NM NM N,Java,apache/shardingsphere
+String,TD ENGINE HOST,ATTRIBUTE,NM NM N,Java,taosdata/TDengine
+"TmqRotationManager<Map<String, Object>>",TMQ ROTATION MANAGER,ATTRIBUTE,NM NM N,Java,taosdata/TDengine
+long,TOKEN TTL MS,ATTRIBUTE,NM NM NPL,Java,taosdata/TDengine
+String,open in browser,ATTRIBUTE,V P N,Java,dbeaver/dbeaver
+"Map<String, TableMetadata>",table Metadata Store,ATTRIBUTE,NM NM N,Java,ClickHouse/ClickHouse
+"Map<String, List<Partition>>",table Partitions Store,ATTRIBUTE,NM NM N,Java,ClickHouse/ClickHouse
+String,DRIVER ID MYSQL8,ATTRIBUTE,NM N NM,Java,dbeaver/dbeaver
+int,INPUT DELAY BEFORE REFRESH,ATTRIBUTE,NM N P V,Java,dbeaver/dbeaver
+,PERFORMANCE SCHEMA MAX RWLOCK CLASSES,ATTRIBUTE,NM NM NM NM NPL,Java,apache/shardingsphere
+,SERVER STATUS LAST ROW SENT,ATTRIBUTE,NM N DT N V,Java,apache/shardingsphere
+,SHARDING TABLE VALUE KEY,ATTRIBUTE,NM NM NM N,Java,apache/shardingsphere
+int,batch Size By Row,ATTRIBUTE,NM N P N,Java,taosdata/TDengine
+int,cache Size By Row,ATTRIBUTE,NM N P N,Java,taosdata/TDengine
+String,dialog driver manager message cant delete text,ATTRIBUTE,PRE PRE PRE N V V N,Java,dbeaver/dbeaver
+String,model ssh configurator dialog choose private key,ATTRIBUTE,NM NM NM N V NM N,Java,dbeaver/dbeaver
+"Map<String, TableSnapshot>",table Latest Snapshot Store,ATTRIBUTE,PRE NM NM N,Java,ClickHouse/ClickHouse
+"Map<String, TableSnapshot>",table With Snapshot Id 2 Snapshot Store,ATTRIBUTE,N P NM N P NM N,Java,ClickHouse/ClickHouse
+Integer,call,FUNCTION,V,Java,taosdata/TDengine
+void,collect,FUNCTION,V,Java,apache/shardingsphere
+Builder,detail,FUNCTION,N,Java,apache/shardingsphere
+boolean,matches,FUNCTION,NPL,Java,dbeaver/dbeaver
+void,perform,FUNCTION,V,Java,dbeaver/dbeaver
+Builder,routine,FUNCTION,N,Java,apache/shardingsphere
+void,shutdown,FUNCTION,V,Java,taosdata/TDengine
+void,start,FUNCTION,V,Java,ClickHouse/ClickHouse
+<T> RotationResult<T>,switched,FUNCTION,V,Java,taosdata/TDengine
+boolean,commit Snapshot,FUNCTION,V N,Java,ClickHouse/ClickHouse
+int,compare To,FUNCTION,V P,Java,ClickHouse/ClickHouse
+String,get Evaluation,FUNCTION,V N,Java,dbeaver/dbeaver
+String,get Type,FUNCTION,V N,Java,taosdata/TDengine
+Class<RefreshDatabaseMetaDataStatement>,get Type,FUNCTION,V N,Java,apache/shardingsphere
+Object[],get Variable,FUNCTION,V N,Java,apache/shardingsphere
+void,parse Version,FUNCTION,V N,Java,dbeaver/dbeaver
+void,print Help,FUNCTION,V N,Java,taosdata/TDengine
+boolean,process SQL,FUNCTION,V N,Java,dbeaver/dbeaver
+Boolean,random Boolean,FUNCTION,NM N,Java,taosdata/TDengine
+void,set Object,FUNCTION,V N,Java,apache/shardingsphere
+MockResponse,snapshot Handle,FUNCTION,V N,Java,ClickHouse/ClickHouse
+void,update String,FUNCTION,V N,Java,apache/shardingsphere
+void,update Value,FUNCTION,V N,Java,dbeaver/dbeaver
+MockResponse,views Handle,FUNCTION,V N,Java,ClickHouse/ClickHouse
+void,alter Table Impl,FUNCTION,V NM N,Java,ClickHouse/ClickHouse
+void,append Apply Guidance,FUNCTION,V NM N,Java,apache/shardingsphere
+<T> PagedList<T>,build Paged Entities,FUNCTION,V NM NPL,Java,ClickHouse/ClickHouse
+String,create Super Table,FUNCTION,V NM N,Java,taosdata/TDengine
+List<AIFunctionDescriptor>,get All Functions,FUNCTION,V DT NPL,Java,dbeaver/dbeaver
+String,get C 2,FUNCTION,V N D,Java,taosdata/TDengine
+Collection<ExasolTableColumn>,get Distribution Key,FUNCTION,V NM N,Java,dbeaver/dbeaver
+boolean,has Skipped Artifacts,FUNCTION,V NM NPL,Java,apache/shardingsphere
+MockResponse,partitions Api Handle,FUNCTION,V NM N,Java,ClickHouse/ClickHouse
+List<Weather>,query For List,FUNCTION,V P N,Java,taosdata/TDengine
+MockResponse,table Details Handle,FUNCTION,NM NM N,Java,ClickHouse/ClickHouse
+void,update Transformer Info,FUNCTION,V NM N,Java,dbeaver/dbeaver
+ASTNode,visit Drop Publication,FUNCTION,V NM N,Java,apache/shardingsphere
+void,add No Permission Table,FUNCTION,V DT NM N,Java,ClickHouse/ClickHouse
+void,check To Be Dropped Sharding Table Reference Rules,FUNCTION,V P V V NM NM NM NPL,Java,apache/shardingsphere
+MockResponse,generate Final List Databases Response,FUNCTION,V NM NM NM N,Java,ClickHouse/ClickHouse
+int,get Cell Selection Count,FUNCTION,V NM NM N,Java,dbeaver/dbeaver
+DBSObjectType[],get Namespace Object Types,FUNCTION,V NM NM NPL,Java,dbeaver/dbeaver
+<T> String,get Next Page Token For Entities,FUNCTION,V DT NM N P NPL,Java,ClickHouse/ClickHouse
+void,handle Data Source Container Change,FUNCTION,V NM NM NM N,Java,dbeaver/dbeaver
+String,insert MultiSubTable MultiValues,FUNCTION,V NM NPL,Java,taosdata/TDengine
+int,insert MultiTable MultiValues,FUNCTION,V NM NPL,Java,taosdata/TDengine
+RuleArtifact,plan Create Default Algorithm,FUNCTION,PRE V NM N,Java,apache/shardingsphere
+void,test Custom Type To Sink,FUNCTION,V NM N P N,Java,taosdata/TDengine
+ASTNode,visit Show Materialized Views,FUNCTION,V NM NM NPL,Java,apache/shardingsphere
+boolean,alive,DECLARATION,NM,Java,dbeaver/dbeaver
+Control,child,DECLARATION,N,Java,dbeaver/dbeaver
+boolean,forced,DECLARATION,V,Java,dbeaver/dbeaver
+int,from,DECLARATION,P,Java,dbeaver/dbeaver
+GridData,gd,DECLARATION,N,Java,dbeaver/dbeaver
+ProcessHandle,handle,DECLARATION,N,Java,dbeaver/dbeaver
+int,i,DECLARATION,N,Java,dbeaver/dbeaver
+QueryProcessor,processor,DECLARATION,N,Java,dbeaver/dbeaver
+SQLQueryRowsSourceModel,source,DECLARATION,N,Java,dbeaver/dbeaver
+Thread,thread,DECLARATION,N,Java,taosdata/TDengine
+String,CURRENT VERSION,DECLARATION,NM N,Java,apache/shardingsphere
+MySQLSystemVariableValueProvider,DEFAULT PROVIDER,DECLARATION,NM N,Java,apache/shardingsphere
+long,FEATURE PRESENTATIONS,DECLARATION,NM NPL,Java,dbeaver/dbeaver
+String,FUNCTION NAME,DECLARATION,NM N,Java,dbeaver/dbeaver
+MCPWorkflowApplySynchronizationHandler,NO OP,DECLARATION,DT N,Java,apache/shardingsphere
+String,PATH SEPARATOR,DECLARATION,NM N,Java,apache/shardingsphere
+String,TAG CONTAINER,DECLARATION,NM N,Java,dbeaver/dbeaver
+String,TOPIC SCRIPTS,DECLARATION,NM NPL,Java,dbeaver/dbeaver
+int,USAGE PROC,DECLARATION,NM N,Java,dbeaver/dbeaver
+SQLQuerySymbolClass,forced Class,DECLARATION,NM N,Java,dbeaver/dbeaver
+STMTreeNode,identifier Node,DECLARATION,NM N,Java,dbeaver/dbeaver
+SQLQuerySymbolEntry,member Name,DECLARATION,NM N,Java,dbeaver/dbeaver
+DBNDataSource,prev Script,DECLARATION,DT N,Java,dbeaver/dbeaver
+STMTreeNode,table Expr,DECLARATION,NM N,Java,dbeaver/dbeaver
+String,CMD EXPLAIN PLAN,DECLARATION,PRE NM N,Java,dbeaver/dbeaver
+String,CMD GENERATE SCRIPT,DECLARATION,PRE V N,Java,dbeaver/dbeaver
+String,CMD NAVIGATE OBJECT,DECLARATION,PRE NM N,Java,dbeaver/dbeaver
+String,CMD ROW COPY,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+String,CMD ROW EDIT,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+String,DEFAULT LOCAL STRING,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+long,FEATURE COMPACT STATUS,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+String,FEATURE NAME LOCAL,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+String,INLINE EXPRESSION KEY,DECLARATION,NM NM N,Java,apache/shardingsphere
+int,MAX WORKER ID,DECLARATION,NM NM N,Java,apache/shardingsphere
+String,WORKER ID KEY,DECLARATION,NM NM N,Java,apache/shardingsphere
+"Entry<String, DatabaseStatistics>",database Statistics Entry,DECLARATION,NM NM N,Java,apache/shardingsphere
+"Entry<String, SchemaStatistics>",schema Statistics Entry,DECLARATION,NM NM N,Java,apache/shardingsphere
+String,CMD EXECUTE SCRIPT NEW,DECLARATION,PRE V N NM,Java,dbeaver/dbeaver
+String,CMD ROW COPY BEFORE,DECLARATION,PRE N V P,Java,dbeaver/dbeaver
+String,CMD SQL EDITOR NEW,DECLARATION,PRE NM N NM,Java,dbeaver/dbeaver
+String,CMD SQL SWITCH PANEL,DECLARATION,PRE NM NM N,Java,dbeaver/dbeaver
+String,CTX CON WIZARD FINAL,DECLARATION,PRE NM N NM,Java,dbeaver/dbeaver
+String,CTX EDIT OBJECT FILTERS,DECLARATION,PRE V NM NPL,Java,dbeaver/dbeaver
+String,FEATURE FREQUENCY DAILY START DATE,DECLARATION,NM NM NM NM N,Java,dbeaver/dbeaver
+String,LEGACY CONFIG FILE PREFIX,DECLARATION,NM NM NM N,Java,dbeaver/dbeaver
+String,OPTION DDL SEPARATE FOREIGN KEYS STATEMENTS,DECLARATION,NM NM NM NM NM NPL,Java,dbeaver/dbeaver
+String,OPTION MULTIINSERT BATCH SIZE,DECLARATION,NM NM NM N,Java,dbeaver/dbeaver
+String,OPTION USE CURRENT DIALECT SETTINGS,DECLARATION,NM V NM NM NPL,Java,dbeaver/dbeaver
+Set<String>,known Recognizable Value Expression Names,DECLARATION,NM NM NM NM NPL,Java,dbeaver/dbeaver
+ResultBean,bean,DECLARATION,N,Java,taosdata/TDengine
+String,branch,DECLARATION,N,Java,ClickHouse/ClickHouse
+YamlMCPResourceNavigationDescriptor,each,DECLARATION,DT,Java,apache/shardingsphere
+long,i,DECLARATION,N,Java,ClickHouse/ClickHouse
+MySQLDatabaseExportInfo,object,DECLARATION,N,Java,dbeaver/dbeaver
+long,payload,DECLARATION,N,Java,dbeaver/dbeaver
+"Map<K, V>",result,DECLARATION,N,Java,apache/shardingsphere
+ResultSet,rs,DECLARATION,N,Java,taosdata/TDengine
+DBSEntity,table,DECLARATION,N,Java,dbeaver/dbeaver
+Composite,column Group,DECLARATION,NM N,Java,dbeaver/dbeaver
+Set<DBPDataSourceContainer>,data Sources,DECLARATION,NM NPL,Java,dbeaver/dbeaver
+DBPImage,ds Icon,DECLARATION,NM N,Java,dbeaver/dbeaver
+DataType,field Type,DECLARATION,NM N,Java,ClickHouse/ClickHouse
+FileIO,file IO,DECLARATION,NM N,Java,ClickHouse/ClickHouse
+int,group Id,DECLARATION,NM N,Java,taosdata/TDengine
+"List<Map<String, Object>>",new Rows,DECLARATION,NM NPL,Java,apache/shardingsphere
+String,normalized Msg,DECLARATION,NM N,Java,taosdata/TDengine
+String,object Name,DECLARATION,NM N,Java,ClickHouse/ClickHouse
+TSWSPreparedStatement,p stmt,DECLARATION,NM N,Java,taosdata/TDengine
+RollbackTableRequest,request Body,DECLARATION,NM N,Java,ClickHouse/ClickHouse
+int,server Iteration,DECLARATION,NM N,Java,apache/shardingsphere
+Date,start Date,DECLARATION,NM N,Java,apache/shardingsphere
+Thread,thread 2,DECLARATION,N D,Java,taosdata/TDengine
+RelDataTypeFactory,type Factory,DECLARATION,NM N,Java,apache/shardingsphere
+AlterDatabaseResponse,alter Database Response,DECLARATION,NM NM N,Java,ClickHouse/ClickHouse
+CreateTopicsResult,create Topics Result,DECLARATION,V NM N,Java,taosdata/TDengine
+ArrayList<String>,f 5 List,DECLARATION,N D N,Java,taosdata/TDengine
+List<LaunchShortcutExtension>,filtered ShortCuts,DECLARATION,NM NPL,Java,dbeaver/dbeaver
+FromDatabaseSegment,from Database Segment,DECLARATION,P NM N,Java,apache/shardingsphere
+boolean,is Commit Snapshot,DECLARATION,V NM N,Java,ClickHouse/ClickHouse
+boolean,is Table Token,DECLARATION,V NM N,Java,ClickHouse/ClickHouse
+String,paged Key 2,DECLARATION,NM N D,Java,ClickHouse/ClickHouse
+ResourceMetaData,resource MetaData,DECLARATION,NM N,Java,apache/shardingsphere
+List<MemoryQueryResultDataRow>,result Data Rows,DECLARATION,NM NM NPL,Java,apache/shardingsphere
+STMTreeNode,select List Node,DECLARATION,NM NM N,Java,dbeaver/dbeaver
+List<TagMeta>,tag MetaList,DECLARATION,NM N,Java,taosdata/TDengine
+List<DBTTask>,this Folder Tasks,DECLARATION,DT NM NPL,Java,dbeaver/dbeaver
+boolean,contains Subquery Join Query,DECLARATION,V NM NM N,Java,apache/shardingsphere
+Collection<String>,duplicated Storage Unit Names,DECLARATION,NM NM NM NPL,Java,apache/shardingsphere
+GetTableSnapshotResponse,get Table Snapshot Response,DECLARATION,NM NM NM N,Java,ClickHouse/ClickHouse
+GetTableTokenResponse,get Table Token Response,DECLARATION,NM NM NM N,Java,ClickHouse/ClickHouse
+boolean,is Sample Url Usable,DECLARATION,V NM N V,Java,dbeaver/dbeaver
+MarkDonePartitionsRequest,mark Done Partitions Request,DECLARATION,V NM NM N,Java,ClickHouse/ClickHouse
+FileInputStream,maven Wrapper Property File Input Stream,DECLARATION,PRE NM NM NM NM N,Java,taosdata/TDengine
+"Map<String, DataSourcePoolProperties>",merged Data Source Pool Props Map,DECLARATION,PRE PRE PRE NM NM N,Java,apache/shardingsphere
+boolean,multiple Results Per Tab,DECLARATION,NM NPL P N,Java,dbeaver/dbeaver
+List<SubTableValue>,sub Table Value List,DECLARATION,NM NM NM N,Java,taosdata/TDengine
+String,td engine Source Table DDL,DECLARATION,NM NM NM NM N,Java,taosdata/TDengine
+List<DBTTask>,this Project Tasks Without Folder,DECLARATION,DT NM NPL P N,Java,dbeaver/dbeaver
+long,a,PARAMETER,N,Java,dbeaver/dbeaver
+Config,config,PARAMETER,N,Java,taosdata/TDengine
+Catalog.DatabaseNoPermissionException,e,PARAMETER,N,Java,ClickHouse/ClickHouse
+"Map<String, MCPPromptTemplateBinding>",each,PARAMETER,DT,Java,apache/shardingsphere
+Logger,logger,PARAMETER,N,Java,taosdata/TDengine
+List<CopilotMessage>,message,PARAMETER,N,Java,dbeaver/dbeaver
+List<Partition>,partitions,PARAMETER,NPL,Java,ClickHouse/ClickHouse
+PreparedStatement,ps,PARAMETER,N,Java,taosdata/TDengine
+List<SyncResourceTemplateSpecification>,request,PARAMETER,N,Java,apache/shardingsphere
+List<MetadataSearchHit>,sequence,PARAMETER,N,Java,apache/shardingsphere
+@NotNull String,artifact Id,PARAMETER,NM N,Java,dbeaver/dbeaver
+AuthProvider,auth Provider,PARAMETER,NM N,Java,ClickHouse/ClickHouse
+int,consumer Num,PARAMETER,NM N,Java,taosdata/TDengine
+String,current Token,PARAMETER,NM N,Java,taosdata/TDengine
+IoTDBDataSource,data Source,PARAMETER,NM N,Java,dbeaver/dbeaver
+int,left Precedence,PARAMETER,NM N,Java,apache/shardingsphere
+MergedResult,merged Result,PARAMETER,NM N,Java,apache/shardingsphere
+Collection<Object>,o 2,PARAMETER,N D,Java,dbeaver/dbeaver
+String,page Token,PARAMETER,NM N,Java,ClickHouse/ClickHouse
+long,schema Id,PARAMETER,NM N,Java,ClickHouse/ClickHouse
+Identifier,table Identifier,PARAMETER,NM N,Java,ClickHouse/ClickHouse
+Collection<TableNameSegment>,table Names,PARAMETER,NM NPL,Java,apache/shardingsphere
+String,tb name,PARAMETER,NM N,Java,taosdata/TDengine
+int,thread Number,PARAMETER,NM N,Java,apache/shardingsphere
+LocalDateTime,valid Until,PARAMETER,NM P,Java,dbeaver/dbeaver
+String,auth Plugin Name,PARAMETER,NM NM N,Java,apache/shardingsphere
+@Nullable DummyObjectCtor,child Ctor,PARAMETER,NM N,Java,dbeaver/dbeaver
+@Nullable DBPDataSourceContainer,data Source Container,PARAMETER,NM NM N,Java,dbeaver/dbeaver
+CDCJobItemContext,job Item Context,PARAMETER,NM NM N,Java,apache/shardingsphere
+Long,latest Snapshot Id,PARAMETER,NM NM N,Java,ClickHouse/ClickHouse
+URI,mailto URL,PARAMETER,NM N,Java,dbeaver/dbeaver
+boolean,prefer Prepared Statement,PARAMETER,V NM N,Java,apache/shardingsphere
+String,prefix Of Table,PARAMETER,N P N,Java,taosdata/TDengine
+int,rows Per Commit,PARAMETER,NPL P N,Java,ClickHouse/ClickHouse
+@Nullable SQLQueryLexicalScope,source Tail Scope,PARAMETER,NM NM N,Java,dbeaver/dbeaver
+SubTableValue,sub Table Value,PARAMETER,NM NM N,Java,taosdata/TDengine
+String,super Table SQL,PARAMETER,NM NM N,Java,taosdata/TDengine
+MCPWorkflowDefinitionProvider,workflow Definition Provider,PARAMETER,NM NM N,Java,apache/shardingsphere
+String,assist Query Column Name,PARAMETER,NM NM NM N,Java,apache/shardingsphere
+int,batch Size By Row,PARAMETER,NM N P N,Java,taosdata/TDengine
+@Nullable String,container Alias Or Null,PARAMETER,NM N CJ N,Java,dbeaver/dbeaver
+@NotNull PROPERTIES,copilot Properties Legacy AI Settings,PARAMETER,NM NM NM NM NPL,Java,dbeaver/dbeaver
+"Multimap<CaseInsensitiveString, TableSegmentBinderContext>",external Table Binder Contexts,PARAMETER,NM NM NM NPL,Java,apache/shardingsphere
+long,file Size In Bytes,PARAMETER,NM N P NPL,Java,ClickHouse/ClickHouse
+long,last File Creation Time,PARAMETER,DT NM NM N,Java,ClickHouse/ClickHouse
+int,max Rows Per Table,PARAMETER,NM NPL P N,Java,taosdata/TDengine
+int,num Of Rows Per Table,PARAMETER,N P NPL P N,Java,taosdata/TDengine
+int,num Of Values Per SQL,PARAMETER,N P NPL P N,Java,taosdata/TDengine
+Collection<TableMapperRuleAttribute>,table Mapper Rule Attributes,PARAMETER,NM NM NM NPL,Java,apache/shardingsphere
+DBECommand<WMINamespace>,wmi Namespace DBE Command,PARAMETER,NM NM NM N,Java,dbeaver/dbeaver
+class,App,CLASS,N,Java,taosdata/TDengine
+class,Bean,CLASS,N,Java,taosdata/TDengine
+class,Constants,CLASS,NPL,Java,dbeaver/dbeaver
+class,Data,CLASS,NPL,Java,dbeaver/dbeaver
+class,Handle,CLASS,N,Java,dbeaver/dbeaver
+class,Projection,CLASS,N,Java,apache/shardingsphere
+class,Property,CLASS,N,Java,apache/shardingsphere
+class,Snapshot,CLASS,N,Java,apache/shardingsphere
+class,Weather,CLASS,N,Java,taosdata/TDengine
+class,Agent Junction,CLASS,NM N,Java,apache/shardingsphere
+class,Cell Value,CLASS,NM N,Java,dbeaver/dbeaver
+class,Check Listener,CLASS,NM N,Java,dbeaver/dbeaver
+class,Copilot Usage,CLASS,NM N,Java,dbeaver/dbeaver
+class,DB Icon,CLASS,NM N,Java,dbeaver/dbeaver
+class,Default User,CLASS,NM N,Java,apache/shardingsphere
+class,Json Config,CLASS,NM N,Java,taosdata/TDengine
+class,Order By,CLASS,V P,Java,dbeaver/dbeaver
+class,Pool Configuration,CLASS,NM N,Java,apache/shardingsphere
+class,Regex Utils,CLASS,NM NPL,Java,apache/shardingsphere
+class,Rotation Result,CLASS,NM N,Java,taosdata/TDengine
+class,Route Mapper,CLASS,NM N,Java,apache/shardingsphere
+class,Row Value,CLASS,NM N,Java,taosdata/TDengine
+class,Table Mapper,CLASS,NM N,Java,taosdata/TDengine
+class,Weather Dao,CLASS,NM N,Java,taosdata/TDengine
+class,AES Cryptographic Algorithm,CLASS,NM NM N,Java,apache/shardingsphere
+class,Abs Consumer Loop,CLASS,NM NM N,Java,taosdata/TDengine
+class,Common Expression Segment,CLASS,NM NM N,Java,apache/shardingsphere
+class,Cursor Data Container,CLASS,NM NM N,Java,dbeaver/dbeaver
+class,DBT Task Category,CLASS,NM NM N,Java,dbeaver/dbeaver
+class,Database Connection Service,CLASS,NM NM N,Java,taosdata/TDengine
+class,Leaflet Tiles Descriptor,CLASS,NM NM N,Java,dbeaver/dbeaver
+class,Line Protocol Example,CLASS,NM NM N,Java,taosdata/TDengine
+class,MCP Resource Annotations,CLASS,NM NM NPL,Java,apache/shardingsphere
+class,Paimon Incremental Writer,CLASS,NM NM N,Java,ClickHouse/ClickHouse
+class,Postgre Database Manager,CLASS,NM NM N,Java,dbeaver/dbeaver
+class,Server SQL Exception,CLASS,NM NM N,Java,apache/shardingsphere
+class,Sub Table Value,CLASS,NM NM N,Java,taosdata/TDengine
+class,Compute Node Worker Id Changed Handler,CLASS,NM NM NM NM NM N,Java,apache/shardingsphere
+class,Diagram Toggle Persist Action,CLASS,NM NM NM N,Java,dbeaver/dbeaver
+class,Exasol Table Index Manager,CLASS,NM NM NM N,Java,dbeaver/dbeaver
+class,Execute As Statement Impl,CLASS,V P NM N,Java,taosdata/TDengine
+class,IData Transfer Node Primary,CLASS,NM NM NM N,Java,dbeaver/dbeaver
+class,MySQL User Editor Abstract,CLASS,NM NM NM N,Java,dbeaver/dbeaver
+class,Postgre SQL Database MetaData,CLASS,NM NM NM N,Java,apache/shardingsphere
+class,REST Catalog Server Starter,CLASS,NM NM NM N,Java,ClickHouse/ClickHouse
+class,Spring boot demo Application,CLASS,NM NM NM N,Java,taosdata/TDengine
+class,User Defined REST Catalog Server,CLASS,NM NM NM NM N,Java,ClickHouse/ClickHouse
+class,Ws Consumer Loop Full,CLASS,NM NM N NM,Java,taosdata/TDengine
+class,XA Begin Proxy Backend Handler,CLASS,PRE V NM NM N,Java,apache/shardingsphere
+unsigned char *,content,ATTRIBUTE,N,C,koordinates/kart
+int,errors,ATTRIBUTE,NPL,C,GenericMappingTools/gmt
+JSValue,getter,ATTRIBUTE,N,C,pelicanmapping/osgearth
+char *,macro,ATTRIBUTE,N,C,GenericMappingTools/gmt
+QString,plan,ATTRIBUTE,N,C,opengisch/QField
+cJSON *,prev,ATTRIBUTE,DT,C,koordinates/kart
+AREQ,r,ATTRIBUTE,N,C,RediSearch/RediSearch
+char *,source,ATTRIBUTE,N,C,pelicanmapping/osgearth
+int64_t *,values,ATTRIBUTE,NPL,C,MapServer/MapServer
+double,width,ATTRIBUTE,N,C,opengisch/QField
+,BC INFINITY,ATTRIBUTE,NM N,C,GenericMappingTools/gmt
+ImFontAtlas*,Container Atlas,ATTRIBUTE,NM N,C,pelicanmapping/osgearth
+,TOK VOID,ATTRIBUTE,NM N,C,pelicanmapping/osgearth
+duk_alloc_function,alloc func,ATTRIBUTE,V N,C,pelicanmapping/osgearth
+t_docId,doc Id,ATTRIBUTE,NM N,C,RediSearch/RediSearch
+Boolean,does Reduce,ATTRIBUTE,V V,C,RediSearch/RediSearch
+QString,logo Main,ATTRIBUTE,N NM,C,opengisch/QField
+cJSON_bool,no alloc,ATTRIBUTE,DT V,C,koordinates/kart
+int,nx state,ATTRIBUTE,NM N,C,RediSearch/RediSearch
+bool,one file,ATTRIBUTE,D N,C,MapServer/MapServer
+pointObj *,pas Top,ATTRIBUTE,NM N,C,MapServer/MapServer
+double,storage Used,ATTRIBUTE,N V,C,opengisch/QField
+GMTGRAVMAG3D_XYZ *,t center,ATTRIBUTE,NM N,C,GenericMappingTools/gmt
+double,value double,ATTRIBUTE,N NM,C,koordinates/kart
+char *,value string,ATTRIBUTE,N NM,C,koordinates/kart
+,GMT CSH MODE,ATTRIBUTE,NM NM N,C,GenericMappingTools/gmt
+,GRD SELECT W,ATTRIBUTE,NM NM N,C,GenericMappingTools/gmt
+,MS CJC MITER,ATTRIBUTE,NM NM N,C,MapServer/MapServer
+,Not Extended 510,ATTRIBUTE,VM N D,C,pelicanmapping/osgearth
+,PLN T MAX,ATTRIBUTE,NM NM N,C,RediSearch/RediSearch
+double,dst art longitude,ATTRIBUTE,NM NM N,C,MapServer/MapServer
+QString,logo Nav bar,ATTRIBUTE,NM NM N,C,opengisch/QField
+double,map tick length,ATTRIBUTE,NM NM N,C,GenericMappingTools/gmt
+size_t,max Batch Iteration,ATTRIBUTE,NM NM N,C,RediSearch/RediSearch
+int,n Nt Act,ATTRIBUTE,NM NM N,C,RediSearch/RediSearch
+JSValue,regexp ctor,ATTRIBUTE,NM N,C,pelicanmapping/osgearth
+double,storage Threshold Critical,ATTRIBUTE,NM N NM,C,opengisch/QField
+double,storage Threshold Warning,ATTRIBUTE,NM N NM,C,opengisch/QField
+,CQL 2 NT OPERATION,ATTRIBUTE,N P NM N,C,MapServer/MapServer
+,GMTREGRESS Y MEAN,ATTRIBUTE,PRE NM N,C,GenericMappingTools/gmt
+,GMT GRID NO NANS,ATTRIBUTE,PRE N DT NPL,C,GenericMappingTools/gmt
+int,Im Gui Key C,ATTRIBUTE,NM NM NM N,C,pelicanmapping/osgearth
+,Im Gui Scroll Flags No Scroll Parent,ATTRIBUTE,NM NM NM NPL DT NM N,C,pelicanmapping/osgearth
+,Index Doc Ids Only,ATTRIBUTE,NM NM NPL VM,C,RediSearch/RediSearch
+,JSON Array Type BF16,ATTRIBUTE,NM NM NM N,C,RediSearch/RediSearch
+,MS IMAGE MODE PC256,ATTRIBUTE,NM NM NM N,C,MapServer/MapServer
+ImNodesMiniMapNodeHoveringCallback,Mini Map Node Hovering Callback,ATTRIBUTE,NM NM NM NM N,C,pelicanmapping/osgearth
+int,max cached shape ram amount,ATTRIBUTE,NM NM NM NM N,C,MapServer/MapServer
+double,o sin pole lat,ATTRIBUTE,NM NM NM N,C,GenericMappingTools/gmt
+size_t,uv threads running topology update,ATTRIBUTE,NM NPL V NM N,C,RediSearch/RediSearch
+uint32_t,Hash,FUNCTION,V,C,RediSearch/RediSearch
+STDMETHODIMP,Invoke,FUNCTION,V,C,NASAWorldWind/WorldWindJava
+void,PFNGL GET PROGRAM LOCAL PARAMETER DVAR BPROC,FUNCTION,PRE V NM NM NM NM N,C,MapServer/MapServer
+void,PFNGL TEXTURE MATERIAL EXTPROC,FUNCTION,PRE NM NM N,C,MapServer/MapServer
+IMGUI_API void,Separator,FUNCTION,N,C,pelicanmapping/osgearth
+void *,allocate,FUNCTION,V,C,koordinates/kart
+bool,compress,FUNCTION,V,C,pelicanmapping/osgearth
+GMT_LOCAL int,decimate,FUNCTION,V,C,GenericMappingTools/gmt
+int,parse,FUNCTION,V,C,GenericMappingTools/gmt
+NetworkReply *,post,FUNCTION,V,C,opengisch/QField
+void *,Array Add,FUNCTION,N V,C,RediSearch/RediSearch
+IMGUI_API void,Bullet Text,FUNCTION,NM N,C,pelicanmapping/osgearth
+HRESULT,Find Links,FUNCTION,V NPL,C,NASAWorldWind/WorldWindJava
+IMGUI_API bool,Image Button,FUNCTION,NM N,C,pelicanmapping/osgearth
+void,Log Severe,FUNCTION,V NM,C,NASAWorldWind/WorldWindJava
+void,Parse Trace,FUNCTION,V N,C,RediSearch/RediSearch
+int,get prop,FUNCTION,V N,C,pelicanmapping/osgearth
+bool,init Window,FUNCTION,V N,C,MapServer/MapServer
+trans_affine&,load from,FUNCTION,V P,C,MapServer/MapServer
+void,minify string,FUNCTION,V N,C,koordinates/kart
+cJSON_bool,parse number,FUNCTION,V N,C,koordinates/kart
+GMT_LOCAL void,pssac integral,FUNCTION,PRE N,C,GenericMappingTools/gmt
+GMT_LOCAL double,pssegyz rms,FUNCTION,PRE N,C,GenericMappingTools/gmt
+void,reload Everything,FUNCTION,V DT,C,opengisch/QField
+void,set Username,FUNCTION,V N,C,opengisch/QField
+int,Capture Bit Map,FUNCTION,V NM N,C,NASAWorldWind/WorldWindJava
+HWND,Find Child Window,FUNCTION,V NM N,C,NASAWorldWind/WorldWindJava
+EXTERN_MSC int,GMT Parse Common,FUNCTION,PRE V N,C,GenericMappingTools/gmt
+MRCtx *,MR Create Ctx,FUNCTION,PRE V N,C,RediSearch/RediSearch
+QuantStream *,New Quantile Stream,FUNCTION,NM NM N,C,RediSearch/RediSearch
+void,bad Layers Found,FUNCTION,NM NPL V,C,opengisch/QField
+unsigned char,get decimal point,FUNCTION,V NM N,C,koordinates/kart
+EXTERN_MSC bool,gmt get rgb,FUNCTION,PRE V N,C,GenericMappingTools/gmt
+void,js def free,FUNCTION,PRE PRE V,C,pelicanmapping/osgearth
+char *,ms Tmp File,FUNCTION,PRE NM N,C,MapServer/MapServer
+void,set Fix Type,FUNCTION,V NM N,C,opengisch/QField
+void,skip multiline comment,FUNCTION,V NM N,C,koordinates/kart
+bool,square to quad,FUNCTION,V P N,C,MapServer/MapServer
+char *,Fragment List Highlight Whole Doc S,FUNCTION,PRE PRE V NM NM N,C,RediSearch/RediSearch
+JSAtom,JS New Atom Str,FUNCTION,PRE NM NM N,C,pelicanmapping/osgearth
+jobject,Java Rectangle From NS Rect,FUNCTION,PRE N P NM N,C,NASAWorldWind/WorldWindJava
+JNIEXPORT void JNICALL,Java gov nasa world wind util web view Windows Web View JNI set Active,FUNCTION,PRE PRE PRE PRE PRE PRE PRE PRE PRE PRE PRE PRE V N,C,NASAWorldWind/WorldWindJava
+cJSON_bool,add item to array,FUNCTION,V N P N,C,koordinates/kart
+DUK_EXTERNAL_DECL void,duk push new target,FUNCTION,PRE V NM N,C,pelicanmapping/osgearth
+GLAPI void APIENTRY,gl Delete Object ARB,FUNCTION,PRE V NM N,C,MapServer/MapServer
+GMT_LOCAL void,grdmath V PDF,FUNCTION,PRE NM N,C,GenericMappingTools/gmt
+void,set Forward Nmea Sentences,FUNCTION,V NM NM NPL,C,opengisch/QField
+void,set Sat Info Complete,FUNCTION,V NM N NM,C,opengisch/QField
+unsigned char,utf16 literal to utf8,FUNCTION,NM N P N,C,koordinates/kart
+int,x2sys get track names,FUNCTION,PRE V NM NPL,C,GenericMappingTools/gmt
+vertex,circumcenter,DECLARATION,N,C,GenericMappingTools/gmt
+int,dy,DECLARATION,N,C,MapServer/MapServer
+MultipartFormData,file,DECLARATION,N,C,pelicanmapping/osgearth
+int,ms,DECLARATION,NPL,C,RediSearch/RediSearch
+HANDLE,mutex,DECLARATION,N,C,NASAWorldWind/WorldWindJava
+void handleAuthRequestOpenBrowser( QUrl &url ),override,DECLARATION,N,C,opengisch/QField
+ContentReader,reader,DECLARATION,N,C,pelicanmapping/osgearth
+size_t,size,DECLARATION,N,C,koordinates/kart
+BSTR,target,DECLARATION,N,C,NASAWorldWind/WorldWindJava
+char,version,DECLARATION,N,C,koordinates/kart
+namespace,IMNODES NAMESPACE,DECLARATION,NM N,C,pelicanmapping/osgearth
+,Notification Adapter,DECLARATION,NM N,C,NASAWorldWind/WorldWindJava
+,Pelias Geocoder,DECLARATION,NM N,C,opengisch/QField
+int,SEM FLAGS,DECLARATION,NM NPL,C,koordinates/kart
+bool,take job,DECLARATION,NM N,C,pelicanmapping/osgearth
+,bsp line,DECLARATION,NM N,C,MapServer/MapServer
+RedisModuleString *,err Msg,DECLARATION,NM N,C,RediSearch/RediSearch
+IStream *,html Stream,DECLARATION,NM N,C,NASAWorldWind/WorldWindJava
+vertex,join vertex,DECLARATION,NM N,C,GenericMappingTools/gmt
+"conv_transform<conv_stroke<gsv_text>, Transformer>",m trans,DECLARATION,PRE N,C,MapServer/MapServer
+size_t,n requests,DECLARATION,PRE NPL,C,RediSearch/RediSearch
+size_t,num Threads,DECLARATION,NM NPL,C,RediSearch/RediSearch
+cJSON *,object item,DECLARATION,NM N,C,koordinates/kart
+QString,remote Version,DECLARATION,NM N,C,opengisch/QField
+int,triangle bytes,DECLARATION,NM NPL,C,GenericMappingTools/gmt
+LinkParams *,Get Link Params,DECLARATION,V NM NPL,C,NASAWorldWind/WorldWindJava
+,Ios Platform Utilities,DECLARATION,NM NM NPL,C,opengisch/QField
+,Q Network Request,DECLARATION,NM NM N,C,opengisch/QField
+osub,broken subseg,DECLARATION,NM N,C,GenericMappingTools/gmt
+HWND,h Wnd Browser,DECLARATION,PRE NM N,C,NASAWorldWind/WorldWindJava
+dict *,legacy Spec Rules,DECLARATION,NM NM NPL,C,RediSearch/RediSearch
+QgsFeatureIterator,m Feature Iterator,DECLARATION,PRE NM N,C,opengisch/QField
+gray_calc,m c 3,DECLARATION,PRE N D,C,MapServer/MapServer
+unsigned,m face index,DECLARATION,PRE NM N,C,MapServer/MapServer
+uint32_t,max Indexes g,DECLARATION,NM N NM,C,RediSearch/RediSearch
+otri,new bot left,DECLARATION,NM N NM,C,GenericMappingTools/gmt
+vert_t,normalize 2d,DECLARATION,V N,C,pelicanmapping/osgearth
+StartViewerController *,start Viewer Controller,DECLARATION,NM NM N,C,pelicanmapping/osgearth
+void,Add Line Box Rects,DECLARATION,V NM NM NPL,C,NASAWorldWind/WorldWindJava
+size_t,Chinese Dict Full Length,DECLARATION,NM NM NM N,C,RediSearch/RediSearch
+,QgsProject Bad Layer Handler,DECLARATION,PRE NM NM N,C,opengisch/QField
+QFIELD_CORE_EXPORT,Referencing Feature List Model Base,DECLARATION,PRE PRE NM NM N,C,opengisch/QField
+UINT,WM WEB VIEW SET ADVISE,DECLARATION,PRE PRE PRE V N,C,NASAWorldWind/WorldWindJava
+char *,ms script prefix gu,DECLARATION,NM NM NM N,C,MapServer/MapServer
+dictType,dict Type Heap Redis Strings,DECLARATION,NM NM NM NM NPL,C,RediSearch/RediSearch
+char *,file to delete if ctrl C,DECLARATION,N P V CJ NM N,C,GenericMappingTools/gmt
+RLS,mag v new mag,DECLARATION,N P NM N,C,GenericMappingTools/gmt
+"template <typename SToken, CToken, Content> bool",process multipart ranges data,DECLARATION,V NM NM NPL,C,pelicanmapping/osgearth
+uint8_t,unicode prop Join Control table,DECLARATION,NM NM NM NM N,C,pelicanmapping/osgearth
+bool,DO,DECLARATION,V,C,GenericMappingTools/gmt
+int,cc,DECLARATION,N,C,pelicanmapping/osgearth
+Document *,doc,DECLARATION,N,C,RediSearch/RediSearch
+char *,expr,DECLARATION,N,C,RediSearch/RediSearch
+int,length,DECLARATION,N,C,koordinates/kart
+int,ox,DECLARATION,N,C,MapServer/MapServer
+unsigned char *,printed,DECLARATION,V,C,koordinates/kart
+unsigned int,sum,DECLARATION,N,C,GenericMappingTools/gmt
+char *,va,DECLARATION,N,C,MapServer/MapServer
+long long,encode Version,DECLARATION,V N,C,RediSearch/RediSearch
+int,eval rc,DECLARATION,NM N,C,RediSearch/RediSearch
+char,exe path,DECLARATION,NM N,C,koordinates/kart
+value_type *,fg ptr,DECLARATION,NM N,C,MapServer/MapServer
+bool,has time,DECLARATION,V N,C,pelicanmapping/osgearth
+unsigned int,lx just,DECLARATION,N V,C,GenericMappingTools/gmt
+int,max retry,DECLARATION,NM N,C,koordinates/kart
+int,num glyphs,DECLARATION,NM NPL,C,MapServer/MapServer
+unsigned char *,output pointer,DECLARATION,NM N,C,koordinates/kart
+T*,rhs data,DECLARATION,NM NPL,C,pelicanmapping/osgearth
+size_t,s pos,DECLARATION,NM N,C,GenericMappingTools/gmt
+char,time Str,DECLARATION,NM N,C,GenericMappingTools/gmt
+list_head *,waiter list,DECLARATION,NM N,C,pelicanmapping/osgearth
+int,with Payload,DECLARATION,P N,C,RediSearch/RediSearch
+char *const,wkt options,DECLARATION,NM NPL,C,MapServer/MapServer
+JSValue,array buffer func,DECLARATION,NM NM N,C,pelicanmapping/osgearth
+unsigned char,char array 3,DECLARATION,NM N D,C,koordinates/kart
+RSIndexResult *,cur vec res,DECLARATION,NM NM N,C,RediSearch/RediSearch
+size_t,default buffer size,DECLARATION,NM NM N,C,koordinates/kart
+unsigned int,first i job,DECLARATION,DT NM N,C,GenericMappingTools/gmt
+char *,geom column name,DECLARATION,NM NM N,C,MapServer/MapServer
+bool,is Double Reply,DECLARATION,V NM N,C,RediSearch/RediSearch
+int,is wide char,DECLARATION,V NM N,C,pelicanmapping/osgearth
+int,n Current Size,DECLARATION,NM NM N,C,MapServer/MapServer
+int,pan Band Map,DECLARATION,NM NM N,C,MapServer/MapServer
+int,required Field Num,DECLARATION,NM NM N,C,RediSearch/RediSearch
+double,s y 1,DECLARATION,NM N D,C,GenericMappingTools/gmt
+uint8x8_t,vec 1 lo,DECLARATION,N D N,C,pelicanmapping/osgearth
+int,b Check Local Cache,DECLARATION,PRE V NM N,C,MapServer/MapServer
+int,bluestein threshold,DECLARATION,NM N,C,GenericMappingTools/gmt
+uint16x4_t,count 16 x 4 val,DECLARATION,N D N D N,C,pelicanmapping/osgearth
+unsigned int,first point in segment,DECLARATION,DT N P N,C,GenericMappingTools/gmt
+size_t,inv Idx Bulk Len,DECLARATION,NM NM NM N,C,RediSearch/RediSearch
+char *,ms context bad pattern,DECLARATION,NM NM NM N,C,MapServer/MapServer
+wmsParamsObj,s This WMS Params,DECLARATION,PRE DT NM NPL,C,MapServer/MapServer
+JSValue,shared array buffer func,DECLARATION,V NM NM N,C,pelicanmapping/osgearth
+CursorMappings *,vsim Or Search,DECLARATION,N CJ V,C,RediSearch/RediSearch
+double *,x2sys y,DECLARATION,NM N,C,GenericMappingTools/gmt
+int32_t,zero denorm val,DECLARATION,D NM N,C,RediSearch/RediSearch
+double,a,PARAMETER,N,C,koordinates/kart
+NSString *,arg,PARAMETER,N,C,NASAWorldWind/WorldWindJava
+stbtt__buf *,b,PARAMETER,N,C,pelicanmapping/osgearth
+char *,filename,PARAMETER,N,C,MapServer/MapServer
+unsigned char *,input,PARAMETER,N,C,koordinates/kart
+char *,op,PARAMETER,N,C,GenericMappingTools/gmt
+QgsPoint,point,PARAMETER,N,C,opengisch/QField
+int,port,PARAMETER,N,C,opengisch/QField
+textPathObj *,src,PARAMETER,N,C,MapServer/MapServer
+HiddenString *,value,PARAMETER,N,C,RediSearch/RediSearch
+unsigned int,alloc level,PARAMETER,NM N,C,GenericMappingTools/gmt
+UINT,c Names,PARAMETER,PRE NPL,C,NASAWorldWind/WorldWindJava
+unsigned int *,distance mode,PARAMETER,NM N,C,GenericMappingTools/gmt
+char *,exception Code,PARAMETER,NM N,C,MapServer/MapServer
+char *,exe path,PARAMETER,NM N,C,koordinates/kart
+bool,imu Correction,PARAMETER,NM N,C,opengisch/QField
+integer *,in 2,PARAMETER,N D,C,GenericMappingTools/gmt
+int *,is New,PARAMETER,V N,C,RediSearch/RediSearch
+LPARAM,l Param,PARAMETER,PRE N,C,NASAWorldWind/WorldWindJava
+QVector3D &,min Bound,PARAMETER,NM N,C,opengisch/QField
+RedisModuleKey *,open Key,PARAMETER,NM N,C,RediSearch/RediSearch
+unsigned char **,output pointer,PARAMETER,NM N,C,koordinates/kart
+double *,p y,PARAMETER,PRE N,C,MapServer/MapServer
+ImGuiPopupFlags,popup flags,PARAMETER,NM NPL,C,pelicanmapping/osgearth
+time_t,timeout sec,PARAMETER,NM N,C,pelicanmapping/osgearth
+bool,add backtrace,PARAMETER,V N,C,pelicanmapping/osgearth
+ImU32,col upr left,PARAMETER,N NM N,C,pelicanmapping/osgearth
+UINT,i T Info,PARAMETER,NM NM N,C,NASAWorldWind/WorldWindJava
+RSSearchOptions *,merge Search opts,PARAMETER,NM NM NPL,C,RediSearch/RediSearch
+int,n Lock Id,PARAMETER,NM NM N,C,MapServer/MapServer
+int,n maregs,PARAMETER,NM NPL,C,GenericMappingTools/gmt
+bool *,out Is New,PARAMETER,NM V N,C,RediSearch/RediSearch
+int *,pn Shape Type,PARAMETER,NM NM N,C,MapServer/MapServer
+ITypeInfo **,pp T Info,PARAMETER,PRE NM N,C,NASAWorldWind/WorldWindJava
+bool,sat Info Complete,PARAMETER,NM N V,C,opengisch/QField
+QList<QgsSatelliteInfo> &,satellites In View,PARAMETER,NPL P N,C,opengisch/QField
+QDateTime &,utc Date Time,PARAMETER,NM NM N,C,opengisch/QField
+double *,y grd geo,PARAMETER,NM NM N,C,GenericMappingTools/gmt
+int,b Default SRS Needs Axis Swapping,PARAMETER,PRE NM N V N V,C,MapServer/MapServer
+RedisSearchCtx *,depleting Thread Ctx,PARAMETER,NM NM N,C,RediSearch/RediSearch
+double,depth in corr m,PARAMETER,NM P NM N,C,GenericMappingTools/gmt
+double *,df No Data Value,PARAMETER,PRE DT NM N,C,GenericMappingTools/gmt
+int*,ended at attribute id,PARAMETER,V P NM N,C,pelicanmapping/osgearth
+unsigned int,n cells m 1,PARAMETER,NM NM N D,C,GenericMappingTools/gmt
+ACArgSpec *,nonflex arg opts,PARAMETER,NM NM N,C,RediSearch/RediSearch
+double *,padf Src Geo Transform,PARAMETER,NM NM NM N,C,MapServer/MapServer
+unsigned int *,palette scaling max val,PARAMETER,NM NM NM N,C,MapServer/MapServer
+ImVec2*,text size if known,PARAMETER,NM N CJ NM,C,pelicanmapping/osgearth
+VecSearchMode,vec sim Search Mode,PARAMETER,NM NM NM N,C,RediSearch/RediSearch
+jlong,web View Window Ptr,PARAMETER,NM NM NM N,C,NASAWorldWind/WorldWindJava
+class,Group,CLASS,N,C,RediSearch/RediSearch
+class,Node,CLASS,N,C,pelicanmapping/osgearth
+class,Trie,CLASS,N,C,RediSearch/RediSearch
+class,UInt16,CLASS,N,C,GenericMappingTools/gmt
+class,box,CLASS,N,C,MapServer/MapServer
+class,curved,CLASS,V,C,MapServer/MapServer
+class,dict,CLASS,N,C,RediSearch/RediSearch
+class,error,CLASS,N,C,koordinates/kart
+class,iterator,CLASS,N,C,pelicanmapping/osgearth
+class,p,CLASS,N,C,GenericMappingTools/gmt
+class,Debug CTX,CLASS,NM N,C,RediSearch/RediSearch
+class,Drawing Stroke,CLASS,NM N,C,opengisch/QField
+class,GRDSEAMOUNT I,CLASS,NM N,C,GenericMappingTools/gmt
+class,Realm Entry,CLASS,NM N,C,opengisch/QField
+class,Request Config,CLASS,NM N,C,RediSearch/RediSearch
+class,SHP Info,CLASS,NM N,C,MapServer/MapServer
+class,Time Sample,CLASS,NM N,C,RediSearch/RediSearch
+class,Visibility Expression,CLASS,NM N,C,opengisch/QField
+class,jcv rect,CLASS,NM N,C,pelicanmapping/osgearth
+class,color type,CLASS,NM N,C,MapServer/MapServer
+class,image info,CLASS,NM N,C,GenericMappingTools/gmt
+class,internal hooks,CLASS,NM NPL,C,koordinates/kart
+class,parse buffer,CLASS,NM N,C,koordinates/kart
+class,print buffer,CLASS,NM N,C,koordinates/kart
+class,stbtt uint16,CLASS,NM N,C,pelicanmapping/osgearth
+class,Cloud Subscription Information,CLASS,NM NM N,C,opengisch/QField
+class,Cloud User Information,CLASS,NM NM N,C,opengisch/QField
+class,Fragment Search Term,CLASS,NM NM N,C,RediSearch/RediSearch
+class,GRD FFT D,CLASS,NM NM N,C,GenericMappingTools/gmt
+class,GRD TRACK C,CLASS,NM NM N,C,GenericMappingTools/gmt
+class,JS Class Def,CLASS,NM NM N,C,pelicanmapping/osgearth
+class,ROT SMOOTHER W,CLASS,NM NM N,C,GenericMappingTools/gmt
+class,Trie Map Iterator,CLASS,NM NM N,C,RediSearch/RediSearch
+class,a mask type,CLASS,NM NM N,C,MapServer/MapServer
+class,c JSON Hooks,CLASS,PRE NM NPL,C,koordinates/kart
+class,c JSON bool,CLASS,PRE NM N,C,koordinates/kart
+class,duk thread state,CLASS,NM NM N,C,pelicanmapping/osgearth
+class,ft thread cache,CLASS,NM NM N,C,MapServer/MapServer
+class,Cloud White label Information,CLASS,NM NM NM N,C,opengisch/QField
+class,GMT 2 KML Q,CLASS,N P NM N,C,GenericMappingTools/gmt
+class,Im Gui Sort Direction,CLASS,NM NM NM N,C,pelicanmapping/osgearth
+class,Im Nodes Style Var Element,CLASS,NM NM NM NM N,C,pelicanmapping/osgearth
+class,JS ForIn Iterator,CLASS,NM NM N,C,pelicanmapping/osgearth
+class,Old New Feature Pair,CLASS,NM NM NM N,C,opengisch/QField
+class,Redis Module Flush Info V1,CLASS,PRE PRE NM N NM,C,RediSearch/RediSearch
+class,Redis Module Key Spec Begin Search Type,CLASS,PRE PRE PRE PRE NM NM N,C,RediSearch/RediSearch
+class,X2SYS GET G,CLASS,N V N,C,GenericMappingTools/gmt
+class,a mask no clip bgra32a,CLASS,NM N DT V N,C,MapServer/MapServer
+class,ms Oracle Spatial Handler,CLASS,NM NM NM N,C,MapServer/MapServer
+osg::Vec3d,start,ATTRIBUTE,N,C++,pelicanmapping/osgearth
+BlkAlloc *,alloc,ATTRIBUTE,V,C++,RediSearch/RediSearch
+QgsFeature &,feature,ATTRIBUTE,N,C++,opengisch/QField
+reducerDistributionFunc,func,ATTRIBUTE,N,C++,RediSearch/RediSearch
+HWND,hwnd,ATTRIBUTE,N,C++,NASAWorldWind/WorldWindJava
+std::shared_ptr<_regex_replace_impl>,impl,ATTRIBUTE,N,C++,mapnik/mapnik
+long64,left,ATTRIBUTE,N,C++,MapServer/MapServer
+minHeapNodeObj **,nodes,ATTRIBUTE,NPL,C++,MapServer/MapServer
+RECT,rect,ATTRIBUTE,N,C++,NASAWorldWind/WorldWindJava
+,SCALING QUADRIC,ATTRIBUTE,NM N,C++,mapnik/mapnik
+int,attribute Index,ATTRIBUTE,NM N,C++,opengisch/QField
+HWND,found Window,ATTRIBUTE,NM N,C++,NASAWorldWind/WorldWindJava
+,hard light,ATTRIBUTE,NM N,C++,mapnik/mapnik
+AGGPlan *,local Plan,ATTRIBUTE,NM N,C++,RediSearch/RediSearch
+BarcodeDecoder *,m Decoder,ATTRIBUTE,PRE N,C++,opengisch/QField
+Ptr<Config>,m config,ATTRIBUTE,PRE N,C++,pelicanmapping/osgearth
+T,m value,ATTRIBUTE,PRE N,C++,pelicanmapping/osgearth
+sqlite_int64,pk id,ATTRIBUTE,NM N,C++,mapnik/mapnik
+PLN_Reducer *,src Reducer,ATTRIBUTE,NM N,C++,RediSearch/RediSearch
+std::unique_ptr<mapserver::conv_stroke<mapserver::conv_dash<line_adaptor>>>,stroke dash,ATTRIBUTE,NM N,C++,MapServer/MapServer
+std::string,time field,ATTRIBUTE,NM N,C++,MapServer/MapServer
+"std::unordered_map<Point, int, PointHash, PointEquals>",unique Points,ATTRIBUTE,NM NPL,C++,pelicanmapping/osgearth
+layerObj *,utf layer,ATTRIBUTE,NM N,C++,MapServer/MapServer
+wchar_t *,window Class,ATTRIBUTE,NM N,C++,NASAWorldWind/WorldWindJava
+bool,actual Key Valid,ATTRIBUTE,NM N NM,C++,pelicanmapping/osgearth
+std::vector<PLN_BaseStep *>,added Local Steps,ATTRIBUTE,V NM NPL,C++,RediSearch/RediSearch
+std::vector<PLN_BaseStep *>,added Remote Steps,ATTRIBUTE,V NM NPL,C++,RediSearch/RediSearch
+float,background image opacity,ATTRIBUTE,NM NM N,C++,mapnik/mapnik
+osg::Matrixd,local 2 world,ATTRIBUTE,N P N,C++,pelicanmapping/osgearth
+QRectF,m Plot Area,ATTRIBUTE,PRE NM N,C++,opengisch/QField
+"QMap<QString, QTimer *>",m Scheduled Flushes,ATTRIBUTE,PRE NM NPL,C++,opengisch/QField
+ClipType,m Clip Type,ATTRIBUTE,PRE NM N,C++,MapServer/MapServer
+AssertionInfo,m assertion Info,ATTRIBUTE,PRE NM N,C++,pelicanmapping/osgearth
+std::uint8_t,minimum path length,ATTRIBUTE,NM NM N,C++,mapnik/mapnik
+char *,output schema format,ATTRIBUTE,NM NM N,C++,MapServer/MapServer
+char *,script url encoded,ATTRIBUTE,NM N NM,C++,MapServer/MapServer
+double,unscaled y max,ATTRIBUTE,NM NM N,C++,mapnik/mapnik
+GLuint,Attrib Location Vtx Pos,ATTRIBUTE,NM NM NM N,C++,pelicanmapping/osgearth
+,SCALING LANCZOS,ATTRIBUTE,NM N,C++,mapnik/mapnik
+int,cached Shape Count Warning Emitted,ATTRIBUTE,NM NM NM NM V,C++,MapServer/MapServer
+int,cached Shape RAM Warning Emitted,ATTRIBUTE,NM NM NM NM V,C++,MapServer/MapServer
+LazyStat<TestRunInfo>,current Test Run Info,ATTRIBUTE,NM NM NM N,C++,pelicanmapping/osgearth
+,d Right To Left,ATTRIBUTE,NM N P N,C++,MapServer/MapServer
+std::uint8_t,image d type gray32 s,ATTRIBUTE,NM NM NM N NM,C++,mapnik/mapnik
+std::uint8_t,image d type gray64,ATTRIBUTE,NM NM NM N,C++,mapnik/mapnik
+std::uint8_t,line join enum MAX,ATTRIBUTE,NM NM N NM,C++,mapnik/mapnik
+compop_renderer_base,m compop renderer base,ATTRIBUTE,PRE NM NM N,C++,MapServer/MapServer
+int32_t,min lon e7,ATTRIBUTE,NM NM N,C++,pelicanmapping/osgearth
+unsigned,num Vertices In Surface,ATTRIBUTE,NM NPL P N,C++,pelicanmapping/osgearth
+CloudLayer,Create,FUNCTION,V,C++,pelicanmapping/osgearth
+auto,allocate,FUNCTION,V,C++,RediSearch/RediSearch
+std::string,definition,FUNCTION,N,C++,mapnik/mapnik
+std::FILE*,get,FUNCTION,V,C++,mapnik/mapnik
+QgsProject *,project,FUNCTION,N,C++,opengisch/QField
+std::size_t,report,FUNCTION,V,C++,RediSearch/RediSearch
+HRESULT,resolve,FUNCTION,V,C++,NASAWorldWind/WorldWindJava
+osg::Node*,run,FUNCTION,V,C++,pelicanmapping/osgearth
+void,warning,FUNCTION,N,C++,NASAWorldWind/WorldWindJava
+char *,what,FUNCTION,DT,C++,MapServer/MapServer
+ULONG STDMETHODCALLTYPE,Add Ref,FUNCTION,V N,C++,NASAWorldWind/WorldWindJava
+void,Auto Scroll,FUNCTION,V N,C++,NASAWorldWind/WorldWindJava
+STDMETHODIMP,Query Interface,FUNCTION,V N,C++,NASAWorldWind/WorldWindJava
+void,Sha1 Compute,FUNCTION,N V,C++,RediSearch/RediSearch
+void,Weak Callback,FUNCTION,NM N,C++,MapServer/MapServer
+QgsField,attribute Field,FUNCTION,NM N,C++,opengisch/QField
+QColor,fill Color,FUNCTION,V N,C++,opengisch/QField
+void,free Raster,FUNCTION,V N,C++,pelicanmapping/osgearth
+double,generate offset,FUNCTION,V N,C++,mapnik/mapnik
+bool,get Hovered,FUNCTION,V NM,C++,pelicanmapping/osgearth
+void,min Heapify,FUNCTION,PRE V,C++,MapServer/MapServer
+json,process WFS,FUNCTION,V N,C++,MapServer/MapServer
+int,read int,FUNCTION,V N,C++,mapnik/mapnik
+void,set Program,FUNCTION,V N,C++,pelicanmapping/osgearth
+auto,to string,FUNCTION,P N,C++,RediSearch/RediSearch
+jobject,Create Java Rect,FUNCTION,V NM N,C++,NASAWorldWind/WorldWindJava
+void,Get Resource Resolver,FUNCTION,V NM N,C++,NASAWorldWind/WorldWindJava
+HRESULT,Set Base URL,FUNCTION,V NM N,C++,NASAWorldWind/WorldWindJava
+QgsVectorLayer *,best Available Layer,FUNCTION,NM NM N,C++,opengisch/QField
+int,distribute Std Dev,FUNCTION,V NM N,C++,RediSearch/RediSearch
+char *,get Alias Name,FUNCTION,V NM N,C++,MapServer/MapServer
+bool,is Reserved Word,FUNCTION,V NM N,C++,pelicanmapping/osgearth
+int,ms WCS Exception,FUNCTION,NM NM N,C++,MapServer/MapServer
+image_any,read any gray,FUNCTION,V DT N,C++,mapnik/mapnik
+int,reducer Distribution Func,FUNCTION,NM NM N,C++,RediSearch/RediSearch
+void,set File Path,FUNCTION,V NM N,C++,opengisch/QField
+std::vector<box2d<double>>,split bounding box,FUNCTION,V NM N,C++,mapnik/mapnik
+JNIEXPORT void JNICALL,Java gov nasa world wind util web view Windows Web View JNI release Com Object,FUNCTION,PRE PRE PRE NM PRE NM NM NM NM NM NM NM V NM N,C++,NASAWorldWind/WorldWindJava
+HRESULT,Parse Web View Url,FUNCTION,V NM NM N,C++,NASAWorldWind/WorldWindJava
+__m128i,mm cmpgt epu 8,FUNCTION,PRE NM N D,C++,mapnik/mapnik
+int,adjust last break position,FUNCTION,V DT NM N,C++,mapnik/mapnik
+void,build regular gridded mesh,FUNCTION,V NM NM N,C++,pelicanmapping/osgearth
+char *,dist Alloc U64 Str,FUNCTION,V V NM N,C++,RediSearch/RediSearch
+int,distribute Single Arg Self,FUNCTION,V NM NM N,C++,RediSearch/RediSearch
+double,get Distance To Visible Horizon,FUNCTION,V N P NM N,C++,pelicanmapping/osgearth
+int,msWFS Handle Update Sequence,FUNCTION,PRE V NM N,C++,MapServer/MapServer
+void,set Preview Jobs Quadrants,FUNCTION,V NM NM NPL,C++,opengisch/QField
+void,set Show Featured On Top,FUNCTION,V N NM P N,C++,opengisch/QField
+imageObj *,utfgrid Create Image,FUNCTION,PRE V N,C++,MapServer/MapServer
+jclass,Object,DECLARATION,N,C++,NASAWorldWind/WorldWindJava
+jclass,String,DECLARATION,N,C++,NASAWorldWind/WorldWindJava
+unsigned,TURBULENT,DECLARATION,N,C++,pelicanmapping/osgearth
+float,elevation,DECLARATION,N,C++,pelicanmapping/osgearth
+QList<LocalFileItem>,folders,DECLARATION,NPL,C++,opengisch/QField
+QModelIndex,index,DECLARATION,N,C++,opengisch/QField
+gmlItemListObj *,items,DECLARATION,NPL,C++,MapServer/MapServer
+auto &,k,DECLARATION,N,C++,MapServer/MapServer
+double,tau,DECLARATION,N,C++,mapnik/mapnik
+auto,y,DECLARATION,N,C++,RediSearch/RediSearch
+jclass,AV List,DECLARATION,NM N,C++,NASAWorldWind/WorldWindJava
+jclass,Logging cls,DECLARATION,NM N,C++,NASAWorldWind/WorldWindJava
+double,SIZE RES,DECLARATION,NM N,C++,MapServer/MapServer
+bool,gl debug,DECLARATION,NM N,C++,pelicanmapping/osgearth
+auto,intersects filter,DECLARATION,NM N,C++,RediSearch/RediSearch
+char*,jfa cs,DECLARATION,NM N,C++,pelicanmapping/osgearth
+QString &,layer Key,DECLARATION,NM N,C++,opengisch/QField
+std::vector<std::string>,links Headers,DECLARATION,NM NPL,C++,MapServer/MapServer
+auto,outer size,DECLARATION,NM N,C++,RediSearch/RediSearch
+QByteArray,response Bytes,DECLARATION,NM NPL,C++,opengisch/QField
+QFile,shm File,DECLARATION,NM N,C++,opengisch/QField
+svg::vertex_stl_adapter<svg::svg_path_storage>,stl storage,DECLARATION,NM N,C++,mapnik/mapnik
+std::string,unprintable String,DECLARATION,NM N,C++,pelicanmapping/osgearth
+auto,w args,DECLARATION,NM NPL,C++,mapnik/mapnik
+auto,within filter,DECLARATION,P N,C++,RediSearch/RediSearch
+jfieldID,AWT CHAR UNDEFINED,DECLARATION,NM N NM,C++,NASAWorldWind/WorldWindJava
+jfieldID,AWT VK6,DECLARATION,NM N,C++,NASAWorldWind/WorldWindJava
+ms_uint32,MAX TEXTURE SIZE,DECLARATION,NM NM N,C++,MapServer/MapServer
+ms_uint32,SHAPE CIRCLE RES,DECLARATION,NM NM N,C++,MapServer/MapServer
+uint8_t,TILE TYPE WEBP,DECLARATION,NM NM N,C++,pelicanmapping/osgearth
+QString,absolute File Name,DECLARATION,NM NM N,C++,opengisch/QField
+geometry_type_:x3::symbols<mapnik::geometry::geometry_types>,geometry type sym,DECLARATION,NM NM N,C++,mapnik/mapnik
+double,image ratio y,DECLARATION,NM NM N,C++,mapnik/mapnik
+QString,reduced Item Name,DECLARATION,NM NM N,C++,opengisch/QField
+,reducer Distributors g,DECLARATION,NM N NM,C++,RediSearch/RediSearch
+ReadKey,s READ KEY,DECLARATION,NM NM N,C++,pelicanmapping/osgearth
+bool,s dump Shaders,DECLARATION,PRE V NPL,C++,pelicanmapping/osgearth
+void,serialize Unresolved Keys,DECLARATION,V NM NPL,C++,RediSearch/RediSearch
+jfieldID,AWT VK F12,DECLARATION,NM NM N,C++,NASAWorldWind/WorldWindJava
+jfieldID,AWT VK F22,DECLARATION,NM NM N,C++,NASAWorldWind/WorldWindJava
+MAPNIK_DISABLE_WARNING_PUSH #include <mapnik/warning_ignore.hpp> #undef B0 #if BOOST_VERSION == 106400 #include <boost/qvm/mat_operations.hpp> #endif #include <boost/geometry/geometry.hpp> #include <boost/geometry/geometries/register/point.hpp> #include <boost/geometry/geometries/register/ring.hpp> #include <boost/geometry/geometries/register/linestring.hpp> MAPNIK_DISABLE_WARNING_POP,BOOST GEOMETRY REGISTER POINT 2D,DECLARATION,NM NM V N NM,C++,mapnik/mapnik
+auto,multiline string def,DECLARATION,NM NM N,C++,mapnik/mapnik
+QObject *,network Delta Pushed Parent,DECLARATION,PRE PRE NM N,C++,opengisch/QField
+qint64,s Last Request Timestamp,DECLARATION,PRE DT NM N,C++,opengisch/QField
+QString,s Local Cloud Directory,DECLARATION,PRE NM NM N,C++,opengisch/QField
+short,s action Option Types,DECLARATION,PRE NM NM NPL,C++,pelicanmapping/osgearth
+short,s max Elevations 6,DECLARATION,PRE NM NPL D,C++,pelicanmapping/osgearth
+int8u,verdana14 bold,DECLARATION,N NM,C++,MapServer/MapServer
+"detail::EnumMapT<well_known_srs_enum, 3>",well known srs e map,DECLARATION,NM NM NM NM N,C++,mapnik/mapnik
+char *const,wfs Supported Versions Str,DECLARATION,NM NM NM N,C++,MapServer/MapServer
+PLN_GroupStep *,gr,DECLARATION,N,C++,RediSearch/RediSearch
+double,gt,DECLARATION,N,C++,mapnik/mapnik
+char *,hex,DECLARATION,N,C++,MapServer/MapServer
+std::string::size_type,i,DECLARATION,N,C++,MapServer/MapServer
+QgsPolylineXY &,line,DECLARATION,N,C++,opengisch/QField
+PLN_GroupStep *,local,DECLARATION,N,C++,RediSearch/RediSearch
+QVariantMap,params,DECLARATION,NPL,C++,opengisch/QField
+RECT *,r,DECLARATION,N,C++,NASAWorldWind/WorldWindJava
+osg::ref_ptr<TileNode>,tile,DECLARATION,N,C++,pelicanmapping/osgearth
+float*,z,DECLARATION,N,C++,pelicanmapping/osgearth
+PLN_MapFilterStep *,apply Step,DECLARATION,NM N,C++,RediSearch/RediSearch
+osg::Vec2f,child Size,DECLARATION,NM N,C++,pelicanmapping/osgearth
+double,cos P,DECLARATION,NM N,C++,pelicanmapping/osgearth
+QDateTime,end Timestamp,DECLARATION,NM N,C++,opengisch/QField
+CComQIPtr<IMoniker>,i Mon,DECLARATION,NM N,C++,NASAWorldWind/WorldWindJava
+CComPtr<IHTMLRect>,img Rect,DECLARATION,NM N,C++,NASAWorldWind/WorldWindJava
+auto const&,marker info,DECLARATION,NM N,C++,mapnik/mapnik
+PLN_ArrangeStep *,new Stp,DECLARATION,NM N,C++,RediSearch/RediSearch
+OutPt *,pp 1,DECLARATION,N D,C++,MapServer/MapServer
+char *,psz Units,DECLARATION,PRE NPL,C++,MapServer/MapServer
+auto,remote Objs,DECLARATION,NM NPL,C++,RediSearch/RediSearch
+renderer_context_type,renderer context,DECLARATION,NM N,C++,mapnik/mapnik
+script_run_list::const_iterator,script itr,DECLARATION,NM N,C++,mapnik/mapnik
+std::unique_ptr<QgsPrintLayout>,template Layout,DECLARATION,NM N,C++,opengisch/QField
+auto,z south,DECLARATION,NM N,C++,pelicanmapping/osgearth
+QgsMapLayer *,base map Layer,DECLARATION,NM NM N,C++,opengisch/QField
+AggregationPipelineParams,default Aggregation Params,DECLARATION,NM NM NPL,C++,RediSearch/RediSearch
+CComQIPtr<IHTMLElement2>,document Element 2,DECLARATION,NM N D,C++,NASAWorldWind/WorldWindJava
+std::string,fld name str,DECLARATION,NM NM N,C++,mapnik/mapnik
+GLenum,internal Texture Format,DECLARATION,NM NM N,C++,pelicanmapping/osgearth
+std::vector<LinkParams*>&,link Param Vector,DECLARATION,NM NM N,C++,NASAWorldWind/WorldWindJava
+int,new Field Idx,DECLARATION,NM NM N,C++,opengisch/QField
+ImU32,overlay col tabs,DECLARATION,NM NM NPL,C++,pelicanmapping/osgearth
+char const*,papsz Allowed Drivers,DECLARATION,NM NM NPL,C++,mapnik/mapnik
+char *,psz Dimension Extent,DECLARATION,PRE NM N,C++,MapServer/MapServer
+char *,remote Sum Alias,DECLARATION,NM NM N,C++,RediSearch/RediSearch
+int,resize grip n,DECLARATION,V NM N,C++,pelicanmapping/osgearth
+double,rev line length,DECLARATION,NM NM N,C++,MapServer/MapServer
+char *,force 2d processing,DECLARATION,NM NM N,C++,MapServer/MapServer
+auto,get Displacement File Name,DECLARATION,NM NM NM N,C++,pelicanmapping/osgearth
+int,i X Include Return,DECLARATION,NM NM NM N,C++,mapnik/mapnik
+bool,is Deprecaded Geometry Lock,DECLARATION,V NM NM N,C++,opengisch/QField
+jstring,j Error Msg String,DECLARATION,PRE NM NM N,C++,NASAWorldWind/WorldWindJava
+char *,local Count Sum Alias,DECLARATION,NM NM NM N,C++,RediSearch/RediSearch
+char *,local Sum Sum Alias,DECLARATION,NM NM NM N,C++,RediSearch/RediSearch
+char *,psz Dim Extra Def,DECLARATION,PRE NM NM N,C++,MapServer/MapServer
+auto,repackage If Needed And Then Download,DECLARATION,V CJ V CJ VM V,C++,opengisch/QField
+bool,surface State Set Pushed,DECLARATION,NM NM N V,C++,pelicanmapping/osgearth
+unsigned,upside down glyph count,DECLARATION,NM P NM N,C++,mapnik/mapnik
+BOOL,vertical Scroll Thumb Active,DECLARATION,NM NM NM N,C++,NASAWorldWind/WorldWindJava
+BYTE *,buffer,PARAMETER,N,C++,NASAWorldWind/WorldWindJava
+QString &,grid,PARAMETER,N,C++,opengisch/QField
+osgEarth::Geometry*,input,PARAMETER,N,C++,pelicanmapping/osgearth
+layer_rendering_material&,mat,PARAMETER,N,C++,mapnik/mapnik
+VertexModel *,model,PARAMETER,N,C++,opengisch/QField
+Local<String>,name,PARAMETER,N,C++,MapServer/MapServer
+shapeObj *,op,PARAMETER,N,C++,MapServer/MapServer
+AGGPlan *,remote,PARAMETER,N,C++,RediSearch/RediSearch
+LPARAM,unused,PARAMETER,NM,C++,NASAWorldWind/WorldWindJava
+uint64_t,v,PARAMETER,N,C++,RediSearch/RediSearch
+QTextStream &,attachments Stream,PARAMETER,NM N,C++,opengisch/QField
+int&,current height,PARAMETER,NM N,C++,mapnik/mapnik
+auto const&,geom 2,PARAMETER,N D,C++,RediSearch/RediSearch
+Qgis::GeometryType,geometry Type,PARAMETER,NM N,C++,opengisch/QField
+PLN_GroupStep *,g stp,PARAMETER,PRE N,C++,RediSearch/RediSearch
+HINSTANCE,h Instance,PARAMETER,PRE N,C++,NASAWorldWind/WorldWindJava
+uint32_t,hilbert Max,PARAMETER,NM N,C++,MapServer/MapServer
+ImGuiKey,key left,PARAMETER,NM N,C++,pelicanmapping/osgearth
+LPARAM,l Param,PARAMETER,PRE N,C++,NASAWorldWind/WorldWindJava
+text_line const&,line 2,PARAMETER,N D,C++,mapnik/mapnik
+int,part Size,PARAMETER,NM N,C++,opengisch/QField
+T...,u args,PARAMETER,NM NPL,C++,RediSearch/RediSearch
+vertex_dist&,v 1,PARAMETER,N D,C++,MapServer/MapServer
+osg::Transform&,x form,PARAMETER,NM N,C++,pelicanmapping/osgearth
+int,y dir,PARAMETER,NM N,C++,mapnik/mapnik
+mapnik::boolean_type const&,default opt value,PARAMETER,NM NM N,C++,mapnik/mapnik
+freetype_engine::font_file_mapping_type const&,font file mapping,PARAMETER,NM NM N,C++,mapnik/mapnik
+QgsLayerTreeModel *,layer Tree Model,PARAMETER,NM NM N,C++,opengisch/QField
+NameAndDesc const&,name And Desc,PARAMETER,N CJ N,C++,pelicanmapping/osgearth
+osg::Vec3d&,out i 1,PARAMETER,NM N D,C++,pelicanmapping/osgearth
+char **,papsz Dim Default,PARAMETER,NM N NM,C++,MapServer/MapServer
+QString &,picture File Path,PARAMETER,NM NM N,C++,opengisch/QField
+DISPID *,rg Disp Id,PARAMETER,NM NM N,C++,NASAWorldWind/WorldWindJava
+std::vector<rtree_type> const&,r tree list,PARAMETER,NM NM N,C++,mapnik/mapnik
+QList<QgsSatelliteInfo> &,satellites In View,PARAMETER,NPL P N,C++,opengisch/QField
+char *,script url encoded,PARAMETER,NM N NM,C++,MapServer/MapServer
+double,src Max X,PARAMETER,NM NM N,C++,pelicanmapping/osgearth
+LONG_PTR *,web View Id,PARAMETER,NM NM N,C++,NASAWorldWind/WorldWindJava
+int,def srs needs axis swap,PARAMETER,NM N V NM N,C++,MapServer/MapServer
+QString &,delta File Push Status String,PARAMETER,NM NM NM NM N,C++,opengisch/QField
+bool,handle borders and resize grips,PARAMETER,V NPL CJ V NPL,C++,pelicanmapping/osgearth
+bool,hide text after double hash,PARAMETER,V N P NM N,C++,pelicanmapping/osgearth
+int,href is mandatory,PARAMETER,N V NM,C++,MapServer/MapServer
+QString &,last Local Export Id,PARAMETER,DT NM NM N,C++,opengisch/QField
+void*,p Main Thread Renderer Resources,PARAMETER,PRE NM NM NM NPL,C++,pelicanmapping/osgearth
+msExprNode **,p Spatial Filter Node,PARAMETER,PRE NM NM N,C++,MapServer/MapServer
+jlong,web View Window Ptr,PARAMETER,NM NM NM N,C++,NASAWorldWind/WorldWindJava
+double,x 1 x 2,PARAMETER,N D N D,C++,mapnik/mapnik
+double,y 1 y 0,PARAMETER,N D N D,C++,mapnik/mapnik
+double,y 1 y 2,PARAMETER,N D N D,C++,mapnik/mapnik
+class,Allocator,CLASS,N,C++,RediSearch/RediSearch
+class,Flusher,CLASS,N,C++,opengisch/QField
+class,Line,CLASS,N,C++,MapServer/MapServer
+class,Point,CLASS,N,C++,MapServer/MapServer
+class,Rememberings,CLASS,NPL,C++,opengisch/QField
+class,Size,CLASS,N,C++,pelicanmapping/osgearth
+class,Variable,CLASS,N,C++,pelicanmapping/osgearth
+class,coordinate,CLASS,N,C++,mapnik/mapnik
+class,overload,CLASS,V,C++,RediSearch/RediSearch
+class,tag,CLASS,N,C++,mapnik/mapnik
+class,CLIP STATE,CLASS,NM N,C++,MapServer/MapServer
+class,Comp Points,CLASS,NM NPL,C++,pelicanmapping/osgearth
+class,Geom View,CLASS,NM N,C++,pelicanmapping/osgearth
+class,Int Point,CLASS,NM N,C++,MapServer/MapServer
+class,Query Renderer,CLASS,NM N,C++,pelicanmapping/osgearth
+class,R Tree,CLASS,NM N,C++,RediSearch/RediSearch
+class,Restorable Window,CLASS,NM N,C++,NASAWorldWind/WorldWindJava
+class,Stateful Allocator,CLASS,NM N,C++,RediSearch/RediSearch
+class,Text Attributes,CLASS,NM NPL,C++,pelicanmapping/osgearth
+class,Tracking Allocator,CLASS,NM N,C++,RediSearch/RediSearch
+class,color type,CLASS,NM N,C++,MapServer/MapServer
+class,get first,CLASS,V DT,C++,mapnik/mapnik
+class,pixel format,CLASS,NM N,C++,MapServer/MapServer
+class,separator tag,CLASS,NM N,C++,mapnik/mapnik
+class,wkb Format,CLASS,NM N,C++,mapnik/mapnik
+class,Attribute Not Equal,CLASS,N VM NM,C++,opengisch/QField
+class,Barcode Decoder Thread,CLASS,NM NM N,C++,opengisch/QField
+class,Collect Annotation Nodes,CLASS,V NM NPL,C++,pelicanmapping/osgearth
+class,Enum Windows Arg,CLASS,NM NM N,C++,NASAWorldWind/WorldWindJava
+class,FT Memory Rec,CLASS,PRE NM N,C++,mapnik/mapnik
+class,Poly Offset Builder,CLASS,NM NM N,C++,MapServer/MapServer
+class,Reducer Dist Ctx,CLASS,NM NM N,C++,RediSearch/RediSearch
+class,Time Zone Bounds,CLASS,NM NM NPL,C++,opengisch/QField
+class,do not use,CLASS,V VM V,C++,pelicanmapping/osgearth
+class,extract attribute names,CLASS,NM NM NPL,C++,mapnik/mapnik
+class,geometry to path,CLASS,N P N,C++,mapnik/mapnik
+class,line adaptor utf,CLASS,NM NM N,C++,MapServer/MapServer
+class,span gen type,CLASS,NM NM N,C++,MapServer/MapServer
+class,Barcode Video Filter Runnable,CLASS,NM NM NM N,C++,opengisch/QField
+class,Cache Attachment Field Names Map,CLASS,NM NM NM NM N,C++,opengisch/QField
+class,Free Function Test Case,CLASS,NM NM NM N,C++,pelicanmapping/osgearth
+class,Im Font Build Dst Data,CLASS,NM NM NM NM NPL,C++,pelicanmapping/osgearth
+class,Intersector Handler,CLASS,NM N,C++,pelicanmapping/osgearth
+class,Qgs Elevation Profile Plot Item,CLASS,NM NM NM NM N,C++,opengisch/QField
+class,is null transform node,CLASS,V NM NM N,C++,mapnik/mapnik
+class,min Heap Node Obj,CLASS,NM NM NM N,C++,MapServer/MapServer
+class,ms WMS Layer Node,CLASS,NM NM NM N,C++,MapServer/MapServer
+class,property value hash visitor,CLASS,NM NM NM N,C++,mapnik/mapnik
+class,renderer scan line aliased,CLASS,PRE NM N NM,C++,MapServer/MapServer
+class,stringifier,CLASS,N,C++,mapnik/mapnik
+String,ELEVATION,ATTRIBUTE,N,Java,NASAWorldWind/WorldWindJava
+,NONE,ATTRIBUTE,N,Java,pelicanmapping/osgearth
+,PRINCIPAL,ATTRIBUTE,N,Java,pelicanmapping/osgearth
+String,TAG,ATTRIBUTE,N,Java,pelicanmapping/osgearth
+boolean,editing,ATTRIBUTE,V,Java,NASAWorldWind/WorldWindJava
+QFieldPositioningService,instance,ATTRIBUTE,N,Java,opengisch/QField
+Level,level,ATTRIBUTE,N,Java,NASAWorldWind/WorldWindJava
+List<Integer>,lines,ATTRIBUTE,NPL,Java,NASAWorldWind/WorldWindJava
+moveTypes,mode,ATTRIBUTE,N,Java,pelicanmapping/osgearth
+String,ENABLE EDIT,ATTRIBUTE,V N,Java,NASAWorldWind/WorldWindJava
+int,GALLERY RESOURCE,ATTRIBUTE,NM N,Java,opengisch/QField
+,MDRAG,ATTRIBUTE,N,Java,pelicanmapping/osgearth
+int,NOTIFICATION ID,ATTRIBUTE,NM N,Java,opengisch/QField
+,PRODUCER H,ATTRIBUTE,NM N,Java,NASAWorldWind/WorldWindJava
+CrosshairLayer,crosshair Layer,ATTRIBUTE,NM N,Java,NASAWorldWind/WorldWindJava
+float,distance Origin,ATTRIBUTE,NM N,Java,pelicanmapping/osgearth
+lightType,light Mode,ATTRIBUTE,NM N,Java,pelicanmapping/osgearth
+int[],m Value,ATTRIBUTE,PRE N,Java,pelicanmapping/osgearth
+String,map Name,ATTRIBUTE,NM N,Java,MapServer/MapServer
+String,map file,ATTRIBUTE,NM N,Java,MapServer/MapServer
+float,original Brightness,ATTRIBUTE,NM N,Java,opengisch/QField
+double,polar Radius,ATTRIBUTE,NM N,Java,NASAWorldWind/WorldWindJava
+Intent,project Intent,ATTRIBUTE,NM N,Java,opengisch/QField
+byte[],result Bytes,ATTRIBUTE,NM NPL,Java,MapServer/MapServer
+int,IMPORT PROJECT FOLDER,ATTRIBUTE,V NM N,Java,opengisch/QField
+,ON KEY DOWN,ATTRIBUTE,P N P,Java,NASAWorldWind/WorldWindJava
+boolean,handle Volume Keys,ATTRIBUTE,V NM NPL,Java,opengisch/QField
+int,m Depth Size,ATTRIBUTE,PRE NM N,Java,pelicanmapping/osgearth
+int,m Green Size,ATTRIBUTE,PRE NM N,Java,pelicanmapping/osgearth
+int,m Stencil Size,ATTRIBUTE,PRE NM N,Java,pelicanmapping/osgearth
+PointF,one Finger Origin,ATTRIBUTE,NM NM N,Java,pelicanmapping/osgearth
+String,paths To Export,ATTRIBUTE,NPL P N,Java,opengisch/QField
+PickPointFrustumList,pick Frustum List,ATTRIBUTE,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,pixel Value Type,ATTRIBUTE,NM NM N,Java,NASAWorldWind/WorldWindJava
+boolean,resource Is Editing,ATTRIBUTE,N V N,Java,opengisch/QField
+SharedPreferences.Editor,shared Preference Editor,ATTRIBUTE,NM NM N,Java,opengisch/QField
+int,total Face Count,ATTRIBUTE,NM NM N,Java,NASAWorldWind/WorldWindJava
+int,EGL CONTEXT CLIENT VERSION,ATTRIBUTE,NM NM NM N,Java,pelicanmapping/osgearth
+int,EGL OPENGL ES BIT,ATTRIBUTE,NM NM NM N,Java,pelicanmapping/osgearth
+int,UPDATE PROJECT FROM ARCHIVE,ATTRIBUTE,V N P N,Java,opengisch/QField
+AtomicLong,network Resource Retrieval Time,ATTRIBUTE,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,resource Temp File Path,ATTRIBUTE,NM NM NM N,Java,opengisch/QField
+int[],s config Attribs 2,ATTRIBUTE,PRE NM NPL D,Java,pelicanmapping/osgearth
+JCheckBox,show Eye CheckBox,ATTRIBUTE,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,std Image Filter Code,ATTRIBUTE,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+Color,title Bar Color 1,ATTRIBUTE,NM NM N D,Java,NASAWorldWind/WorldWindJava
+double,to Viewport Scale,ATTRIBUTE,P NM N,Java,NASAWorldWind/WorldWindJava
+Button,ui Center View Button,ATTRIBUTE,NM NM NM N,Java,pelicanmapping/osgearth
+OnClickListener,ui Listener Center View,ATTRIBUTE,NM NM NM N,Java,pelicanmapping/osgearth
+int,append,FUNCTION,V,Java,NASAWorldWind/WorldWindJava
+void,gc,FUNCTION,N,Java,MapServer/MapServer
+void,init,FUNCTION,V,Java,pelicanmapping/osgearth
+double,m32,FUNCTION,N,Java,NASAWorldWind/WorldWindJava
+int,repaint,FUNCTION,V,Java,NASAWorldWind/WorldWindJava
+void,run,FUNCTION,V,Java,opengisch/QField
+void,step,FUNCTION,V,Java,pelicanmapping/osgearth
+void,usage,FUNCTION,N,Java,MapServer/MapServer
+void,vibrate,FUNCTION,V,Java,opengisch/QField
+void,add Layers,FUNCTION,V NPL,Java,NASAWorldWind/WorldWindJava
+EGLConfig,choose Config,FUNCTION,V N,Java,pelicanmapping/osgearth
+void,close Notification,FUNCTION,V N,Java,opengisch/QField
+boolean,copy File,FUNCTION,V N,Java,opengisch/QField
+boolean,delete Directory,FUNCTION,V N,Java,opengisch/QField
+void,destroy Context,FUNCTION,V N,Java,pelicanmapping/osgearth
+void,free Buffers,FUNCTION,V NPL,Java,NASAWorldWind/WorldWindJava
+void,keyboard Down,FUNCTION,N P,Java,pelicanmapping/osgearth
+void,keyboard Up,FUNCTION,N P,Java,pelicanmapping/osgearth
+Angle,limit Heading,FUNCTION,V N,Java,NASAWorldWind/WorldWindJava
+ShapefileRecord,next Record,FUNCTION,DT N,Java,NASAWorldWind/WorldWindJava
+void,on Click,FUNCTION,P V,Java,opengisch/QField
+void,on Create,FUNCTION,P V,Java,opengisch/QField
+boolean,on Touch,FUNCTION,P V,Java,pelicanmapping/osgearth
+PickedObject,resolve Pick,FUNCTION,V N,Java,NASAWorldWind/WorldWindJava
+void,assert Not Null,FUNCTION,V VM N,Java,MapServer/MapServer
+void,check Egl Error,FUNCTION,V NM N,Java,pelicanmapping/osgearth
+ContentAnnotation,create Image Annotation,FUNCTION,V NM N,Java,NASAWorldWind/WorldWindJava
+void,draw Plane Border,FUNCTION,V NM N,Java,NASAWorldWind/WorldWindJava
+boolean,files To Zip,FUNCTION,V P N,Java,opengisch/QField
+String,get Shape Type,FUNCTION,V NM N,Java,MapServer/MapServer
+void,on Activity Result,FUNCTION,P N V,Java,opengisch/QField
+void,on Draw Frame,FUNCTION,P V N,Java,pelicanmapping/osgearth
+void,on Surface Changed,FUNCTION,P N V,Java,pelicanmapping/osgearth
+void,send Dataset To,FUNCTION,V N P,Java,opengisch/QField
+void,test Class Obj,FUNCTION,V NM N,Java,MapServer/MapServer
+double[],to Array 3,FUNCTION,P N D,Java,NASAWorldWind/WorldWindJava
+void,trigger Show Notification,FUNCTION,V NM N,Java,opengisch/QField
+AirspaceControlPoint,create Control Point For,FUNCTION,V NM N P,Java,NASAWorldWind/WorldWindJava
+void,do Set Frame Size,FUNCTION,V V NM N,Java,NASAWorldWind/WorldWindJava
+boolean,document File To Folder,FUNCTION,V N P N,Java,opengisch/QField
+String,get Archive Project Name,FUNCTION,V NM NM N,Java,opengisch/QField
+Material,get Text Modifier Material,FUNCTION,V NM NM N,Java,NASAWorldWind/WorldWindJava
+void,mouse Button Release Event,FUNCTION,NM N V N,Java,pelicanmapping/osgearth
+boolean,on Create Options Menu,FUNCTION,P V NM N,Java,pelicanmapping/osgearth
+boolean,on Options Item Selected,FUNCTION,P NM N V,Java,pelicanmapping/osgearth
+void,start Q Field Cloud Service,FUNCTION,V NM NM NM N,Java,opengisch/QField
+void,test Get Class Obj,FUNCTION,V V NM N,Java,MapServer/MapServer
+void,test Insert Class Obj,FUNCTION,V V NM N,Java,MapServer/MapServer
+void,test Insert Output format Obj,FUNCTION,V V NM NM N,Java,MapServer/MapServer
+String,CENTER,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,COLOR,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,FRACTION,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,ID,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+int,LONG,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,LOXODROME,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,REDUCED,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+int,RGB,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,URL,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,VERTICAL,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+String,APP FRAME,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+List<String>,CATEGORY ALL,DECLARATION,N DT,Java,NASAWorldWind/WorldWindJava
+String,CLEAR TEXT,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+int,Color Palette,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,ECHELON REGION,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,FRAME SHAPE,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,MOBILITY BARGE,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,NUM BANDS,DECLARATION,NM NPL,Java,NASAWorldWind/WorldWindJava
+String,ON STOP,DECLARATION,P V,Java,NASAWorldWind/WorldWindJava
+String,PROJECTION DESC,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+int,SSH ORT,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+int,TILE WIDTH,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,TOOL BAR,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,TSK BYS,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,TSK PNE,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+String,AMPHC BDAWTH IFR,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,CATEGORY FIRE SUPPORT,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,COLOR ASSIGNMENT FILE,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,FEATURE INDEX TABLE,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,KML MIME TYPE,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,LINE STYLE FIELD,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,ORDER OF BATTLE,DECLARATION,N P N,Java,NASAWorldWind/WorldWindJava
+String,OTH SSUBSR MARLFE,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,PROJECTION EPSG CODE,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,RASTER HAS OVERVIEWS,DECLARATION,N V NPL,Java,NASAWorldWind/WorldWindJava
+String,RETRIEVER STATE INTERRUPTED,DECLARATION,NM N NM,Java,NASAWorldWind/WorldWindJava
+String,STANDARD IDENTITY FRIEND,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,TYPE GEOMETRY COLLECTION,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,AMPHC CUDCOV SYM STOPO,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,AMPHC WTH RA INMLIT,DECLARATION,N P NM N,Java,NASAWorldWind/WorldWindJava
+String,C2GM AVN LNE LLTR,DECLARATION,PRE NM NM N,Java,NASAWorldWind/WorldWindJava
+String,C2GM DEF PNT OBSPST CBRNOP,DECLARATION,PRE NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,C2GM GNL PNT ACTPNT CRDPNT,DECLARATION,PRE NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,C2GM GNL PNT UCTL,DECLARATION,PRE NM NM N,Java,NASAWorldWind/WorldWindJava
+String,FSUPP ARS TGTAQZ ATIZ RTG,DECLARATION,NM NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,MOBSU OBST MNE USPMNE,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,OCA HYDGRY ATN PRH1 PRH3,DECLARATION,PRE NM NM NM N,Java,NASAWorldWind/WorldWindJava
+String,OCA OCNGRY BIOLUM VDR3 4,DECLARATION,PRE NM NM N D,Java,NASAWorldWind/WorldWindJava
+String,SHORT COORD 3F,DECLARATION,NM N NM,Java,NASAWorldWind/WorldWindJava
+String,WCS 1 0 0 NAMESPACE URI,DECLARATION,N D D D NM N,Java,NASAWorldWind/WorldWindJava
+int,attribute,DECLARATION,N,Java,pelicanmapping/osgearth
+EGLContext,context,DECLARATION,N,Java,pelicanmapping/osgearth
+File,dir,DECLARATION,N,Java,opengisch/QField
+String,extension,DECLARATION,N,Java,opengisch/QField
+FileOutputStream,fos,DECLARATION,N,Java,MapServer/MapServer
+String[],names,DECLARATION,NPL,Java,pelicanmapping/osgearth
+PlaceNameLayer.NavigationTile,nt,DECLARATION,N,Java,NASAWorldWind/WorldWindJava
+java.util.List<? extends Point2D>,points,DECLARATION,NPL,Java,NASAWorldWind/WorldWindJava
+String,scheme,DECLARATION,N,Java,opengisch/QField
+WxSTest_thread,tt,DECLARATION,N,Java,MapServer/MapServer
+int,action Code,DECLARATION,NM N,Java,pelicanmapping/osgearth
+int[],attrib list,DECLARATION,NM N,Java,pelicanmapping/osgearth
+int,expected Length,DECLARATION,NM N,Java,MapServer/MapServer
+String,file Extension,DECLARATION,NM N,Java,opengisch/QField
+String,import Path,DECLARATION,NM N,Java,opengisch/QField
+Double,min Value,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+int,n points,DECLARATION,NM NPL,Java,pelicanmapping/osgearth
+classObj,new Class,DECLARATION,NM N,Java,MapServer/MapServer
+layerObj,new Layer,DECLARATION,NM N,Java,MapServer/MapServer
+int,num Tiles,DECLARATION,NM NPL,Java,NASAWorldWind/WorldWindJava
+int[],num config,DECLARATION,NM N,Java,pelicanmapping/osgearth
+int,ows Result,DECLARATION,NM N,Java,MapServer/MapServer
+Vec4,s 2,DECLARATION,N D,Java,NASAWorldWind/WorldWindJava
+File,temp File,DECLARATION,NM N,Java,opengisch/QField
+boolean[],terrain Conformant,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+StringBuilder,app Data Dirs,DECLARATION,NM NM NPL,Java,opengisch/QField
+BlockDXT3Compressor,dxt3 Compressor,DECLARATION,NM N,Java,NASAWorldWind/WorldWindJava
+Double,elevation Delta State,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+File,external Files Dir,DECLARATION,NM NM N,Java,opengisch/QField
+File[],external Files Dirs,DECLARATION,NM NM NPL,Java,opengisch/QField
+String,feature Table Name,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,file Base Name,DECLARATION,NM NM N,Java,opengisch/QField
+String,import Dataset Path,DECLARATION,NM NM N,Java,opengisch/QField
+File,import File Path,DECLARATION,NM NM N,Java,opengisch/QField
+String,import Project Path,DECLARATION,NM NM N,Java,opengisch/QField
+int,outline Draw Mode,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+String,path With Suffix,DECLARATION,N P N,Java,NASAWorldWind/WorldWindJava
+VerticalTransActionListener,vert Actions Listener,DECLARATION,NM NM N,Java,NASAWorldWind/WorldWindJava
+long[],Gb Mb Kb B,DECLARATION,N N N N,Java,NASAWorldWind/WorldWindJava
+double[],date Line Point 2,DECLARATION,NM NM N D,Java,NASAWorldWind/WorldWindJava
+Double,distance Min Opacity State,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+RPFFrameFileIndexSection.RPFFrameFileIndexRecord,frame File Index Record,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+double,max Distance From Path,DECLARATION,NM N P N,Java,NASAWorldWind/WorldWindJava
+SegmentPlaneAttributes.GeometryAttributes,move Control Point LR Geom,DECLARATION,NM NM NM NM N,Java,NASAWorldWind/WorldWindJava
+File,primary External Files Dir,DECLARATION,NM NM NM N,Java,opengisch/QField
+"Map.Entry<Double, Double>",s Max tMin Entry,DECLARATION,PRE NM NM N,Java,NASAWorldWind/WorldWindJava
+double,scaled Eye Distance Meters,DECLARATION,NM NM NM NPL,Java,NASAWorldWind/WorldWindJava
+double,sqrt D Dp ZZ,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+double,two To The N,DECLARATION,D P DT N,Java,NASAWorldWind/WorldWindJava
+Color,v Axis Label Color,DECLARATION,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+int,a,PARAMETER,N,Java,pelicanmapping/osgearth
+ActivityNotFoundException,e,PARAMETER,N,Java,opengisch/QField
+MotionEvent,event,PARAMETER,N,Java,pelicanmapping/osgearth
+int,g,PARAMETER,N,Java,pelicanmapping/osgearth
+SurfaceIcon,icon,PARAMETER,N,Java,NASAWorldWind/WorldWindJava
+KMLAbstractStyleSelector,o,PARAMETER,N,Java,NASAWorldWind/WorldWindJava
+Object,object,PARAMETER,N,Java,MapServer/MapServer
+String,selection,PARAMETER,N,Java,opengisch/QField
+String,test,PARAMETER,N,Java,MapServer/MapServer
+int,type,PARAMETER,N,Java,MapServer/MapServer
+int,default Value,PARAMETER,NM N,Java,pelicanmapping/osgearth
+EGLConfig,egl Config,PARAMETER,NM N,Java,pelicanmapping/osgearth
+Uri,folder Uri,PARAMETER,NM N,Java,opengisch/QField
+boolean,is Editing,PARAMETER,V V,Java,opengisch/QField
+boolean,is Video,PARAMETER,V N,Java,opengisch/QField
+JsonGenerator,j gen,PARAMETER,NM N,Java,NASAWorldWind/WorldWindJava
+int,kernel Size,PARAMETER,NM N,Java,NASAWorldWind/WorldWindJava
+int,key Code,PARAMETER,NM N,Java,pelicanmapping/osgearth
+String,map file,PARAMETER,NM N,Java,MapServer/MapServer
+KMLNetworkLink,network Link,PARAMETER,NM N,Java,NASAWorldWind/WorldWindJava
+int,request Code,PARAMETER,NM N,Java,opengisch/QField
+String,root Folder,PARAMETER,NM N,Java,opengisch/QField
+String[],selection Args,PARAMETER,NM NPL,Java,opengisch/QField
+String,suggested Name,PARAMETER,NM N,Java,NASAWorldWind/WorldWindJava
+TrackReader,track Reader,PARAMETER,NM N,Java,NASAWorldWind/WorldWindJava
+String,app Configuration Location,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+boolean,auto Select Layers,PARAMETER,NM NM NPL,Java,NASAWorldWind/WorldWindJava
+ByteBuffer,buffer To Upload,PARAMETER,N P V,Java,NASAWorldWind/WorldWindJava
+VPFPrimitiveData.PrimitiveInfo[],edge Info Array,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+boolean,force Tile Updates,PARAMETER,V NM NPL,Java,NASAWorldWind/WorldWindJava
+boolean,horizon Clipping Enabled,PARAMETER,NM N V,Java,NASAWorldWind/WorldWindJava
+int,inaccessible Memory Size,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+double,outer Minor Radius,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+int,outline Pick Width,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+long,rows Per Strip,PARAMETER,NPL P N,Java,NASAWorldWind/WorldWindJava
+Bundle,saved Instance State,PARAMETER,NM NM N,Java,opengisch/QField
+long,try Again Interval,PARAMETER,V VM N,Java,NASAWorldWind/WorldWindJava
+int,volume Key Code,PARAMETER,NM NM N,Java,opengisch/QField
+boolean,add Copy To Clipboard,PARAMETER,V N P N,Java,opengisch/QField
+double,compass To View port Scale,PARAMETER,N P NM NM N,Java,NASAWorldWind/WorldWindJava
+int,compression Lookup Subsection Location,PARAMETER,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+Position,drag Object Reference Position,PARAMETER,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+Matrix,heading Pitch Zoom Transform,PARAMETER,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+Angle,horizontal Field Of View,PARAMETER,NM N P N,Java,NASAWorldWind/WorldWindJava
+int[],min And Max Color Codes,PARAMETER,NM CJ NM NM NPL,Java,NASAWorldWind/WorldWindJava
+double,min Display Distance Squared,PARAMETER,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+long,min Time Millisecs,PARAMETER,NM NM N,Java,NASAWorldWind/WorldWindJava
+boolean,show Vertical Scroll Bar,PARAMETER,V NM NM N,Java,NASAWorldWind/WorldWindJava
+int,steps Needed For Estimate,PARAMETER,NPL V P N,Java,NASAWorldWind/WorldWindJava
+int,window System Recommended Choice,PARAMETER,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Area,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Comparison,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Expression,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Heading,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Metadata,CLASS,N,Java,MapServer/MapServer
+class,Pedestal,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Renderer,CLASS,N,Java,pelicanmapping/osgearth
+class,Source,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Style,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,VCS,CLASS,N,Java,NASAWorldWind/WorldWindJava
+class,Compound Iterator,CLASS,NM N,Java,NASAWorldWind/WorldWindJava
+class,Config Chooser,CLASS,NM N,Java,pelicanmapping/osgearth
+class,Conn Pool,CLASS,NM N,Java,MapServer/MapServer
+class,Draw Map,CLASS,NM N,Java,MapServer/MapServer
+class,Dump Shp,CLASS,NM N,Java,MapServer/MapServer
+class,Extent Holder,CLASS,NM N,Java,NASAWorldWind/WorldWindJava
+class,Make Point,CLASS,NM N,Java,MapServer/MapServer
+class,Shape Info,CLASS,NM N,Java,MapServer/MapServer
+class,Source Info,CLASS,NM N,Java,NASAWorldWind/WorldWindJava
+class,Surface Ellipse,CLASS,NM N,Java,NASAWorldWind/WorldWindJava
+class,Wavelet Record,CLASS,NM N,Java,NASAWorldWind/WorldWindJava
+class,light Type,CLASS,NM N,Java,pelicanmapping/osgearth
+class,move Types,CLASS,NM NPL,Java,pelicanmapping/osgearth
+class,nav Type,CLASS,NM N,Java,pelicanmapping/osgearth
+class,osg Viewer,CLASS,NM N,Java,pelicanmapping/osgearth
+class,Coll ada Viewer,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,File Set Table,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Geotiff Raster Writer,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Installed Data Panel,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,KML Label Style,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Output Format List,CLASS,NM NM N,Java,MapServer/MapServer
+class,Q Field Activity,CLASS,PRE NM N,Java,opengisch/QField
+class,Q Field Utils,CLASS,PRE NM NPL,Java,opengisch/QField
+class,Query By Attribute,CLASS,N P N,Java,MapServer/MapServer
+class,RPF File Record,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Tabbed Pane Usage,CLASS,NM NM N,Java,NASAWorldWind/WorldWindJava
+class,WxS Test,CLASS,NM N,Java,MapServer/MapServer
+class,osg Native Lib,CLASS,NM NM N,Java,pelicanmapping/osgearth
+class,Abstract Data Raster Reader,CLASS,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Collect Index Lists Callback,CLASS,V NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Double XML Event Parser,CLASS,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+class,Q Field Cloud Service,CLASS,PRE NM NM N,Java,opengisch/QField
+class,Q Field Positioning Service,CLASS,PRE NM NM N,Java,opengisch/QField
+class,Query By Attribute Unicode,CLASS,N P NM N,Java,MapServer/MapServer
+class,Run Time Built WMS Client,CLASS,NM NM NM NM N,Java,MapServer/MapServer
+class,USGS Urban Area Ortho,CLASS,NM NM NM N,Java,NASAWorldWind/WorldWindJava
+class,VPF Basic Primitive Data Factory,CLASS,NM NM NM NM N,Java,NASAWorldWind/WorldWindJava
+class,WxS Test No Thread,CLASS,PRE V DT N,Java,MapServer/MapServer
+class,WxS Test thread,CLASS,PRE V N,Java,MapServer/MapServer
