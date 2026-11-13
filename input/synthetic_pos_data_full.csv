@@ -834,7 +834,7 @@ int,j,DECLARATION,N,C,blitz
 void,join Thread,FUNCTION,V N,C++,vortex
 Object,json 2 obj,FUNCTION,N P N,Java,beanworks
 uint32_t,k Cache Line,DECLARATION,PRE NM N,C,aurora
-bool,k im 2 col,DECLARATION,NM N P N,C++,neutron
+bool,k im 2 col,DECLARATION,PRE N P N,C++,neutron
 int,kernel,DECLARATION,N,C,trak
 long,key,PARAMETER,N,C,forge
 int,key 2 idx,DECLARATION,N P N,C,forge
