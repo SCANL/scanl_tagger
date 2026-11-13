@@ -754,7 +754,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 760	int[]	free Positions	DECLARATION	NM NPL	Java	corenlp	https://github.com/stanfordnlp/CoreNLP	freePositions	https://github.com/stanfordnlp/CoreNLP/blob/5b62b0d8c73d6369e517837ba5edf3a52cab9084/src/edu/stanford/nlp/util/MemoryMonitor.java#L147	5b62b0d8c73d6369e517837ba5edf3a52cab9084	src/edu/stanford/nlp/util/MemoryMonitor.java	147	srcml	original_set	context+type	adjusted(+18)	present	DECLARATION	int[]	2017-01-20T14:09:46-08:00	
 761	int*	friend in close	FUNCTION	N P N	C	toxcore	https://github.com/TokTok/c-toxcore	friend_in_close	https://github.com/irungentoo/toxcore/blob/bf69b54f64003d160d759068f4816b2d9b2e1e21/toxcore/group.c#L211	bf69b54f64003d160d759068f4816b2d9b2e1e21	toxcore/group.c	211	closed_category	closed_category_set	context+type	verified	present	FUNCTION	static int		
 762	state_id	from	PARAMETER	P	C	s3fs-fuse	https://github.com/s3fs-fuse/s3fs-fuse	_from	https://github.com/s3fs-fuse/s3fs-fuse/blob/5371cd1468c84423729c334ac997f9621b797e9f/src/s3fs.cpp#L126	5371cd1468c84423729c334ac997f9621b797e9f	src/s3fs.cpp	126	closed_category	closed_category_set	context	verified	present	PARAMETER	const char*		
-763	char	from	PARAMETER	P	C++	meta	https://github.com/meta-toolkit/meta	from	https://github.com/meta-toolkit/meta/blob/c7019401185cdfa15e1193aad821894c35a83e3f/include/meta/sequence/markov_model.h#L45	c7019401185cdfa15e1193aad821894c35a83e3f	include/meta/sequence/markov_model.h	45	closed_category	closed_category_set	context	verified	present	PARAMETER	state_id		
 764	BytesReference	from Byte Buffers	FUNCTION	P NM NPL	Java	elasticsearch	https://github.com/elastic/elasticsearch	fromByteBuffers	https://github.com/elastic/elasticsearch/blob/42649ff1b48a8cf46e095531eed78c6443d400fa/server/src/main/java/org/elasticsearch/common/bytes/BytesReference.java#L220	42649ff1b48a8cf46e095531eed78c6443d400fa	server/src/main/java/org/elasticsearch/common/bytes/BytesReference.java	220	srcml	original_set	context+type	verified	present	FUNCTION	BytesReference	2019-03-06T19:26:23+01:00	
 765	T	from Bytes	FUNCTION	P NPL	Java	Singularity	https://github.com/sylabs/singularity	fromBytes	https://github.com/HubSpot/Singularity/blob/15688f486fc9286878eff40b51789c88bd6899d5/SingularityService/src/main/java/com/hubspot/singularity/data/transcoders/CompressingTranscoder.java#L23	15688f486fc9286878eff40b51789c88bd6899d5	SingularityService/src/main/java/com/hubspot/singularity/data/transcoders/CompressingTranscoder.java	23	closed_category	closed_category_set	context+type	verified	present	FUNCTION	public final T		
 766	ThreadContext	from context	PARAMETER	P N	C	panda3d	https://github.com/panda3d/panda3d	from_context	https://github.com/panda3d/panda3d/blob/07f9f9d89722a82234e0d111e61b7ff98e88e2db/panda/src/pipeline/threadSimpleManager.h#L89	07f9f9d89722a82234e0d111e61b7ff98e88e2db	panda/src/pipeline/threadSimpleManager.h	89	closed_category	closed_category_set	context+type	verified	present	PARAMETER	struct ThreadContext *		
@@ -768,7 +767,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 775	btVector3	from Local Aabb Min	DECLARATION	P NM NM N	C++	bullet3	https://github.com/bulletphysics/bullet3	fromLocalAabbMin	https://github.com/bulletphysics/bullet3/blob/4c375588054dd3f99a1b0da00a68cc4a15b2136e/src/BulletCollision/CollisionDispatch/btCollisionWorld.cpp#L882	4c375588054dd3f99a1b0da00a68cc4a15b2136e	src/BulletCollision/CollisionDispatch/btCollisionWorld.cpp	882	srcml	original_set	context+type	verified	exact	DECLARATION	btVector3	2019-03-03T20:56:12-08:00	
 776	StanzaFilter	from Room Filter	ATTRIBUTE	P NM N	Java	Smack	https://github.com/igniterealtime/Smack	fromRoomFilter	https://github.com/igniterealtime/Smack/blob/19b20fefeca69cccc3637e01ec2f151a054a3351/smack-experimental/src/main/java/org/jivesoftware/smackx/muclight/MultiUserChatLight.java#L80	19b20fefeca69cccc3637e01ec2f151a054a3351	smack-experimental/src/main/java/org/jivesoftware/smackx/muclight/MultiUserChatLight.java	80	closed_category	closed_category_set	context+type	verified	present	ATTRIBUTE	private final StanzaFilter		
 777	boolean	from Server	PARAMETER	P N	Java	Telegram	https://github.com/DrKLO/Telegram	fromServer	https://github.com/DrKLO/Telegram/blob/a9966a0353dc9d46c1ea60d141acd57affead7c9/TMessagesProj/src/main/java/org/telegram/messenger/DataQuery.java#L3789	a9966a0353dc9d46c1ea60d141acd57affead7c9	TMessagesProj/src/main/java/org/telegram/messenger/DataQuery.java	3789	srcml	original_set	context+type	adjusted(+49)	present	PARAMETER	boolean	2019-06-14T21:23:49+07:00	
-778	boolean	from Server	PARAMETER	P N	Java	Openfire	https://github.com/igniterealtime/Openfire	fromServer	https://github.com/igniterealtime/Openfire/blob/25ed0d66f9c56f423f9408920ce7d8734dcaf84d/xmppserver/src/main/java/org/jivesoftware/openfire/spi/RoutingTableImpl.java#L345	25ed0d66f9c56f423f9408920ce7d8734dcaf84d	xmppserver/src/main/java/org/jivesoftware/openfire/spi/RoutingTableImpl.java	345	closed_category	closed_category_set	context+type	verified	present	PARAMETER	boolean		
 779	SelectionVector4	from SV 4	PARAMETER	P N D	Java	drill	https://github.com/apache/drill	fromSV4	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/record/selection/SelectionVector4.java#L146	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/record/selection/SelectionVector4.java	146	closed_category	closed_category_set	context+type	verified	present	PARAMETER	SelectionVector4		
 780	int	from Y	PARAMETER	P N	Java	Spark	https://github.com/apache/spark	fromY	https://github.com/igniterealtime/Spark/blob/ca028f3a818b94c00f2f600933109087d84fb0b9/plugins/roar/src/main/java/org/jivesoftware/spark/roar/gui/SparkToaster.java#L262	ca028f3a818b94c00f2f600933109087d84fb0b9	plugins/roar/src/main/java/org/jivesoftware/spark/roar/gui/SparkToaster.java	262	closed_category	closed_category_set	context+type	verified	present	PARAMETER	int		
 781	int*	fts5 MultiIter Do Compare	FUNCTION	PRE PRE V V	C	toggldesktop	https://github.com/toggl-open-source/toggldesktop	fts5MultiIterDoCompare	https://github.com/toggl-open-source/toggldesktop/blob/013038304ee8e9154db4a45fb642716956cf153b/third_party/poco/Data/SQLite/src/sqlite3.c#L196798	013038304ee8e9154db4a45fb642716956cf153b	third_party/poco/Data/SQLite/src/sqlite3.c	196798	closed_category	closed_category_set	context+type	verified	present	FUNCTION	static int		
@@ -1686,7 +1684,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 1698	double	or Sel	DECLARATION	NM N	Java	drill	https://github.com/apache/drill	orSel	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/planner/cost/DrillRelMdDistinctRowCount.java#L329	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/planner/cost/DrillRelMdDistinctRowCount.java	329	closed_category	closed_category_set	context+type	verified	present	DECLARATION	double		
 1699	igraph_vector_int_t	order out	PARAMETER	N NM	C	rigraph	https://github.com/igraph/rigraph	order_out	https://github.com/igraph/rigraph/blob/cae1f110975e38353a8fbbe16d4c7a008fbd9bea/src/vendor/cigraph/src/graph/visitors.c#L488	cae1f110975e38353a8fbbe16d4c7a008fbd9bea	src/vendor/cigraph/src/graph/visitors.c	488	closed_category	closed_category_set	context+type	verified	present	PARAMETER	igraph_vector_int_t *		
 1700	OrderWith	order With	DECLARATION	V P	Java	junit4	https://github.com/junit-team/junit4	orderWith	https://github.com/junit-team/junit4/blob/1844d843b3bae157c088086477ddee7a5f815878/src/main/java/org/junit/runners/model/RunnerBuilder.java#L82	1844d843b3bae157c088086477ddee7a5f815878	src/main/java/org/junit/runners/model/RunnerBuilder.java	82	srcml	original_set	context+type	verified	present	DECLARATION	OrderWith	2019-02-02T14:58:20+01:00	
-1701	Request	order With	FUNCTION	V P	Java	junit4	https://github.com/junit-team/junit4	orderWith	https://github.com/junit-team/junit4/blob/1844d843b3bae157c088086477ddee7a5f815878/src/main/java/org/junit/runner/Request.java#L199	1844d843b3bae157c088086477ddee7a5f815878	src/main/java/org/junit/runner/Request.java	199	srcml	original_set	context+type	verified	present	FUNCTION	Request	2019-02-02T14:58:20+01:00	
 1702	List	ordered Invocations	PARAMETER	NM NPL	Java	mockito	https://github.com/mockito/mockito	orderedInvocations	https://github.com/mockito/mockito/blob/ab645dd40bf7152743c6a0ee45b8c9cd692e7639/src/main/java/org/mockito/internal/invocation/InvocationsFinder.java#L187	ab645dd40bf7152743c6a0ee45b8c9cd692e7639	src/main/java/org/mockito/internal/invocation/InvocationsFinder.java	187	srcml	original_set	context+type	verified	present	PARAMETER	List<Invocation>	2019-03-08T16:48:53+00:00	
 1703	float	ori W	DECLARATION	NM N	C++	bullet3	https://github.com/bulletphysics/bullet3	oriW	https://github.com/bulletphysics/bullet3/blob/4c375588054dd3f99a1b0da00a68cc4a15b2136e/examples/SharedMemory/PhysicsServerCommandProcessor.cpp#L1322	4c375588054dd3f99a1b0da00a68cc4a15b2136e	examples/SharedMemory/PhysicsServerCommandProcessor.cpp	1322	srcml	original_set	context+type	verified	present	DECLARATION	float	2019-03-03T20:56:12-08:00	
 1704	MockingDetails	original Mocking Details	ATTRIBUTE	NM NM NPL	Java	mockito	https://github.com/mockito/mockito	originalMockingDetails	https://github.com/mockito/mockito/blob/ab645dd40bf7152743c6a0ee45b8c9cd692e7639/src/main/java/org/mockito/internal/listeners/VerificationStartedNotifier.java#L32	ab645dd40bf7152743c6a0ee45b8c9cd692e7639	src/main/java/org/mockito/internal/listeners/VerificationStartedNotifier.java	32	srcml	original_set	context+type	verified	exact	ATTRIBUTE	final MockingDetails	2019-03-08T16:48:53+00:00	
@@ -1707,7 +1704,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 1719	void	out how	PARAMETER	VM VM	C	mgba	https://github.com/mgba-emu/mgba	outhow	https://github.com/mgba-emu/mgba/blob/c8cfaefcc880e668b0db8ba5f8b49978f0d108fd/src/third-party/zlib/contrib/blast/blast.h#L45	c8cfaefcc880e668b0db8ba5f8b49978f0d108fd	src/third-party/zlib/contrib/blast/blast.h	45	closed_category	closed_category_set	context+type	verified	present	PARAMETER	void *		
 1720	TypedFieldId	out Key Field Ids	PARAMETER	NM NM NM NPL	Java	drill	https://github.com/apache/drill	outKeyFieldIds	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/physical/impl/common/ChainedHashTable.java#L151	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/physical/impl/common/ChainedHashTable.java	151	closed_category	closed_category_set	context+type	verified	present	PARAMETER	TypedFieldId[]		
 1721	uint32_t	out list	PARAMETER	NM N	C	toxcore	https://github.com/TokTok/c-toxcore	out_list	https://github.com/irungentoo/toxcore/blob/bf69b54f64003d160d759068f4816b2d9b2e1e21/toxcore/Messenger.c#L2789	bf69b54f64003d160d759068f4816b2d9b2e1e21	toxcore/Messenger.c	2789	closed_category	closed_category_set	context+type	verified	present	PARAMETER	uint32_t *		
-1722	igraph_inclist_t	out list	DECLARATION	NM N	C	rigraph	https://github.com/igraph/rigraph	outlist	https://github.com/igraph/rigraph/blob/cae1f110975e38353a8fbbe16d4c7a008fbd9bea/src/core/misc/embedding.c#L73	cae1f110975e38353a8fbbe16d4c7a008fbd9bea	src/core/misc/embedding.c	73	closed_category	closed_category_set	context+type	verified	present	DECLARATION	igraph_inclist_t *		
 1723	bool	out max val	ATTRIBUTE	V NM N	C++	caffe	https://github.com/BVLC/caffe	out_max_val_	https://github.com/BVLC/caffe/blob/9b891540183ddc834a02b2bd81b31afae71b2153/include/caffe/layers/argmax_layer.hpp#L69	9b891540183ddc834a02b2bd81b31afae71b2153	include/caffe/layers/argmax_layer.hpp	69	closed_category	closed_category_set	context+type	verified	present	ATTRIBUTE	bool		
 1724	AtomicLong	out Messages	ATTRIBUTE	NM NPL	Java	Openfire	https://github.com/igniterealtime/Openfire	outMessages	https://github.com/igniterealtime/Openfire/blob/25ed0d66f9c56f423f9408920ce7d8734dcaf84d/xmppserver/src/main/java/org/jivesoftware/openfire/muc/spi/MultiUserChatServiceImpl.java#L250	25ed0d66f9c56f423f9408920ce7d8734dcaf84d	xmppserver/src/main/java/org/jivesoftware/openfire/muc/spi/MultiUserChatServiceImpl.java	250	closed_category	closed_category_set	context+type	verified	present	ATTRIBUTE	private final AtomicLong		
 1725	int	out Name Index	DECLARATION	NM NM N	Java	drill	https://github.com/apache/drill	outNameIndex	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/contrib/storage-mongo/src/main/java/org/apache/drill/exec/store/mongo/MongoAggregateUtils.java#L91	f558815feb6560ebbc3d1fcf502acee8fea1e555	contrib/storage-mongo/src/main/java/org/apache/drill/exec/store/mongo/MongoAggregateUtils.java	91	closed_category	closed_category_set	context+type	verified	present	DECLARATION	int		
@@ -2194,7 +2190,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2208	Statement	statement	ATTRIBUTE	N	Java	junit4	https://github.com/junit-team/junit4	statement	https://github.com/junit-team/junit4/blob/1844d843b3bae157c088086477ddee7a5f815878/src/main/java/org/junit/rules/RunRules.java#L12	1844d843b3bae157c088086477ddee7a5f815878	src/main/java/org/junit/rules/RunRules.java	12	srcml	original_set	context+type	verified	exact	ATTRIBUTE	final Statement	2019-02-02T14:58:20+01:00	
 2209	rect	static Rect	DECLARATION	NM N	C++	irrlicht	https://github.com/zaki/irrlicht	staticRect	https://github.com/zaki/irrlicht/blob/97472da9c22ae4a49dfcefb9da5156601fa6a82a/source/Irrlicht/CGUIMessageBox.cpp#L122	97472da9c22ae4a49dfcefb9da5156601fa6a82a	source/Irrlicht/CGUIMessageBox.cpp	122	srcml	original_set	context	verified	present	DECLARATION	core::rect<s32>	2019-09-03T20:23:57+00:00	
 2210	File	status File	DECLARATION	NM N	Java	antlr4	https://github.com/antlr/antlr4	statusFile	https://github.com/antlr/antlr4/blob/7c334b114c20b5d0718fb5db7334c3ca0c462fe0/antlr4-maven-plugin/src/main/java/org/antlr/mojo/antlr4/Antlr4Mojo.java#L499	7c334b114c20b5d0718fb5db7334c3ca0c462fe0	antlr4-maven-plugin/src/main/java/org/antlr/mojo/antlr4/Antlr4Mojo.java	499	srcml	original_set	context+type	verified	present	DECLARATION	File	2019-05-03T09:09:47-07:00	
-2211	File	status File	PARAMETER	NM N	Java	antlr4	https://github.com/antlr/antlr4	statusFile	https://github.com/antlr/antlr4/blob/7c334b114c20b5d0718fb5db7334c3ca0c462fe0/antlr4-maven-plugin/src/main/java/org/antlr/mojo/antlr4/GrammarDependencies.java#L281	7c334b114c20b5d0718fb5db7334c3ca0c462fe0	antlr4-maven-plugin/src/main/java/org/antlr/mojo/antlr4/GrammarDependencies.java	281	srcml	original_set	context+type	verified	present	PARAMETER	File	2019-05-03T09:09:47-07:00	
 2212	QIcon	status Icon	FUNCTION	NM N	C++	kdevelop	https://github.com/KDE/kdevelop	statusIcon	https://github.com/KDE/kdevelop/blob/b576771d0f8fe28b38886bdcc872932b7bfe6331/kdevplatform/sublime/document.cpp#L128	b576771d0f8fe28b38886bdcc872932b7bfe6331	kdevplatform/sublime/document.cpp	128	srcml	original_set	context+type	verified	exact	FUNCTION	QIcon	2019-03-11T11:27:13+01:00	
 2213	int	Step No	ATTRIBUTE	NM N	C	bullet3	https://github.com/bulletphysics/bullet3	StepNo	https://github.com/bulletphysics/bullet3/blob/4c375588054dd3f99a1b0da00a68cc4a15b2136e/examples/ThirdPartyLibs/imgui/imgui.h#L1613	4c375588054dd3f99a1b0da00a68cc4a15b2136e	examples/ThirdPartyLibs/imgui/imgui.h	1613	srcml	original_set	context+type	verified	exact	ATTRIBUTE	int	2019-03-03T20:56:12-08:00	
 2214	Real	step Size	DECLARATION	NM N	C++	QuantLib	https://github.com/lballabio/QuantLib	stepSize	https://github.com/lballabio/QuantLib/blob/bd837262f2469902bc54e7bec39b43d145117d8c/ql/models/marketmodels/models/alphafinder.cpp#L504	bd837262f2469902bc54e7bec39b43d145117d8c	ql/models/marketmodels/models/alphafinder.cpp	504	srcml	original_set	context+type	verified	exact	DECLARATION	Real	2019-03-04T14:17:18+01:00	
@@ -2351,7 +2346,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2366	int	to Index	DECLARATION	P N	Java	Openfire	https://github.com/igniterealtime/Openfire	toIndex	https://github.com/igniterealtime/Openfire/blob/25ed0d66f9c56f423f9408920ce7d8734dcaf84d/xmppserver/src/main/java/org/jivesoftware/openfire/ldap/LdapManager.java#L2280	25ed0d66f9c56f423f9408920ce7d8734dcaf84d	xmppserver/src/main/java/org/jivesoftware/openfire/ldap/LdapManager.java	2280	closed_category	closed_category_set	context+type	verified	present	DECLARATION	final int		
 2367	List	to Launch	DECLARATION	P V	Java	Singularity	https://github.com/sylabs/singularity	toLaunch	https://github.com/HubSpot/Singularity/blob/15688f486fc9286878eff40b51789c88bd6899d5/SingularityService/src/main/java/com/hubspot/singularity/mesos/SingularityOfferHolder.java#L134	15688f486fc9286878eff40b51789c88bd6899d5	SingularityService/src/main/java/com/hubspot/singularity/mesos/SingularityOfferHolder.java	134	closed_category	closed_category_set	context+type	verified	present	DECLARATION	final List<TaskInfo>		
 2368	vector	to merge	DECLARATION	P V	C++	meta	https://github.com/meta-toolkit/meta	to_merge	https://github.com/meta-toolkit/meta/blob/c7019401185cdfa15e1193aad821894c35a83e3f/include/meta/index/postings_inverter.tcc#L173	c7019401185cdfa15e1193aad821894c35a83e3f	include/meta/index/postings_inverter.tcc	173	closed_category	closed_category_set	context	verified	present	DECLARATION	std::vector<std::string>		
-2369	FileMetaData	to Merge	PARAMETER	P V	Java	drill	https://github.com/apache/drill	toMerge	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/parquet/hadoop/ParquetFileWriter.java#L1492	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/parquet/hadoop/ParquetFileWriter.java	1492	closed_category	closed_category_set	context+type	verified	present	PARAMETER	FileMetaData		
 2370	int	to Read Remaining	DECLARATION	P V NM	Java	drill	https://github.com/apache/drill	toReadRemaining	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/columnreaders/VarLenColumnBulkInput.java#L441	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/columnreaders/VarLenColumnBulkInput.java	441	closed_category	closed_category_set	context+type	verified	present	DECLARATION	final int		
 2371	Prel	to Register	PARAMETER	P V	Java	drill	https://github.com/apache/drill	toRegister	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/planner/physical/explain/NumberingRelWriter.java#L149	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/planner/physical/explain/NumberingRelWriter.java	149	closed_category	closed_category_set	context+type	verified	present	PARAMETER	Prel		
 2372	char	to repo	PARAMETER	P N	C	git2r	https://github.com/ropensci/git2r	to_repo	https://github.com/ropensci/git2r/blob/9c42d41c14cf83735db37ae662e2bce42c500aaa/src/libgit2/src/libgit2/repository.c#L2201	9c42d41c14cf83735db37ae662e2bce42c500aaa	src/libgit2/src/libgit2/repository.c	2201	closed_category	closed_category_set	context+type	verified	present	PARAMETER	const char *		
@@ -2525,7 +2519,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2545	boolean	will Return Last Parameter	PARAMETER	V V DT N	Java	mockito	https://github.com/mockito/mockito	willReturnLastParameter	https://github.com/mockito/mockito/blob/ab645dd40bf7152743c6a0ee45b8c9cd692e7639/src/main/java/org/mockito/internal/exceptions/Reporter.java#L739	ab645dd40bf7152743c6a0ee45b8c9cd692e7639	src/main/java/org/mockito/internal/exceptions/Reporter.java	739	srcml	original_set	context+type	verified	exact	PARAMETER	boolean	2019-03-08T16:48:53+00:00	
 2546	int	win Error	DECLARATION	NM N	C++	ogre	https://github.com/OGRECave/ogre	winError	https://github.com/OGRECave/ogre/blob/f29297167b0c252d16e1cfbddb65b3952871b648/Components/Bites/src/OgreWIN32ConfigDialog.cpp#L331	f29297167b0c252d16e1cfbddb65b3952871b648	Components/Bites/src/OgreWIN32ConfigDialog.cpp	331	srcml	original_set	context+type	verified	exact	DECLARATION	int	2019-03-06T13:54:19+01:00	
 2547	Challenge	with Charset	FUNCTION	P N	Java	okhttp	https://github.com/square/okhttp	withCharset	https://github.com/square/okhttp/blob/9059c15c67836f34284558d4423408b1848dd822/okhttp/src/main/java/okhttp3/Challenge.java#L54	9059c15c67836f34284558d4423408b1848dd822	okhttp/src/main/java/okhttp3/Challenge.java	54	srcml	original_set	context+type	verified	present	FUNCTION	Challenge	2019-03-06T20:55:54-05:00	
-2548	MediaType	with Charset	DECLARATION	P N	Java	guava	https://github.com/google/guava	withCharset	https://github.com/google/guava/blob/551f92130cc0442870569b89820e0b432a8ff8f7/android/guava/src/com/google/common/net/MediaType.java#L900	551f92130cc0442870569b89820e0b432a8ff8f7	android/guava/src/com/google/common/net/MediaType.java	900	closed_category	closed_category_set	context+type	verified	present	DECLARATION	MediaType		
 2549	MakeCms	with Cms Leg Rule	FUNCTION	P NM NM N	C++	QuantLib	https://github.com/lballabio/QuantLib	withCmsLegRule	https://github.com/lballabio/QuantLib/blob/bd837262f2469902bc54e7bec39b43d145117d8c/ql/instruments/makecms.cpp#L237	bd837262f2469902bc54e7bec39b43d145117d8c	ql/instruments/makecms.cpp	237	srcml	original_set	context+type	verified	exact	FUNCTION	MakeCms&	2019-03-04T14:17:18+01:00	
 2550	Builder	with Conf	FUNCTION	P N	Java	drill	https://github.com/apache/drill	withConf	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/ParquetReaderConfig.java#L164	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/store/parquet/ParquetReaderConfig.java	164	closed_category	closed_category_set	context+type	verified	present	FUNCTION	public Builder		
 2551	Builder	with Entries	FUNCTION	P NPL	Java	drill	https://github.com/apache/drill	withEntries	https://github.com/apache/drill/blob/f558815feb6560ebbc3d1fcf502acee8fea1e555/exec/java-exec/src/main/java/org/apache/drill/exec/metastore/store/parquet/MetastoreParquetTableMetadataProvider.java#L141	f558815feb6560ebbc3d1fcf502acee8fea1e555	exec/java-exec/src/main/java/org/apache/drill/exec/metastore/store/parquet/MetastoreParquetTableMetadataProvider.java	141	closed_category	closed_category_set	context+type	verified	present	FUNCTION	public Builder		
@@ -2589,13 +2582,11 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2609	int	zero plane res	ATTRIBUTE	NM NM N	C	openFrameworks	https://github.com/openframeworks/openFrameworks	zero_plane_res	https://github.com/openframeworks/openFrameworks/blob/d185ee2bf1098b3df8dbdee734ffeb692296f927/addons/ofxKinect/libs/libfreenect/src/freenect_internal.h#L54	d185ee2bf1098b3df8dbdee734ffeb692296f927	addons/ofxKinect/libs/libfreenect/src/freenect_internal.h	54	srcml	original_set	context+type	verified	exact	ATTRIBUTE	int	2018-11-27T13:22:42+01:00	
 2610	int[]	zoom xy	PARAMETER	NM N	C	blender	https://github.com/blender/blender	zoom_xy	https://github.com/blender/blender/blob/a070815d127e3216ab607d5c44c3d8855ff47fdc/source/blender/editors/space_view3d/view3d_edit.c#L1795	a070815d127e3216ab607d5c44c3d8855ff47fdc	source/blender/editors/space_view3d/view3d_edit.c	1795	srcml	original_set	context+type	verified	present	PARAMETER	const int	2019-03-07T10:12:13+11:00	
 2611		BACKWARD	ATTRIBUTE	N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
-2612	uint8_t	DELETE	ATTRIBUTE	V	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2613		am	ATTRIBUTE	N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2614	Expr *	argument	ATTRIBUTE	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2615	unsigned	bin	ATTRIBUTE	N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2616	TdFilePtr	fd	ATTRIBUTE	N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2617	RowPolicyPtr	policy	ATTRIBUTE	N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-2618	WebAssemblyFunctionSettings	settings	ATTRIBUTE	NPL	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2619	EdbStmtInfoParseState	state	ATTRIBUTE	N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2620	EventTriggerDropType	type	ATTRIBUTE	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2621		DRO Forbid	ATTRIBUTE	PRE V	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
@@ -2642,7 +2633,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2662	unsigned short	checksum	FUNCTION	N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2663	Result	load	FUNCTION	V	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 2664	void	ok	FUNCTION	NM	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
-2665	ResponseType &	operator	FUNCTION	N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2665	ResponseType &	operator	FUNCTION	N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2666	void	pop	FUNCTION	V	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2667	void FUNCTION_NAME	vector	FUNCTION	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2668		weekday	FUNCTION	N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
@@ -2652,12 +2643,12 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2672	bool	belong Table	FUNCTION	V N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2673	TimestampTz	entry reset	FUNCTION	N V	C	gel	https://github.com/geldata/gel							headnoun_set							
 2674	BgwJob *	find job	FUNCTION	V N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
-2675	RabbitMQConnection &	get Connection	FUNCTION	V N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2675	RabbitMQConnection &	get Connection	FUNCTION	V N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2676		last spec	FUNCTION	DT N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2677	int	load deps	FUNCTION	V N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2678	void	pgss store	FUNCTION	PRE V	C	gel	https://github.com/geldata/gel							headnoun_set							
-2679	template <typename Container> auto &	pick Randomly	FUNCTION	V VM	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-2680	template<typename T> T	register String	FUNCTION	V N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
+2679	template <typename Container> auto &	pick Randomly	FUNCTION	V VM	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
+2680	template<typename T> T	register String	FUNCTION	V N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2681	void	relock rel	FUNCTION	V N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2682	int	spawn shell	FUNCTION	V N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2683	EDealRes	translate Column	FUNCTION	V N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
@@ -2694,7 +2685,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2714	pgssSharedState *	pgss	DECLARATION	N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2715	int	status	DECLARATION	N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2716	int	verbose	DECLARATION	NM	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
-2717		weekday	DECLARATION	N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2718	void	Append String	DECLARATION	V N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2719	AqlValue	Date Day	DECLARATION	NM N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 2720	uint32	FUNCTION NAME	DECLARATION	NM N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
@@ -2736,7 +2726,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2756		year month weekday last	DECLARATION	NM NM NM N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2757	uint64_t	field	DECLARATION	N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2758	tss_store_hook_type	hook	DECLARATION	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
-2759	auto	last	DECLARATION	DT	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
+2759	auto	last	DECLARATION	DT	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2760	LocationLen *	locs	DECLARATION	NPL	C	gel	https://github.com/geldata/gel							headnoun_set							
 2761	BatchHashingParams	params	DECLARATION	NPL	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2762	int	pc	DECLARATION	N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
@@ -2749,7 +2739,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2769	PICMP_ECHO_REPLY	echo reply	DECLARATION	NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2770	BOOL	had recurse	DECLARATION	V N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2771	char	in buf	DECLARATION	NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
-2772	auto	iter right	DECLARATION	NM N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2772	auto	iter right	DECLARATION	NM N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2773	char *	json Key	DECLARATION	NM N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2774	int	last off	DECLARATION	DT N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2775	int	n candidates	DECLARATION	NM NPL	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
@@ -2762,7 +2752,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2782	tableint	existing Internal Id	DECLARATION	NM NM N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2783	int	ht idx 0	DECLARATION	NM N D	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2784	bool	is allowed role	DECLARATION	V NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
-2785	auto	key value delimiter	DECLARATION	NM NM N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2785	auto	key value delimiter	DECLARATION	NM NM N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2786	Oid	last rel id	DECLARATION	DT NM N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2787	int	last tok len	DECLARATION	DT NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2788	unsigned int	max data size	DECLARATION	NM NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
@@ -2772,11 +2762,11 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2792	uint64_t	pre total rows	DECLARATION	P NM NPL	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2793	sljit_s32	tmp 2 ind	DECLARATION	N P N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2794	char *	arr type ele key	DECLARATION	NM NM NM N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-2795	NameToNameMap &	array join result to source	DECLARATION	NM NM N P N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2795	NameToNameMap &	array join result to source	DECLARATION	NM NM N P N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2796	real	c bet 12 a	DECLARATION	PRE N D N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 2797	int	cmp xdel first	DECLARATION	NM N DT	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
-2798	auto	dist Shards Like Field	DECLARATION	NM N P N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
-2799	auto	droppable part with sign	DECLARATION	NM N P N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2798	auto	dist Shards Like Field	DECLARATION	NM N P N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
+2799	auto	droppable part with sign	DECLARATION	NM N P N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2800	TimestampTz	min max stats since	DECLARATION	NM NM NPL P	C	gel	https://github.com/geldata/gel							headnoun_set							
 2801	uint64_t	new list pack bytes	DECLARATION	NM NM N NM	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2802	int	norm query buf len	DECLARATION	NM NM NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
@@ -2788,19 +2778,16 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2808	Oid *	conpfeqop	PARAMETER	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2809	char *	ext	PARAMETER	N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2810	WaitKeys	keys	PARAMETER	NPL	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
-2811	ParamListInfo	params	PARAMETER	NPL	C	gel	https://github.com/geldata/gel							headnoun_set							
 2812	char *	query	PARAMETER	N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2813	BSTR*	result	PARAMETER	N	C	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-2814	unsigned int	target	PARAMETER	N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
-2815	ActorList const&	x	PARAMETER	N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
+2815	ActorList const&	x	PARAMETER	N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2816	Size *	buffer size	PARAMETER	NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2817	uint64_t	cycles ts	PARAMETER	NM N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2818	DimensionType	dim type	PARAMETER	NM N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2819	AstNode const*	doc Variable	PARAMETER	NM N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
-2820	HostEntry &	h 2	PARAMETER	N D	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
+2820	HostEntry &	h 2	PARAMETER	N D	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2821	bool*	has More	PARAMETER	V NM	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2822	HANDLE *	in write	PARAMETER	NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
-2823	char *	out buf	PARAMETER	NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2824	WMIObjectSink*	p Sink	PARAMETER	PRE N	C	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 2825	char*	query str	PARAMETER	NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2826	double	request Timeout	PARAMETER	NM N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
@@ -2808,13 +2795,12 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2828	SlotId	slot id	PARAMETER	NM N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2829	TupleDesc	tuple Descriptor	PARAMETER	NM N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2830	int	ws count	PARAMETER	NM N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-2831	AstNode const*&	condition And Node	PARAMETER	N CJ N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
+2831	AstNode const*&	condition And Node	PARAMETER	N CJ N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2832	unsigned int *	in buf size	PARAMETER	NM NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
 2833	jobject	java Sink Object	PARAMETER	NM NM N	C	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 2834	int	mat part colno	PARAMETER	NM NM N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2835	bool	min max only	PARAMETER	NM NM VM	C	gel	https://github.com/geldata/gel							headnoun_set							
-2836	KeyDescription &	new partition key	PARAMETER	NM NM N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-2837	unsigned int	out buf size	PARAMETER	NM NM N	C	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
+2836	KeyDescription &	new partition key	PARAMETER	NM NM N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 2838	SMonGrantInfo *	p Grant Info	PARAMETER	PRE NM N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2839	int64_t*	p Meta Ver	PARAMETER	PRE NM N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2840	IWbemClassObject **	pp Class Object	PARAMETER	PRE NM N	C	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
@@ -2839,8 +2825,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2859	class	OPTIONS	CLASS	NPL	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2860	class	Unaligned	CLASS	NM	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2861	class	hectare	CLASS	N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-2862	class	rs	CLASS	N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
-2863	class	type	CLASS	N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2864	class	v128	CLASS	N	C	timescaledb	https://github.com/timescale/timescaledb							headnoun_set							
 2865	class	Base Accessor	CLASS	NM N	C	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2866	class	Batch Info	CLASS	NM N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
@@ -2853,7 +2837,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2873	class	Match Handler	CLASS	NM N	C	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2874	class	TEST MODE	CLASS	NM N	C	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2875	class	Thread State	CLASS	NM N	C	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
-2876	class	last spec	CLASS	DT N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2877	class	local t	CLASS	NM N	C	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2878	class	pgss Entry	CLASS	PRE N	C	gel	https://github.com/geldata/gel							headnoun_set							
 2879	class	pgss Version	CLASS	NM N	C	gel	https://github.com/geldata/gel							headnoun_set							
@@ -2891,7 +2874,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2911	Connection*	self	ATTRIBUTE	N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2912	ObjectSinkVector	sinks	ATTRIBUTE	NPL	C++	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 2913	PyObject *	start	ATTRIBUTE	N	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-2914	std::vector<std::shared_ptr<Field>>	store	ATTRIBUTE	N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 2915	std::vector<managed_bytes_view_opt>	added cells	ATTRIBUTE	NM NPL	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2916	std::vector<::shared_ptr<column_identifier::raw>>	column names	ATTRIBUTE	NM NPL	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 2917	size_t	buf size	ATTRIBUTE	NM N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
@@ -2933,8 +2915,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 2953	DflyVersion	replica dfly version	ATTRIBUTE	NM NM N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2954	void	try To Steal From Queue	ATTRIBUTE	V P V P N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 2955	void	Connect	FUNCTION	V	C++	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-2956	HRESULT	Indicate	FUNCTION	V	C++	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-2957	std::nullptr_t	Value	FUNCTION	N	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 2958	void	Wait	FUNCTION	V	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 2959	Result	commit	FUNCTION	V	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 2960	PyUdf *	create	FUNCTION	V	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
@@ -2986,7 +2966,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3006	JNIMetaData*	instance	DECLARATION	N	C++	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3007	auto &	parts	DECLARATION	NPL	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3008	field_readerfinal:publicirs::field_reader	ptr	DECLARATION	N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
-3009	auto&	r	DECLARATION	N	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 3010	std::vector<CollectedPageStats>	results	DECLARATION	NPL	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3011	void	trunc	DECLARATION	V	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3012	void	unsigned	DECLARATION	N	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
@@ -3030,7 +3009,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3050	std::vector<std::vector<ShardDocIndex::FieldsValuesPerDocId>>	shard keys data per index	DECLARATION	NM NM NPL P N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3051	int8_t	tsS3 Ep Num	DECLARATION	NM NM N	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3052	int	count	DECLARATION	N	C++	sqlmap	https://github.com/sqlmapproject/sqlmap							headnoun_set							
-3053	string_view	f	DECLARATION	N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3054	std::string	generated	DECLARATION	V	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3055	normalized_div_args<IntT::num_bits>	na	DECLARATION	N	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3056	utils::result_with_exception_ptr<std::unordered_map<sstring, sstring>>	o	DECLARATION	N	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
@@ -3038,7 +3016,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3058	v8::Handle<v8::Array>	props	DECLARATION	NPL	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 3059	size_t	psz	DECLARATION	N	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 3060	auto	renamed	DECLARATION	V	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-3061	std::unordered_map<std::string, std::shared_ptr<LogicalCollection>>	result	DECLARATION	N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 3062	auto	auth tables	DECLARATION	NM NPL	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
 3063	std::size_t	change BP	DECLARATION	NM N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 3064	bool	clear tiered	DECLARATION	V NM	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
@@ -3127,10 +3104,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3147	String &	new path to table data	PARAMETER	NM N P NM NPL	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3148	std::string_view	notify key space events	PARAMETER	V NM NM NPL	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3149	uint64_t	range rombstones	PARAMETER	NM NPL	C++	scylladb	https://github.com/scylladb/scylladb							headnoun_set							
-3150	bool	send full sync cut	PARAMETER	V NM NM N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3151	class	Eq	CLASS	N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3152	class	Files	CLASS	NPL	C++	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3153	class	Hasher	CLASS	N	C++	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3154	class	Scored	CLASS	N	C++	dragonfly	https://github.com/dragonflydb/dragonfly							headnoun_set							
 3155	class	analysis	CLASS	N	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
 3156	class	attributes	CLASS	NPL	C++	arangodb	https://github.com/arangodb/arangodb							headnoun_set							
@@ -3240,7 +3215,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3260	int	compare To	FUNCTION	V P	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3261	String	get Evaluation	FUNCTION	V N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3262	String	get Type	FUNCTION	V N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3263	Class<RefreshDatabaseMetaDataStatement>	get Type	FUNCTION	V N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3264	Object[]	get Variable	FUNCTION	V N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3265	void	parse Version	FUNCTION	V N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3266	void	print Help	FUNCTION	V N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
@@ -3279,17 +3253,14 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3299	boolean	alive	DECLARATION	NM	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3300	Control	child	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3301	boolean	forced	DECLARATION	V	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3302	int	from	DECLARATION	P	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3303	GridData	gd	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3304	ProcessHandle	handle	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3305	int	i	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3306	QueryProcessor	processor	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3307	SQLQueryRowsSourceModel	source	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3308	Thread	thread	DECLARATION	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3309	String	CURRENT VERSION	DECLARATION	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3310	MySQLSystemVariableValueProvider	DEFAULT PROVIDER	DECLARATION	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3311	long	FEATURE PRESENTATIONS	DECLARATION	NM NPL	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3312	String	FUNCTION NAME	DECLARATION	NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3313	MCPWorkflowApplySynchronizationHandler	NO OP	DECLARATION	DT N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3314	String	PATH SEPARATOR	DECLARATION	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3315	String	TAG CONTAINER	DECLARATION	NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
@@ -3328,11 +3299,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3348	ResultBean	bean	DECLARATION	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3349	String	branch	DECLARATION	N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3350	YamlMCPResourceNavigationDescriptor	each	DECLARATION	DT	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3351	long	i	DECLARATION	N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3352	MySQLDatabaseExportInfo	object	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3353	long	payload	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3354	Map<K, V>	result	DECLARATION	N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3355	ResultSet	rs	DECLARATION	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3356	DBSEntity	table	DECLARATION	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3357	Composite	column Group	DECLARATION	NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3358	Set<DBPDataSourceContainer>	data Sources	DECLARATION	NM NPL	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
@@ -3374,12 +3342,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3394	List<SubTableValue>	sub Table Value List	DECLARATION	NM NM NM N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3395	String	td engine Source Table DDL	DECLARATION	NM NM NM NM N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3396	List<DBTTask>	this Project Tasks Without Folder	DECLARATION	DT NM NPL P N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3397	long	a	PARAMETER	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3398	Config	config	PARAMETER	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3399	Catalog.DatabaseNoPermissionException	e	PARAMETER	N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
-3400	Map<String, MCPPromptTemplateBinding>	each	PARAMETER	DT	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3401	Logger	logger	PARAMETER	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3402	List<CopilotMessage>	message	PARAMETER	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3403	List<Partition>	partitions	PARAMETER	NPL	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3404	PreparedStatement	ps	PARAMETER	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3405	List<SyncResourceTemplateSpecification>	request	PARAMETER	N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
@@ -3391,13 +3354,10 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3411	IoTDBDataSource	data Source	PARAMETER	NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3412	int	left Precedence	PARAMETER	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3413	MergedResult	merged Result	PARAMETER	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3414	Collection<Object>	o 2	PARAMETER	N D	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3415	String	page Token	PARAMETER	NM N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3416	long	schema Id	PARAMETER	NM N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3417	Identifier	table Identifier	PARAMETER	NM N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3418	Collection<TableNameSegment>	table Names	PARAMETER	NM NPL	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3419	String	tb name	PARAMETER	NM N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3420	int	thread Number	PARAMETER	NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3421	LocalDateTime	valid Until	PARAMETER	NM P	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3422	String	auth Plugin Name	PARAMETER	NM NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3423	@Nullable DummyObjectCtor	child Ctor	PARAMETER	NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
@@ -3413,7 +3373,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3433	String	super Table SQL	PARAMETER	NM NM N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3434	MCPWorkflowDefinitionProvider	workflow Definition Provider	PARAMETER	NM NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3435	String	assist Query Column Name	PARAMETER	NM NM NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3436	int	batch Size By Row	PARAMETER	NM N P N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3437	@Nullable String	container Alias Or Null	PARAMETER	NM N CJ N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3438	@NotNull PROPERTIES	copilot Properties Legacy AI Settings	PARAMETER	NM NM NM NM NPL	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3439	Multimap<CaseInsensitiveString, TableSegmentBinderContext>	external Table Binder Contexts	PARAMETER	NM NM NM NPL	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
@@ -3425,10 +3384,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3445	Collection<TableMapperRuleAttribute>	table Mapper Rule Attributes	PARAMETER	NM NM NM NPL	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3446	DBECommand<WMINamespace>	wmi Namespace DBE Command	PARAMETER	NM NM NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3447	class	App	CLASS	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
-3448	class	Bean	CLASS	N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3449	class	Constants	CLASS	NPL	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3450	class	Data	CLASS	NPL	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
-3451	class	Handle	CLASS	N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3452	class	Projection	CLASS	N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3453	class	Property	CLASS	N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3454	class	Snapshot	CLASS	N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
@@ -3460,7 +3417,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3480	class	Paimon Incremental Writer	CLASS	NM NM N	Java	ClickHouse	https://github.com/ClickHouse/ClickHouse							headnoun_set							
 3481	class	Postgre Database Manager	CLASS	NM NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3482	class	Server SQL Exception	CLASS	NM NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
-3483	class	Sub Table Value	CLASS	NM NM N	Java	TDengine	https://github.com/taosdata/TDengine							headnoun_set							
 3484	class	Compute Node Worker Id Changed Handler	CLASS	NM NM NM NM NM N	Java	shardingsphere	https://github.com/apache/shardingsphere							headnoun_set							
 3485	class	Diagram Toggle Persist Action	CLASS	NM NM NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
 3486	class	Exasol Table Index Manager	CLASS	NM NM NM N	Java	dbeaver	https://github.com/dbeaver/dbeaver							headnoun_set							
@@ -3479,10 +3435,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3499	char *	macro	ATTRIBUTE	N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3500	QString	plan	ATTRIBUTE	N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3501	cJSON *	prev	ATTRIBUTE	DT	C	kart	https://github.com/koordinates/kart							headnoun_set							
-3502	AREQ	r	ATTRIBUTE	N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-3503	char *	source	ATTRIBUTE	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3504	int64_t *	values	ATTRIBUTE	NPL	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3505	double	width	ATTRIBUTE	N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3506		BC INFINITY	ATTRIBUTE	NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3507	ImFontAtlas*	Container Atlas	ATTRIBUTE	NM N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3508		TOK VOID	ATTRIBUTE	NM N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -3541,7 +3494,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3561	void	Parse Trace	FUNCTION	V N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3562	int	get prop	FUNCTION	V N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3563	bool	init Window	FUNCTION	V N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3564	trans_affine&	load from	FUNCTION	V P	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
+3564	trans_affine&	load from	FUNCTION	V P	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 3565	void	minify string	FUNCTION	V N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3566	cJSON_bool	parse number	FUNCTION	V N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3567	GMT_LOCAL void	pssac integral	FUNCTION	PRE N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
@@ -3575,13 +3528,10 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3595	int	x2sys get track names	FUNCTION	PRE V NM NPL	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3596	vertex	circumcenter	DECLARATION	N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3597	int	dy	DECLARATION	N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3598	MultipartFormData	file	DECLARATION	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3599	int	ms	DECLARATION	NPL	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3600	HANDLE	mutex	DECLARATION	N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-3601	void handleAuthRequestOpenBrowser( QUrl &url )	override	DECLARATION	N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3602	ContentReader	reader	DECLARATION	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3603	size_t	size	DECLARATION	N	C	kart	https://github.com/koordinates/kart							headnoun_set							
-3604	BSTR	target	DECLARATION	N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3605	char	version	DECLARATION	N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3606	namespace	IMNODES NAMESPACE	DECLARATION	NM N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3607		Notification Adapter	DECLARATION	NM N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
@@ -3620,7 +3570,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3640	dictType	dict Type Heap Redis Strings	DECLARATION	NM NM NM NM NPL	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3641	char *	file to delete if ctrl C	DECLARATION	N P V CJ NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3642	RLS	mag v new mag	DECLARATION	N P NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
-3643	template <typename SToken, CToken, Content> bool	process multipart ranges data	DECLARATION	V NM NM NPL	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
+3643	template <typename SToken, CToken, Content> bool	process multipart ranges data	DECLARATION	V NM NM NPL	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 3644	uint8_t	unicode prop Join Control table	DECLARATION	NM NM NM NM N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3645	bool	DO	DECLARATION	V	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3646	int	cc	DECLARATION	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -3670,28 +3620,22 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3690	CursorMappings *	vsim Or Search	DECLARATION	N CJ V	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3691	double *	x2sys y	DECLARATION	NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3692	int32_t	zero denorm val	DECLARATION	D NM N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-3693	double	a	PARAMETER	N	C	kart	https://github.com/koordinates/kart							headnoun_set							
-3694	NSString *	arg	PARAMETER	N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3695	stbtt__buf *	b	PARAMETER	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3696	char *	filename	PARAMETER	N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3697	unsigned char *	input	PARAMETER	N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3698	char *	op	PARAMETER	N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
-3699	QgsPoint	point	PARAMETER	N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3700	int	port	PARAMETER	N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3701	textPathObj *	src	PARAMETER	N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3702	HiddenString *	value	PARAMETER	N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3703	unsigned int	alloc level	PARAMETER	NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3704	UINT	c Names	PARAMETER	PRE NPL	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3705	unsigned int *	distance mode	PARAMETER	NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3706	char *	exception Code	PARAMETER	NM N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3707	char *	exe path	PARAMETER	NM N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3708	bool	imu Correction	PARAMETER	NM N	C	QField	https://github.com/opengisch/QField							headnoun_set							
 3709	integer *	in 2	PARAMETER	N D	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3710	int *	is New	PARAMETER	V N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3711	LPARAM	l Param	PARAMETER	PRE N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-3712	QVector3D &	min Bound	PARAMETER	NM N	C	QField	https://github.com/opengisch/QField							headnoun_set							
+3712	QVector3D &	min Bound	PARAMETER	NM N	C++	QField	https://github.com/opengisch/QField							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 3713	RedisModuleKey *	open Key	PARAMETER	NM N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-3714	unsigned char **	output pointer	PARAMETER	NM N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3715	double *	p y	PARAMETER	PRE N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3716	ImGuiPopupFlags	popup flags	PARAMETER	NM NPL	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3717	time_t	timeout sec	PARAMETER	NM N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -3705,8 +3649,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3725	int *	pn Shape Type	PARAMETER	NM NM N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3726	ITypeInfo **	pp T Info	PARAMETER	PRE NM N	C	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3727	bool	sat Info Complete	PARAMETER	NM N V	C	QField	https://github.com/opengisch/QField							headnoun_set							
-3728	QList<QgsSatelliteInfo> &	satellites In View	PARAMETER	NPL P N	C	QField	https://github.com/opengisch/QField							headnoun_set							
-3729	QDateTime &	utc Date Time	PARAMETER	NM NM N	C	QField	https://github.com/opengisch/QField							headnoun_set							
+3728	QList<QgsSatelliteInfo> &	satellites In View	PARAMETER	NPL P N	C++	QField	https://github.com/opengisch/QField							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
+3729	QDateTime &	utc Date Time	PARAMETER	NM NM N	C++	QField	https://github.com/opengisch/QField							headnoun_set							2026-11-13 language C->C++: type uses C++-only syntax (likely a .h header counted as C)
 3730	double *	y grd geo	PARAMETER	NM NM N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3731	int	b Default SRS Needs Axis Swapping	PARAMETER	PRE NM N V N V	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3732	RedisSearchCtx *	depleting Thread Ctx	PARAMETER	NM NM N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
@@ -3727,7 +3671,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3747	class	box	CLASS	N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3748	class	curved	CLASS	V	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3749	class	dict	CLASS	N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-3750	class	error	CLASS	N	C	kart	https://github.com/koordinates/kart							headnoun_set							
 3751	class	iterator	CLASS	N	C	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3752	class	p	CLASS	N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3753	class	Debug CTX	CLASS	NM N	C	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
@@ -3769,10 +3712,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3789	class	X2SYS GET G	CLASS	N V N	C	gmt	https://github.com/GenericMappingTools/gmt							headnoun_set							
 3790	class	a mask no clip bgra32a	CLASS	NM N DT V N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3791	class	ms Oracle Spatial Handler	CLASS	NM NM NM N	C	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3792	osg::Vec3d	start	ATTRIBUTE	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3793	BlkAlloc *	alloc	ATTRIBUTE	V	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3794	QgsFeature &	feature	ATTRIBUTE	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-3795	reducerDistributionFunc	func	ATTRIBUTE	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3796	HWND	hwnd	ATTRIBUTE	N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3797	std::shared_ptr<_regex_replace_impl>	impl	ATTRIBUTE	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 3798	long64	left	ATTRIBUTE	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
@@ -3818,8 +3759,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3838	compop_renderer_base	m compop renderer base	ATTRIBUTE	PRE NM NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3839	int32_t	min lon e7	ATTRIBUTE	NM NM N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3840	unsigned	num Vertices In Surface	ATTRIBUTE	NM NPL P N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-3841	CloudLayer	Create	FUNCTION	V	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-3842	auto	allocate	FUNCTION	V	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3843	std::string	definition	FUNCTION	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 3844	std::FILE*	get	FUNCTION	V	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 3845	QgsProject *	project	FUNCTION	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
@@ -3867,7 +3806,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3887	void	set Preview Jobs Quadrants	FUNCTION	V NM NM NPL	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 3888	void	set Show Featured On Top	FUNCTION	V N NM P N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 3889	imageObj *	utfgrid Create Image	FUNCTION	PRE V N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3890	jclass	Object	DECLARATION	N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3891	jclass	String	DECLARATION	N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3892	unsigned	TURBULENT	DECLARATION	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3893	float	elevation	DECLARATION	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -3920,11 +3858,8 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3940	PLN_GroupStep *	gr	DECLARATION	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3941	double	gt	DECLARATION	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 3942	char *	hex	DECLARATION	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3943	std::string::size_type	i	DECLARATION	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3944	QgsPolylineXY &	line	DECLARATION	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 3945	PLN_GroupStep *	local	DECLARATION	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-3946	QVariantMap	params	DECLARATION	NPL	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-3947	RECT *	r	DECLARATION	N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3948	osg::ref_ptr<TileNode>	tile	DECLARATION	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3949	float*	z	DECLARATION	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3950	PLN_MapFilterStep *	apply Step	DECLARATION	NM N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
@@ -3969,11 +3904,9 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 3989	BOOL	vertical Scroll Thumb Active	DECLARATION	NM NM NM N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3990	BYTE *	buffer	PARAMETER	N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3991	QString &	grid	PARAMETER	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-3992	osgEarth::Geometry*	input	PARAMETER	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 3993	layer_rendering_material&	mat	PARAMETER	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 3994	VertexModel *	model	PARAMETER	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 3995	Local<String>	name	PARAMETER	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-3996	shapeObj *	op	PARAMETER	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 3997	AGGPlan *	remote	PARAMETER	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 3998	LPARAM	unused	PARAMETER	NM	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 3999	uint64_t	v	PARAMETER	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
@@ -3985,11 +3918,9 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4005	HINSTANCE	h Instance	PARAMETER	PRE N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4006	uint32_t	hilbert Max	PARAMETER	NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4007	ImGuiKey	key left	PARAMETER	NM N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4008	LPARAM	l Param	PARAMETER	PRE N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4009	text_line const&	line 2	PARAMETER	N D	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4010	int	part Size	PARAMETER	NM N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 4011	T...	u args	PARAMETER	NM NPL	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-4012	vertex_dist&	v 1	PARAMETER	N D	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4013	osg::Transform&	x form	PARAMETER	NM N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4014	int	y dir	PARAMETER	NM N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4015	mapnik::boolean_type const&	default opt value	PARAMETER	NM NM N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
@@ -4001,8 +3932,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4021	QString &	picture File Path	PARAMETER	NM NM N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 4022	DISPID *	rg Disp Id	PARAMETER	NM NM N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4023	std::vector<rtree_type> const&	r tree list	PARAMETER	NM NM N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
-4024	QList<QgsSatelliteInfo> &	satellites In View	PARAMETER	NPL P N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-4025	char *	script url encoded	PARAMETER	NM N NM	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4026	double	src Max X	PARAMETER	NM NM N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4027	LONG_PTR *	web View Id	PARAMETER	NM NM N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4028	int	def srs needs axis swap	PARAMETER	NM N V NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
@@ -4013,16 +3942,12 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4033	QString &	last Local Export Id	PARAMETER	DT NM NM N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
 4034	void*	p Main Thread Renderer Resources	PARAMETER	PRE NM NM NM NPL	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4035	msExprNode **	p Spatial Filter Node	PARAMETER	PRE NM NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-4036	jlong	web View Window Ptr	PARAMETER	NM NM NM N	C++	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4037	double	x 1 x 2	PARAMETER	N D N D	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4038	double	y 1 y 0	PARAMETER	N D N D	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4039	double	y 1 y 2	PARAMETER	N D N D	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4040	class	Allocator	CLASS	N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 4041	class	Flusher	CLASS	N	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-4042	class	Line	CLASS	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-4043	class	Point	CLASS	N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4044	class	Rememberings	CLASS	NPL	C++	QField	https://github.com/opengisch/QField							headnoun_set							
-4045	class	Size	CLASS	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4046	class	Variable	CLASS	N	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4047	class	coordinate	CLASS	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4048	class	overload	CLASS	V	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
@@ -4037,7 +3962,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4057	class	Stateful Allocator	CLASS	NM N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
 4058	class	Text Attributes	CLASS	NM NPL	C++	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4059	class	Tracking Allocator	CLASS	NM N	C++	RediSearch	https://github.com/RediSearch/RediSearch							headnoun_set							
-4060	class	color type	CLASS	NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4061	class	get first	CLASS	V DT	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4062	class	pixel format	CLASS	NM N	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4063	class	separator tag	CLASS	NM N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
@@ -4067,12 +3991,9 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4087	class	property value hash visitor	CLASS	NM NM NM N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
 4088	class	renderer scan line aliased	CLASS	PRE NM N NM	C++	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4089	class	stringifier	CLASS	N	C++	mapnik	https://github.com/mapnik/mapnik							headnoun_set							
-4090	String	ELEVATION	ATTRIBUTE	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4091		NONE	ATTRIBUTE	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4092		PRINCIPAL	ATTRIBUTE	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4093	String	TAG	ATTRIBUTE	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4094	boolean	editing	ATTRIBUTE	V	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4095	QFieldPositioningService	instance	ATTRIBUTE	N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4096	Level	level	ATTRIBUTE	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4097	List<Integer>	lines	ATTRIBUTE	NPL	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4098	moveTypes	mode	ATTRIBUTE	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -4084,7 +4005,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4104	CrosshairLayer	crosshair Layer	ATTRIBUTE	NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4105	float	distance Origin	ATTRIBUTE	NM N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4106	lightType	light Mode	ATTRIBUTE	NM N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4107	int[]	m Value	ATTRIBUTE	PRE N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4108	String	map Name	ATTRIBUTE	NM N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4109	String	map file	ATTRIBUTE	NM N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4110	float	original Brightness	ATTRIBUTE	NM N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
@@ -4121,9 +4041,7 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4141	void	init	FUNCTION	V	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4142	double	m32	FUNCTION	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4143	int	repaint	FUNCTION	V	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4144	void	run	FUNCTION	V	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4145	void	step	FUNCTION	V	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4146	void	usage	FUNCTION	N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4147	void	vibrate	FUNCTION	V	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4148	void	add Layers	FUNCTION	V NPL	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4149	EGLConfig	choose Config	FUNCTION	V N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
@@ -4215,7 +4133,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4235	String	OCA OCNGRY BIOLUM VDR3 4	DECLARATION	PRE NM NM N D	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4236	String	SHORT COORD 3F	DECLARATION	NM N NM	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4237	String	WCS 1 0 0 NAMESPACE URI	DECLARATION	N D D D NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4238	int	attribute	DECLARATION	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4239	EGLContext	context	DECLARATION	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4240	File	dir	DECLARATION	N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4241	String	extension	DECLARATION	N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
@@ -4265,16 +4182,11 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4285	double	sqrt D Dp ZZ	DECLARATION	NM NM NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4286	double	two To The N	DECLARATION	D P DT N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4287	Color	v Axis Label Color	DECLARATION	NM NM NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4288	int	a	PARAMETER	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4289	ActivityNotFoundException	e	PARAMETER	N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4290	MotionEvent	event	PARAMETER	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4291	int	g	PARAMETER	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4292	SurfaceIcon	icon	PARAMETER	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4293	KMLAbstractStyleSelector	o	PARAMETER	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
-4294	Object	object	PARAMETER	N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4295	String	selection	PARAMETER	N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4296	String	test	PARAMETER	N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
-4297	int	type	PARAMETER	N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4298	int	default Value	PARAMETER	NM N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4299	EGLConfig	egl Config	PARAMETER	NM N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
 4300	Uri	folder Uri	PARAMETER	NM N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
@@ -4283,7 +4195,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4303	JsonGenerator	j gen	PARAMETER	NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4304	int	kernel Size	PARAMETER	NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4305	int	key Code	PARAMETER	NM N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4306	String	map file	PARAMETER	NM N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4307	KMLNetworkLink	network Link	PARAMETER	NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4308	int	request Code	PARAMETER	NM N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
 4309	String	root Folder	PARAMETER	NM N	Java	QField	https://github.com/opengisch/QField							headnoun_set							
@@ -4322,7 +4233,6 @@ TAGGER_DATA_LINE	TYPE	SPLIT	CONTEXT	GRAMMAR_PATTERN	LANGUAGE	SYSTEM_NAME	GITHUB_
 4342	class	Metadata	CLASS	N	Java	MapServer	https://github.com/MapServer/MapServer							headnoun_set							
 4343	class	Pedestal	CLASS	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4344	class	Renderer	CLASS	N	Java	osgearth	https://github.com/pelicanmapping/osgearth							headnoun_set							
-4345	class	Source	CLASS	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4346	class	Style	CLASS	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4347	class	VCS	CLASS	N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							
 4348	class	Compound Iterator	CLASS	NM N	Java	WorldWindJava	https://github.com/NASAWorldWind/WorldWindJava							headnoun_set							

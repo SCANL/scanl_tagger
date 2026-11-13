@@ -44,6 +44,22 @@ def test_accuracy_by_source():
     assert by_source.loc["tagger_data", "identifier_accuracy"] == pytest.approx(0.5)
     assert by_source.loc["synthetic_pos_data_full", "identifier_accuracy"] == 1.0
 
+    preds["subset"] = ["original_set", "headnoun_set", "synthetic_pos_data_full"]
+    by_subset = train_model.accuracy_by_source(preds, "subset").set_index("source")
+    assert by_subset.loc["original_set", "identifier_accuracy"] == 0.0
+    assert by_subset.loc["headnoun_set", "identifier_accuracy"] == 1.0
+
+
+def test_each_subset_is_held_out_separately():
+    original = _source_frame(train_model.REAL_SOURCE, 100, "orig").assign(SUBSET="original_set")
+    _, original_only_holdout = train_model._split_holdout(original)
+
+    headnoun = _source_frame(train_model.REAL_SOURCE, 60, "head").assign(SUBSET="headnoun_set")
+    _, holdout = train_model._split_holdout(pd.concat([original, headnoun], ignore_index=True))
+    by_subset = holdout.groupby("SUBSET").size()
+    assert by_subset["original_set"] == 20 and by_subset["headnoun_set"] == 12
+    assert sorted(holdout.loc[holdout["SUBSET"] == "original_set", "SPLIT"]) == sorted(original_only_holdout["SPLIT"])
+
 
 def test_compute_metrics_uses_position_aligned_predictions():
     labels = np.array([

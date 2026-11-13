@@ -379,15 +379,17 @@ def _write_run_metadata(
     )
 
 
-def accuracy_by_source(preds_df: pd.DataFrame) -> pd.DataFrame:
+def accuracy_by_source(preds_df: pd.DataFrame, column: str = "data_source") -> pd.DataFrame:
     """
-    Token- and identifier-level holdout accuracy for each data source.
+    Token- and identifier-level holdout accuracy for each value of `column`.
 
-    Synthetic rows are much easier than real identifiers, so the combined score hides how the
-    model does on real code. Expects the columns written to holdout_predictions.csv.
+    "data_source" gives real (tagger_data, every subset together) vs. synthetic; "subset"
+    breaks real down into original_set, closed_category_set and headnoun_set. Synthetic rows
+    are much easier than real identifiers, so the combined score hides how the model does on
+    real code. Expects the columns written to holdout_predictions.csv.
     """
     rows = []
-    for source, group in preds_df.groupby("data_source", sort=True):
+    for source, group in preds_df.groupby(column, sort=True):
         true = group["true_tags"].str.split()
         pred = group["pred_tags"].str.split()
         tokens = sum(len(t) for t in true)
@@ -702,6 +704,11 @@ def _load_lm_training_dataframe(
         df["tokens"] = df["SPLIT"].apply(lambda x: x.strip().split())
         df["tags"] = df["GRAMMAR_PATTERN"].apply(lambda x: x.strip().split())
         df = df[df.apply(lambda r: len(r["tokens"]) == len(r["tags"]), axis=1)].copy()
+        # tagger_data.tsv names the collection each row came from in its own DATA_SOURCE
+        # column (original_set, ...); keep that as SUBSET. DATA_SOURCE becomes the file name,
+        # which decides what counts as real for twin-dropping and amplification.
+        file_subsets = df.get("DATA_SOURCE", pd.Series("", index=df.index)).fillna("").str.strip()
+        df["SUBSET"] = file_subsets.where(file_subsets != "", source["name"])
         df["DATA_SOURCE"] = source["name"]
 
         dataframes.append(df)
@@ -736,15 +743,20 @@ def _drop_synthetic_overlap(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, i
     return df[~(real_twin | duplicate)].reset_index(drop=True), dropped
 
 
+def _subsets(df: pd.DataFrame) -> pd.Series:
+    """Each row's subset (original_set, headnoun_set, ...), or its DATA_SOURCE if it has none."""
+    return df["SUBSET"] if "SUBSET" in df.columns else df["DATA_SOURCE"]
+
+
 def _split_holdout(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Hold out HOLDOUT_RATIO of each data source separately, stratified by context.
+    Hold out HOLDOUT_RATIO of each subset separately, stratified by context.
 
-    Splitting per source means the real holdout depends only on the real data, so editing
-    or swapping the synthetic file can't change which real identifiers are scored.
+    Splitting per subset means each subset's holdout depends only on its own rows, so adding
+    a subset or swapping the synthetic file can't change which identifiers are scored in the others.
     """
     train_parts, holdout_parts = [], []
-    for _, group in df.groupby("DATA_SOURCE", sort=False):
+    for _, group in df.groupby(_subsets(df), sort=False):
         train_part, holdout_part = train_test_split(
             group,
             test_size=HOLDOUT_RATIO,
@@ -813,7 +825,10 @@ def train_lm(
     dataset_lines = []
     for name in source_names:
         line = f"{name}: {source_counts.get(name, 0)} rows"
-        if name != REAL_SOURCE:
+        if name == REAL_SOURCE:
+            subset_counts = df.loc[df["DATA_SOURCE"] == name, "SUBSET"].value_counts().sort_index()
+            line += " (" + ", ".join(f"{s} {n}" for s, n in subset_counts.items()) + ")"
+        else:
             line += (
                 f" ({synthetic_path or DEFAULT_SYNTHETIC_PATH}; dropped "
                 f"{dropped['real_twins']} real twins and {dropped['duplicates']} duplicates)"
@@ -838,9 +853,9 @@ def train_lm(
     )
 
     # 7) Set up K-Fold
-    #    Stratify by source and context, so every fold has its share of real identifiers.
+    #    Stratify by subset and context, so every fold has its share of each subset.
     kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
-    fold_strata = train_df["DATA_SOURCE"] + "|" + train_df["CONTEXT"]
+    fold_strata = _subsets(train_df) + "|" + train_df["CONTEXT"]
     best_macro_f1 = -1.0
     best_fold_index = None
     fold_best_epochs = []
@@ -1193,6 +1208,7 @@ def train_lm(
             "language":    language,
             "system_name": system_name,
             "data_source": row.get("DATA_SOURCE", ""),
+            "subset":      row.get("SUBSET", ""),
         })
 
     preds_df = pd.DataFrame(rows)
@@ -1231,10 +1247,11 @@ def train_lm(
         dual_print(f"Final Token-level Accuracy on Held-Out Set: {final_accuracy:.4f}", file=f)
         dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)
         dual_print(f"Batched Viterbi Token-level Accuracy (consistency check): {accuracy_score(viterbi_true, viterbi_pred):.4f}", file=f)
-        dual_print("\nHeld-Out Accuracy by Data Source:", file=f)
-        for row in accuracy_by_source(preds_df).itertuples():
-            dual_print(
-                f"  {row.source}: {row.identifiers} identifiers, "
-                f"token {row.token_accuracy:.4f}, identifier {row.identifier_accuracy:.4f}",
-                file=f,
-            )
+        for title, column in (("Data Source", "data_source"), ("Subset", "subset")):
+            dual_print(f"\nHeld-Out Accuracy by {title}:", file=f)
+            for row in accuracy_by_source(preds_df, column).itertuples():
+                dual_print(
+                    f"  {row.source}: {row.identifiers} identifiers, "
+                    f"token {row.token_accuracy:.4f}, identifier {row.identifier_accuracy:.4f}",
+                    file=f,
+                )

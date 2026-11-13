@@ -73,7 +73,7 @@ for seed in 209 7 42; do
 done
 ```
 
-Compare the `tagger_data` line under "Held-Out Accuracy by Data Source"; synthetic identifiers are much easier and inflate the combined score.
+Compare the `tagger_data` line under "Held-Out Accuracy by Data Source": it covers every real subset together, while synthetic identifiers are much easier and inflate the combined score. "Held-Out Accuracy by Subset" breaks it down further. `input/tagger_data.tsv` records each row's subset in its `DATA_SOURCE` column (`original_set`, `closed_category_set`, `headnoun_set`), and each subset, like the synthetic file, has its own 20% holdout.
 
 ### Feature tokens
 

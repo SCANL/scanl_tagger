@@ -36,6 +36,20 @@ def test_required_columns_present_and_filled(dataset):
     assert len(dataset) > 1000
 
 
+def test_tagger_data_has_no_duplicate_identifiers():
+    # Each subset is held out separately, so a repeated split with the same tags could sit in
+    # train and holdout at once. The same words with different tags (start: V vs. N) may stay.
+    from src.lm_based_tagger.train_model import normalize_split
+
+    real = pd.read_csv(REAL_DATA, sep="\t", dtype=str)
+    keys = pd.DataFrame({
+        "split": real["SPLIT"].map(normalize_split),
+        "tags": real["GRAMMAR_PATTERN"].map(normalize_split),
+    })
+    dups = real[keys.duplicated(keep=False)]
+    assert dups.empty, dups[["SPLIT", "CONTEXT", "GRAMMAR_PATTERN", "DATA_SOURCE"]].head(10).to_string()
+
+
 def test_tagger_data_sources_are_known():
     sources = pd.read_csv(REAL_DATA, sep="\t", dtype=str)["DATA_SOURCE"]
     assert set(sources) == {"original_set", "closed_category_set", "headnoun_set"}
@@ -90,6 +104,10 @@ def test_training_loader_combines_both_sources():
     assert counts["tagger_data"] > 2500
     assert counts["synthetic_pos_data_full"] > 1800
     assert (df["tokens"].str.len() == df["tags"].str.len()).all()
+
+    real = df[df["DATA_SOURCE"] == "tagger_data"]
+    assert set(real["SUBSET"]) == {"original_set", "closed_category_set", "headnoun_set"}
+    assert set(df.loc[df["DATA_SOURCE"] != "tagger_data", "SUBSET"]) == {"synthetic_pos_data_full"}
 
     only_tagger, _ = _load_lm_training_dataframe(REPO_ROOT, use_synthetic_data=False)
     assert set(only_tagger["DATA_SOURCE"]) == {"tagger_data"}
