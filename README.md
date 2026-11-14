@@ -63,17 +63,26 @@ python main --mode train --amplify none                   # no upsampling or ver
 
 ### Comparing configurations
 
-One training run varies by about ±1 point of identifier accuracy on real code from the seed alone, so compare configurations over several seeds. The holdout split and CV folds are fixed, so every run is scored on the same holdout set; `--seed` changes only weight initialization, batch order, augmentation and dropout. Each data source is split separately, so the real holdout also stays the same whichever synthetic file is used, or none. Each run overwrites `holdout_report.txt`, so copy it aside:
+The metric that matters is **identifier-level accuracy on real code**: an identifier counts only if every one of its tags is right. **Token macro-F1 on real code** is the guardrail: it weighs each tag equally, so it falls when rare tags (CJ, VM, PRE, DT) are sacrificed, which barely moves identifier accuracy. A change is an improvement when it raises real identifier accuracy without a significant drop in real macro-F1.
+
+Every real identifier is scored exactly once per run. The 5 CV folds train a fixed number of epochs and predict the training portion out-of-fold (`output/cv_predictions.csv`); the final model, retrained on the whole training portion, predicts the 20% holdout (`output/holdout_predictions.csv`). "Real-Code Evaluation" in `holdout_report.txt` combines the two, per subset and overall, with a per-tag report below it. That sample is about five times the holdout alone. The holdout split and CV folds are fixed by `SPLIT_SEED`, and each data source is split separately, so the real identifiers land in the same place whichever seed or synthetic file is used.
+
+One run still varies with the seed (`--seed` changes weight initialization, batch order, augmentation and dropout), so train each configuration with several seeds and save each run under a name:
 
 ```bash
-mkdir -p output/reports
 for seed in 209 7 42; do
-  python main --mode train --features context type language --seed $seed
-  cp holdout_report.txt "output/reports/ctl_seed$seed.txt"
+  python main --mode train --features context type --seed $seed --run-name tc
 done
 ```
 
-Compare the `tagger_data` line under "Held-Out Accuracy by Data Source": it covers every real subset together, while synthetic identifiers are much easier and inflate the combined score. "Held-Out Accuracy by Subset" breaks it down further. `input/tagger_data.tsv` records each row's subset in its `DATA_SOURCE` column (`original_set`, `closed_category_set`, `headnoun_set`), and each subset, like the synthetic file, has its own 20% holdout.
+`--run-name tc` copies the report and both prediction files to `output/reports/tc_seed<N>.*`. Then compare two runs:
+
+```bash
+python -m src.lm_based_tagger.evaluation tc all_features   # B - A, per subset, with 95% intervals
+python -m src.lm_based_tagger.evaluation tc                 # one run's metrics
+```
+
+The comparison averages over every saved seed, rescores real identifiers against the current `input/tagger_data.tsv` (so label fixes apply to old runs too), uses only identifiers scored in every seed of both runs, and gives paired-bootstrap 95% intervals for the differences in identifier accuracy and macro-F1, plus per-tag F1. `--split cv` or `--split holdout` restricts it to one kind of prediction; runs saved before CV predictions were kept are compared on the holdout. `input/tagger_data.tsv` records each row's subset in its `DATA_SOURCE` column (`original_set`, `closed_category_set`, `headnoun_set`).
 
 ### Feature tokens
 
@@ -93,7 +102,7 @@ Each identifier is prefixed with feature tokens that describe it. `--features` c
 | `sys_sim` | Whether the name's words repeat the system (project) name, e.g. a `gimp` prefix in GIMP | name, system |
 | `lead_shape` | The first word's length (1, 2–3, 4+ characters), case, and whether an underscore or a camelCase break follows it. The model is uncased, so this is how it sees `m_count` vs. `xOffset`; the separator is read from the next word's case | name |
 
-The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only, and `--amplify none` turns it off. The final model retrains for the median of the CV folds' best epochs. It writes the checkpoint to `output/best_model`, per-identifier holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
+The model trains on `input/tagger_data.tsv` and a synthetic file, `input/synthetic_pos_data_full.csv` by default. Synthetic rows that repeat a real identifier (compared lowercased) are dropped, as are synthetic rows that repeat another synthetic row in the same context; the holdout report lists the file and how many rows were dropped. By default, low-frequency tags (V, PRE, VM, CJ) are upsampled and FUNCTION verbs are augmented with synonyms in every row; `--amplify real` does this for real rows only, and `--amplify none` turns it off. The CV folds and the final retrain all train for `EPOCHS` (5) epochs. Training writes the checkpoint to `output/best_model`, out-of-fold predictions to `output/cv_predictions.csv`, holdout predictions to `output/holdout_predictions.csv`, and metrics to `holdout_report.txt`. Serve a locally trained checkpoint with `python main --mode run --local`.
 
 ---
 

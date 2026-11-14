@@ -43,6 +43,8 @@ def test_accuracy_by_source():
     assert by_source.loc["tagger_data", "token_accuracy"] == pytest.approx(3 / 4)
     assert by_source.loc["tagger_data", "identifier_accuracy"] == pytest.approx(0.5)
     assert by_source.loc["synthetic_pos_data_full", "identifier_accuracy"] == 1.0
+    # tagger_data tokens: V right, NM predicted as N, N right twice -> F1 V=1, NM=0, N=0.8
+    assert by_source.loc["tagger_data", "macro_f1"] == pytest.approx((1 + 0 + 0.8) / 3)
 
     preds["subset"] = ["original_set", "headnoun_set", "synthetic_pos_data_full"]
     by_subset = train_model.accuracy_by_source(preds, "subset").set_index("source")
@@ -148,9 +150,41 @@ def test_drop_synthetic_overlap():
     assert list(filtered["CONTEXT"]) == ["FUNCTION", "ATTRIBUTE", "FUNCTION"]
 
 
-def test_retrain_epochs_use_the_median_fold():
-    assert train_model._select_retrain_epochs([3.0, 5.0, 6.0, 7.0, 5.0]) == 5.0
-    assert train_model._select_retrain_epochs([]) == float(train_model.EPOCHS)
+def test_compute_metrics_can_score_selected_rows_only():
+    labels = np.array([[-100, 3, -100], [-100, 4, -100]])
+    preds = np.array([[0, 3, 0], [0, 5, 0]])   # first row right, second wrong
+    assert train_model.compute_metrics((preds, labels))["eval_identifier_accuracy"] == pytest.approx(0.5)
+    only_first = train_model.compute_metrics((preds, labels), row_mask=[True, False])
+    assert only_first["eval_identifier_accuracy"] == 1.0
+    assert train_model.compute_metrics((preds, labels), row_mask=[False, False]) == {}
+
+
+def test_decoded_tags_become_prediction_rows():
+    df = _rows(
+        ("FUNCTION", ["get", "name"], ["V", "N"]),
+        ("DECLARATION", ["size"], ["N"]),
+    ).assign(SUBSET="original_set")
+    v, n = train_model.LABEL2ID["V"], train_model.LABEL2ID["N"]
+    labels = [[-100, -100, v, -100, n, -100], [-100, -100, n, -100, -100, -100]]
+    preds = [[0, v, 0, n], [0, n]]   # inner positions only (no CLS/SEP)
+    tags = train_model._decoded_tags(preds, labels)
+    assert tags == [["V", "N"], ["N"]]
+    rows = train_model._prediction_rows(df, tags, "cv", fold=2)
+    assert rows[0]["pred_tags"] == "V N" and rows[0]["true_tags"] == "V N"
+    assert rows[1]["eval_split"] == "cv" and rows[1]["fold"] == 2 and rows[1]["subset"] == "original_set"
+
+
+def test_save_run_reports(tmp_path):
+    (tmp_path / "output").mkdir()
+    (tmp_path / "holdout_report.txt").write_text("report")
+    (tmp_path / "output" / "holdout_predictions.csv").write_text("h")
+    (tmp_path / "output" / "cv_predictions.csv").write_text("c")
+    saved = train_model.save_run_reports(str(tmp_path), "tc", 7)
+    reports = tmp_path / "output" / "reports"
+    assert sorted(p.name for p in reports.iterdir()) == [
+        "tc_seed7.txt", "tc_seed7_cv_predictions.csv", "tc_seed7_predictions.csv",
+    ]
+    assert len(saved) == 3 and (reports / "tc_seed7_cv_predictions.csv").read_text() == "c"
 
 
 def test_crf_trainer_gives_crf_its_own_learning_rate(tiny_model, tmp_path):

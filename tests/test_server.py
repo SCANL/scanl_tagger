@@ -125,6 +125,11 @@ def test_train_amplify_flag(monkeypatch):
     assert calls == [{"selected_features": [], "amplify": "real"}]
 
 
+def test_train_run_name_flag(monkeypatch):
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--run-name", "tc")
+    assert calls == [{"selected_features": [], "run_name": "tc"}]
+
+
 def test_seed_help_states_the_real_default():
     from src.lm_based_tagger.train_model import TRAIN_SEED
 

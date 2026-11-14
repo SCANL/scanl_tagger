@@ -4,6 +4,8 @@ import time
 import random
 import math
 import inspect
+import shutil
+from functools import partial
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
@@ -21,10 +23,10 @@ from transformers import (
     TrainingArguments,
     DistilBertTokenizerFast,
     DataCollatorForTokenClassification,
-    EarlyStoppingCallback
 )
 
 from datasets import Dataset
+from src.lm_based_tagger.evaluation import accuracy_by_source, normalize_split, real_code_summary
 from src.lm_based_tagger.distilbert_preprocessing import (
     normalize_selected_features,
     prepare_dataset,
@@ -67,8 +69,10 @@ _configure_torch_runtime()
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
-EPOCHS = 5               # max epochs per fold (early stopping usually ends sooner)
-EARLY_STOP = 2            # patience for early stopping
+# Epochs for every CV fold and for the final retrain. Folds train a fixed number of epochs, with
+# no early stopping or best-checkpoint pick on their own test slice, so their out-of-fold
+# predictions are unbiased. (When folds did pick their best epoch, it was nearly always the last.)
+EPOCHS = 5
 CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
@@ -318,34 +322,6 @@ def _prepare_training_frame(
     return prepared_df, len(verb_aug_df)
 
 
-def _extract_best_epoch(trainer: Trainer) -> float:
-    """Recover the best evaluation epoch from Trainer state."""
-    best_metric = trainer.state.best_metric
-    if best_metric is None:
-        return float(EPOCHS)
-
-    best_epoch = None
-    for record in trainer.state.log_history:
-        if "eval_macro_f1" not in record or "epoch" not in record:
-            continue
-        if math.isclose(float(record["eval_macro_f1"]), float(best_metric), rel_tol=1e-9, abs_tol=1e-9):
-            best_epoch = float(record["epoch"])
-
-    return best_epoch if best_epoch is not None else float(EPOCHS)
-
-
-def _select_retrain_epochs(fold_best_epochs: List[float]) -> float:
-    """
-    Choose the final retrain length from the folds' best epochs.
-
-    The median, not the best fold's own epoch: a single fold that peaks early (one run had
-    fold 2 at epoch 3 while the others peaked at 5-7) would otherwise undertrain the model.
-    """
-    if not fold_best_epochs:
-        return float(EPOCHS)
-    return float(np.median(fold_best_epochs))
-
-
 # === Label List & Mappings ===
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID   = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -368,7 +344,7 @@ def _write_run_metadata(
     dual_print(f"SCALAR version: {__version__}", file=file)
     dual_print(f"Split seed: {SPLIT_SEED}", file=file)
     dual_print(f"Train seed: {train_seed}", file=file)
-    dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, max epochs: {EPOCHS}", file=file)
+    dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, epochs (folds and final retrain): {EPOCHS}", file=file)
     dual_print("Datasets:", file=file)
     for line in dataset_lines:
         dual_print(f"  {line}", file=file)
@@ -377,30 +353,6 @@ def _write_run_metadata(
         f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
         file=file,
     )
-
-
-def accuracy_by_source(preds_df: pd.DataFrame, column: str = "data_source") -> pd.DataFrame:
-    """
-    Token- and identifier-level holdout accuracy for each value of `column`.
-
-    "data_source" gives real (tagger_data, every subset together) vs. synthetic; "subset"
-    breaks real down into original_set, closed_category_set and headnoun_set. Synthetic rows
-    are much easier than real identifiers, so the combined score hides how the model does on
-    real code. Expects the columns written to holdout_predictions.csv.
-    """
-    rows = []
-    for source, group in preds_df.groupby(column, sort=True):
-        true = group["true_tags"].str.split()
-        pred = group["pred_tags"].str.split()
-        tokens = sum(len(t) for t in true)
-        correct = sum(a == b for t, p in zip(true, pred) for a, b in zip(t, p))
-        rows.append({
-            "source": source,
-            "identifiers": len(group),
-            "token_accuracy": correct / tokens if tokens else float("nan"),
-            "identifier_accuracy": (group["true_tags"] == group["pred_tags"]).mean(),
-        })
-    return pd.DataFrame(rows)
 
 
 class CRFTrainer(Trainer):
@@ -434,7 +386,7 @@ class CRFTrainer(Trainer):
 
 
 # 11) compute_metrics function (macro-F1) 
-def compute_metrics(eval_pred):
+def compute_metrics(eval_pred, row_mask=None):
     """
     Computes macro-F1, token-level accuracy, and identifier-level accuracy.
 
@@ -454,6 +406,9 @@ def compute_metrics(eval_pred):
             - "eval_macro_f1": F1 averaged over classes (not tokens)
             - "eval_token_accuracy": token-level accuracy (ignores -100)
             - "eval_identifier_accuracy": percentage of rows where all tokens matched
+
+    `row_mask` (one bool per eval row, in eval order) limits the metrics to those rows; training
+    passes the real rows, so the per-epoch log tracks real code rather than synthetic rows.
 
     Example (logits of shape [B=2, T=3, C=4]):
         preds = np.array([
@@ -494,6 +449,13 @@ def compute_metrics(eval_pred):
 
     # 3) Compare predictions to labels, ignoring -100
     all_true, all_pred, id_correct_flags = [], [], []
+
+    if row_mask is not None:
+        keep = np.asarray(row_mask, dtype=bool)
+        preds = [row for row, k in zip(preds, keep) if k]
+        labels = [row for row, k in zip(labels, keep) if k]
+        if not labels:
+            return {}
 
     for pred_row, label_row in zip(preds, labels):
         example_correct = True
@@ -718,11 +680,6 @@ def _load_lm_training_dataframe(
     return combined_df, source_names
 
 
-def normalize_split(split: str) -> str:
-    """Comparison key for an identifier split: lowercased, single-spaced."""
-    return " ".join(str(split).lower().split())
-
-
 def _drop_synthetic_overlap(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[str, int]]:
     """
     Drop synthetic rows that duplicate a real identifier or an earlier synthetic row.
@@ -768,6 +725,64 @@ def _split_holdout(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     return pd.concat(train_parts), pd.concat(holdout_parts)
 
 
+def _decoded_tags(viterbi_preds, labels) -> List[List[str]]:
+    """Word-level tag strings per row from viterbi_predict output (strips CLS/SEP from labels)."""
+    return [
+        [ID2LABEL[p] for l, p in zip(row_labels[1:-1], row_preds) if l != -100]
+        for row_labels, row_preds in zip(labels, viterbi_preds)
+    ]
+
+
+def _prediction_rows(df: pd.DataFrame, pred_tags: List[List[str]], eval_split: str, fold: int | None = None):
+    """One holdout_predictions.csv-style record per row of `df`."""
+    rows = []
+    for (_, row), tags in zip(df.iterrows(), pred_tags):
+        record = {
+            "tokens":      " ".join(row["tokens"]),
+            "true_tags":   " ".join(row["tags"]),
+            "pred_tags":   " ".join(tags),
+            "context":     row.get("CONTEXT", ""),
+            "type":        row.get("TYPE", ""),
+            "language":    row.get("LANGUAGE", ""),
+            "system_name": row.get("SYSTEM_NAME", ""),
+            "data_source": row.get("DATA_SOURCE", ""),
+            "subset":      row.get("SUBSET", ""),
+            "eval_split":  eval_split,
+        }
+        if fold is not None:
+            record["fold"] = fold
+        rows.append(record)
+    return rows
+
+
+def _write_summary(title: str, summary: pd.DataFrame, file) -> None:
+    dual_print(f"\n{title}", file=file)
+    for row in summary.itertuples():
+        dual_print(
+            f"  {row.source}: {row.identifiers} identifiers, identifier {row.identifier_accuracy:.4f}, "
+            f"token {row.token_accuracy:.4f}, macro-F1 {row.macro_f1:.4f}",
+            file=file,
+        )
+
+
+def save_run_reports(script_dir: str, run_name: str, train_seed: int) -> List[str]:
+    """Copy this run's report and predictions to output/reports/<run_name>_seed<N>.*"""
+    reports_dir = os.path.join(script_dir, "output", "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+    stem = os.path.join(reports_dir, f"{run_name}_seed{train_seed}")
+    copies = [
+        (os.path.join(script_dir, "holdout_report.txt"), f"{stem}.txt"),
+        (os.path.join(script_dir, "output", "holdout_predictions.csv"), f"{stem}_predictions.csv"),
+        (os.path.join(script_dir, "output", "cv_predictions.csv"), f"{stem}_cv_predictions.csv"),
+    ]
+    saved = []
+    for source, target in copies:
+        if os.path.exists(source):
+            shutil.copyfile(source, target)
+            saved.append(target)
+    return saved
+
+
 def train_lm(
     script_dir: str,
     use_tagger_data: bool = True,
@@ -777,10 +792,15 @@ def train_lm(
     train_seed: int = TRAIN_SEED,
     synthetic_path: str | None = None,
     amplify: str = "all",
+    run_name: str | None = None,
 ):
     """
-    Trains a DistilBERT+CRF model using k-fold cross-validation for token-level grammar tagging.
-    Performs model selection based on macro F1 score, and evaluates the best model on a final hold-out set.
+    Trains a DistilBERT+CRF model for token-level grammar tagging and evaluates it two ways.
+
+    K-fold CV on the training portion gives out-of-fold predictions for every training row;
+    the final model, retrained on the whole training portion, is scored on the hold-out set.
+    Together they score every real identifier exactly once ("real-code evaluation" in the
+    report), which is a much larger and steadier sample than the hold-out set alone.
 
     Enabled input datasets must contain:
         - SPLIT: tokenized identifier as space-separated subtokens (e.g., "get Employee Name")
@@ -797,10 +817,14 @@ def train_lm(
 
     `amplify` is "all" to upsample and augment every row, "real" for real rows only, or "none".
 
+    `run_name`, if given, copies the report and predictions to output/reports/<run_name>_seed<N>.*
+    for later comparison with `python -m src.lm_based_tagger.evaluation`.
+
     Output:
-        - Trained model checkpoints (best fold + final eval)
-        - Hold-out predictions and metrics (saved to output/holdout_predictions.csv)
-        - Text report of macro-F1, token-level and identifier-level accuracy
+        - Final model checkpoint (output/best_model)
+        - Out-of-fold CV predictions (output/cv_predictions.csv)
+        - Hold-out predictions (output/holdout_predictions.csv)
+        - Text report (holdout_report.txt): identifier accuracy, token accuracy and macro-F1
     """
     # 1) Paths
     output_dir = os.path.join(script_dir, "output")
@@ -856,9 +880,7 @@ def train_lm(
     #    Stratify by subset and context, so every fold has its share of each subset.
     kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
     fold_strata = _subsets(train_df) + "|" + train_df["CONTEXT"]
-    best_macro_f1 = -1.0
-    best_fold_index = None
-    fold_best_epochs = []
+    cv_rows = []
     fold = 1
     for train_idx, test_idx in kf.split(train_df, fold_strata):
         print(f"\n=== Fold {fold} ===")
@@ -915,10 +937,11 @@ def train_lm(
         model.config.selected_features = selected_features
 
         # 9) TrainingArguments (with early stopping)
+        # Fixed epochs: the per-epoch eval is only a learning-curve log (real rows, emission argmax).
         training_kwargs = {
             "output_dir": os.path.join(output_dir, f"fold_{fold}"),
             "eval_strategy": "epoch",
-            "save_strategy": "epoch",
+            "save_strategy": "no",
             "learning_rate": 5e-5,
             "per_device_train_batch_size": runtime_config["train_batch_size"],
             "per_device_eval_batch_size": runtime_config["eval_batch_size"],
@@ -926,10 +949,6 @@ def train_lm(
             "weight_decay": 0.01,
             "warmup_steps": runtime_config["warmup_steps"],
             "lr_scheduler_type": "cosine",
-            "load_best_model_at_end": True,
-            "metric_for_best_model": "eval_macro_f1",
-            "greater_is_better": True,
-            "save_total_limit": 1,
             "report_to": "none",
             "seed": train_seed,
             "dataloader_num_workers": runtime_config["dataloader_num_workers"],
@@ -967,7 +986,7 @@ def train_lm(
         )
 
 
-        # 11) Initialize Trainer for this fold with early stopping
+        # 11) Initialize Trainer for this fold
         #     Trainer handles batching, optimizer, eval, LR scheduling, logging, etc.
         trainer = CRFTrainer(
             model=model,
@@ -976,8 +995,10 @@ def train_lm(
             eval_dataset=tokenized_test,
             processing_class=tokenizer,
             data_collator=data_collator,
-            callbacks=[EarlyStoppingCallback(early_stopping_patience=EARLY_STOP)],
-            compute_metrics=compute_metrics
+            compute_metrics=partial(
+                compute_metrics,
+                row_mask=(fold_test_df["DATA_SOURCE"] == REAL_SOURCE).to_numpy(),
+            ),
         )
 
         # 12) Train model on this fold
@@ -1000,48 +1021,22 @@ def train_lm(
             persistent_workers=runtime_config["persistent_workers"],
         )
 
-        # Align: Viterbi output is length T-2 (no CLS/SEP); strip CLS/SEP from labels
-        true_labels_list = [
-            ID2LABEL[l]
-            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
-            for (l, p) in zip(sent_labels[1:-1], sent_preds)
-            if l != -100
-        ]
-
-        pred_labels_list = [
-            ID2LABEL[p]
-            for sent_labels, sent_preds in zip(fold_labels, viterbi_preds)
-            for (l, p) in zip(sent_labels[1:-1], sent_preds)
-            if l != -100
-        ]
-
-        fold_macro_f1 = f1_score(true_labels_list, pred_labels_list, average="macro")
-        fold_best_epochs.append(_extract_best_epoch(trainer))
-        print(f"Fold {fold} Macro F1: {fold_macro_f1:.4f}, best epoch: {fold_best_epochs[-1]:.2f}")
-
-        # 14) Save model checkpoint if this fold is the best so far
-        #     This ensures we retain the model with highest validation performance
-        if fold_macro_f1 > best_macro_f1:
-            best_macro_f1 = fold_macro_f1
-            best_fold_index = fold
-            # Clear stale files (e.g. added_tokens.json from prior runs) before saving
-            if os.path.exists(best_model_dir):
-                import shutil
-                shutil.rmtree(best_model_dir)
-            trainer.save_model(best_model_dir)
-            model.config.save_pretrained(best_model_dir)
-            tokenizer.save_pretrained(best_model_dir)
+        fold_pred_tags = _decoded_tags(viterbi_preds, fold_labels)
+        fold_rows = _prediction_rows(fold_test_df, fold_pred_tags, "cv", fold)
+        cv_rows.extend(fold_rows)
+        fold_real = real_code_summary(pd.DataFrame(fold_rows))
+        if not fold_real.empty:
+            real = fold_real.iloc[0]
+            print(f"Fold {fold} real code: identifier {real.identifier_accuracy:.4f}, macro-F1 {real.macro_f1:.4f}")
 
         fold += 1
 
-    # 15) Final summary after cross-validation
-    #     Use CV to choose the training duration, then retrain once on all of train_df.
-    best_num_train_epochs = _select_retrain_epochs(fold_best_epochs)
-    fold_epochs_text = ", ".join(f"{epoch:g}" for epoch in fold_best_epochs)
-    print(
-        f"\nBest CV fold: {best_fold_index}, Macro F1 = {best_macro_f1:.4f}, "
-        f"fold best epochs = [{fold_epochs_text}], selected epochs (median) = {best_num_train_epochs:.2f}"
-    )
+    # 15) Save the out-of-fold predictions, then retrain once on all of train_df.
+    cv_df = pd.DataFrame(cv_rows)
+    cv_path = os.path.join(output_dir, "cv_predictions.csv")
+    cv_df.to_csv(cv_path, index=False)
+    print(f"\nWrote out-of-fold CV predictions to: {cv_path}")
+    best_num_train_epochs = EPOCHS
 
     full_train_df, final_verb_aug_count = _prepare_training_frame(
         train_df,
@@ -1130,7 +1125,6 @@ def train_lm(
     final_trainer.train()
 
     if os.path.exists(best_model_dir):
-        import shutil
         shutil.rmtree(best_model_dir)
     final_trainer.save_model(best_model_dir)
     final_model.config.save_pretrained(best_model_dir)
@@ -1183,33 +1177,21 @@ def train_lm(
     # Re-instantiate the exact same DistilBERT tagger we saved
     tagger = DistilBertTagger(best_model_dir, local=True)
 
-    rows = []
+    holdout_pred_tags = []
     flat_true = []
     flat_pred = []
     for _, row in val_df.iterrows():
-        tokens     = row["tokens"]            # e.g. ["my", "Identifier", "Name"]
-        true_tags  = row["tags"]              # e.g. ["NM", "DT", "DT"]
-        context    = row.get("CONTEXT", "")   # e.g. "FUNCTION"
-        type_str   = row.get("TYPE", "")      # if present; otherwise ""
-        language   = row.get("LANGUAGE", "")  # if present; otherwise ""
-        system_name= row.get("SYSTEM_NAME", "")  # if present; otherwise ""
-
-        pred_tags = tagger.tag_identifier(tokens, context, type_str, language, system_name)
-
-        flat_true.extend(true_tags)
+        pred_tags = tagger.tag_identifier(
+            row["tokens"],
+            row.get("CONTEXT", ""),
+            row.get("TYPE", ""),
+            row.get("LANGUAGE", ""),
+            row.get("SYSTEM_NAME", ""),
+        )
+        holdout_pred_tags.append(pred_tags)
+        flat_true.extend(row["tags"])
         flat_pred.extend(pred_tags)
-
-        rows.append({
-            "tokens":      " ".join(tokens),
-            "true_tags":   " ".join(true_tags),
-            "pred_tags":   " ".join(pred_tags),
-            "context":     context,
-            "type":        type_str,
-            "language":    language,
-            "system_name": system_name,
-            "data_source": row.get("DATA_SOURCE", ""),
-            "subset":      row.get("SUBSET", ""),
-        })
+    rows = _prediction_rows(val_df, holdout_pred_tags, "holdout")
 
     preds_df = pd.DataFrame(rows)
     csv_path = os.path.join(output_dir, "holdout_predictions.csv")
@@ -1236,10 +1218,7 @@ def train_lm(
             train_seed=train_seed,
             amplify=amplify,
         )
-        dual_print(f"Best CV fold: {best_fold_index}", file=f)
-        dual_print(f"Fold best epochs: {fold_epochs_text}", file=f)
-        dual_print(f"Selected retrain epochs (median of folds): {best_num_train_epochs:.2f}", file=f)
-        dual_print(f"Best model dir: {best_model_dir}", file=f)
+        dual_print(f"Model dir: {best_model_dir}", file=f)
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)
         dual_print(f"Tokens/sec: {total_tokens / elapsed:.2f}", file=f)
         dual_print(f"Identifiers/sec: {total_examples / elapsed:.2f}", file=f)
@@ -1248,10 +1227,25 @@ def train_lm(
         dual_print(f"Final Identifier-level Accuracy on Held-Out Set: {id_level_acc:.4f}", file=f)
         dual_print(f"Batched Viterbi Token-level Accuracy (consistency check): {accuracy_score(viterbi_true, viterbi_pred):.4f}", file=f)
         for title, column in (("Data Source", "data_source"), ("Subset", "subset")):
-            dual_print(f"\nHeld-Out Accuracy by {title}:", file=f)
-            for row in accuracy_by_source(preds_df, column).itertuples():
-                dual_print(
-                    f"  {row.source}: {row.identifiers} identifiers, "
-                    f"token {row.token_accuracy:.4f}, identifier {row.identifier_accuracy:.4f}",
-                    file=f,
-                )
+            _write_summary(f"Held-Out Accuracy by {title}:", accuracy_by_source(preds_df, column), f)
+
+        # Every real identifier scored once: CV folds score the training portion, the final
+        # model scores the hold-out set. This is the number to compare runs on.
+        all_df = pd.concat([cv_df, preds_df], ignore_index=True)
+        _write_summary(
+            "Real-Code Evaluation (CV out-of-fold + hold-out; every real identifier scored once):",
+            real_code_summary(all_df), f,
+        )
+        _write_summary("CV Out-of-Fold by Data Source:", accuracy_by_source(cv_df, "data_source"), f)
+        real_all = all_df[all_df["data_source"] == REAL_SOURCE]
+        if not real_all.empty:
+            dual_print("\nPer-Tag Report on Real Code (CV out-of-fold + hold-out):", file=f)
+            dual_print(classification_report(
+                [t for tags in real_all["true_tags"] for t in tags.split()],
+                [t for tags in real_all["pred_tags"] for t in tags.split()],
+                digits=4, zero_division=0,
+            ), file=f)
+
+    if run_name:
+        for path in save_run_reports(script_dir, run_name, train_seed):
+            print(f"Saved {path}")
