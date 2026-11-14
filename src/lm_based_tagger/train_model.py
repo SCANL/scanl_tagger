@@ -67,7 +67,7 @@ _configure_torch_runtime()
 # === Hyperparameters / Config ===
 K = 5                     # number of CV folds
 HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
-EPOCHS = 10               # max epochs per fold (early stopping usually ends sooner)
+EPOCHS = 5               # max epochs per fold (early stopping usually ends sooner)
 EARLY_STOP = 2            # patience for early stopping
 CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
