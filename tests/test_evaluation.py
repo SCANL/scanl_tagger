@@ -25,6 +25,20 @@ def test_real_code_summary_combines_real_subsets_only():
     assert summary.loc["real", "identifier_accuracy"] == 0.5
 
 
+def test_real_code_summary_keeps_new_subsets_out_of_headline():
+    preds = pd.DataFrame({
+        "data_source": ["tagger_data", "tagger_data"],
+        "subset": ["original_set", "targeted_set"],
+        "true_tags": ["V N", "N"],
+        "pred_tags": ["V N", "NM"],
+    })
+    summary = evaluation.real_code_summary(preds).set_index("source")
+    assert list(summary.index) == ["real", "real+new", "original_set", "targeted_set"]
+    assert summary.loc["real", "identifier_accuracy"] == 1.0
+    assert summary.loc["real+new", "identifiers"] == 2
+    assert summary.loc["real+new", "identifier_accuracy"] == 0.5
+
+
 def _write_run(reports, run, seed, rows, cv_rows=None):
     columns = ["tokens", "true_tags", "pred_tags", "context", "data_source", "subset"]
     pd.DataFrame(rows, columns=columns).to_csv(reports / f"{run}_seed{seed}_predictions.csv", index=False)

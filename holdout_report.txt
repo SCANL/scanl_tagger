@@ -1,18 +1,18 @@
               precision    recall  f1-score   support
 
-          CJ       0.94      1.00      0.97        30
-           D       0.99      0.99      0.99        76
+          CJ       0.97      0.97      0.97        30
+           D       1.00      0.99      0.99        76
           DT       0.98      0.99      0.99       118
-           N       0.97      0.97      0.97      1018
-          NM       0.96      0.96      0.96       987
-         NPL       0.99      0.99      0.99       199
-           P       0.99      0.98      0.99       171
-         PRE       0.91      0.90      0.91       146
-           V       0.94      0.94      0.94       399
-          VM       0.91      0.84      0.88        38
+           N       0.97      0.97      0.97      1017
+          NM       0.96      0.96      0.96       985
+         NPL       0.99      0.98      0.99       199
+           P       0.97      0.98      0.98       171
+         PRE       0.91      0.89      0.90       148
+           V       0.92      0.94      0.93       400
+          VM       0.94      0.87      0.90        38
 
     accuracy                           0.96      3182
-   macro avg       0.96      0.96      0.96      3182
+   macro avg       0.96      0.95      0.96      3182
 weighted avg       0.96      0.96      0.96      3182
 
 
@@ -20,59 +20,59 @@ Run Configuration:
 SCALAR version: 3.0.0
 Split seed: 658
 Train seed: 42
-CV folds: 5, holdout ratio: 0.2, epochs (folds and final retrain): 5
+CV folds: 3, holdout ratio: 0.2, epochs (folds and final retrain): 5
 Datasets:
   tagger_data: 4261 rows (closed_category_set 1267, headnoun_set 1679, original_set 1315)
   synthetic_pos_data_full: 1780 rows (input/synthetic_pos_data_full.csv; dropped 99 real twins and 2 duplicates)
 Amplification (upsampling + verb augmentation): all rows
-Features: context, hungarian, cvr, digit, digit_connector, plural_suffix, type, type_overlap, language, sys_sim, lead_shape
-Markers as single tokens: yes
+Features: context, type
+Markers as single tokens: no
 Model dir: /home/asteriaicom/scalar3/scanl_tagger/output/best_model
 
-Inference Time: 1.97s for 1209 identifiers (28763 tokens)
-Tokens/sec: 14610.22
-Identifiers/sec: 614.11
+Inference Time: 1.92s for 1209 identifiers (8934 tokens)
+Tokens/sec: 4642.85
+Identifiers/sec: 628.30
 
-Final Macro F1 on Held-Out Set: 0.9574
-Final Token-level Accuracy on Held-Out Set: 0.9635
-Final Identifier-level Accuracy on Held-Out Set: 0.9222
-Batched Viterbi Token-level Accuracy (consistency check): 0.9635
+Final Macro F1 on Held-Out Set: 0.9573
+Final Token-level Accuracy on Held-Out Set: 0.9598
+Final Identifier-level Accuracy on Held-Out Set: 0.9156
+Batched Viterbi Token-level Accuracy (consistency check): 0.9598
 
 Held-Out Accuracy by Data Source:
-  synthetic_pos_data_full: 356 identifiers, identifier 0.9747, token 0.9887, macro-F1 0.9885
-  tagger_data: 853 identifiers, identifier 0.9004, token 0.9539, macro-F1 0.9385
+  synthetic_pos_data_full: 356 identifiers, identifier 0.9551, token 0.9785, macro-F1 0.9826
+  tagger_data: 853 identifiers, identifier 0.8992, token 0.9526, macro-F1 0.9402
 
 Held-Out Accuracy by Subset:
-  closed_category_set: 254 identifiers, identifier 0.8504, token 0.9376, macro-F1 0.9342
-  headnoun_set: 336 identifiers, identifier 0.9048, token 0.9530, macro-F1 0.9190
-  original_set: 263 identifiers, identifier 0.9430, token 0.9722, macro-F1 0.9832
-  synthetic_pos_data_full: 356 identifiers, identifier 0.9747, token 0.9887, macro-F1 0.9885
+  closed_category_set: 254 identifiers, identifier 0.8465, token 0.9334, macro-F1 0.9343
+  headnoun_set: 336 identifiers, identifier 0.8988, token 0.9485, macro-F1 0.9198
+  original_set: 263 identifiers, identifier 0.9506, token 0.9781, macro-F1 0.9845
+  synthetic_pos_data_full: 356 identifiers, identifier 0.9551, token 0.9785, macro-F1 0.9826
 
 Real-Code Evaluation (CV out-of-fold + hold-out; every real identifier scored once):
-  real: 4261 identifiers, identifier 0.8690, token 0.9360, macro-F1 0.9223
-  closed_category_set: 1267 identifiers, identifier 0.8311, token 0.9238, macro-F1 0.9191
-  headnoun_set: 1679 identifiers, identifier 0.8743, token 0.9331, macro-F1 0.9044
-  original_set: 1315 identifiers, identifier 0.8989, token 0.9522, macro-F1 0.9400
+  real: 4261 identifiers, identifier 0.8615, token 0.9325, macro-F1 0.9273
+  closed_category_set: 1267 identifiers, identifier 0.8129, token 0.9171, macro-F1 0.9200
+  headnoun_set: 1679 identifiers, identifier 0.8755, token 0.9325, macro-F1 0.9165
+  original_set: 1315 identifiers, identifier 0.8905, token 0.9484, macro-F1 0.9327
 
 CV Out-of-Fold by Data Source:
-  synthetic_pos_data_full: 1424 identifiers, identifier 0.9614, token 0.9833, macro-F1 0.9854
-  tagger_data: 3408 identifiers, identifier 0.8612, token 0.9316, macro-F1 0.9180
+  synthetic_pos_data_full: 1424 identifiers, identifier 0.9466, token 0.9772, macro-F1 0.9775
+  tagger_data: 3408 identifiers, identifier 0.8521, token 0.9276, macro-F1 0.9234
 
 Per-Tag Report on Real Code (CV out-of-fold + hold-out):
               precision    recall  f1-score   support
 
-          CJ     0.8861    0.9589    0.9211        73
-           D     0.9758    0.9670    0.9713       333
-          DT     0.9752    0.9704    0.9728       405
-           N     0.9548    0.9494    0.9521      3719
-          NM     0.9363    0.9386    0.9374      4053
-         NPL     0.9766    0.9750    0.9758       641
-           P     0.9262    0.9704    0.9478       608
-         PRE     0.8475    0.8272    0.8372       544
-           V     0.8798    0.8798    0.8798      1073
-          VM     0.8495    0.8061    0.8272        98
+          CJ     0.9467    0.9726    0.9595        73
+           D     0.9817    0.9670    0.9743       333
+          DT     0.9774    0.9677    0.9725       402
+           N     0.9498    0.9464    0.9481      3716
+          NM     0.9261    0.9370    0.9315      4050
+         NPL     0.9826    0.9704    0.9765       641
+           P     0.9253    0.9684    0.9463       601
+         PRE     0.8450    0.7856    0.8142       555
+           V     0.8842    0.8842    0.8842      1071
+          VM     0.9062    0.8286    0.8657       105
 
-    accuracy                         0.9360     11547
-   macro avg     0.9208    0.9243    0.9223     11547
-weighted avg     0.9360    0.9360    0.9359     11547
+    accuracy                         0.9325     11547
+   macro avg     0.9325    0.9228    0.9273     11547
+weighted avg     0.9324    0.9325    0.9323     11547
 

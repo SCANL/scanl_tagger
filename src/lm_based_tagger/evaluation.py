@@ -27,7 +27,10 @@ import numpy as np
 import pandas as pd
 
 REAL_SOURCE = "tagger_data"
-REAL_SUBSETS = ("original_set", "closed_category_set", "headnoun_set")
+REAL_SUBSETS = ("original_set", "closed_category_set", "headnoun_set")  # the headline "real" score
+# Real subsets reported on their own and in "real+new", but kept out of the headline so it
+# stays comparable with earlier runs.
+NEW_REAL_SUBSETS = ("targeted_set",)
 DEFAULT_REPORTS_DIR = os.path.join("output", "reports")
 DEFAULT_GOLD = os.path.join("input", "tagger_data.tsv")
 
@@ -95,12 +98,19 @@ def accuracy_by_source(preds_df: pd.DataFrame, column: str = "data_source") -> p
 
 
 def real_code_summary(preds_df: pd.DataFrame) -> pd.DataFrame:
-    """accuracy_by_source rows for real code combined ("real") and for each real subset."""
+    """
+    accuracy_by_source rows for real code: "real" combines REAL_SUBSETS (the headline),
+    "real+new" adds NEW_REAL_SUBSETS when any are present, then one row per subset.
+    """
     real = preds_df[preds_df["data_source"] == REAL_SOURCE]
     if real.empty:
         return pd.DataFrame(columns=["source", "identifiers", "token_accuracy", "identifier_accuracy", "macro_f1"])
-    combined = accuracy_by_source(real.assign(_all="real"), "_all")
-    return pd.concat([combined, accuracy_by_source(real, "subset")], ignore_index=True)
+    headline = real[real["subset"].isin(REAL_SUBSETS)]
+    parts = [accuracy_by_source(headline.assign(_all="real"), "_all")] if not headline.empty else []
+    if len(headline) < len(real):
+        parts.append(accuracy_by_source(real.assign(_all="real+new"), "_all"))
+    parts.append(accuracy_by_source(real, "subset"))
+    return pd.concat(parts, ignore_index=True)
 
 
 # === Comparing runs ===
@@ -230,8 +240,12 @@ def compare_runs(
             + ", ".join(f"{r}: {'/'.join(map(str, sorted(k))) or '?'}" for r, k in folds.items())
             + "); out-of-fold accuracy depends on fold count, so these runs are not comparable."
         )
-    groups = [("real", first["data_source"] == REAL_SOURCE)]
+    is_real = first["data_source"] == REAL_SOURCE
+    groups = [("real", is_real & first["subset"].isin(REAL_SUBSETS))]
     groups += [(s, first["subset"] == s) for s in REAL_SUBSETS]
+    groups += [(s, first["subset"] == s) for s in NEW_REAL_SUBSETS]
+    if (is_real & first["subset"].isin(NEW_REAL_SUBSETS)).any():
+        groups.append(("real+new", is_real))
     groups += [(s, (first["data_source"] == s)) for s in sorted(set(first["data_source"]) - {REAL_SOURCE})]
 
     header = f"\n{'group':<22}{'n':>6}"
