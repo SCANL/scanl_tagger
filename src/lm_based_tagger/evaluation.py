@@ -125,6 +125,18 @@ def load_run(run: str, reports_dir: str = DEFAULT_REPORTS_DIR) -> Dict[int, pd.D
     return {seed: pd.concat(frames, ignore_index=True) for seed, frames in sorted(seeds.items())}
 
 
+_FOLDS_LINE = re.compile(r"^CV folds: (\d+)", re.MULTILINE)
+
+
+def run_folds(run: str, reports_dir: str = DEFAULT_REPORTS_DIR) -> set:
+    """CV fold counts recorded in `run`'s saved reports (empty if no report states one)."""
+    folds = set()
+    for path in glob.glob(glob.escape(os.path.join(reports_dir, f"{run}_seed")) + "*.txt"):
+        with open(path) as f:
+            folds.update(int(m) for m in _FOLDS_LINE.findall(f.read()))
+    return folds
+
+
 def _keys(frame: pd.DataFrame) -> pd.Series:
     return (frame["data_source"] + "|" + frame["tokens"].map(normalize_split) + "|"
             + frame["context"].str.strip().str.upper())
@@ -211,6 +223,13 @@ def compare_runs(
         + ("; real identifiers rescored against " + gold_path if gold_path else ""),
         "Accuracy is identifier-level (every tag right); F1 is token macro-F1. Values are seed means, in %.",
     ]
+    folds = {run: run_folds(run, reports_dir) for run in runs}
+    if len(set().union(*folds.values())) > 1:
+        lines.append(
+            "WARNING: runs used different CV fold counts ("
+            + ", ".join(f"{r}: {'/'.join(map(str, sorted(k))) or '?'}" for r, k in folds.items())
+            + "); out-of-fold accuracy depends on fold count, so these runs are not comparable."
+        )
     groups = [("real", first["data_source"] == REAL_SOURCE)]
     groups += [(s, first["subset"] == s) for s in REAL_SUBSETS]
     groups += [(s, (first["data_source"] == s)) for s in sorted(set(first["data_source"]) - {REAL_SOURCE})]

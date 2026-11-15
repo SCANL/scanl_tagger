@@ -79,3 +79,11 @@ def test_compare_runs_rescores_and_uses_shared_identifiers(tmp_path):
 
     single = evaluation.compare_runs(["b"], reports_dir=str(tmp_path), gold_path=str(gold), reps=50)
     assert "diff" not in single
+
+
+def test_run_folds_reads_reports(tmp_path):
+    (tmp_path / "a_seed1.txt").write_text("x\nCV folds: 3, holdout ratio: 0.2\n")
+    (tmp_path / "a_seed2.txt").write_text("CV folds: 5, holdout ratio: 0.2\n")
+    (tmp_path / "ab_seed1.txt").write_text("CV folds: 7, holdout ratio: 0.2\n")
+    assert evaluation.run_folds("a", str(tmp_path)) == {3, 5}
+    assert evaluation.run_folds("missing", str(tmp_path)) == set()

@@ -130,6 +130,11 @@ def test_train_run_name_flag(monkeypatch):
     assert calls == [{"selected_features": [], "run_name": "tc"}]
 
 
+def test_train_marker_tokens_flag(monkeypatch):
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--marker-tokens")
+    assert calls == [{"selected_features": [], "marker_tokens": True}]
+
+
 def test_seed_help_states_the_real_default():
     from src.lm_based_tagger.train_model import TRAIN_SEED
 
@@ -138,3 +143,13 @@ def test_seed_help_states_the_real_default():
         cwd=REPO_ROOT, capture_output=True, text=True, timeout=120,
     )
     assert f"Default: {TRAIN_SEED}" in " ".join(result.stdout.split())
+
+
+def test_train_folds_flag(monkeypatch):
+    calls = _run_main(monkeypatch, "--mode", "train", "--no-features", "--folds", "3")
+    assert calls == [{"selected_features": [], "folds": 3}]
+
+
+def test_train_folds_flag_rejects_one(monkeypatch):
+    with pytest.raises(SystemExit):
+        _run_main(monkeypatch, "--mode", "train", "--folds", "1")

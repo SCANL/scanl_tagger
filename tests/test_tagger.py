@@ -79,3 +79,42 @@ def test_tagger_rejects_identifiers_that_do_not_fit(tiny_model, tokenizer, tmp_p
     tagger = _tagger(tiny_model, tokenizer, tmp_path / "ckpt")
     with pytest.raises(ValueError, match="too long"):
         tagger.tag_identifier(["name"] * 100, "DECLARATION", "", "", "")
+
+
+def test_tagger_serves_a_checkpoint_with_single_token_markers(tiny_model, tokenizer, tmp_path):
+    import copy
+
+    import pandas as pd
+    from src.lm_based_tagger.distilbert_preprocessing import (
+        add_marker_tokens, build_model_input_tokens, collect_marker_tokens, init_marker_embeddings,
+    )
+
+    features = ["context", "type"]
+    df = pd.DataFrame([
+        {"tokens": ["get", "name"], "CONTEXT": "FUNCTION", "TYPE": "int"},
+        {"tokens": ["size"], "CONTEXT": "DECLARATION", "TYPE": ""},
+    ])
+    marker_tokenizer = copy.deepcopy(tokenizer)
+    markers = collect_marker_tokens(df, features)
+    assert {"@func", "@decl", "@type_int_like", "@type_unknown", "@pos_0", "@pos_2"} <= set(markers)
+
+    pieces = add_marker_tokens(marker_tokenizer, markers)
+    vocab = marker_tokenizer.get_vocab()
+    assert set(pieces) == {vocab[m] for m in markers}
+    assert pieces[vocab["@pos_0"]] == tokenizer("@pos_0", add_special_tokens=False)["input_ids"]
+
+    row = {"CONTEXT": "FUNCTION", "TYPE": "int", "LANGUAGE": "", "SYSTEM_NAME": ""}
+    inputs, _ = build_model_input_tokens(row, ["get", "name"], features)
+    encoded = marker_tokenizer(inputs, is_split_into_words=True)["input_ids"]
+    assert len(encoded) == len(inputs) + 2   # every marker and word is one token (plus CLS/SEP)
+
+    embeddings = tiny_model.bert.get_input_embeddings().weight.detach().clone()
+    init_marker_embeddings(tiny_model, marker_tokenizer, pieces)
+    grown = tiny_model.bert.get_input_embeddings().weight
+    assert grown.shape[0] == len(marker_tokenizer) == tiny_model.config.vocab_size
+    assert torch.allclose(grown[vocab["@pos_0"]], embeddings[pieces[vocab["@pos_0"]]].mean(dim=0))
+
+    tiny_model.config.selected_features = features
+    tagger = _tagger(tiny_model, marker_tokenizer, tmp_path / "ckpt")
+    assert len(tagger.tokenizer) == len(marker_tokenizer)
+    assert len(tagger.tag_identifier(["get", "user", "name"], "FUNCTION", "int", "C++", "x")) == 3

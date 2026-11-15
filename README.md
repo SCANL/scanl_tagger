@@ -82,7 +82,9 @@ python -m src.lm_based_tagger.evaluation tc all_features   # B - A, per subset, 
 python -m src.lm_based_tagger.evaluation tc                 # one run's metrics
 ```
 
-The comparison averages over every saved seed, rescores real identifiers against the current `input/tagger_data.tsv` (so label fixes apply to old runs too), uses only identifiers scored in every seed of both runs, and gives paired-bootstrap 95% intervals for the differences in identifier accuracy and macro-F1, plus per-tag F1. `--split cv` or `--split holdout` restricts it to one kind of prediction; runs saved before CV predictions were kept are compared on the holdout. `input/tagger_data.tsv` records each row's subset in its `DATA_SOURCE` column (`original_set`, `closed_category_set`, `headnoun_set`).
+The comparison averages over every saved seed, rescores real identifiers against the current `input/tagger_data.tsv` (so label fixes apply to old runs too), uses only identifiers scored in every seed of both runs, and gives paired-bootstrap 95% intervals for the differences in identifier accuracy and macro-F1, plus per-tag F1. `--split cv` or `--split holdout` restricts it to one kind of prediction; runs saved before CV predictions were kept are compared on the holdout.
+
+For quicker screening, `--folds 3` trains with 3 CV folds instead of 5 (about 40% less training). Each fold then sees less data, so out-of-fold accuracy comes out lower: compare a 3-fold run only with other 3-fold runs (the comparison tool warns when fold counts differ), and confirm a promising result with 5 folds. `input/tagger_data.tsv` records each row's subset in its `DATA_SOURCE` column (`original_set`, `closed_category_set`, `headnoun_set`).
 
 ### Feature tokens
 

@@ -28,6 +28,9 @@ from transformers import (
 from datasets import Dataset
 from src.lm_based_tagger.evaluation import accuracy_by_source, normalize_split, real_code_summary
 from src.lm_based_tagger.distilbert_preprocessing import (
+    add_marker_tokens,
+    collect_marker_tokens,
+    init_marker_embeddings,
     normalize_selected_features,
     prepare_dataset,
     tokenize_and_align_labels,
@@ -338,13 +341,15 @@ def _write_run_metadata(
     selected_features: List[str],
     train_seed: int,
     amplify: str,
+    marker_tokens: bool = False,
+    folds: int = K,
 ):
     """Write reproducibility metadata for the current LM training run."""
     dual_print("\nRun Configuration:", file=file)
     dual_print(f"SCALAR version: {__version__}", file=file)
     dual_print(f"Split seed: {SPLIT_SEED}", file=file)
     dual_print(f"Train seed: {train_seed}", file=file)
-    dual_print(f"CV folds: {K}, holdout ratio: {HOLDOUT_RATIO}, epochs (folds and final retrain): {EPOCHS}", file=file)
+    dual_print(f"CV folds: {folds}, holdout ratio: {HOLDOUT_RATIO}, epochs (folds and final retrain): {EPOCHS}", file=file)
     dual_print("Datasets:", file=file)
     for line in dataset_lines:
         dual_print(f"  {line}", file=file)
@@ -353,6 +358,7 @@ def _write_run_metadata(
         f"Features: {', '.join(selected_features) if selected_features else '<none>'}",
         file=file,
     )
+    dual_print(f"Markers as single tokens: {'yes' if marker_tokens else 'no'}", file=file)
 
 
 class CRFTrainer(Trainer):
@@ -765,6 +771,22 @@ def _write_summary(title: str, summary: pd.DataFrame, file) -> None:
         )
 
 
+def _new_model(selected_features: List[str], tokenizer, marker_pieces: dict | None):
+    """A fresh DistilBERT+CRF model, with single-token markers if `marker_pieces` is given."""
+    model = DistilBertCRFForTokenClassification(
+        num_labels=len(LABEL_LIST),
+        id2label=ID2LABEL,
+        label2id=LABEL2ID,
+        pretrained_name="distilbert-base-uncased",
+        dropout_prob=0.1
+    )
+    if marker_pieces is not None:
+        init_marker_embeddings(model, tokenizer, marker_pieces)
+        model.config.marker_tokens = True
+    model.config.selected_features = selected_features
+    return model.to(device)
+
+
 def save_run_reports(script_dir: str, run_name: str, train_seed: int) -> List[str]:
     """Copy this run's report and predictions to output/reports/<run_name>_seed<N>.*"""
     reports_dir = os.path.join(script_dir, "output", "reports")
@@ -793,6 +815,8 @@ def train_lm(
     synthetic_path: str | None = None,
     amplify: str = "all",
     run_name: str | None = None,
+    marker_tokens: bool = False,
+    folds: int = K,
 ):
     """
     Trains a DistilBERT+CRF model for token-level grammar tagging and evaluates it two ways.
@@ -816,6 +840,12 @@ def train_lm(
     the same whichever synthetic file (`synthetic_path`) is used, or none.
 
     `amplify` is "all" to upsample and augment every row, "real" for real rows only, or "none".
+
+    `marker_tokens` adds the feature and position markers to the tokenizer as single tokens
+    (initialized from the subwords they used to split into) instead of letting WordPiece split them.
+
+    `folds` is the number of CV folds (default K). Fewer folds train faster, but each fold sees
+    less data, so out-of-fold accuracy is lower: compare only runs with the same fold count.
 
     `run_name`, if given, copies the report and predictions to output/reports/<run_name>_seed<N>.*
     for later comparison with `python -m src.lm_based_tagger.evaluation`.
@@ -868,6 +898,11 @@ def train_lm(
 
     # 4) Tokenizer (upsampling now happens per-fold to prevent cross-fold leakage)
     tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
+    marker_pieces = None
+    if marker_tokens:
+        markers = collect_marker_tokens(df, selected_features)
+        marker_pieces = add_marker_tokens(tokenizer, markers)
+        print(f"Added {len(marker_pieces)} feature/position markers to the tokenizer as single tokens")
 
     # 6) Prepare final hold-out “validation” Dataset 
     val_dataset = prepare_dataset(val_df, LABEL2ID, selected_features=selected_features)
@@ -878,7 +913,7 @@ def train_lm(
 
     # 7) Set up K-Fold
     #    Stratify by subset and context, so every fold has its share of each subset.
-    kf = StratifiedKFold(n_splits=K, shuffle=True, random_state=SPLIT_SEED)
+    kf = StratifiedKFold(n_splits=folds, shuffle=True, random_state=SPLIT_SEED)
     fold_strata = _subsets(train_df) + "|" + train_df["CONTEXT"]
     cv_rows = []
     fold = 1
@@ -927,14 +962,7 @@ def train_lm(
         )
 
         # 8) Build fresh model + config for this fold 
-        model = DistilBertCRFForTokenClassification(
-            num_labels=len(LABEL_LIST),
-            id2label=ID2LABEL,
-            label2id=LABEL2ID,
-            pretrained_name="distilbert-base-uncased",
-            dropout_prob=0.1
-        ).to(device)
-        model.config.selected_features = selected_features
+        model = _new_model(selected_features, tokenizer, marker_pieces)
 
         # 9) TrainingArguments (with early stopping)
         # Fixed epochs: the per-epoch eval is only a learning-curve log (real rows, emission argmax).
@@ -1040,7 +1068,7 @@ def train_lm(
 
     full_train_df, final_verb_aug_count = _prepare_training_frame(
         train_df,
-        augmentation_seed=train_seed + K + 1,
+        augmentation_seed=train_seed + folds + 1,
         amplify=amplify,
     )
     if final_verb_aug_count:
@@ -1067,14 +1095,7 @@ def train_lm(
         f"optim={final_runtime_config['optim']}"
     )
 
-    final_model = DistilBertCRFForTokenClassification(
-        num_labels=len(LABEL_LIST),
-        id2label=ID2LABEL,
-        label2id=LABEL2ID,
-        pretrained_name="distilbert-base-uncased",
-        dropout_prob=0.1
-    ).to(device)
-    final_model.config.selected_features = selected_features
+    final_model = _new_model(selected_features, tokenizer, marker_pieces)
 
     final_training_kwargs = {
         "output_dir": os.path.join(output_dir, "final_retrain"),
@@ -1217,6 +1238,8 @@ def train_lm(
             selected_features=selected_features,
             train_seed=train_seed,
             amplify=amplify,
+            marker_tokens=marker_tokens,
+            folds=folds,
         )
         dual_print(f"Model dir: {best_model_dir}", file=f)
         dual_print(f"\nInference Time: {elapsed:.2f}s for {total_examples} identifiers ({total_tokens} tokens)", file=f)

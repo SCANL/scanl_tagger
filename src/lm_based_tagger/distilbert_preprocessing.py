@@ -550,6 +550,51 @@ def prepare_dataset(
         "ner_tags": [r["ner_tags"] for r in rows]
     })
 
+POSITION_TOKENS = ["@pos_0", "@pos_1", "@pos_2"]
+
+
+def collect_marker_tokens(df, selected_features: Optional[Iterable[str]] = None) -> List[str]:
+    """
+    Every feature token the selected features produce for the rows of `df`, plus the position
+    tokens, sorted. Used to add them to the tokenizer as single tokens (see add_marker_tokens).
+    """
+    markers = set(POSITION_TOKENS)
+    for _, row in df.iterrows():
+        markers.update(get_feature_tokens(row, list(row["tokens"]), selected_features))
+    return sorted(markers)
+
+
+def add_marker_tokens(tokenizer, markers: Iterable[str]) -> dict:
+    """
+    Add feature and position markers to `tokenizer` as whole tokens.
+
+    Without this, WordPiece splits every marker into 3-7 subwords (`@pos_1` -> `@ po ##s _ 1`),
+    so feature text makes up most of each model input. Returns {new token id: ids of the
+    subwords the marker used to split into}, for initializing the new embeddings.
+    """
+    pieces = {marker: tokenizer(marker, add_special_tokens=False)["input_ids"] for marker in markers}
+    tokenizer.add_tokens([marker for marker in markers if marker not in tokenizer.get_vocab()])
+    vocab = tokenizer.get_vocab()
+    return {vocab[marker]: ids for marker, ids in pieces.items() if len(ids) > 1 or ids != [vocab[marker]]}
+
+
+def init_marker_embeddings(model, tokenizer, marker_pieces: dict) -> None:
+    """
+    Grow the encoder's word embeddings to the tokenizer's size, starting each new marker at the
+    mean of the subword embeddings it used to split into, so `@type_object_like` starts out
+    meaning roughly what "type object like" did.
+    """
+    import torch
+
+    bert = model.bert
+    bert.resize_token_embeddings(len(tokenizer), mean_resizing=False)
+    model.config.vocab_size = len(tokenizer)
+    embeddings = bert.get_input_embeddings().weight
+    with torch.no_grad():
+        for token_id, piece_ids in marker_pieces.items():
+            embeddings[token_id] = embeddings[piece_ids].mean(dim=0)
+
+
 def tokenize_and_align_labels(sample, tokenizer):
     """
     Tokenizes an example and aligns NER labels with subword tokens.

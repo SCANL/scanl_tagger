@@ -91,6 +91,19 @@ if __name__ == "__main__":
         help="Train on the real identifiers only (train mode).",
     )
     parser.add_argument(
+        "--marker-tokens",
+        action="store_true",
+        help="Add feature and position markers to the tokenizer as single tokens (train mode), "
+             "instead of letting WordPiece split each into several subwords.",
+    )
+    parser.add_argument(
+        "--folds",
+        type=int,
+        metavar="K",
+        help="Number of CV folds (train mode, default 5). Fewer folds are faster for screening "
+             "experiments; compare only runs trained with the same fold count.",
+    )
+    parser.add_argument(
         "--run-name",
         metavar="NAME",
         help="Also save the report and predictions to output/reports/NAME_seed<N>.* (train mode), "
@@ -129,6 +142,12 @@ if __name__ == "__main__":
             train_args["amplify"] = args.amplify
         if args.run_name:
             train_args["run_name"] = args.run_name
+        if args.marker_tokens:
+            train_args["marker_tokens"] = True
+        if args.folds is not None:
+            if args.folds < 2:
+                parser.error("--folds must be at least 2")
+            train_args["folds"] = args.folds
         train_lm(SCRIPT_DIR, selected_features=args.features, **train_args)
 
     elif args.mode == "run":
