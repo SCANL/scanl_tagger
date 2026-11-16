@@ -142,3 +142,12 @@ def test_every_training_row_builds_features():
 ])
 def test_lead_shape(tokens, expected):
     assert get_lead_shape_feature_tokens(tokens) == expected
+
+
+def test_marker_tokens_are_only_at_tokens(monkeypatch):
+    from src.lm_based_tagger import distilbert_preprocessing as dp
+
+    monkeypatch.setitem(dp.FEATURE_FUNCTIONS, "type", lambda row, tokens: ["@type_x", "plain"])
+    df = pd.DataFrame([{"tokens": ["compact"], "CONTEXT": "PARAMETER", "TYPE": "X"}])
+    markers = dp.collect_marker_tokens(df, ["type"])
+    assert "@type_x" in markers and "plain" not in markers

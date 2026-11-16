@@ -40,8 +40,13 @@ class DistilBertCRFForTokenClassification(nn.Module):
     """
 
     # Tag bigrams that never occur in the training data. They are ruled out at decode time:
-    # a noun directly followed by another noun means the first one should have been NM.
-    FORBIDDEN_TRANSITIONS = (("N", "N"), ("N", "NPL"), ("NPL", "NPL"))
+    # a noun directly followed by another noun means the first one should have been NM, and
+    # PRE (a namespace or metadata prefix) only starts an identifier or follows another PRE.
+    FORBIDDEN_TRANSITIONS = (
+        ("N", "N"), ("N", "NPL"), ("NPL", "NPL"),
+        *((before, "PRE") for before in ("N", "NM", "NPL", "V", "VM", "P", "D", "DT", "CJ")),
+        ("PRE", "VM"), ("DT", "D"), ("CJ", "CJ"), ("CJ", "D"),
+    )
 
     def __init__(self, num_labels: int, id2label: dict, label2id: dict, pretrained_name: str = "distilbert-base-uncased",  dropout_prob: float = 0.1, config: DistilBertConfig | None = None):
         super().__init__()

@@ -6,7 +6,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Changed
 
-- The CRF runs over identifier words only. Training and Viterbi decoding used to run over every inner token (feature tokens, `@pos_N` tokens, and continuation subwords), so the learned transitions never connected adjacent words. Decoding also rules out the tag bigrams `N N`, `N NPL`, and `NPL NPL`, which never occur in the training data. Checkpoints trained before this change should be retrained.
+- The CRF runs over identifier words only. Training and Viterbi decoding used to run over every inner token (feature tokens, `@pos_N` tokens, and continuation subwords), so the learned transitions never connected adjacent words. Decoding also rules out tag bigrams that never occur in the training data: `N N`, `N NPL`, `NPL NPL`, PRE after any tag other than PRE (PRE only starts an identifier), `PRE VM`, `DT D`, `CJ CJ` and `CJ D`. Checkpoints trained before this change should be retrained.
 - Continuation subwords (e.g. `##ployee`) are no longer labeled during training; only the first subword of each word carries its tag.
 - The CRF transition parameters train with their own learning rate (`5e-3`), instead of the encoder's `5e-5`.
 - The LM model trains on `input/tagger_data.tsv` (replaced with the corrected, cross-validated annotations) plus `input/synthetic_pos_data_full.csv`.

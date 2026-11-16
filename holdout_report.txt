@@ -1,6 +1,6 @@
               precision    recall  f1-score   support
 
-          CJ       0.97      0.97      0.97        30
+          CJ       1.00      0.97      0.98        30
            D       1.00      0.99      0.99        76
           DT       0.98      0.99      0.99       118
            N       0.97      0.97      0.97      1017
@@ -29,50 +29,50 @@ Features: context, type
 Markers as single tokens: no
 Model dir: /home/asteriaicom/scalar3/scanl_tagger/output/best_model
 
-Inference Time: 1.92s for 1209 identifiers (8934 tokens)
-Tokens/sec: 4642.85
-Identifiers/sec: 628.30
+Inference Time: 2.01s for 1209 identifiers (8934 tokens)
+Tokens/sec: 4437.04
+Identifiers/sec: 600.45
 
-Final Macro F1 on Held-Out Set: 0.9573
+Final Macro F1 on Held-Out Set: 0.9589
 Final Token-level Accuracy on Held-Out Set: 0.9598
 Final Identifier-level Accuracy on Held-Out Set: 0.9156
 Batched Viterbi Token-level Accuracy (consistency check): 0.9598
 
 Held-Out Accuracy by Data Source:
   synthetic_pos_data_full: 356 identifiers, identifier 0.9551, token 0.9785, macro-F1 0.9826
-  tagger_data: 853 identifiers, identifier 0.8992, token 0.9526, macro-F1 0.9402
+  tagger_data: 853 identifiers, identifier 0.8992, token 0.9526, macro-F1 0.9448
 
 Held-Out Accuracy by Subset:
   closed_category_set: 254 identifiers, identifier 0.8465, token 0.9334, macro-F1 0.9343
-  headnoun_set: 336 identifiers, identifier 0.8988, token 0.9485, macro-F1 0.9198
+  headnoun_set: 336 identifiers, identifier 0.8988, token 0.9485, macro-F1 0.9303
   original_set: 263 identifiers, identifier 0.9506, token 0.9781, macro-F1 0.9845
   synthetic_pos_data_full: 356 identifiers, identifier 0.9551, token 0.9785, macro-F1 0.9826
 
 Real-Code Evaluation (CV out-of-fold + hold-out; every real identifier scored once):
-  real: 4261 identifiers, identifier 0.8615, token 0.9325, macro-F1 0.9273
-  closed_category_set: 1267 identifiers, identifier 0.8129, token 0.9171, macro-F1 0.9200
-  headnoun_set: 1679 identifiers, identifier 0.8755, token 0.9325, macro-F1 0.9165
+  real: 4261 identifiers, identifier 0.8620, token 0.9325, macro-F1 0.9277
+  closed_category_set: 1267 identifiers, identifier 0.8129, token 0.9168, macro-F1 0.9196
+  headnoun_set: 1679 identifiers, identifier 0.8767, token 0.9327, macro-F1 0.9192
   original_set: 1315 identifiers, identifier 0.8905, token 0.9484, macro-F1 0.9327
 
 CV Out-of-Fold by Data Source:
   synthetic_pos_data_full: 1424 identifiers, identifier 0.9466, token 0.9772, macro-F1 0.9775
-  tagger_data: 3408 identifiers, identifier 0.8521, token 0.9276, macro-F1 0.9234
+  tagger_data: 3408 identifiers, identifier 0.8527, token 0.9276, macro-F1 0.9231
 
 Per-Tag Report on Real Code (CV out-of-fold + hold-out):
               precision    recall  f1-score   support
 
-          CJ     0.9467    0.9726    0.9595        73
-           D     0.9817    0.9670    0.9743       333
-          DT     0.9774    0.9677    0.9725       402
-           N     0.9498    0.9464    0.9481      3716
-          NM     0.9261    0.9370    0.9315      4050
+          CJ     0.9595    0.9726    0.9660        73
+           D     0.9817    0.9640    0.9727       333
+          DT     0.9749    0.9677    0.9713       402
+           N     0.9495    0.9464    0.9480      3716
+          NM     0.9259    0.9375    0.9317      4050
          NPL     0.9826    0.9704    0.9765       641
            P     0.9253    0.9684    0.9463       601
-         PRE     0.8450    0.7856    0.8142       555
+         PRE     0.8480    0.7838    0.8146       555
            V     0.8842    0.8842    0.8842      1071
           VM     0.9062    0.8286    0.8657       105
 
     accuracy                         0.9325     11547
-   macro avg     0.9325    0.9228    0.9273     11547
-weighted avg     0.9324    0.9325    0.9323     11547
+   macro avg     0.9338    0.9224    0.9277     11547
+weighted avg     0.9323    0.9325    0.9323     11547
 

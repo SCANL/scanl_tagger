@@ -560,7 +560,8 @@ def collect_marker_tokens(df, selected_features: Optional[Iterable[str]] = None)
     """
     markers = set(POSITION_TOKENS)
     for _, row in df.iterrows():
-        markers.update(get_feature_tokens(row, list(row["tokens"]), selected_features))
+        # Only @-tokens are markers; any plain word a feature emits stays an ordinary word.
+        markers.update(t for t in get_feature_tokens(row, list(row["tokens"]), selected_features) if t.startswith("@"))
     return sorted(markers)
 
 
