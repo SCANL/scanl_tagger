@@ -4,11 +4,13 @@ import pytest
 from conftest import LABEL2ID, REPO_ROOT
 from src.lm_based_tagger.distilbert_preprocessing import (
     AVAILABLE_FEATURES,
+    DEFAULT_FEATURES,
     LEGACY_FEATURES,
     detect_hungarian_prefix_split,
     build_model_input_tokens,
     get_feature_tokens,
     get_lead_shape_feature_tokens,
+    get_lead_word_feature_tokens,
     get_plural_suffix_feature_tokens,
     get_type_feature_tokens,
     get_type_overlap_feature_tokens,
@@ -21,7 +23,8 @@ ROW = {"CONTEXT": "FUNCTION", "TYPE": "const char*", "LANGUAGE": "C++", "SYSTEM_
 
 
 def test_normalize_selected_features():
-    assert normalize_selected_features(None) == AVAILABLE_FEATURES
+    assert normalize_selected_features(None) == DEFAULT_FEATURES
+    assert "lead_word" in AVAILABLE_FEATURES and "lead_word" not in DEFAULT_FEATURES  # opt-in
     # Canonical order, whatever order the caller used
     assert normalize_selected_features(["digit", "context"]) == ["context", "digit"]
     assert normalize_selected_features(LEGACY_FEATURES) == ["context", "hungarian_legacy", "cvr", "digit"]
@@ -142,6 +145,22 @@ def test_every_training_row_builds_features():
 ])
 def test_lead_shape(tokens, expected):
     assert get_lead_shape_feature_tokens(tokens) == expected
+
+
+@pytest.mark.parametrize("tokens, system, expected", [
+    (["m", "count"], "", ["@lw_letter"]),
+    (["m", "11"], "", ["@lw_letter", "@lw_next_digit"]),
+    (["sqlite3", "Where"], "sqlite", ["@lw_alnum", "@lw_cvr_mid", "@lw_sys"]),
+    (["psz", "Name"], "", ["@lw_nondict", "@lw_novowel"]),
+    (["igraph", "vector"], "igraph", ["@lw_nondict", "@lw_cvr_mid", "@lw_sys"]),
+    (["database", "name"], "", ["@lw_dict", "@lw_cvr_low"]),
+    (["bytes", "read"], "", ["@lw_dict", "@lw_cvr_high"]),   # inflection of a dictionary word
+    (["2", "string"], "", ["@lw_number"]),
+    (["count"], "", ["@lw_dict", "@lw_cvr_mid", "@lw_alone"]),
+    ([], "", ["@lw_none"]),
+])
+def test_lead_word(tokens, system, expected):
+    assert get_lead_word_feature_tokens(tokens, system) == expected
 
 
 def test_marker_tokens_are_only_at_tokens(monkeypatch):

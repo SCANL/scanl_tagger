@@ -6,7 +6,7 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Changed
 
-- The CRF runs over identifier words only. Training and Viterbi decoding used to run over every inner token (feature tokens, `@pos_N` tokens, and continuation subwords), so the learned transitions never connected adjacent words. Decoding also rules out tag bigrams that never occur in the training data: `N N`, `N NPL`, `NPL NPL`, PRE after any tag other than PRE (PRE only starts an identifier), `PRE VM`, `DT D`, `CJ CJ` and `CJ D`. Checkpoints trained before this change should be retrained.
+- The CRF runs over identifier words only. Training and Viterbi decoding used to run over every inner token (feature tokens, `@pos_N` tokens, and continuation subwords), so the learned transitions never connected adjacent words. Decoding also rules out tag bigrams that never occur in the training data: `N N`, `N NPL`, `NPL NPL`, PRE after any tag other than PRE (PRE only starts an identifier), `PRE VM`, `DT D` and `CJ CJ`. Checkpoints trained before this change should be retrained.
 - Continuation subwords (e.g. `##ployee`) are no longer labeled during training; only the first subword of each word carries its tag.
 - The CRF transition parameters train with their own learning rate (`5e-3`), instead of the encoder's `5e-5`.
 - The LM model trains on `input/tagger_data.tsv` (replaced with the corrected, cross-validated annotations) plus `input/synthetic_pos_data_full.csv`.
@@ -21,8 +21,9 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 - Training drops synthetic rows that repeat a real identifier (43 in `synthetic_pos_data_full.csv`) or another synthetic row in the same context. The holdout report lists the synthetic file, its row count, and what was dropped.
 - Class rows in `input/tagger_data.tsv` use `class` as their TYPE. 260 of them had the class's own name, which made `type_overlap` report that the whole name was its type.
 - The holdout report shows token and identifier accuracy for each data source, since synthetic rows are much easier than real identifiers.
-- `python main --mode train --features ...` chooses which feature tokens to train with, and `--no-features` trains without any. The default is all of them.
+- `python main --mode train --features ...` chooses which feature tokens to train with, and `--no-features` trains without any. The default is all of them except the opt-in `lead_word`.
 - New `lead_shape` feature: the first word's length, case, and separator (underscore or camelCase), which the uncased model can't otherwise see. A short first word followed by an underscore is a preamble far more often than one in camelCase.
+- New `lead_word` feature: signals that the first word is a preamble, computed from the first word alone, with no list of known prefixes. It reports whether the word is a single letter, a number, letters mixed with digits, an English word (NLTK `words` plus WordNet, inflections included), or a non-dictionary term. It also gives the word's consonant/vowel ratio, whether it matches the system name, and whether a number follows it. It is opt-in (`--features ... lead_word`): it needs the NLTK `words` and `wordnet` corpora and didn't improve accuracy over `type context` in 3-seed screening.
 - New feature tokens for the LM model: digit connectors, plural suffixes, declared type, type/name overlap, language, and system-name overlap. The feature list is saved in the checkpoint config, and inference uses it. Checkpoints without one (such as `sourceslicer/scalar_lm_best`) use the original four features.
 - Inference runs on the GPU when one is available.
 - `version.py` is the single source of the version, and is validated as a semantic version at import time.

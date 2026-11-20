@@ -70,10 +70,10 @@ def _run_main(monkeypatch, *argv):
     return calls
 
 
-def test_train_defaults_to_every_feature(monkeypatch):
-    from src.lm_based_tagger.distilbert_preprocessing import AVAILABLE_FEATURES
+def test_train_defaults_to_every_non_opt_in_feature(monkeypatch):
+    from src.lm_based_tagger.distilbert_preprocessing import DEFAULT_FEATURES
 
-    assert _run_main(monkeypatch, "--mode", "train") == [{"selected_features": AVAILABLE_FEATURES}]
+    assert _run_main(monkeypatch, "--mode", "train") == [{"selected_features": DEFAULT_FEATURES}]
 
 
 def test_train_features_flag_is_passed_through(monkeypatch):

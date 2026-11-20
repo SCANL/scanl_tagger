@@ -64,7 +64,7 @@ if __name__ == "__main__":
         default=DEFAULT_FEATURES,
         metavar="FEATURE",
         help=f"Feature tokens to train with (train mode). Choices: {', '.join(AVAILABLE_FEATURES)}. "
-             "Default: all of them.",
+             "Default: all of them except the opt-in lead_word.",
     )
     parser.add_argument(
         "--seed",

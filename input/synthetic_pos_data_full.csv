@@ -41,7 +41,7 @@ void*,aeon reclaim pages,FUNCTION,PRE V NPL,C,aeon
 void,aeon set heap size,FUNCTION,PRE V NM N,C,aeon
 void,aeon set max heap capacity,FUNCTION,PRE V NM NM N,C,aeon
 class,AES 128,CLASS,N D,C,rune
-class,AES Key 256,CLASS,NM N D,C,zeno
+class,AES Key 256,CLASS,PRE N D,C,zeno
 void,after Commit,FUNCTION,P V,Java,quill
 void,after Delete,FUNCTION,P V,Java,dataforge
 void,after Execute,FUNCTION,P V,Java,beanworks
@@ -77,7 +77,7 @@ int,arg 2,PARAMETER,N D,C,libvx
 uint32_t,arg 3,PARAMETER,N D,C,trak
 uint32_t,arg 4,PARAMETER,N D,C,trak
 Collection,args,PARAMETER,NPL,Java,springcore
-void*,array Of Bytes,DECLARATION,N P N,C,aeon
+void*,array Of Bytes,DECLARATION,N P NPL,C,aeon
 long,as Binary,PARAMETER,P N,Java,dataforge
 int,as Double,PARAMETER,P N,C++,quark
 size_t,as Float,PARAMETER,P N,C++,sigma
@@ -114,10 +114,10 @@ String,auto Detect Encoding,FUNCTION,VM V N,Java,bytecraft
 std::vector,available Options,ATTRIBUTE,NM NPL,C++,apex
 double,average Score,ATTRIBUTE,NM N,Java,dataforge
 int,axis 3,DECLARATION,N D,C++,prism
-bool,b Enabled,PARAMETER,PRE NM,C++,halcyon
-bool,b Is Ready,DECLARATION,PRE NM N,C++,northstar
-bool,b Is Valid,DECLARATION,PRE NM N,C,libvx
-bool,b Is Visible,DECLARATION,PRE NM N,C++,halcyon
+bool,b Enabled,PARAMETER,PRE V,C++,halcyon
+bool,b Is Ready,DECLARATION,PRE V NM,C++,northstar
+bool,b Is Valid,DECLARATION,PRE V NM,C,libvx
+bool,b Is Visible,DECLARATION,PRE V NM,C++,halcyon
 long,background Color,ATTRIBUTE,NM N,Java,gridview
 void,backup And Restore,FUNCTION,V CJ V,Java,beanworks
 class,Base64,CLASS,N,Java,bytecraft
@@ -328,7 +328,7 @@ class,Controller,CLASS,N,Java,springcore
 float,convergence Threshold,PARAMETER,NM N,C++,quark
 void,convert rgb 2 gray,FUNCTION,V N P N,C++,pixl
 Collection,convert To Byte Array,FUNCTION,V P NM N,Java,springcore
-Map,convert To Bytes,FUNCTION,V P N,Java,netpulse
+Map,convert To Bytes,FUNCTION,V P NPL,Java,netpulse
 std::string,convert To Fixed Point Format,FUNCTION,V P NM NM N,C++,sigma
 String,convert To JSON String,FUNCTION,V P NM N,Java,netpulse
 String,convert To String,FUNCTION,V P N,Java,springcore
@@ -340,7 +340,7 @@ void,copy Region To Buffer,FUNCTION,V N P N,C,aeon
 int,correlation Id,ATTRIBUTE,NM N,Java,netpulse
 long,count,DECLARATION,N,C,libvx
 List,count Elements,FUNCTION,V NPL,C++,sigma
-int,count Of Errors,ATTRIBUTE,N P N,Java,springcore
+int,count Of Errors,ATTRIBUTE,N P NPL,Java,springcore
 size_t,cp 437,DECLARATION,N D,C,libvx
 class,CRC 32,CLASS,N D,C,zeno
 long,create Index Entry,FUNCTION,V NM N,Java,dataforge
@@ -355,7 +355,7 @@ Set,credentials,PARAMETER,NPL,Java,webstack
 String,csv 2 json,FUNCTION,N P N,Java,dataforge
 class,Csv 2 Json Mapper,CLASS,N P NM N,Java,dataforge
 boolean,current Active Worker Count,DECLARATION,NM NM NM N,Java,netpulse
-boolean,current And Pending Owner,DECLARATION,N CJ NM N,Java,quill
+boolean,current And Pending Owner,DECLARATION,NM CJ NM N,Java,quill
 int,current Animation Frame,DECLARATION,NM NM N,C++,titan
 bool,current Bound Textures,ATTRIBUTE,NM NM NPL,C++,prism
 unsigned,current Index,DECLARATION,NM N,C,libvx
@@ -453,11 +453,11 @@ int*,dump Stack,FUNCTION,V N,C,nexus
 void,dusk get signal handler,FUNCTION,PRE V NM N,C,dusk
 void,dusk init,FUNCTION,PRE V,C,dusk
 int,dusk irq,DECLARATION,PRE N,C,dusk
-void,dusk mask interrupt,FUNCTION,PRE V N,C,dusk
+void,dusk mask interrupt,FUNCTION,PRE N V,C,dusk
 long,dusk register handler,FUNCTION,PRE V N,C,dusk
 void,dusk signal,FUNCTION,PRE N,C,dusk
 long,dusk signal handler,DECLARATION,PRE NM N,C,dusk
-long,dw Flags,DECLARATION,PRE N,C,nexus
+long,dw Flags,DECLARATION,PRE NPL,C,nexus
 int,dw Retry Count,DECLARATION,PRE NM N,C,byteforge
 bool,each Active Session,DECLARATION,DT NM N,Java,cloudkit
 bool,each Active Thread,DECLARATION,DT NM N,C++,vortex
@@ -537,7 +537,7 @@ Integer,filter Conditions,PARAMETER,NM NPL,Java,dataforge
 String,filter Expression,PARAMETER,NM N,Java,dataforge
 Map,filtered Events,PARAMETER,NM NPL,Java,netpulse
 void,finalize Object,FUNCTION,V N,Java,javelin
-bool,find All Expired Certificates,FUNCTION,V NM NM NPL,Java,netpulse
+bool,find All Expired Certificates,FUNCTION,V DT NM NPL,Java,netpulse
 void,find All Matches,FUNCTION,V DT NPL,Java,dataforge
 bool,find All Pending Migrations,FUNCTION,V DT NM NPL,Java,beanworks
 Collection,find All Subscribers,FUNCTION,V DT NPL,Java,netpulse
@@ -733,7 +733,7 @@ boolean,has Permission,ATTRIBUTE,V N,Java,springcore
 boolean,has Permission_decl,DECLARATION,V N,Java,webstack
 bool,has Replicas,DECLARATION,V NPL,Java,cloudkit
 bool,has Some,FUNCTION,V DT,Java,javelin
-bool,has Subscribers,DECLARATION,V N,Java,netpulse
+bool,has Subscribers,DECLARATION,V NPL,Java,netpulse
 long,hash Code,DECLARATION,NM N,Java,dataforge
 void,hash Password,FUNCTION,V N,C,zeno
 unsigned,hash Seed 42,DECLARATION,NM N D,C,forge
@@ -749,7 +749,7 @@ int*,hex 2 bytes,FUNCTION,N P NPL,C,forge
 int,hex 2 dec,FUNCTION,N P N,C,forge
 uint32_t,host And Port,DECLARATION,N CJ N,C,nexus
 uint32_t,host And Service,PARAMETER,N CJ N,C,drift
-char*,host Or IP Address,PARAMETER,NM CJ NM N,C,volt
+char*,host Or IP Address,PARAMETER,N CJ NM N,C,volt
 class,HTTP Client,CLASS,NM N,Java,springcore
 Integer,http Status,DECLARATION,NM N,Java,springcore
 int,i,DECLARATION,N,C,libvx
@@ -765,11 +765,11 @@ void,import From File,FUNCTION,V P N,Java,beanworks
 void,import Modules,FUNCTION,V NPL,C++,helix
 unsigned,in Memory,DECLARATION,P N,C,aeon
 int,in Order,PARAMETER,P N,C++,sigma
-vector,in Queue,DECLARATION,P N,C++,vortex
+vector,in Queue,DECLARATION,NM N,C++,vortex
 long,index,DECLARATION,N,C,blitz
 long,index Count,PARAMETER,NM N,C++,prism
 long,index Of Element,PARAMETER,N P N,Java,bytecraft
-int,index Of First Match,PARAMETER,N P NM N,Java,javelin
+int,index Of First Match,PARAMETER,N P DT N,Java,javelin
 void*,indices,PARAMETER,NPL,C,libvx
 uint32_t,initial Buffer Capacity,PARAMETER,NM NM N,C++,apex
 float,initial Capacity Factor,DECLARATION,NM NM N,Java,bytecraft
@@ -799,7 +799,7 @@ boolean,is Alive,FUNCTION,V V,Java,cloudkit
 boolean,is Authenticated,DECLARATION,V V,Java,webstack
 bool,is Bound,DECLARATION,V V,C++,prism
 boolean,is Cached,ATTRIBUTE,V V,Java,cloudkit
-boolean,is Complete,FUNCTION,V V,Java,beanworks
+boolean,is Complete,FUNCTION,V NM,Java,beanworks
 int,is Compressed,DECLARATION,V V,C,coda
 bool,is Connected Port,DECLARATION,V NM N,Java,nodelink
 boolean,is Deleted Handle,ATTRIBUTE,V NM N,Java,dataforge
@@ -931,7 +931,7 @@ uint32_t,m 22,ATTRIBUTE,N D,C++,sigma
 long,m 33,ATTRIBUTE,N D,C++,sigma
 int,m 44,ATTRIBUTE,N D,C++,sigma
 int,m Buffer,ATTRIBUTE,PRE N,C++,neutron
-List,m Children,ATTRIBUTE,PRE N,C++,helix
+List,m Children,ATTRIBUTE,PRE NPL,C++,helix
 uint32_t,m Count,ATTRIBUTE,PRE N,C++,apex
 int,m Current Frame,ATTRIBUTE,PRE NM N,C++,halcyon
 uint32_t,m Current Index,PARAMETER,PRE NM N,C++,northstar
@@ -946,7 +946,7 @@ int,m Pointer,ATTRIBUTE,PRE N,C++,quark
 int,m Retry Count,DECLARATION,PRE NM N,C++,halcyon
 uint32_t,m State,ATTRIBUTE,PRE N,C++,titan
 double,m Value,ATTRIBUTE,PRE N,C++,sigma
-String,map 2 json,FUNCTION,N P N,Java,beanworks
+String,map 2 json,FUNCTION,V P N,Java,beanworks
 int*,map Address To Region,FUNCTION,V N P N,C,aeon
 double,map Key To Value,FUNCTION,V N P N,Java,bytecraft
 Set,map Of Strings,DECLARATION,N P N,Java,beanworks
@@ -1097,7 +1097,7 @@ Void,on Did Load,FUNCTION,P V V,swift,gridview
 void,on Did Retry,FUNCTION,P V V,Java,pulseforge
 void,on Disconnect,FUNCTION,P V,Java,nodelink
 size_t,on Error,DECLARATION,P N,C,nexus
-void,on Error,FUNCTION,P V,Java,nodelink
+void,on Error,FUNCTION,P N,Java,nodelink
 Void,on Finish Unload,FUNCTION,P V V,swift,webstack
 void,on Focus,FUNCTION,P V,Java,webstack
 void,on Key Press,FUNCTION,P N V,Java,gridview
@@ -1120,10 +1120,10 @@ void,on Timeout,FUNCTION,P N,Java,nodelink
 void,on Update,FUNCTION,P V,Java,cloudkit
 Void,on Will Appear,FUNCTION,P V V,swift,gridview
 void,on Will Flush,FUNCTION,P V V,Java,byteforge
-void,on Worker Exit,FUNCTION,P N V,Java,quill
+void,on Worker Exit,FUNCTION,P NM N,Java,quill
 void,on Audio Pause,FUNCTION,P N V,JavaScript,domkit
 void,on Audio Play,FUNCTION,P N V,JavaScript,domkit
-void,on Child Exit,FUNCTION,P N V,C,oxide
+void,on Child Exit,FUNCTION,P NM N,C,oxide
 void,on Connection Close,FUNCTION,P N V,JavaScript,nodelink
 void,on Connection Open,FUNCTION,P N V,JavaScript,nodelink
 void,on Dialog Close,FUNCTION,P N V,JavaScript,domkit
@@ -1141,11 +1141,11 @@ void,on Mouse Enter,FUNCTION,P N V,JavaScript,domkit
 void,on Mouse Leave,FUNCTION,P N V,JavaScript,domkit
 void,on Mouse Move,FUNCTION,P N V,JavaScript,domkit
 void,on Node Enter,FUNCTION,P N V,JavaScript,domkit
-void,on Node Exit,FUNCTION,P N V,JavaScript,nodelink
+void,on Node Exit,FUNCTION,P NM N,JavaScript,nodelink
 void,on Page Load,FUNCTION,P N V,JavaScript,domkit
 void,on Pointer Cancel,FUNCTION,P N V,JavaScript,domkit
 void,on Pointer Move,FUNCTION,P N V,JavaScript,domkit
-void,on Process Exit,FUNCTION,P N V,JavaScript,nodelink
+void,on Process Exit,FUNCTION,P NM N,JavaScript,nodelink
 void,on Signal Receive,FUNCTION,P N V,C,oxide
 void,on Slot Change,FUNCTION,P N V,JavaScript,domkit
 void,on Socket Close,FUNCTION,P N V,JavaScript,nodelink
@@ -1187,7 +1187,7 @@ long,p Buffer,PARAMETER,PRE N,C,ember
 int,p Buffer,PARAMETER,PRE N,C,ember
 size_t,p Data,ATTRIBUTE,PRE NPL,C,drift
 unsigned,p Input Buffer,DECLARATION,PRE NM N,C,byteforge
-unsigned,p Next Free Block,DECLARATION,PRE NM NM N,C,blitz
+unsigned,p Next Free Block,DECLARATION,PRE DT NM N,C,blitz
 class,Packet Handler,CLASS,NM N,C++,nexus
 int,packet Length,DECLARATION,NM N,C,volt
 int,padding Top,DECLARATION,NM N,Java,webstack
@@ -1323,7 +1323,7 @@ void,rasterize Polygon,FUNCTION,V N,C++,prism
 class,Rate Limiter,CLASS,NM N,Java,netpulse
 void,read And Process Data,FUNCTION,V CJ V NPL,Java,dataforge
 void,read And Write,FUNCTION,V CJ V,C,forge
-void,read Bytes From Stream,FUNCTION,V N P N,Java,springcore
+void,read Bytes From Stream,FUNCTION,V NPL P N,Java,springcore
 void,read Chunk From Stream,FUNCTION,V N P N,C,coda
 void,read Config Entry,FUNCTION,V NM N,C++,oxide
 void,read File,FUNCTION,V N,C,libvx
@@ -1535,7 +1535,7 @@ void,set Max Allowed Heap Capacity,FUNCTION,V NM NM NM N,C,aeon
 void,set Max Retry Count,FUNCTION,V NM NM N,Java,nodelink
 void,set Mode,FUNCTION,V N,C++,sigma
 void,set Next Execution Time,FUNCTION,V DT NM N,Java,springcore
-Map,set Of Keys,PARAMETER,N P N,Java,javelin
+Map,set Of Keys,PARAMETER,N P NPL,Java,javelin
 void,set Offset And Length,FUNCTION,V N CJ N,C,aeon
 void,set Pixel Format,FUNCTION,V NM N,C,pixl
 void,set Polling Rate,FUNCTION,V NM N,Java,netpulse
@@ -1765,7 +1765,7 @@ void,update Viewport,FUNCTION,V N,C++,apex
 void,upload Artifact,FUNCTION,V N,Java,cloudkit
 String,utf 16 2 utf 8,FUNCTION,N D P N D,C,forge
 void*,utf 8 2 wchar,FUNCTION,N D P N,C,forge
-class,UTF Encoder 8,CLASS,NM N D,Java,bytecraft
+class,UTF Encoder 8,CLASS,PRE N D,Java,bytecraft
 int,v 0,PARAMETER,N D,C++,apex
 Integer,vacuum Index,FUNCTION,V N,Java,beanworks
 String,validate Access Token,FUNCTION,V NM N,Java,webstack
@@ -1828,7 +1828,7 @@ long,vx status,DECLARATION,PRE N,C,libvx
 int,w Param,DECLARATION,PRE N,C,kron
 void,wait For Child,FUNCTION,V P N,C,kron
 void,wait For Signal,FUNCTION,V P N,C,dusk
-boolean,warn If Null,FUNCTION,V CJ NM,Java,springcore
+boolean,warn If Null,FUNCTION,V CJ N,Java,springcore
 bool,was Deleted Object,DECLARATION,V NM N,C++,sigma
 bool,was Evicted,DECLARATION,V V,Java,cloudkit
 const char*,waveform Type,DECLARATION,NM N,C,plex
@@ -1851,7 +1851,7 @@ Map,with Headers,PARAMETER,P NPL,Java,netpulse
 long,with Retry Policy,PARAMETER,P NM N,Java,pulseforge
 void,write Binary Data,FUNCTION,V NM NPL,C,coda
 void,write Buffer,FUNCTION,V N,C,blitz
-void,write Bytes To Stream,FUNCTION,V N P N,Java,springcore
+void,write Bytes To Stream,FUNCTION,V NPL P N,Java,springcore
 void,write Error Log,FUNCTION,V NM N,C,forge
 void,write Log To Error File,FUNCTION,V N P NM N,C,forge
 uint32_t,write Position,ATTRIBUTE,NM N,C++,oxide

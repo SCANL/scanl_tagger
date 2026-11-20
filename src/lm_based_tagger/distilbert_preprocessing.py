@@ -31,10 +31,14 @@ AVAILABLE_FEATURES = [
     "type_overlap",
     "language",
     "sys_sim",
-    "lead_shape"
+    "lead_shape",
+    "lead_word"
 ]
 
-DEFAULT_FEATURES = list(AVAILABLE_FEATURES)
+# Opt-in features: selectable with --features but not part of the default set.
+#   lead_word: needs the NLTK wordnet corpus, and didn't improve accuracy over type + context.
+OPT_IN_FEATURES = ["lead_word"]
+DEFAULT_FEATURES = [feature for feature in AVAILABLE_FEATURES if feature not in OPT_IN_FEATURES]
 
 # Internal features that inference can use but training can't select.
 #   hungarian_legacy: the original `hungarian`, which ran on the first *split* word and so
@@ -61,6 +65,7 @@ FEATURE_FUNCTIONS = {
     "language": lambda row, tokens: normalize_language(row.get("LANGUAGE", "")),
     "sys_sim": lambda row, tokens: get_system_overlap_feature_tokens(tokens, row.get("SYSTEM_NAME", "")),
     "lead_shape": lambda row, tokens: get_lead_shape_feature_tokens(tokens),
+    "lead_word": lambda row, tokens: get_lead_word_feature_tokens(tokens, row.get("SYSTEM_NAME", "")),
 }
 
 TYPE_BOOL_TOKENS = {"bool", "boolean", "glboolean", "boolean_t"}
@@ -201,6 +206,82 @@ def get_lead_shape_feature_tokens(tokens: List[str]) -> List[str]:
         else:
             attach = "@lead_under"
     return [length, case, attach]
+
+
+_ENGLISH_WORDS: set | None = None
+
+
+def _english_words() -> set:
+    """NLTK's `words` list plus every WordNet lemma, lowercased. Loaded once."""
+    global _ENGLISH_WORDS
+    if _ENGLISH_WORDS is None:
+        from nltk.corpus import words, wordnet
+        try:
+            _ENGLISH_WORDS = {w.lower() for w in words.words()} | {w.lower() for w in wordnet.all_lemma_names()}
+        except LookupError as error:
+            raise LookupError(
+                "The lead_word feature needs the NLTK 'words' and 'wordnet' corpora: "
+                "python -c \"import nltk; nltk.download('words'); nltk.download('wordnet')\""
+            ) from error
+    return _ENGLISH_WORDS
+
+
+def is_dictionary_word(word: str) -> bool:
+    """True if `word` (letters only) is an English word, including inflections (bytes, has)."""
+    word = word.lower()
+    if not word.isalpha():
+        return False
+    if word in _english_words():
+        return True
+    from nltk.corpus import wordnet
+    return wordnet.morphy(word) is not None
+
+
+def get_lead_word_feature_tokens(tokens: List[str], system_name: str = "") -> List[str]:
+    """
+    Signals that the first word is a preamble, computed from the first word alone. There's no
+    list of known prefixes: the signals are general, so they carry over to unseen systems.
+
+    - kind: a single letter (``m``, ``p``), a number, letters mixed with digits (``sqlite3``,
+      ``s3``, ``md5``), a dictionary word (NLTK words + WordNet), or a non-dictionary term
+      (``cmd``, ``psz``, ``pgss``).
+    - consonant/vowel ratio of the first word (``ms``, ``psz``, ``dw`` have no vowels).
+    - whether it matches the system name (``sqlite3`` in sqlite, ``igraph`` in igraph).
+    - whether a number follows it (``m 11``, ``x 2``: then the letter is the name, not a prefix).
+    """
+    if not tokens:
+        return ["@lw_none"]
+    first = tokens[0].strip().lower()
+    letters = "".join(c for c in first if c.isalpha())
+    if first.isdigit():
+        kind = "@lw_number"
+    elif len(first) == 1:
+        kind = "@lw_letter"
+    elif letters and len(letters) < len(first):
+        kind = "@lw_alnum"
+    elif is_dictionary_word(first):
+        kind = "@lw_dict"
+    else:
+        kind = "@lw_nondict"
+    feature_tokens = [kind]
+
+    if len(letters) >= 2:
+        vowels = sum(c in VOWELS for c in letters)
+        if vowels == 0:
+            feature_tokens.append("@lw_novowel")
+        else:
+            ratio = (len(letters) - vowels) / vowels
+            feature_tokens.append("@lw_cvr_low" if ratio < 1.5 else "@lw_cvr_mid" if ratio < 3.0 else "@lw_cvr_high")
+
+    system = re.sub(r"[^a-z0-9]", "", str(system_name or "").lower())
+    if len(first) >= 2 and system and (system.startswith(first) or first.startswith(system) or (len(first) >= 3 and first in system)):
+        feature_tokens.append("@lw_sys")
+
+    if len(tokens) == 1:
+        feature_tokens.append("@lw_alone")
+    elif tokens[1].strip().isdigit():
+        feature_tokens.append("@lw_next_digit")
+    return feature_tokens
 
 
 def detect_digit_feature(tokens):

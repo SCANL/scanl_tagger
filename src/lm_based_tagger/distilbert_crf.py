@@ -45,7 +45,7 @@ class DistilBertCRFForTokenClassification(nn.Module):
     FORBIDDEN_TRANSITIONS = (
         ("N", "N"), ("N", "NPL"), ("NPL", "NPL"),
         *((before, "PRE") for before in ("N", "NM", "NPL", "V", "VM", "P", "D", "DT", "CJ")),
-        ("PRE", "VM"), ("DT", "D"), ("CJ", "CJ"), ("CJ", "D"),
+        ("PRE", "VM"), ("DT", "D"), ("CJ", "CJ"),
     )
 
     def __init__(self, num_labels: int, id2label: dict, label2id: dict, pretrained_name: str = "distilbert-base-uncased",  dropout_prob: float = 0.1, config: DistilBertConfig | None = None):
