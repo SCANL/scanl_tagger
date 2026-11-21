@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 
 from conftest import LABEL2ID, REPO_ROOT
-from src.lm_based_tagger.distilbert_preprocessing import (
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import (
     AVAILABLE_FEATURES,
     DEFAULT_FEATURES,
     LEGACY_FEATURES,
@@ -121,7 +121,7 @@ def test_continuation_subwords_are_ignored(tokenizer):
 
 
 def test_every_training_row_builds_features():
-    from src.lm_based_tagger.train_model import LABEL2ID as TRAIN_LABEL2ID, _load_lm_training_dataframe
+    from scalar_tagger.lm_based_tagger.train_model import LABEL2ID as TRAIN_LABEL2ID, _load_lm_training_dataframe
 
     df, _ = _load_lm_training_dataframe(REPO_ROOT)
     ds = prepare_dataset(df, TRAIN_LABEL2ID)
@@ -164,7 +164,7 @@ def test_lead_word(tokens, system, expected):
 
 
 def test_marker_tokens_are_only_at_tokens(monkeypatch):
-    from src.lm_based_tagger import distilbert_preprocessing as dp
+    from scalar_tagger.lm_based_tagger import distilbert_preprocessing as dp
 
     monkeypatch.setitem(dp.FEATURE_FUNCTIONS, "type", lambda row, tokens: ["@type_x", "plain"])
     df = pd.DataFrame([{"tokens": ["compact"], "CONTEXT": "PARAMETER", "TYPE": "X"}])

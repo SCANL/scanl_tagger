@@ -22,8 +22,10 @@ correct context under REVIEW (blank = take the suggestion, KEEP = leave it).
 `apply` updates CONTEXT in input/tagger_data.tsv and appends every change to
 output/reports/label_changes_<date>.tsv.
 
-Links come from CODE_URL, or for headnoun_set rows from the permalink in
-~/headnoun_update/headnoun_data.tsv. Files are cached in ~/.cache/scalar_source.
+Links come from CODE_URL. headnoun_set rows have no CODE_URL; their permalinks are
+read from the headnoun annotation file named by $HEADNOUN_DATA (default
+~/headnoun_update/headnoun_data.tsv), and are skipped if it doesn't exist. Files
+are cached in ~/.cache/scalar_source.
 """
 import argparse
 import datetime
@@ -39,7 +41,7 @@ import pandas as pd
 
 REPO = Path(__file__).resolve().parents[1]
 DATA = REPO / "input" / "tagger_data.tsv"
-HEADNOUN = Path.home() / "headnoun_update" / "headnoun_data.tsv"
+HEADNOUN = Path(os.environ.get("HEADNOUN_DATA", Path.home() / "headnoun_update" / "headnoun_data.tsv"))
 CACHE = Path.home() / ".cache" / "scalar_source"
 VARIABLE_CONTEXTS = {"DECLARATION", "PARAMETER", "ATTRIBUTE"}
 

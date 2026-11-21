@@ -1,17 +1,25 @@
 import os
 import time
-import nltk
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from waitress import serve
-from spiral import ronin
 import json
 import sqlite3
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
+from scalar_tagger import contract
+from scalar_tagger.tagging_backend import TaggingBackend
 
 app = Flask(__name__)
+# Batch requests from the analysis tool can be large; reject anything unreasonable.
+app.config["MAX_CONTENT_LENGTH"] = 64 * 1024 * 1024
+# Keep response fields in contract order ("id", "model", "results") instead of sorting them.
+app.json.sort_keys = False
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-lm_model = None
+
+def _load_runtime_config(config_path: str | None) -> dict:
+    if not config_path:
+        return {}
+
+    with open(config_path) as data:
+        return json.load(data)
 
 class AppCache:
     def __init__(self, Path) -> None:
@@ -110,14 +118,29 @@ class WordList:
     def find(self, item):
         return item in self.Words
 
-def initialize_model(temp_config = {}):
+def initialize_model(temp_config = {}, runtime_config = None):
     """
-    Load the DistilBERT tagger named by temp_config["model"] (a Hugging Face repo id or a local directory).
+    Load the DistilBERT+CRF tagger named by the startup overrides or the runtime config.
     """
-    global lm_model
+    runtime_config = runtime_config or {}
     print("Loading DistilBERT tagger...")
-    is_local = temp_config.get("local", False)
-    lm_model = DistilBertTagger(temp_config['model'], local=is_local)
+    model_path = temp_config.get("model", runtime_config.get("model"))
+    if not model_path:
+        raise ValueError("Run mode requires a model path or repo id.")
+
+    is_local = temp_config.get("local")
+    if is_local is None:
+        is_local = bool(runtime_config.get("local", False))
+
+    model_source = "local directory" if is_local else "HuggingFace repo"
+    print(f"LM model source: {model_source}: {model_path}")
+
+    app.backend = TaggingBackend(
+        model_path,
+        local=is_local,
+        revision=temp_config.get("revision", runtime_config.get("revision")),
+        device=temp_config.get("device", runtime_config.get("device")),
+    )
     print("DistilBERT tagger loaded!")
 
 def start_server(temp_config = {}):
@@ -134,44 +157,33 @@ def start_server(temp_config = {}):
         None
     """
     print('initializing model...')
-    initialize_model(temp_config)
+    config_path = temp_config.get("config_path")
+    runtime_config = _load_runtime_config(config_path)
+    initialize_model(temp_config, runtime_config=runtime_config)
 
     print("loading cache...")
     if not os.path.isdir("cache"): os.mkdir("cache")
 
-    print("loading dictionary")
-    app.english_words = set(w.lower() for w in nltk.corpus.words.words())
-
-    #insert english words from words/en.txt
-    if not os.path.exists("words/en.txt"):
-        print("could not find English words, using WordNet only!")
-    else:
-        with open("words/en.txt") as words:
-            for word in words:
-                app.english_words.add(word[:-1])
-
     print('retrieving server configuration...')
-    data = open(temp_config.get("config_path", os.path.join(SCRIPT_DIR, '..', 'serve.json')))
-    config = json.load(data)
+    config = runtime_config
 
-    server_host = temp_config["address"] if "address" in temp_config.keys() else config["address"]
-    server_port = temp_config["port"] if "port" in temp_config.keys() else config['port']
-    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config["protocol"]
+    server_host = temp_config["address"] if "address" in temp_config.keys() else config.get("address", "0.0.0.0")
+    server_port = temp_config["port"] if "port" in temp_config.keys() else config.get('port', 5000)
+    server_url_scheme = temp_config["protocol"] if "protocol" in temp_config.keys() else config.get("protocol", "http")
 
     print("loading word list...")
-    wordListPath = temp_config["words"] if "words" in temp_config.keys() else config["words"]
+    wordListPath = temp_config["words"] if "words" in temp_config.keys() else config.get("words", "")
     app.words = WordList(wordListPath)
     app.words.load()
 
     print("Starting server...")
     serve(app, host=server_host, port=server_port, url_scheme=server_url_scheme)
-    data.close()
 
 def dictionary_lookup(word):
     #return true if the word exists in the dictionary (the nltk words corpus)
     #or if the word is in the list of approved words
     dictionaryType = ""
-    dictionary = word.lower() in app.english_words
+    dictionary = word.lower() in app.backend.english_words
     acceptable = app.words.find(word)
     digit = word.isnumeric()
     if (dictionary):
@@ -184,6 +196,25 @@ def dictionary_lookup(word):
         dictionaryType = "UC"
     
     return dictionaryType
+
+@app.route('/info', methods=['GET'])
+def info():
+    """Describe the model being served, without tagging anything."""
+    return jsonify({"id": None, "model": app.backend.model_info()})
+
+@app.route('/tag', methods=['POST'])
+def tag():
+    """Tag a batch of identifiers. Takes the same JSON request as the stdio transport."""
+    # force=True: accept a JSON body even when the client omits the Content-Type header
+    message = request.get_json(force=True, silent=True)
+    if message is None:
+        return jsonify({
+            "id": None,
+            "error": {"code": contract.INVALID_JSON, "message": "request body must be JSON"},
+        }), 400
+
+    response = app.backend.tag_batch(message)
+    return jsonify(response), 400 if "error" in response else 200
 
 #route to check for and create a database if it does not exist already
 @app.route('/probe/<cache_id>')
@@ -218,19 +249,17 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     print(f"INPUT: {identifier_name} {identifier_context}")
     start_time = time.perf_counter()
 
-    # 1) Split the identifier into tokens
-    words = ronin.split(identifier_name)
-
-    # 2) Tag the tokens with the DistilBERT tagger
     result = { "words": [] }
 
-    tags = lm_model.tag_identifier(
-        tokens=words,
-        context=identifier_context,
+    # Split the identifier and tag the words with the DistilBERT+CRF model
+    tagged = app.backend.tag_identifier(
+        identifier_name,
+        identifier_context,
         type_str=data_type,
         language=programming_language,
-        system_name=system_name
+        system_name=system_name,
     )
+    words, tags = tagged["tokens"], tagged["tags"]
 
     for word, tag in zip(words, tags):
         dictionary = dictionary_lookup(word)
@@ -241,5 +270,4 @@ def listen(identifier_name: str, identifier_context: str, cache_id: str = None) 
     tag_time = time.perf_counter() - start_time
     if cache is not None:
         cache.add(identifier_name, result, identifier_context, tag_time)
-
     return result

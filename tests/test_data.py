@@ -6,8 +6,8 @@ import pandas as pd
 import pytest
 
 from conftest import LABEL_LIST, REPO_ROOT
-from src.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification
-from src.lm_based_tagger.distilbert_preprocessing import CONTEXT_MAP
+from scalar_tagger.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import CONTEXT_MAP
 
 REAL_DATA = os.path.join(REPO_ROOT, "input", "tagger_data.tsv")
 SYNTHETIC_FILES = sorted(glob.glob(os.path.join(REPO_ROOT, "input", "synthetic*.csv")))
@@ -39,7 +39,7 @@ def test_required_columns_present_and_filled(dataset):
 def test_tagger_data_has_no_duplicate_identifiers():
     # Each subset is held out separately, so a repeated split with the same tags could sit in
     # train and holdout at once. The same words with different tags (start: V vs. N) may stay.
-    from src.lm_based_tagger.train_model import normalize_split
+    from scalar_tagger.lm_based_tagger.train_model import normalize_split
 
     real = pd.read_csv(REAL_DATA, sep="\t", dtype=str)
     keys = pd.DataFrame({
@@ -87,7 +87,7 @@ def test_forbidden_transitions_never_occur(dataset):
 ])
 def test_synthetic_file_has_no_real_twins(path):
     # A synthetic copy of a real identifier can leak a real holdout answer into training.
-    from src.lm_based_tagger.train_model import normalize_split
+    from scalar_tagger.lm_based_tagger.train_model import normalize_split
 
     real = set(pd.read_csv(REAL_DATA, sep="\t", dtype=str)["SPLIT"].map(normalize_split))
     synthetic = pd.read_csv(path, dtype=str)
@@ -96,7 +96,7 @@ def test_synthetic_file_has_no_real_twins(path):
 
 
 def test_training_loader_combines_both_sources():
-    from src.lm_based_tagger.train_model import _load_lm_training_dataframe
+    from scalar_tagger.lm_based_tagger.train_model import _load_lm_training_dataframe
 
     df, sources = _load_lm_training_dataframe(REPO_ROOT)
     assert sources == ["tagger_data", "synthetic_pos_data_full"]
@@ -117,7 +117,7 @@ def test_training_loader_combines_both_sources():
 
 
 def test_training_loader_reads_the_chosen_synthetic_file(tmp_path):
-    from src.lm_based_tagger.train_model import _load_lm_training_dataframe
+    from scalar_tagger.lm_based_tagger.train_model import _load_lm_training_dataframe
 
     path = tmp_path / "synthetic_v2.csv"
     pd.read_csv(SYNTHETIC_V1, dtype=str).head(20).to_csv(path, index=False)

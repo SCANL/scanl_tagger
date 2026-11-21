@@ -1,4 +1,12 @@
 output/
 __pycache__/
+code2vec/
 cache/
 input.txt
+.venvs/
+.tutorial/
+tutorial/build/
+build/
+dist/
+*.egg-info/
+.pytest_cache/

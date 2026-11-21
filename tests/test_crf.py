@@ -1,7 +1,7 @@
 import torch
 
 from conftest import LABEL2ID, save_checkpoint
-from src.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification
+from scalar_tagger.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification
 
 
 def test_compact_word_positions():
@@ -101,3 +101,73 @@ def test_from_pretrained_round_trip(tiny_model, tokenizer, tmp_path):
     assert loaded.config.selected_features == ["context", "digit"]
     for (name, a), (_, b) in zip(tiny_model.state_dict().items(), loaded.state_dict().items()):
         assert torch.equal(a, b), name
+
+
+def _brute_force_marginals(crf, emissions, n_words):
+    """P(tag_t = y) by enumerating every tag sequence of one row (feasible for tiny inputs)."""
+    import itertools
+
+    num_tags = emissions.size(-1)
+    scores, paths = [], list(itertools.product(range(num_tags), repeat=n_words))
+    for path in paths:
+        score = crf.start_transitions[path[0]] + crf.end_transitions[path[-1]]
+        score = score + sum(emissions[t, path[t]] for t in range(n_words))
+        score = score + sum(crf.transitions[path[t - 1], path[t]] for t in range(1, n_words))
+        scores.append(score)
+    probs = torch.softmax(torch.stack(scores), dim=0)
+    marginals = torch.zeros(n_words, num_tags)
+    for p, path in zip(probs, paths):
+        for t, tag in enumerate(path):
+            marginals[t, tag] += p
+    return marginals
+
+
+def test_marginals_match_brute_force_enumeration(tiny_model):
+    torch.manual_seed(1)
+    crf = tiny_model._constrained_crf()
+    emissions = torch.randn(3, 3, len(LABEL2ID))
+    lengths = [3, 1, 2]  # variable lengths in one batch, as in real batches
+    mask = torch.arange(3)[None, :] < torch.tensor(lengths)[:, None]
+    with torch.no_grad():
+        marginals = DistilBertCRFForTokenClassification._marginals(crf, emissions, mask)
+        for row, n in enumerate(lengths):
+            expected = _brute_force_marginals(crf, emissions[row], n)
+            assert torch.allclose(marginals[row, :n], expected, atol=1e-5), row
+            assert torch.allclose(marginals[row, :n].sum(-1), torch.ones(n), atol=1e-5)
+
+
+def test_marginals_respect_forbidden_transitions(tiny_model):
+    crf = tiny_model._constrained_crf()
+    emissions = torch.zeros(1, 2, len(LABEL2ID))
+    emissions[0, 0, LABEL2ID["N"]] = 20.0  # first word is almost surely N
+    with torch.no_grad():
+        marginals = DistilBertCRFForTokenClassification._marginals(crf, emissions, torch.ones(1, 2, dtype=torch.bool))
+    # N N and N NPL are forbidden, so the second word can't be N or NPL
+    assert marginals[0, 1, LABEL2ID["N"]] < 1e-6
+    assert marginals[0, 1, LABEL2ID["NPL"]] < 1e-6
+
+
+def test_inference_returns_marginals_for_decoded_tags(tiny_model, tokenizer):
+    encoded, labels = _batch(tokenizer, [["@pos_0", "max", "@pos_1", "employee", "@pos_2", "size"], ["@pos_2", "name"]])
+    word_mask = labels != -100
+    with torch.no_grad():
+        out = tiny_model(input_ids=encoded["input_ids"], attention_mask=encoded["attention_mask"],
+                         word_mask=word_mask, return_marginals=True)
+    assert [len(row) for row in out["marginals"]] == [3, 1]
+    for row in out["marginals"]:
+        for word in row:
+            assert abs(sum(word) - 1) < 1e-5
+
+
+def test_temperature_softens_marginals_without_changing_the_best_tags(tiny_model):
+    torch.manual_seed(2)
+    crf = tiny_model._constrained_crf()
+    emissions = torch.randn(1, 3, len(LABEL2ID)) * 5
+    mask = torch.ones(1, 3, dtype=torch.bool)
+    with torch.no_grad():
+        raw = DistilBertCRFForTokenClassification._marginals(crf, emissions, mask)
+        soft = DistilBertCRFForTokenClassification._marginals(crf, emissions, mask, temperature=2.0)
+        expected = _brute_force_marginals(crf, emissions[0], 3)
+    assert torch.allclose(raw[0], expected, atol=1e-5)
+    assert soft.max() < raw.max()
+    assert torch.allclose(soft.sum(-1), torch.ones(1, 3), atol=1e-5)

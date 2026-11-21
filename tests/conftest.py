@@ -10,7 +10,7 @@ if REPO_ROOT not in sys.path:
 
 from transformers import DistilBertConfig, DistilBertTokenizerFast  # noqa: E402
 
-from src.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification  # noqa: E402
+from scalar_tagger.lm_based_tagger.distilbert_crf import DistilBertCRFForTokenClassification  # noqa: E402
 
 LABEL_LIST = ["CJ", "D", "DT", "N", "NM", "NPL", "P", "PRE", "V", "VM"]
 LABEL2ID = {label: i for i, label in enumerate(LABEL_LIST)}
@@ -69,3 +69,24 @@ def save_checkpoint(model, tokenizer, path):
     save_file({k: v.contiguous() for k, v in model.state_dict().items()}, os.path.join(path, "model.safetensors"))
     tokenizer.save_pretrained(path)
     return str(path)
+
+
+class FakeTagger:
+    """Tags every word N, and returns None (truncated) for rows over `max_words` words."""
+
+    selected_features = ["context"]
+
+    def __init__(self, max_words=50, fail_on=None):
+        self.max_words = max_words
+        self.fail_on = fail_on
+        self.calls = []
+
+    def tag_identifiers(self, rows, batch_size=64, return_marginals=False):
+        self.calls.append(rows)
+        if self.fail_on and any(self.fail_on in row["tokens"] for row in rows):
+            raise RuntimeError("model failure")
+        results = [None if len(row["tokens"]) > self.max_words else ["N"] * len(row["tokens"]) for row in rows]
+        if return_marginals:
+            marginals = {"N": 0.9, "NM": 0.07, "V": 0.03}
+            results = [None if tags is None else {"tags": tags, "marginals": [marginals] * len(tags)} for tags in results]
+        return results

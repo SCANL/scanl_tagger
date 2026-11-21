@@ -84,6 +84,49 @@ class DistilBertCRFForTokenClassification(nn.Module):
         return crf
 
     @staticmethod
+    def _marginals(crf, emissions, mask, temperature: float = 1.0):
+        """
+        Per-position tag marginals P(tag_t = y | identifier) from the CRF's forward-backward
+        recursions, in log space.
+
+        Uses the same CRF (and so the same forbidden transitions) as Viterbi decoding, so the
+        marginal of a decoded tag describes the tag actually returned.
+
+        Args:
+            crf: a torchcrf CRF (start_transitions [C], transitions [C, C], end_transitions [C])
+            emissions: [B, W, C] emission scores over the compacted word sequence
+            mask: [B, W] bool, a contiguous prefix of True per row
+            temperature: divides every score (emissions and transitions) before normalizing.
+                Values above 1 soften overconfident probabilities; the most likely sequence,
+                and so the Viterbi output, is unchanged by any positive temperature.
+
+        Returns:
+            [B, W, C] probabilities; positions past a row's length are meaningless.
+        """
+        batch, length, _ = emissions.shape
+        start, trans, end = crf.start_transitions, crf.transitions, crf.end_transitions
+        if temperature != 1.0:
+            emissions, start, trans, end = (x / temperature for x in (emissions, start, trans, end))
+
+        # alpha[t][b, y]: log-sum of scores of all prefixes ending in tag y at position t
+        alphas = [start[None, :] + emissions[:, 0]]
+        for t in range(1, length):
+            step = torch.logsumexp(alphas[-1][:, :, None] + trans[None, :, :], dim=1) + emissions[:, t]
+            alphas.append(torch.where(mask[:, t, None], step, alphas[-1]))
+
+        # beta[t][b, y]: log-sum of scores of all suffixes after position t, given tag y at t.
+        # At a row's last word (the next position is masked out) it is just the end transition.
+        betas = [end[None, :].expand(batch, -1)]
+        for t in range(length - 2, -1, -1):
+            step = torch.logsumexp(trans[None, :, :] + (emissions[:, t + 1] + betas[0])[:, None, :], dim=2)
+            betas.insert(0, torch.where(mask[:, t + 1, None], step, end[None, :].expand(batch, -1)))
+
+        alpha = torch.stack(alphas, dim=1)                                  # [B, W, C]
+        beta = torch.stack(betas, dim=1)                                    # [B, W, C]
+        log_z = torch.logsumexp(alphas[-1] + end[None, :], dim=1)           # [B]
+        return torch.exp(alpha + beta - log_z[:, None, None])
+
+    @staticmethod
     def _compact_word_positions(emissions, word_mask, tags=None):
         """
         Gather the word positions of each row into a contiguous, left-aligned sequence.
@@ -114,7 +157,8 @@ class DistilBertCRFForTokenClassification(nn.Module):
             compact_tags = compact_tags.masked_fill(~compact_mask | (compact_tags < 0), 0)
         return compact_emissions, compact_mask, compact_tags, order, lengths
 
-    def forward(self, input_ids=None, attention_mask=None, labels=None, word_mask=None, **kwargs):
+    def forward(self, input_ids=None, attention_mask=None, labels=None, word_mask=None, return_marginals=False,
+                marginal_temperature: float = 1.0, **kwargs):
         """
         Forward pass for training or inference.
 
@@ -124,6 +168,9 @@ class DistilBertCRFForTokenClassification(nn.Module):
             labels (Tensor, optional): Ground-truth labels of shape [B, T]. Required during training.
             word_mask (Tensor, optional): Bool mask of shape [B, T], True at the first subword of each
                 identifier word. Required for CRF decoding at inference; derived from labels in training.
+            return_marginals (bool): at inference with a word_mask, also return per-word tag
+                marginals from forward-backward (see `_marginals`).
+            marginal_temperature (float): temperature for those marginals (see `_marginals`).
             kwargs: Any additional DistilBERT-compatible inputs (e.g., head_mask, position_ids, etc.)
 
         Returns:
@@ -138,6 +185,8 @@ class DistilBertCRFForTokenClassification(nn.Module):
                     - predictions (List[List[int]]): one list per sequence, aligned to the
                       inner tokens (excluding [CLS] and [SEP]). Word positions hold the
                       Viterbi-decoded label IDs; other positions hold the emission argmax.
+                    - marginals (List[List[List[float]]], only with return_marginals): one
+                      [n_words x C] list per sequence, in word order.
 
         Notes:
             - logits: [B, T, C], where B = batch size, T = sequence length, C = number of label classes
@@ -180,13 +229,18 @@ class DistilBertCRFForTokenClassification(nn.Module):
             inner_emissions = emission_scores[:, 1:-1, :]           # [B, T-2, C]
             inner_lengths = attention_mask[:, 1:-1].sum(dim=1).tolist()
             predictions = inner_emissions.argmax(dim=-1)            # fallback for non-word positions
+            marginals = None
 
             if word_mask is not None:
                 # 2) Run Viterbi over the contiguous word sequence, then scatter back to token positions
                 emissions, crf_mask, _, order, lengths = self._compact_word_positions(
                     inner_emissions.float(), word_mask[:, 1:-1].bool()
                 )
-                best_paths = self._constrained_crf().decode(emissions, mask=crf_mask)
+                crf = self._constrained_crf()
+                best_paths = crf.decode(emissions, mask=crf_mask)
+                if return_marginals:
+                    probs = self._marginals(crf, emissions, crf_mask, marginal_temperature).tolist()
+                    marginals = [row[:int(n)] for row, n in zip(probs, lengths.tolist())]
                 for row, path in enumerate(best_paths):
                     n_words = int(lengths[row].item())
                     if n_words:
@@ -195,14 +249,17 @@ class DistilBertCRFForTokenClassification(nn.Module):
                         )
 
             best_paths = [row[:n] for row, n in zip(predictions.tolist(), inner_lengths)]
-            return {"logits": emission_scores, "predictions": best_paths}
+            result = {"logits": emission_scores, "predictions": best_paths}
+            if marginals is not None:
+                result["marginals"] = marginals
+            return result
 
     @classmethod
-    def from_pretrained(cls, ckpt_dir, local=False, **kw):
+    def from_pretrained(cls, ckpt_dir, local=False, revision=None, **kw):
         from safetensors.torch import load_file as load_safe_file
         from huggingface_hub import hf_hub_download
         import os
-        cfg = DistilBertConfig.from_pretrained(ckpt_dir, local_files_only=local)
+        cfg = DistilBertConfig.from_pretrained(ckpt_dir, local_files_only=local, revision=revision)
 
         model = cls(
             num_labels=cfg.num_labels,
@@ -217,6 +274,8 @@ class DistilBertCRFForTokenClassification(nn.Module):
         if hasattr(cfg, "selected_features"):
             model.config.selected_features = cfg.selected_features
             model.bert.config.selected_features = cfg.selected_features
+        if hasattr(cfg, "confidence_temperature"):
+            model.config.confidence_temperature = cfg.confidence_temperature
 
         # Attempt to load model.safetensors only
         try:
@@ -230,7 +289,8 @@ class DistilBertCRFForTokenClassification(nn.Module):
                 weight_path = hf_hub_download(
                     repo_id=ckpt_dir,
                     filename="model.safetensors",
-                    local_files_only=local
+                    revision=revision,
+                    local_files_only=local,
                 )
 
             state_dict = load_safe_file(weight_path, device="cpu")

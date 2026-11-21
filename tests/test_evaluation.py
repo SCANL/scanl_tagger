@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from src.lm_based_tagger import evaluation
+from scalar_tagger.lm_based_tagger import evaluation
 
 
 def test_token_macro_f1_counts_each_tag_equally():

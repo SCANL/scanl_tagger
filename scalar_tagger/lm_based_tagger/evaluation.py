@@ -8,8 +8,8 @@ identifier accuracy.
 
 Compare runs saved with `--run-name` (output/reports/<run>_seed<N>_*predictions.csv):
 
-    python -m src.lm_based_tagger.evaluation RUN_A RUN_B
-    python -m src.lm_based_tagger.evaluation RUN_A          # one run's metrics only
+    python -m scalar_tagger.lm_based_tagger.evaluation RUN_A RUN_B
+    python -m scalar_tagger.lm_based_tagger.evaluation RUN_A          # one run's metrics only
 
 Every seed of each run is loaded, real identifiers are rescored against the current gold in
 input/tagger_data.tsv (so label fixes apply to old runs too), and only identifiers scored in

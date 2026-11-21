@@ -6,8 +6,8 @@ import pytest
 from transformers import DataCollatorForTokenClassification, TrainingArguments
 
 from conftest import LABEL2ID
-from src.lm_based_tagger import train_model
-from src.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
+from scalar_tagger.lm_based_tagger import train_model
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import prepare_dataset, tokenize_and_align_labels
 
 
 def _rows(*rows, source=train_model.REAL_SOURCE):

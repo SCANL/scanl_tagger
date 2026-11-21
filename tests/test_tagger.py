@@ -2,8 +2,8 @@ import pytest
 import torch
 
 from conftest import ID2LABEL, LABEL2ID, LABEL_LIST, save_checkpoint
-from src.lm_based_tagger.distilbert_preprocessing import LEGACY_FEATURES
-from src.lm_based_tagger.distilbert_tagger import DistilBertTagger
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import LEGACY_FEATURES
+from scalar_tagger.lm_based_tagger.distilbert_tagger import DistilBertTagger
 
 
 def _tagger(model, tokenizer, path):
@@ -85,7 +85,7 @@ def test_tagger_serves_a_checkpoint_with_single_token_markers(tiny_model, tokeni
     import copy
 
     import pandas as pd
-    from src.lm_based_tagger.distilbert_preprocessing import (
+    from scalar_tagger.lm_based_tagger.distilbert_preprocessing import (
         add_marker_tokens, build_model_input_tokens, collect_marker_tokens, init_marker_embeddings,
     )
 

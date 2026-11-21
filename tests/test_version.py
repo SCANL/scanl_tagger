@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 from conftest import REPO_ROOT
-from version import __version__, __version_info__, _SEMVER
+from scalar_tagger.version import __version__, __version_info__, _SEMVER
 
 
 def test_version_is_semver():

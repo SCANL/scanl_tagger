@@ -1,3 +1,5 @@
+# Pinned environment for development and training: pip install -r requirements.txt
+# To install the tagger itself, use: pip install .   (or pip install '.[train]' to train)
 accelerate==1.15.0
 datasets==5.1.0
 Flask==3.1.3

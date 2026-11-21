@@ -13,7 +13,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
-from version import __version__
+from scalar_tagger.version import __version__
 
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import f1_score, accuracy_score, classification_report
@@ -26,8 +26,8 @@ from transformers import (
 )
 
 from datasets import Dataset
-from src.lm_based_tagger.evaluation import accuracy_by_source, normalize_split, real_code_summary
-from src.lm_based_tagger.distilbert_preprocessing import (
+from scalar_tagger.lm_based_tagger.evaluation import accuracy_by_source, normalize_split, real_code_summary
+from scalar_tagger.lm_based_tagger.distilbert_preprocessing import (
     add_marker_tokens,
     collect_marker_tokens,
     init_marker_embeddings,
@@ -848,7 +848,7 @@ def train_lm(
     less data, so out-of-fold accuracy is lower: compare only runs with the same fold count.
 
     `run_name`, if given, copies the report and predictions to output/reports/<run_name>_seed<N>.*
-    for later comparison with `python -m src.lm_based_tagger.evaluation`.
+    for later comparison with `python -m scalar_tagger.lm_based_tagger.evaluation`.
 
     Output:
         - Final model checkpoint (output/best_model)
