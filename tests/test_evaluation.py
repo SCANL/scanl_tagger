@@ -101,3 +101,23 @@ def test_run_folds_reads_reports(tmp_path):
     (tmp_path / "ab_seed1.txt").write_text("CV folds: 7, holdout ratio: 0.2\n")
     assert evaluation.run_folds("a", str(tmp_path)) == {3, 5}
     assert evaluation.run_folds("missing", str(tmp_path)) == set()
+
+
+def test_compare_runs_prints_confidence_tables(tmp_path):
+    columns = ["tokens", "true_tags", "pred_tags", "context", "data_source", "subset", "p", "p_calibrated"]
+    holdout = [
+        ("get name", "V N", "V NM", "FUNCTION", "tagger_data", "original_set", "0.9990 0.6000", "0.9900 0.5500"),
+        ("syn word", "NM N", "NM N", "FUNCTION", "synthetic", "synthetic", "0.9990 0.9990", "0.9900 0.9900"),
+    ]
+    cv = [("max size", "NM N", "NM N", "DECLARATION", "tagger_data", "headnoun_set", "0.9500 0.9990")]
+    pd.DataFrame(holdout, columns=columns).to_csv(tmp_path / "c_seed7_predictions.csv", index=False)
+    pd.DataFrame(cv, columns=columns[:-1]).to_csv(tmp_path / "c_seed7_cv_predictions.csv", index=False)
+
+    report = evaluation.compare_runs(["c"], reports_dir=str(tmp_path), gold_path=None, reps=20)
+    raw = report.split("Confidence on real identifiers, c")[1].split("Calibrated p")[0]
+    assert "4 tokens, 1 wrong tags." in raw   # real rows only, CV and hold-out
+    calibrated = report.split("Calibrated p on the real hold-out, c")[1]
+    assert "2 tokens, 1 wrong tags." in calibrated
+
+    _write_run(tmp_path, "plain", 7, [holdout[0][:6]])
+    assert "Confidence on real" not in evaluation.compare_runs(["plain"], reports_dir=str(tmp_path), gold_path=None, reps=20)

@@ -8,6 +8,7 @@ from importlib import resources
 from spiral import ronin
 
 from scalar_tagger import contract
+from scalar_tagger.calibration import confidence_fields
 from scalar_tagger.lm_based_tagger.distilbert_tagger import DistilBertTagger
 from scalar_tagger.version import __version__
 
@@ -109,19 +110,6 @@ def cached_snapshot(repo_id: str, revision: str | None) -> str | None:
         return None
 
 
-def confidence_fields(tag: str, marginals: dict) -> dict:
-    """
-    `p`, the marginal probability of the returned tag, and `alt`, the most probable other tag.
-    The CRF's marginals come from forward-backward with the same forbidden transitions as
-    Viterbi, so `p` describes the tag actually returned. Rounded to 4 decimals.
-    """
-    alt_tag = max((t for t in marginals if t != tag), key=marginals.get)
-    return {
-        "p": round(float(marginals[tag]), 4),
-        "alt": {"tag": alt_tag, "p": round(float(marginals[alt_tag]), 4)},
-    }
-
-
 class TaggingBackend:
     def __init__(
         self,
@@ -183,6 +171,7 @@ class TaggingBackend:
             "features": list(self.lm_model.selected_features),
             "postprocess": False,
             "confidence_temperature": getattr(self.lm_model, "confidence_temperature", 1.0),
+            "confidence_calibration": (getattr(self.lm_model, "confidence_calibration", None) or {}).get("method"),
             "device": str(getattr(self.lm_model, "device", "cpu")),
             "scalar_version": __version__,
         }
@@ -236,7 +225,7 @@ class TaggingBackend:
             for position, (token, tag, (start, end)) in enumerate(zip(item.tokens, tags, offsets)):
                 entry = {"text": token, "start": start, "end": end, "tag": tag}
                 if marginals is not None:
-                    entry.update(confidence_fields(tag, marginals[position]))
+                    entry.update(confidence_fields(tag, marginals[position], getattr(self.lm_model, "confidence_calibration", None)))
                 entry["dictionary"] = token.lower() in self.english_words
                 tokens.append(entry)
             results.append({"key": key, "tokens": tokens})

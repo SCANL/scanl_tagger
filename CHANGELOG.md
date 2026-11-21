@@ -2,6 +2,20 @@
 
 All notable changes to SCALAR are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and SCALAR follows [Semantic Versioning](https://semver.org). See the "Versioning" section of the README for what each version bump means.
 
+## 3.0.0-rc.2 - Unreleased
+
+Second release candidate: calibrated confidence. Install with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.2"`.
+
+### Added
+
+- Calibrated `p`: a checkpoint's config can hold `confidence_calibration`, an isotonic map from the CRF marginal to observed accuracy, applied to `p` when serving. The model block reports it as `model.confidence_calibration` (`"isotonic"`, or `null` without one). With calibration, `alt.p` gets the probability left after `p`, shared in proportion to the raw marginals. Calibration never changes a tag. See "Per-token confidence" in the README.
+- Training writes each token's raw `p` and `alt` into `output/cv_predictions.csv` and `output/holdout_predictions.csv` (temperature 1.5), fits the calibration on real identifiers' out-of-fold predictions, saves it with the checkpoint, and adds `p_calibrated` to the holdout predictions. The holdout report and `python -m scalar_tagger.lm_based_tagger.evaluation RUN` print how often tags are right at each confidence level.
+- Training saves `confidence_temperature` 1.5 in every checkpoint's config.
+
+### Changed
+
+- The release model is the same `sourceslicer/scalar_lm_v3` weights at a new commit, `PENDING`, whose config adds the calibration map. Calibrated values are lower than the raw marginals, so confidence thresholds chosen on rc.1 need to come down.
+
 ## 3.0.0-rc.1 - 2026-11-21
 
 Release candidate for 3.0.0, tagged `v3.0.0-rc.1` for downstream review. Everything below is in it.

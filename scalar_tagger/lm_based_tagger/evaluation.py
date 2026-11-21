@@ -293,7 +293,38 @@ def compare_runs(
                     f1 = np.nanmean(np.where(tp + fn > 0, 2 * tp / (2 * tp + fp + fn), np.nan))
                 row += f"{f1 * 100:>16.2f}"
             lines.append(row)
+
+    lines.extend(_confidence_sections(runs, loaded, sorted(shared)))
     return "\n".join(lines)
+
+
+def _confidence_sections(runs: List[str], loaded, keys: List[str]) -> List[str]:
+    """Confidence tables for real identifiers, for runs whose predictions carry a `p` column."""
+    from scalar_tagger.calibration import confidence_table, token_confidence
+
+    lines = []
+    for run in runs:
+        frames = [f.loc[keys] for f in loaded[run].values() if "p" in f.columns]
+        if not frames:
+            continue
+        real = [f[(f["data_source"] == REAL_SOURCE) & f["subset"].isin(REAL_SUBSETS)] for f in frames]
+        p, correct = [], []
+        for frame in real:
+            frame_p, frame_correct = token_confidence(frame)
+            p += frame_p
+            correct += frame_correct
+        lines.append(f"\nConfidence on real identifiers, {run} (raw p; tokens pooled over {len(frames)} seed(s)):")
+        lines.append(confidence_table(p, correct))
+        calibrated = [f[f["eval_split"] == "holdout"] for f in real if "p_calibrated" in f.columns]
+        if calibrated:
+            p, correct = [], []
+            for frame in calibrated:
+                frame_p, frame_correct = token_confidence(frame, "p_calibrated")
+                p += frame_p
+                correct += frame_correct
+            lines.append(f"\nCalibrated p on the real hold-out, {run} (the calibration was fitted out-of-fold, without it):")
+            lines.append(confidence_table(p, correct))
+    return lines
 
 
 def main(argv: List[str] | None = None) -> None:

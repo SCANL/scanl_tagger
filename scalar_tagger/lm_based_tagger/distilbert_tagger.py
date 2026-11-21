@@ -43,6 +43,9 @@ class DistilBertTagger:
         # Temperature for confidence marginals, fitted on held-out data and saved in the
         # checkpoint config; 1.0 (raw CRF marginals) when the checkpoint has none.
         self.confidence_temperature = float(getattr(self.model.config, "confidence_temperature", 1.0) or 1.0)
+        # Isotonic map from that marginal to observed accuracy (see scalar_tagger/calibration.py),
+        # applied to `p` when serving; None when the checkpoint has none.
+        self.confidence_calibration = getattr(self.model.config, "confidence_calibration", None) or None
 
         # map label IDs to strings
         self.id2label = {int(k): v for k, v in self.model.config.id2label.items()}

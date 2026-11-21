@@ -274,8 +274,9 @@ class DistilBertCRFForTokenClassification(nn.Module):
         if hasattr(cfg, "selected_features"):
             model.config.selected_features = cfg.selected_features
             model.bert.config.selected_features = cfg.selected_features
-        if hasattr(cfg, "confidence_temperature"):
-            model.config.confidence_temperature = cfg.confidence_temperature
+        for name in ("confidence_temperature", "confidence_calibration"):
+            if hasattr(cfg, name):
+                setattr(model.config, name, getattr(cfg, name))
 
         # Attempt to load model.safetensors only
         try:

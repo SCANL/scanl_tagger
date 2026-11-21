@@ -48,6 +48,7 @@ def test_response_shape(backend):
         "features": ["context"],
         "postprocess": False,
         "confidence_temperature": 1.0,
+        "confidence_calibration": None,
         "device": "cpu",
         "scalar_version": response["model"]["scalar_version"],
     }
@@ -168,3 +169,15 @@ def test_confidence_adds_p_and_alt(backend):
 def test_no_confidence_fields_unless_requested(backend):
     token = backend.tag_batch(request(ident("getUser")))["results"][0]["tokens"][0]
     assert "p" not in token and "alt" not in token
+
+
+def test_confidence_applies_the_checkpoint_calibration():
+    tagger = FakeTagger()
+    tagger.confidence_calibration = {"method": "isotonic", "x": [0.5, 1.0], "y": [0.4, 0.8]}
+    backend = TaggingBackend("fake/model", tagger=tagger, english_words=set())
+    response = backend.tag_batch(request(ident("getUser"), options={"confidence": True}))
+    assert response["model"]["confidence_calibration"] == "isotonic"
+    token = response["results"][0]["tokens"][0]
+    assert token["tag"] == "N" and token["p"] == 0.72   # raw 0.9 -> 0.4 + 0.4 * 0.8
+    # The leftover 0.28 is shared in proportion to the raw marginals: NM had 0.07 of the raw 0.1
+    assert token["alt"] == {"tag": "NM", "p": 0.196}

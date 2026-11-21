@@ -14,6 +14,7 @@ import torch
 from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
 from scalar_tagger.version import __version__
+from scalar_tagger.calibration import confidence_fields, confidence_table, fit_isotonic, token_confidence
 
 from sklearn.model_selection import StratifiedKFold, train_test_split
 from sklearn.metrics import f1_score, accuracy_score, classification_report
@@ -77,6 +78,9 @@ HOLDOUT_RATIO = 0.20      # 20% held out for final evaluation
 # predictions are unbiased. (When folds did pick their best epoch, it was nearly always the last.)
 EPOCHS = 5
 CRF_LEARNING_RATE = 5e-3  # CRF transitions need a much higher LR than the encoder (5e-5)
+# Temperature for confidence marginals, saved in the checkpoint config. 1.5 spreads out the raw
+# marginals (most sit above 0.9999 at 1.0), which gives the isotonic calibration room to work.
+CONFIDENCE_TEMPERATURE = 1.5
 LOW_FREQ_TAGS = {"CJ", "VM", "PRE", "V"}
 
 # === Data sources ===
@@ -571,9 +575,13 @@ def viterbi_predict(
     num_workers=0,
     pin_memory=False,
     persistent_workers=False,
+    marginal_temperature: float | None = None,
 ):
     """
     Run CRF Viterbi decoding over a dataset without using the HuggingFace Trainer.
+
+    With `marginal_temperature`, also returns each example's per-word tag marginals (a list of
+    [n_words][num_labels] probabilities, in word order) as a third value.
 
     Returns:
         all_preds:  List[List[int]] — Viterbi-decoded label IDs per example,
@@ -599,7 +607,11 @@ def viterbi_predict(
         persistent_workers=persistent_workers if num_workers > 0 else False,
     )
     model.eval()
-    all_preds, all_labels = [], []
+    all_preds, all_labels, all_marginals = [], [], []
+    marginal_kwargs = (
+        {"return_marginals": True, "marginal_temperature": marginal_temperature}
+        if marginal_temperature is not None else {}
+    )
 
     with torch.no_grad():
         for batch in loader:
@@ -608,14 +620,18 @@ def viterbi_predict(
             # Word positions are exactly the labeled positions; the CRF decodes over those only
             batch["word_mask"] = labels != -100
             batch = {k: v.to(device) for k, v in batch.items()}
-            out = model(**batch)
+            out = model(**batch, **marginal_kwargs)
             if "predictions" in out:
                 all_preds.extend(out["predictions"])
+                if marginal_kwargs:
+                    all_marginals.extend(out["marginals"])
             else:
                 # Fallback for non-CRF models
                 all_preds.extend(torch.argmax(out["logits"], dim=-1).tolist())
             all_labels.extend(batch_labels)
 
+    if marginal_kwargs:
+        return all_preds, all_labels, all_marginals
     return all_preds, all_labels
 
 
@@ -739,10 +755,38 @@ def _decoded_tags(viterbi_preds, labels) -> List[List[str]]:
     ]
 
 
-def _prediction_rows(df: pd.DataFrame, pred_tags: List[List[str]], eval_split: str, fold: int | None = None):
-    """One holdout_predictions.csv-style record per row of `df`."""
+def _named_marginals(marginals) -> List[List[Dict[str, float]]]:
+    """viterbi_predict marginals ([row][word][label id]) as [row][word]{tag: probability}."""
+    return [[{ID2LABEL[i]: prob for i, prob in enumerate(word)} for word in row] for row in marginals]
+
+
+def _confidence_columns(pred_tags, marginals, calibration=None) -> List[Dict[str, str]]:
+    """
+    Per-row `p` (raw marginal of each predicted tag) and `alt` ("TAG:p" for the runner-up) columns,
+    space-separated per token, plus `p_calibrated` (exactly what serving returns) when a calibration
+    map is given. `marginals` is [row][word]{tag: probability}. Raw values keep 6 decimals, since
+    the calibration map is steep near 1 and rounding them to 4 would shift calibrated values.
+    """
+    columns = []
+    for tags, named in zip(pred_tags, marginals):
+        alts = [max((t for t in word if t != tag), key=word.get) for tag, word in zip(tags, named)]
+        record = {
+            "p": " ".join(f"{word[tag]:.6f}" for tag, word in zip(tags, named)),
+            "alt": " ".join(f"{alt}:{word[alt]:.6f}" for alt, word in zip(alts, named)),
+        }
+        if calibration:
+            record["p_calibrated"] = " ".join(
+                f"{confidence_fields(tag, word, calibration)['p']:.4f}" for tag, word in zip(tags, named)
+            )
+        columns.append(record)
+    return columns
+
+
+def _prediction_rows(df: pd.DataFrame, pred_tags: List[List[str]], eval_split: str, fold: int | None = None,
+                     confidence: List[Dict[str, str]] | None = None):
+    """One holdout_predictions.csv-style record per row of `df`, with confidence columns if given."""
     rows = []
-    for (_, row), tags in zip(df.iterrows(), pred_tags):
+    for index, ((_, row), tags) in enumerate(zip(df.iterrows(), pred_tags)):
         record = {
             "tokens":      " ".join(row["tokens"]),
             "true_tags":   " ".join(row["tags"]),
@@ -757,6 +801,8 @@ def _prediction_rows(df: pd.DataFrame, pred_tags: List[List[str]], eval_split: s
         }
         if fold is not None:
             record["fold"] = fold
+        if confidence is not None:
+            record.update(confidence[index])
         rows.append(record)
     return rows
 
@@ -1039,7 +1085,7 @@ def train_lm(
 
 
         # 13) Evaluate fold performance using CRF Viterbi decoding
-        viterbi_preds, fold_labels = viterbi_predict(
+        viterbi_preds, fold_labels, fold_marginals = viterbi_predict(
             model,
             tokenized_test,
             data_collator,
@@ -1047,10 +1093,12 @@ def train_lm(
             num_workers=runtime_config["dataloader_num_workers"],
             pin_memory=runtime_config["pin_memory"],
             persistent_workers=runtime_config["persistent_workers"],
+            marginal_temperature=CONFIDENCE_TEMPERATURE,
         )
 
         fold_pred_tags = _decoded_tags(viterbi_preds, fold_labels)
-        fold_rows = _prediction_rows(fold_test_df, fold_pred_tags, "cv", fold)
+        fold_rows = _prediction_rows(fold_test_df, fold_pred_tags, "cv", fold,
+                                     confidence=_confidence_columns(fold_pred_tags, _named_marginals(fold_marginals)))
         cv_rows.extend(fold_rows)
         fold_real = real_code_summary(pd.DataFrame(fold_rows))
         if not fold_real.empty:
@@ -1064,6 +1112,14 @@ def train_lm(
     cv_path = os.path.join(output_dir, "cv_predictions.csv")
     cv_df.to_csv(cv_path, index=False)
     print(f"\nWrote out-of-fold CV predictions to: {cv_path}")
+
+    # Calibrate `p` on real identifiers' out-of-fold predictions (synthetic rows are much easier).
+    oof_real_p, oof_real_correct = token_confidence(cv_df[cv_df["data_source"] == REAL_SOURCE])
+    calibration = fit_isotonic(oof_real_p, oof_real_correct) if oof_real_p else None
+    if calibration:
+        calibration["temperature"] = CONFIDENCE_TEMPERATURE
+        print(f"Fitted isotonic confidence calibration on {len(oof_real_p)} real out-of-fold tokens "
+              f"({len(calibration['x'])} breakpoints)")
     best_num_train_epochs = EPOCHS
 
     full_train_df, final_verb_aug_count = _prepare_training_frame(
@@ -1145,6 +1201,9 @@ def train_lm(
     )
     final_trainer.train()
 
+    final_model.config.confidence_temperature = CONFIDENCE_TEMPERATURE
+    if calibration:
+        final_model.config.confidence_calibration = calibration
     if os.path.exists(best_model_dir):
         shutil.rmtree(best_model_dir)
     final_trainer.save_model(best_model_dir)
@@ -1198,21 +1257,25 @@ def train_lm(
     # Re-instantiate the exact same DistilBERT tagger we saved
     tagger = DistilBertTagger(best_model_dir, local=True)
 
-    holdout_pred_tags = []
-    flat_true = []
-    flat_pred = []
-    for _, row in val_df.iterrows():
-        pred_tags = tagger.tag_identifier(
-            row["tokens"],
-            row.get("CONTEXT", ""),
-            row.get("TYPE", ""),
-            row.get("LANGUAGE", ""),
-            row.get("SYSTEM_NAME", ""),
-        )
-        holdout_pred_tags.append(pred_tags)
-        flat_true.extend(row["tags"])
-        flat_pred.extend(pred_tags)
-    rows = _prediction_rows(val_df, holdout_pred_tags, "holdout")
+    tagged = tagger.tag_identifiers([
+        {
+            "tokens": row["tokens"],
+            "context": row.get("CONTEXT", ""),
+            "type_str": row.get("TYPE", ""),
+            "language": row.get("LANGUAGE", ""),
+            "system_name": row.get("SYSTEM_NAME", ""),
+        }
+        for _, row in val_df.iterrows()
+    ], return_marginals=True)
+    if any(result is None for result in tagged):
+        raise ValueError("A hold-out identifier is too long for the model input.")
+    holdout_pred_tags = [result["tags"] for result in tagged]
+    flat_true = [tag for tags in val_df["tags"] for tag in tags]
+    flat_pred = [tag for tags in holdout_pred_tags for tag in tags]
+    holdout_confidence = _confidence_columns(
+        holdout_pred_tags, [result["marginals"] for result in tagged], tagger.confidence_calibration,
+    )
+    rows = _prediction_rows(val_df, holdout_pred_tags, "holdout", confidence=holdout_confidence)
 
     preds_df = pd.DataFrame(rows)
     csv_path = os.path.join(output_dir, "holdout_predictions.csv")
@@ -1268,6 +1331,15 @@ def train_lm(
                 [t for tags in real_all["pred_tags"] for t in tags.split()],
                 digits=4, zero_division=0,
             ), file=f)
+
+        if not real_all.empty and "p" in real_all.columns:
+            dual_print(f"\nConfidence on Real Code (temperature {CONFIDENCE_TEMPERATURE}; "
+                       "raw p, CV out-of-fold + hold-out):", file=f)
+            dual_print(confidence_table(*token_confidence(real_all)), file=f)
+            real_holdout = preds_df[preds_df["data_source"] == REAL_SOURCE]
+            if "p_calibrated" in real_holdout.columns:
+                dual_print("\nCalibrated p on the real hold-out (the calibration never saw it):", file=f)
+                dual_print(confidence_table(*token_confidence(real_holdout, "p_calibrated")), file=f)
 
     if run_name:
         for path in save_run_reports(script_dir, run_name, train_seed):

@@ -215,3 +215,34 @@ def test_viterbi_predict_aligns_with_labels(tiny_model, tokenizer, monkeypatch):
     for row_preds, row_labels, expected_words in zip(preds, labels, [3, 1]):
         word_preds = [p for l, p in zip(row_labels[1:-1], row_preds) if l != -100]
         assert len(word_preds) == expected_words
+
+
+def test_viterbi_predict_returns_marginals_on_request(tiny_model, tokenizer, monkeypatch):
+    monkeypatch.setattr(train_model, "device", tiny_model.crf.transitions.device)
+    df = _rows(
+        ("FUNCTION", ["get", "employee", "name"], ["V", "NM", "N"]),
+        ("DECLARATION", ["size"], ["N"]),
+    )
+    dataset = prepare_dataset(df, LABEL2ID, selected_features=["context"]).map(lambda s: tokenize_and_align_labels(s, tokenizer))
+    preds, labels, marginals = train_model.viterbi_predict(
+        tiny_model, dataset, DataCollatorForTokenClassification(tokenizer=tokenizer), batch_size=2,
+        marginal_temperature=1.5,
+    )
+    assert [len(m) for m in marginals] == [3, 1]
+    for row in marginals:
+        for word in row:
+            assert len(word) == len(LABEL2ID) and abs(sum(word) - 1) < 1e-4
+    tags = train_model._decoded_tags(preds, labels)
+    columns = train_model._confidence_columns(tags, train_model._named_marginals(marginals))
+    assert len(columns[0]["p"].split()) == 3 and len(columns[0]["alt"].split()) == 3
+    assert "p_calibrated" not in columns[0]
+
+
+def test_prediction_rows_carry_confidence_columns():
+    df = _rows(("FUNCTION", ["get", "name"], ["V", "N"]))
+    marginals = [[{"V": 0.9, "N": 0.1}, {"N": 0.7, "NM": 0.3}]]
+    calibration = {"method": "isotonic", "x": [0.0, 1.0], "y": [0.0, 0.5]}
+    confidence = train_model._confidence_columns([["V", "N"]], marginals, calibration)
+    assert confidence == [{"p": "0.900000 0.700000", "alt": "N:0.100000 NM:0.300000", "p_calibrated": "0.4500 0.3500"}]
+    rows = train_model._prediction_rows(df, [["V", "N"]], "holdout", confidence=confidence)
+    assert rows[0]["p"] == "0.900000 0.700000" and rows[0]["p_calibrated"] == "0.4500 0.3500"

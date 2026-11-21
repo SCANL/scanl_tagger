@@ -17,7 +17,7 @@ weighted avg       0.97      0.97      0.97      3207
 
 
 Run Configuration:
-SCALAR version: 3.0.0
+SCALAR version: 3.0.0-rc.1
 Split seed: 658
 Train seed: 42
 CV folds: 5, holdout ratio: 0.2, epochs (folds and final retrain): 5
@@ -27,11 +27,11 @@ Datasets:
 Amplification (upsampling + verb augmentation): all rows
 Features: context, type
 Markers as single tokens: no
-Model dir: /home/asteriaicom/scalar3/scanl_tagger/output/best_model
+Model dir: /home/asteriaicom/scalar3/scanl_tagger/output/calib_model
 
-Inference Time: 2.09s for 1209 identifiers (8987 tokens)
-Tokens/sec: 4303.39
-Identifiers/sec: 578.93
+Inference Time: 2.63s for 1209 identifiers (8987 tokens)
+Tokens/sec: 3421.79
+Identifiers/sec: 460.33
 
 Final Macro F1 on Held-Out Set: 0.9647
 Final Token-level Accuracy on Held-Out Set: 0.9710
@@ -76,3 +76,35 @@ Per-Tag Report on Real Code (CV out-of-fold + hold-out):
    macro avg     0.9463    0.9488    0.9474     11537
 weighted avg     0.9562    0.9561    0.9562     11537
 
+
+Confidence on Real Code (temperature 1.5; raw p, CV out-of-fold + hold-out):
+p               tokens   share  accuracy  mean p
+under 0.5           21    0.2%     28.6%   0.395
+0.5 to 0.8         174    1.5%     52.9%   0.668
+0.8 to 0.9         104    0.9%     59.6%   0.850
+0.9 to 0.95        124    1.1%     67.7%   0.929
+0.95 to 0.99       770    6.7%     80.3%   0.981
+0.99 to 0.995     2037   17.7%     95.5%   0.993
+0.995 or higher    8307   72.0%     99.0%   0.997
+11537 tokens, 506 wrong tags.
+Flagging tokens under 0.8 marks 1.7% of tokens and catches 97 of 506 errors.
+Flagging tokens under 0.9 marks 2.6% of tokens and catches 139 of 506 errors.
+Flagging tokens under 0.95 marks 3.7% of tokens and catches 179 of 506 errors.
+Flagging tokens under 0.99 marks 10.3% of tokens and catches 331 of 506 errors.
+Flagging tokens under 0.995 marks 28.0% of tokens and catches 422 of 506 errors.
+
+Calibrated p on the real hold-out (the calibration never saw it):
+p               tokens   share  accuracy  mean p
+under 0.5           20    0.9%     40.0%   0.299
+0.5 to 0.8         129    5.6%     73.6%   0.664
+0.8 to 0.9          35    1.5%     82.9%   0.856
+0.9 to 0.95        136    5.9%     94.1%   0.921
+0.95 to 0.99      1323   57.0%     98.7%   0.981
+0.99 to 0.995      131    5.6%    100.0%   0.991
+0.995 or higher     549   23.6%     99.8%   0.997
+2323 tokens, 78 wrong tags.
+Flagging tokens under 0.8 marks 6.4% of tokens and catches 46 of 78 errors.
+Flagging tokens under 0.9 marks 7.9% of tokens and catches 52 of 78 errors.
+Flagging tokens under 0.95 marks 13.8% of tokens and catches 60 of 78 errors.
+Flagging tokens under 0.99 marks 70.7% of tokens and catches 77 of 78 errors.
+Flagging tokens under 0.995 marks 76.4% of tokens and catches 77 of 78 errors.

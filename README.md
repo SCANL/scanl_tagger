@@ -11,7 +11,7 @@ SCALAR needs Python 3.12 or later.
 To use the tagger, install the package. This gives you the `scalar-tagger` command:
 
 ```bash
-pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.1"
+pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.2"
 scalar-tagger --version
 ```
 
@@ -82,15 +82,15 @@ response = backend.tag_batch({
 {"id": 1,
  "model": {"name": "output/best_model", "revision": "sha256:714800a14254839e",
            "features": ["context", "type"], "postprocess": false, "confidence_temperature": 1.5,
-           "device": "cuda", "scalar_version": "3.0.0-rc.1"},
+           "confidence_calibration": "isotonic", "device": "cuda", "scalar_version": "3.0.0-rc.2"},
  "results": [
    {"key": "a1", "tokens": [
-     {"text": "get",   "start": 0, "end": 3,  "tag": "V",  "p": 0.9977, "alt": {"tag": "DT", "p": 0.0004}, "dictionary": true},
-     {"text": "User",  "start": 3, "end": 7,  "tag": "NM", "p": 0.9979, "alt": {"tag": "P",  "p": 0.0004}, "dictionary": true},
-     {"text": "Token", "start": 7, "end": 12, "tag": "N",  "p": 0.9986, "alt": {"tag": "NM", "p": 0.0003}, "dictionary": true}]},
+     {"text": "get",   "start": 0, "end": 3,  "tag": "V",  "p": 0.9896, "alt": {"tag": "DT", "p": 0.0016}, "dictionary": true},
+     {"text": "User",  "start": 3, "end": 7,  "tag": "NM", "p": 0.9918, "alt": {"tag": "P",  "p": 0.0017}, "dictionary": true},
+     {"text": "Token", "start": 7, "end": 12, "tag": "N",  "p": 0.9983, "alt": {"tag": "NM", "p": 0.0004}, "dictionary": true}]},
    {"key": "a2", "tokens": [
-     {"text": "open",  "start": 0, "end": 4,  "tag": "V",  "p": 0.966,  "alt": {"tag": "NM", "p": 0.0298}, "dictionary": true},
-     {"text": "File",  "start": 4, "end": 8,  "tag": "N",  "p": 0.9973, "alt": {"tag": "NM", "p": 0.0005}, "dictionary": true}]}]}
+     {"text": "open",  "start": 0, "end": 4,  "tag": "V",  "p": 0.6795, "alt": {"tag": "NM", "p": 0.2806}, "dictionary": true},
+     {"text": "File",  "start": 4, "end": 8,  "tag": "N",  "p": 0.9877, "alt": {"tag": "NM", "p": 0.0023}, "dictionary": true}]}]}
 ```
 
 - `id` and `key` are echoed back unchanged. Results are always in request order.
@@ -104,18 +104,30 @@ response = backend.tag_batch({
 
 With `"options": {"confidence": true}`, each token also gets:
 
-- `p`: the probability of the returned tag, from the CRF's forward-backward marginals. The marginals use the same forbidden transitions as Viterbi decoding, so `p` describes the tag actually returned.
-- `alt`: the most probable other tag and its probability.
+- `p`: how likely the returned tag is to be right. It starts from the CRF's forward-backward marginal for the tag, computed with the same forbidden transitions as Viterbi decoding, so it describes the tag actually returned. The release model then calibrates it (below), so a `p` of 0.9 means the tag is right about 90% of the time.
+- `alt`: the most probable other tag and its probability. With calibration, the probability left after `p` is shared among the other tags in proportion to their marginals, so `p + alt.p` never exceeds 1.
 
 Viterbi returns the best *sequence*, so in rare cases `alt.p` can exceed `p`. Confidence costs about 20% throughput on a GPU and nothing measurable on a CPU. Without the option, `p` and `alt` are omitted.
 
-How to read `p`, from the release model on the 853 real holdout identifiers it never trained on:
+**Calibration.** Raw marginals overstate certainty: on real code, tokens with a raw marginal between 0.95 and 0.99 are right only 80% of the time. So the release model stores two adjustments in its config, reported in the `model` block:
 
-- Most tokens are confident. 91% get `p` ≥ 0.99, and 98.9% of those are right.
-- Below that, `p` roughly tracks accuracy. Tokens with `p` < 0.95 are right 62% of the time, and tokens between 0.8 and 0.9 are right 68% of the time.
-- At the identifier level, flagging identifiers whose lowest `p` is below 0.9 marks 6.4% of them and catches 43% of the mistakes (28 of 65). Many mistakes are still made confidently, so a high `p` is not a guarantee.
+- `confidence_temperature` (1.5) divides every CRF score before the marginals are computed. It spreads out the raw values, most of which sit above 0.9999 without it.
+- `confidence_calibration` (`"isotonic"`) is a monotone map from that marginal to observed accuracy. It was fitted on out-of-fold predictions for all 3,408 real training identifiers (9,214 tokens, each predicted by a fold model that never saw it). Each block of the isotonic fit is smoothed with one pseudo-success and one pseudo-failure, so `p` never reaches exactly 0 or 1, and the map interpolates between blocks, so it keeps the marginals' ranking of tokens.
 
-A checkpoint can set `confidence_temperature` in its config to soften overconfident probabilities. Every score is divided by it before the marginals are computed, which never changes the returned tags. The value in use is reported in `model.confidence_temperature`. The release model uses 1.5. Without it (raw marginals, 1.0), 97% of tokens get `p` ≥ 0.99, including most of the errors. The value was chosen on the holdout: fitting it on one half and checking it on the other lowered the log-loss of the true tags by 23–30%.
+Neither adjustment ever changes a tag. How calibrated `p` holds up on the 853 real holdout identifiers, which neither the model nor the calibration saw (2,323 tokens, 78 wrong tags):
+
+| `p` | Share of tokens | Share correct | Mean `p` |
+|---|---|---|---|
+| Under 0.5 | 0.9% | 40.0% | 0.30 |
+| 0.5 to 0.8 | 5.6% | 73.6% | 0.66 |
+| 0.8 to 0.9 | 1.5% | 82.9% | 0.86 |
+| 0.9 to 0.95 | 5.9% | 94.1% | 0.92 |
+| 0.95 to 0.99 | 57.0% | 98.7% | 0.98 |
+| 0.99 or higher | 29.3% | 99.9% | 0.996 |
+
+Flagging tokens under 0.9 marks 7.9% of tokens and catches 52 of the 78 errors; under 0.95, 13.8% and 60. Calibrated values are lower than raw marginals, so thresholds chosen on raw `p` need to come down: most correct tokens now sit between 0.95 and 0.99, so a 0.99 cut-off flags 71% of tokens. Fitting the map on four CV folds and checking it on the fifth, over all 3,408 real training identifiers (428 errors), gives the same agreement between `p` and accuracy in every row.
+
+`python -m scalar_tagger.lm_based_tagger.evaluation RUN` prints these tables for any run saved with `--run-name`: raw marginals over every real identifier (out-of-fold plus holdout), and calibrated `p` on the holdout. Training fits the calibration and saves it with the checkpoint.
 
 ### Errors
 
