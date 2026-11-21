@@ -2,7 +2,9 @@
 
 All notable changes to SCALAR are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and SCALAR follows [Semantic Versioning](https://semver.org). See the "Versioning" section of the README for what each version bump means.
 
-## 3.0.0 - Unreleased
+## 3.0.0-rc.1 - 2026-11-21
+
+Release candidate for 3.0.0, tagged `v3.0.0-rc.1` for downstream review. Everything below is in it.
 
 ### Changed
 
@@ -49,12 +51,13 @@ All notable changes to SCALAR are recorded here. The format follows [Keep a Chan
 
 ### Added
 
-- A `pyproject.toml` package, `scalar-tagger`, with a `scalar-tagger` command (`scalar-tagger serve --stdio`, `scalar-tagger train ...`). Install it with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0"`. Training dependencies are in the `[train]` extra.
+- A `pyproject.toml` package, `scalar-tagger`, with a `scalar-tagger` command (`scalar-tagger serve --stdio`, `scalar-tagger train ...`). Install it with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.1"`. Training dependencies are in the `[train]` extra.
 - `TaggingBackend.tag_batch(request)`: one batch-tagging function for every transport, following the JSON contract in `scalar_tagger/contract.py`. Each token is an object with `text`, `start`, `end` (character offsets into the original name), `tag`, and `dictionary`; callers can send their own `tokens` to skip splitting; every response carries a `model` block (`name`, `revision`, `features`, `postprocess`, `confidence_temperature`, `device`, `scalar_version`); and a bad identifier gets a coded error (`EMPTY_IDENTIFIER`, `NO_TOKENS`, `UNSUPPORTED_IDENTIFIER`, `INVALID_CONTEXT`, `INVALID_TOKENS`, `INVALID_IDENTIFIER`, `IDENTIFIER_TOO_LONG`, `INTERNAL_ERROR`) without failing the batch.
 - Per-token confidence: with `options.confidence`, each token gets `p`, the probability of its tag from the CRF's forward-backward marginals (computed with the same forbidden transitions as Viterbi), and `alt`, the most probable other tag. A checkpoint's config can set `confidence_temperature` to soften overconfident probabilities without changing any tag.
 - `--mode serve --stdio`: serves the batch contract as JSON lines over stdin/stdout. It prints a `ready` line once the model has loaded, sends all logging to stderr, answers `{"command": "info"}`, and exits when stdin closes.
 - `POST /tag` and `GET /info` HTTP endpoints, using the same contract as stdio.
 - `--mode serve`, the same as `--mode run`.
+- `python -m scalar_tagger ...`, the same as the installed `scalar-tagger` command.
 - `--revision` (and `"revision"` in the config file) to load a specific Hugging Face commit, branch, or tag, and a pinned release model (`RELEASE_MODEL` and `RELEASE_REVISION` in `scalar_tagger/cli.py`; see `RELEASE_MODEL.md`).
 - `--device` (and `"device"` in the config file) to choose `cpu`, `cuda`, or `cuda:N`.
 - `--model_dir` to serve a local checkpoint, or to choose where training saves it.

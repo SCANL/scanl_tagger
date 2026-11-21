@@ -6,7 +6,7 @@ This file records the model the installed `scalar-tagger` command serves, so the
 
 - Checkpoint: `output/best_model` from the `tc_k5_rev` run, seed 42 (`python main --mode train --features type context --folds 5 --seed 42 --run-name tc_k5_rev`).
 - Local revision: `sha256:714800a14254839e` (hash of `model.safetensors`).
-- Published as: `sourceslicer/scalar_lm_v3`, commit `f01a24fe8533995c1246c494c6cb7478c3c74c2d`. `RELEASE_MODEL` in [scalar_tagger/cli.py](scalar_tagger/cli.py) points at it; `RELEASE_REVISION` is set once the upload's commit hash is known.
+- Published as: `sourceslicer/scalar_lm_v3`, commit `f01a24fe8533995c1246c494c6cb7478c3c74c2d`. `RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py) point at it.
 - Features: `context`, `type`. Confidence temperature: 1.5, chosen on the real holdout (cross-fit on its two halves, log-loss of the true tags 23–30% lower than at 1.0). It changes `p` and `alt`, never the tags.
 
 ## Metrics

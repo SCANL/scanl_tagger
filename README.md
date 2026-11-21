@@ -11,7 +11,7 @@ SCALAR needs Python 3.12 or later.
 To use the tagger, install the package. This gives you the `scalar-tagger` command:
 
 ```bash
-pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0"
+pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.1"
 scalar-tagger --version
 ```
 
@@ -82,7 +82,7 @@ response = backend.tag_batch({
 {"id": 1,
  "model": {"name": "output/best_model", "revision": "sha256:714800a14254839e",
            "features": ["context", "type"], "postprocess": false, "confidence_temperature": 1.5,
-           "device": "cuda", "scalar_version": "3.0.0"},
+           "device": "cuda", "scalar_version": "3.0.0-rc.1"},
  "results": [
    {"key": "a1", "tokens": [
      {"text": "get",   "start": 0, "end": 3,  "tag": "V",  "p": 0.9977, "alt": {"tag": "DT", "p": 0.0004}, "dictionary": true},

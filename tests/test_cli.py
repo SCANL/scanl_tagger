@@ -114,3 +114,14 @@ def test_file_revision_is_cached_until_the_file_changes(tmp_path, monkeypatch):
 def test_cached_snapshot_ignores_branch_names():
     assert tagging_backend.cached_snapshot(cli.RELEASE_MODEL, "main") is None
     assert tagging_backend.cached_snapshot(cli.RELEASE_MODEL, None) is None
+
+
+def test_python_dash_m_runs_the_cli():
+    import subprocess
+    import sys
+    from scalar_tagger.version import __version__
+
+    result = subprocess.run([sys.executable, "-m", "scalar_tagger", "--version"],
+                            capture_output=True, text=True, timeout=120)
+    assert result.returncode == 0
+    assert __version__ in result.stdout
