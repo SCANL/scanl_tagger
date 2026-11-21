@@ -27,7 +27,7 @@ DEFAULT_CONFIG_PATH = "serve.json"
 # model the reported metrics describe. Bump RELEASE_REVISION (a MINOR version change) when a
 # new release model is published; see RELEASE_MODEL.md.
 RELEASE_MODEL = "sourceslicer/scalar_lm_v3"
-RELEASE_REVISION = None
+RELEASE_REVISION = "f01a24fe8533995c1246c494c6cb7478c3c74c2d"
 
 
 def get_version():
