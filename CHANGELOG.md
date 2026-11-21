@@ -2,7 +2,7 @@
 
 All notable changes to SCALAR are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and SCALAR follows [Semantic Versioning](https://semver.org). See the "Versioning" section of the README for what each version bump means.
 
-## 3.0.0-rc.2 - Unreleased
+## 3.0.0-rc.2 - 2026-11-21
 
 Second release candidate: calibrated confidence. Install with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.2"`.
 
@@ -14,7 +14,7 @@ Second release candidate: calibrated confidence. Install with `pip install "scal
 
 ### Changed
 
-- The release model is the same `sourceslicer/scalar_lm_v3` weights at a new commit, `PENDING`, whose config adds the calibration map. Calibrated values are lower than the raw marginals, so confidence thresholds chosen on rc.1 need to come down.
+- The release model is the same `sourceslicer/scalar_lm_v3` weights at a new commit, `d65d72568388965e3ce5a3bac8db7eafa475b457`, whose config adds the calibration map. Calibrated values are lower than the raw marginals, so confidence thresholds chosen on rc.1 need to come down.
 
 ## 3.0.0-rc.1 - 2026-11-21
 

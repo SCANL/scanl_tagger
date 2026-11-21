@@ -6,7 +6,7 @@ This file records the model the installed `scalar-tagger` command serves, so the
 
 - Checkpoint: `output/best_model` from the `tc_k5_rev` run, seed 42 (`python main --mode train --features type context --folds 5 --seed 42 --run-name tc_k5_rev`).
 - Local revision: `sha256:714800a14254839e` (hash of `model.safetensors`).
-- Published as: `sourceslicer/scalar_lm_v3`, commit `PENDING` (the same weights as `f01a24fe`, which 3.0.0-rc.1 pins, with the calibration map added to `config.json`). `RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py) point at it.
+- Published as: `sourceslicer/scalar_lm_v3`, commit `d65d72568388965e3ce5a3bac8db7eafa475b457` (the same weights as `f01a24fe`, which 3.0.0-rc.1 pins, with the calibration map added to `config.json`). `RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py) point at it.
 - Features: `context`, `type`.
 - Confidence: temperature 1.5, then an isotonic calibration map (`confidence_calibration` in `config.json`). The map was fitted on the out-of-fold predictions of the `tc_k5_cal` run, which retrained this recipe with seed 42 and reproduced the checkpoint exactly (the same `model.safetensors` hash and the same out-of-fold and holdout predictions), on its 9,214 real tokens. Neither changes a tag.
 
