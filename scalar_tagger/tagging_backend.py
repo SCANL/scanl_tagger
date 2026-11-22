@@ -3,7 +3,7 @@ import hashlib
 import json
 import os
 import re
-from importlib import resources
+from importlib import metadata, resources
 
 from spiral import ronin
 
@@ -27,6 +27,14 @@ def load_english_words(extra_words_path: str = os.path.join("words", "en.txt")) 
         with open(extra_words_path) as handle:
             english_words.update(line.strip().lower() for line in handle if line.strip())
     return english_words
+
+
+def _package_version(name: str) -> str | None:
+    """The installed version of a package (e.g. "2.14.1+cu130"), or None if it isn't installed."""
+    try:
+        return metadata.version(name)
+    except metadata.PackageNotFoundError:
+        return None
 
 
 def _revision_cache_path() -> str:
@@ -174,6 +182,8 @@ class TaggingBackend:
             "confidence_calibration": (getattr(self.lm_model, "confidence_calibration", None) or {}).get("method"),
             "device": str(getattr(self.lm_model, "device", "cpu")),
             "scalar_version": __version__,
+            "torch_version": _package_version("torch"),
+            "transformers_version": _package_version("transformers"),
         }
 
     def tag_batch(self, request) -> dict:

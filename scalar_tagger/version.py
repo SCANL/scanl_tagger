@@ -7,7 +7,7 @@ patch change, and record every change in CHANGELOG.md.
 
 import re
 
-__version__ = "3.0.0-rc.2"
+__version__ = "3.0.0-rc.3"
 
 _SEMVER = re.compile(
     r"^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)"

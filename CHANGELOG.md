@@ -2,6 +2,23 @@
 
 All notable changes to SCALAR are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and SCALAR follows [Semantic Versioning](https://semver.org). See the "Versioning" section of the README for what each version bump means.
 
+## 3.0.0-rc.3 - 2026-11-21
+
+Third release candidate: `p` describes what serving returns, whatever the host's precision settings. Install with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.3"`.
+
+### Added
+
+- The `model` block reports `torch_version` and `transformers_version`, so every response records the environment that produced it.
+
+### Fixed
+
+- Training enabled TF32 matrix multiplication for the whole run, so the out-of-fold marginals the calibration map was fitted on, and the `p` columns in the prediction files, were computed at lower precision than serving uses (raw marginals differed by up to 0.0024; calibrated `p` by up to 0.0033). Confidence is now computed in full float32 during training, and the map was refitted. Tags and weights are unchanged.
+- The tagger now runs inference in full float32 even when the process hosting it has turned on TF32 or autocast, and restores the host's settings afterwards. Before, a host's precision settings could shift `p`. A lock keeps concurrent requests (such as the HTTP server's thread pool) from interleaving these process-wide settings, so inference from different threads runs one batch at a time.
+
+### Changed
+
+- The release model is the same `sourceslicer/scalar_lm_v3` weights at a new commit, `5e5e8b1fe1d012a1df523718c013c66bdd12c2ad`, whose config holds the refitted calibration map.
+
 ## 3.0.0-rc.2 - 2026-11-21
 
 Second release candidate: calibrated confidence. Install with `pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.2"`.

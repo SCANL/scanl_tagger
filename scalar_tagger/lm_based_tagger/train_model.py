@@ -5,6 +5,7 @@ import random
 import math
 import inspect
 import shutil
+from contextlib import nullcontext
 from functools import partial
 from typing import Any, Dict, List, Tuple
 
@@ -13,6 +14,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 from .distilbert_crf import DistilBertCRFForTokenClassification
+from .precision import full_float32
 from scalar_tagger.version import __version__
 from scalar_tagger.calibration import confidence_fields, confidence_table, fit_isotonic, token_confidence
 
@@ -613,7 +615,9 @@ def viterbi_predict(
         if marginal_temperature is not None else {}
     )
 
-    with torch.no_grad():
+    # Confidence runs in full float32, as serving does, so the calibration map fits served values.
+    precision = full_float32(device.type) if marginal_kwargs else nullcontext()
+    with torch.no_grad(), precision:
         for batch in loader:
             labels = batch.pop("labels")
             batch_labels = labels.tolist()

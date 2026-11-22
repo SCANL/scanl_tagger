@@ -51,7 +51,12 @@ def test_response_shape(backend):
         "confidence_calibration": None,
         "device": "cpu",
         "scalar_version": response["model"]["scalar_version"],
+        "torch_version": response["model"]["torch_version"],
+        "transformers_version": response["model"]["transformers_version"],
     }
+    import torch, transformers
+    assert response["model"]["torch_version"].split("+")[0] == torch.__version__.split("+")[0]
+    assert response["model"]["transformers_version"] == transformers.__version__
     assert response["results"] == [{
         "key": "getUserToken",
         "tokens": [
@@ -181,3 +186,57 @@ def test_confidence_applies_the_checkpoint_calibration():
     assert token["tag"] == "N" and token["p"] == 0.72   # raw 0.9 -> 0.4 + 0.4 * 0.8
     # The leftover 0.28 is shared in proportion to the raw marginals: NM had 0.07 of the raw 0.1
     assert token["alt"] == {"tag": "NM", "p": 0.196}
+
+
+def test_full_float32_restores_the_callers_precision_settings():
+    import torch
+    from scalar_tagger.lm_based_tagger.precision import full_float32
+    torch.set_float32_matmul_precision("high")
+    torch.backends.cuda.matmul.allow_tf32 = True
+    try:
+        with full_float32("cpu"):
+            assert torch.get_float32_matmul_precision() == "highest"
+            assert not torch.backends.cuda.matmul.allow_tf32 and not torch.backends.cudnn.allow_tf32
+        assert torch.get_float32_matmul_precision() == "high"
+        assert torch.backends.cuda.matmul.allow_tf32
+    finally:
+        torch.set_float32_matmul_precision("highest")
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = True
+
+
+def test_full_float32_blocks_run_one_at_a_time_across_threads():
+    import threading
+    import time
+    import torch
+    from scalar_tagger.lm_based_tagger.precision import full_float32
+    torch.set_float32_matmul_precision("high")
+    inside, overlaps, seen = [0], [0], []
+    guard = threading.Lock()
+
+    def work():
+        with full_float32("cpu"):
+            with guard:
+                inside[0] += 1
+                overlaps[0] = max(overlaps[0], inside[0])
+            time.sleep(0.02)
+            seen.append(torch.get_float32_matmul_precision())
+            with guard:
+                inside[0] -= 1
+
+    try:
+        threads = [threading.Thread(target=work) for _ in range(4)]
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+        assert overlaps[0] == 1
+        assert seen == ["highest"] * 4
+        assert torch.get_float32_matmul_precision() == "high"   # the host's setting survives
+        with full_float32("cpu"):
+            with full_float32("cpu"):   # re-entrant in one thread
+                pass
+    finally:
+        torch.set_float32_matmul_precision("highest")
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = True

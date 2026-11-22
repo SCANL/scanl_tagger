@@ -11,7 +11,7 @@ SCALAR needs Python 3.12 or later.
 To use the tagger, install the package. This gives you the `scalar-tagger` command:
 
 ```bash
-pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.2"
+pip install "scalar-tagger @ git+https://github.com/SCANL/scanl_tagger.git@v3.0.0-rc.3"
 scalar-tagger --version
 ```
 
@@ -82,22 +82,23 @@ response = backend.tag_batch({
 {"id": 1,
  "model": {"name": "output/best_model", "revision": "sha256:714800a14254839e",
            "features": ["context", "type"], "postprocess": false, "confidence_temperature": 1.5,
-           "confidence_calibration": "isotonic", "device": "cuda", "scalar_version": "3.0.0-rc.2"},
+           "confidence_calibration": "isotonic", "device": "cuda", "scalar_version": "3.0.0-rc.3",
+           "torch_version": "2.14.1", "transformers_version": "5.19.0"},
  "results": [
    {"key": "a1", "tokens": [
-     {"text": "get",   "start": 0, "end": 3,  "tag": "V",  "p": 0.9896, "alt": {"tag": "DT", "p": 0.0016}, "dictionary": true},
-     {"text": "User",  "start": 3, "end": 7,  "tag": "NM", "p": 0.9918, "alt": {"tag": "P",  "p": 0.0017}, "dictionary": true},
-     {"text": "Token", "start": 7, "end": 12, "tag": "N",  "p": 0.9983, "alt": {"tag": "NM", "p": 0.0004}, "dictionary": true}]},
+     {"text": "get",   "start": 0, "end": 3,  "tag": "V",  "p": 0.9897, "alt": {"tag": "DT", "p": 0.0016}, "dictionary": true},
+     {"text": "User",  "start": 3, "end": 7,  "tag": "NM", "p": 0.9917, "alt": {"tag": "P",  "p": 0.0018}, "dictionary": true},
+     {"text": "Token", "start": 7, "end": 12, "tag": "N",  "p": 0.9986, "alt": {"tag": "NM", "p": 0.0003}, "dictionary": true}]},
    {"key": "a2", "tokens": [
-     {"text": "open",  "start": 0, "end": 4,  "tag": "V",  "p": 0.6795, "alt": {"tag": "NM", "p": 0.2806}, "dictionary": true},
-     {"text": "File",  "start": 4, "end": 8,  "tag": "N",  "p": 0.9877, "alt": {"tag": "NM", "p": 0.0023}, "dictionary": true}]}]}
+     {"text": "open",  "start": 0, "end": 4,  "tag": "V",  "p": 0.6793, "alt": {"tag": "NM", "p": 0.2808}, "dictionary": true},
+     {"text": "File",  "start": 4, "end": 8,  "tag": "N",  "p": 0.9863, "alt": {"tag": "NM", "p": 0.0026}, "dictionary": true}]}]}
 ```
 
 - `id` and `key` are echoed back unchanged. Results are always in request order.
 - `start` and `end` are character offsets into `name`, found by matching each token in order, ignoring case. A caller-supplied token that isn't in the name gets `null` offsets.
 - Set `tokens` to a list of strings to skip splitting, for example to keep `IPv4` whole.
 - `dictionary` is true when the word is in the bundled English word list (the NLTK `words` corpus; see [scalar_tagger/data/README.md](scalar_tagger/data/README.md)), plus `words/en.txt` if that file exists.
-- `model.revision` is the Hugging Face commit for a hub model, or a hash of `model.safetensors` for a local directory. Record it, together with `scalar_version`, to make results reproducible.
+- `model.revision` is the Hugging Face commit for a hub model, or a hash of `model.safetensors` for a local directory. Record it, together with `scalar_version`, to make results reproducible. `torch_version` and `transformers_version` record the environment that produced the response.
 - `options.postprocess` is accepted for compatibility but ignored, and `model.postprocess` is always `false`: 3.0 has no tag postprocessing. The CRF's transition constraints replaced it.
 
 ### Per-token confidence
@@ -119,13 +120,15 @@ Neither adjustment ever changes a tag. How calibrated `p` holds up on the 853 re
 | `p` | Share of tokens | Share correct | Mean `p` |
 |---|---|---|---|
 | Under 0.5 | 0.9% | 40.0% | 0.30 |
-| 0.5 to 0.8 | 5.6% | 73.6% | 0.66 |
-| 0.8 to 0.9 | 1.5% | 82.9% | 0.86 |
-| 0.9 to 0.95 | 5.9% | 94.1% | 0.92 |
-| 0.95 to 0.99 | 57.0% | 98.7% | 0.98 |
-| 0.99 or higher | 29.3% | 99.9% | 0.996 |
+| 0.5 to 0.8 | 5.6% | 73.6% | 0.65 |
+| 0.8 to 0.9 | 1.6% | 84.2% | 0.86 |
+| 0.9 to 0.95 | 6.2% | 94.5% | 0.93 |
+| 0.95 to 0.99 | 56.7% | 98.7% | 0.98 |
+| 0.99 or higher | 29.0% | 99.8% | 0.997 |
 
-Flagging tokens under 0.9 marks 7.9% of tokens and catches 52 of the 78 errors; under 0.95, 13.8% and 60. Calibrated values are lower than raw marginals, so thresholds chosen on raw `p` need to come down: most correct tokens now sit between 0.95 and 0.99, so a 0.99 cut-off flags 71% of tokens. Fitting the map on four CV folds and checking it on the fifth, over all 3,408 real training identifiers (428 errors), gives the same agreement between `p` and accuracy in every row.
+Flagging tokens under 0.9 marks 8.0% of tokens and catches 52 of the 78 errors; under 0.95, 14.3% and 60. Calibrated values are lower than raw marginals, so thresholds chosen on raw `p` need to come down: most correct tokens now sit between 0.95 and 0.99, so a 0.99 cut-off flags 71% of tokens. Fitting the map on four CV folds and checking it on the fifth, over all 3,408 real training identifiers (428 errors), gives close agreement between `p` and accuracy in every row.
+
+**Reproducibility.** Training and serving both compute confidence in full float32, and the tagger turns off TF32 and autocast while it runs even if the host program has turned them on, so `p` doesn't depend on the host's precision settings. Floating-point differences between CPU and GPU, batch sizes, and library versions still move calibrated `p` by up to about 0.0002. Tags don't change. When a result depends on comparing `p` to a threshold, treat tokens within 0.001 of it as borderline, and record the `model` block with the result.
 
 `python -m scalar_tagger.lm_based_tagger.evaluation RUN` prints these tables for any run saved with `--run-name`: raw marginals over every real identifier (out-of-fold plus holdout), and calibrated `p` on the holdout. Training fits the calibration and saves it with the checkpoint.
 

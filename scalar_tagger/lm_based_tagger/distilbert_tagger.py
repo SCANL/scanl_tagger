@@ -1,6 +1,7 @@
 import torch
 from transformers import DistilBertTokenizerFast, DistilBertForTokenClassification
 from .distilbert_crf import DistilBertCRFForTokenClassification
+from .precision import full_float32
 from .distilbert_preprocessing import *
 
 class DistilBertTagger:
@@ -152,7 +153,7 @@ class DistilBertTagger:
             word_mask[row_index, positions] = True
 
         # Step 4: Forward pass (the CRF decodes over word positions only)
-        with torch.inference_mode():
+        with torch.inference_mode(), full_float32(self.device.type):
             if isinstance(self.model, DistilBertCRFForTokenClassification):
                 out = self.model(
                     input_ids=encoded["input_ids"],

@@ -6,9 +6,9 @@ This file records the model the installed `scalar-tagger` command serves, so the
 
 - Checkpoint: `output/best_model` from the `tc_k5_rev` run, seed 42 (`python main --mode train --features type context --folds 5 --seed 42 --run-name tc_k5_rev`).
 - Local revision: `sha256:714800a14254839e` (hash of `model.safetensors`).
-- Published as: `sourceslicer/scalar_lm_v3`, commit `d65d72568388965e3ce5a3bac8db7eafa475b457` (the same weights as `f01a24fe`, which 3.0.0-rc.1 pins, with the calibration map added to `config.json`). `RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py) point at it.
+- Published as: `sourceslicer/scalar_lm_v3`, commit `5e5e8b1fe1d012a1df523718c013c66bdd12c2ad` (the same weights as `f01a24fe` and `d65d7256`, which 3.0.0-rc.1 and rc.2 pin, with the calibration map refitted at full precision). `RELEASE_MODEL` and `RELEASE_REVISION` in [scalar_tagger/cli.py](scalar_tagger/cli.py) point at it.
 - Features: `context`, `type`.
-- Confidence: temperature 1.5, then an isotonic calibration map (`confidence_calibration` in `config.json`). The map was fitted on the out-of-fold predictions of the `tc_k5_cal` run, which retrained this recipe with seed 42 and reproduced the checkpoint exactly (the same `model.safetensors` hash and the same out-of-fold and holdout predictions), on its 9,214 real tokens. Neither changes a tag.
+- Confidence: temperature 1.5, then an isotonic calibration map (`confidence_calibration` in `config.json`). The map was fitted on the out-of-fold predictions of the `tc_k5_fp32` run, which retrained this recipe with seed 42 and reproduced the checkpoint exactly (the same `model.safetensors` hash and the same out-of-fold and holdout predictions), on its 9,214 real tokens. Confidence is computed in full float32 in training and in serving, so served `p` matches the run's `p_calibrated` column on every holdout identifier (GPU, batch size 64). Across devices and batch sizes, calibrated `p` differs by at most 0.0002. Neither adjustment changes a tag.
 
 ## Metrics
 
@@ -24,14 +24,14 @@ Confidence on the real holdout (853 identifiers, 2,323 tokens, 78 wrong tags), w
 | Calibrated `p` | Share of tokens | Share correct | Mean `p` |
 |---|---|---|---|
 | Under 0.5 | 0.9% | 40.0% | 0.30 |
-| 0.5 to 0.8 | 5.6% | 73.6% | 0.66 |
-| 0.8 to 0.9 | 1.5% | 82.9% | 0.86 |
-| 0.9 to 0.95 | 5.9% | 94.1% | 0.92 |
-| 0.95 to 0.99 | 57.0% | 98.7% | 0.98 |
-| 0.99 to 0.995 | 5.6% | 100.0% | 0.991 |
-| 0.995 or higher | 23.6% | 99.8% | 0.997 |
+| 0.5 to 0.8 | 5.6% | 73.6% | 0.65 |
+| 0.8 to 0.9 | 1.6% | 84.2% | 0.86 |
+| 0.9 to 0.95 | 6.2% | 94.5% | 0.93 |
+| 0.95 to 0.99 | 56.7% | 98.7% | 0.98 |
+| 0.99 to 0.995 | 5.4% | 100.0% | 0.991 |
+| 0.995 or higher | 23.6% | 99.8% | 0.998 |
 
-Flagging tokens under 0.9 catches 52 of the 78 errors (7.9% of tokens flagged); under 0.95, 60 (13.8%). Before calibration (raw marginals at temperature 1.5, all 4,261 real identifiers out-of-fold plus holdout, 506 wrong tags), tokens between 0.95 and 0.99 were right 80.3% of the time and tokens between 0.9 and 0.95 67.7%. `python -m scalar_tagger.lm_based_tagger.evaluation tc_k5_cal` prints both tables.
+Flagging tokens under 0.9 catches 52 of the 78 errors (8.0% of tokens flagged); under 0.95, 60 (14.3%). Before calibration (raw marginals at temperature 1.5, all 4,261 real identifiers out-of-fold plus holdout, 506 wrong tags), tokens between 0.95 and 0.99 were right 80.2% of the time and tokens between 0.9 and 0.95 67.7%. `python -m scalar_tagger.lm_based_tagger.evaluation tc_k5_fp32` prints both tables.
 
 Throughput: about 780 identifiers per second on a GPU and 90 on a CPU (batch path, real identifiers).
 
